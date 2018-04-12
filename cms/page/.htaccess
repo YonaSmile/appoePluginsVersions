@@ -1,0 +1,14 @@
+Options +FollowSymlinks
+RewriteEngine On
+RewriteBase /app/plugin/cms/page/
+RewriteRule ^allPages/$  allPages.php [L]
+RewriteRule ^addPage/$  addPage.php [L]
+RewriteRule ^updateMenu/$  updateMenu.php [L]
+RewriteRule ^updateTraduction/$  updateTraduction.php [L]
+RewriteRule ^update/([0-9]+)/$   updatePage.php?id=$1 [L]
+RewriteRule ^pageContent/([0-9]+)/$  updatePageContent.php?id=$1 [L]
+
+RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule (.*) /404.php

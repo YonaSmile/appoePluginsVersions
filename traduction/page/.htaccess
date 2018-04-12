@@ -1,0 +1,9 @@
+Options +FollowSymlinks
+RewriteEngine On
+RewriteBase /app/plugin/traduction/page/
+RewriteRule ^updateTraduction/$  updateTraduction.php [L]
+
+RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule (.*) /404.php
