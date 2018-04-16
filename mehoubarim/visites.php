@@ -15,7 +15,6 @@ $globalData = mehoubarim_getGlobal();
     $totalPagesViews = array_slice($visitors['totalPagesViews'], 0, 5, true);
     ?>
     <div class="row mb-3">
-        <p>Bonjour</p>
         <div class="col-12 col-lg-4 mb-3">
             <ul class="list-group" id="listVisitorsStats">
                 <li class="list-group-item d-flex justify-content-between align-items-center">
