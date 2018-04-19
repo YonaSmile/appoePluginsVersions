@@ -95,6 +95,13 @@ $allContent = $Traduction->getDbData();
                                 <?= App\Form::text($lang, 'metaValue-' . $id, 'text', !empty($_POST['metaValue-' . $id]) ? $_POST['metaValue-' . $id] : ''); ?>
                             </div>
                         <?php endforeach; ?>
+                        <div class="col-12 my-2">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="tradSlug">
+                                <label class="custom-control-label"
+                                       for="tradSlug"><?= trans('Traduction de lien'); ?></label>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer" id="modalAddMultipleTradsFooter">
@@ -174,6 +181,14 @@ $allContent = $Traduction->getDbData();
                         }
                     }
                 )
+        });
+
+        $('#tradSlug').change(function () {
+            if (this.checked) {
+                $('#modalAddMultipleTradsBody input[type="text"]').each(function () {
+                    $(this).val(convertToSlug($(this).val()));
+                });
+            }
         });
     });
 </script>
