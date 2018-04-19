@@ -25,7 +25,11 @@ if (checkPostAndTokenRequest()) {
                     $Traduction->setLang(LANG);
                     $Traduction->setMetaKey($Cms->getName());
                     $Traduction->setMetaValue($Cms->getName());
-                    $Traduction->save();
+                    if($Traduction->save()){
+                        $Traduction->setMetaKey(slugify($Cms->getSlug()));
+                        $Traduction->setMetaValue(slugify($Cms->getSlug()));
+                        $Traduction->save();
+                    }
 
                     //Delete post data
                     unset($_POST);
