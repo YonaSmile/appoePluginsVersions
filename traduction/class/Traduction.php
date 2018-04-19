@@ -15,7 +15,7 @@ class Traduction
 
     public function __construct($lang = null)
     {
-        if(is_null($this->dbh)) {
+        if (is_null($this->dbh)) {
             $this->dbh = \App\DB::connect();
         }
 
@@ -137,6 +137,26 @@ class Traduction
             $tradPos = (false !== array_search($trans, $langArray)) ? array_search($trans, $langArray) : null;
 
             $trad = !is_null($tradPos) ? $this->data[array_keys($this->data)[$tradPos]] : $key;
+        }
+
+        return $trad;
+    }
+
+    public function transToOrigin($key)
+    {
+        $trad = $key;
+        $trans = minimalizeText(html_entity_decode(htmlspecialchars_decode($key, ENT_QUOTES), ENT_QUOTES));
+
+        if (is_array($this->data)) {
+
+            //preparing to compare
+            $langArray = array_map('htmlSpeCharDecode', $this->data);
+            $langArray = array_map('htmlEntityDecode', $langArray);
+            $langArray = array_map('minimalizeText', $langArray);
+
+            if (in_array($trans, $langArray)) {
+                $trad = array_search($trans, $langArray);
+            }
         }
 
         return $trad;
