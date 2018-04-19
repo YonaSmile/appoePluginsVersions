@@ -79,6 +79,9 @@ function getSpecificArticlesCategory($categoryName, $parentId = null, $favorite 
 
 function getSpecificArticlesDetailsBySlug($slug)
 {
+    $Traduction = new App\Plugin\Traduction\Traduction(LANG);
+
+    $slug = slugify($Traduction->transToOrigin($slug));
     //get article
     $Article = new App\Plugin\ItemGlue\Article();
     $Article->setSlug($slug);
