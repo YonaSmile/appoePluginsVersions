@@ -80,8 +80,8 @@ function getSpecificArticlesCategory($categoryName, $parentId = null, $favorite 
 function getSpecificArticlesDetailsBySlug($slug)
 {
     $Traduction = new App\Plugin\Traduction\Traduction(LANG);
+    $slug = $Traduction->transToOrigin($slug);
 
-    $slug = slugify($Traduction->transToOrigin($slug));
     //get article
     $Article = new App\Plugin\ItemGlue\Article();
     $Article->setSlug($slug);
@@ -109,4 +109,14 @@ function getSpecificArticlesDetailsBySlug($slug)
     $all['media'] = $allArticleMedia;
 
     return $all;
+}
+
+function getCategoriesByArticle($id)
+{
+    //get article
+    $Article = new App\Plugin\ItemGlue\Article($id);
+
+    //get all categories in relation with article
+    $CategoryRelation = new App\CategoryRelations('ITEMGLUE', $Article->getId());
+    return $CategoryRelation->getData();
 }

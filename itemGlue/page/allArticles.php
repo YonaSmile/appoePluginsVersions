@@ -20,6 +20,7 @@
                             <th><?= trans('Nom'); ?></th>
                             <th><?= trans('Description'); ?></th>
                             <th><?= trans('Slug'); ?></th>
+                            <th><?= trans('Catégories'); ?></th>
                             <th><?= trans('Modifié le'); ?></th>
                             <th></th>
                         </tr>
@@ -30,7 +31,8 @@
                                 <tr data-idarticle="<?= $article->id ?>">
                                     <td><?= $article->name ?></td>
                                     <td><?= mb_strimwidth($article->description, 0, 70, '...'); ?></td>
-                                    <td><?= $article->slug ?></td>
+                                    <td><?= $Traduction->trans($article->slug) ?></td>
+                                    <td><?= implode(', ', extractFromObjToSimpleArr(getCategoriesByArticle($article->id), 'name')); ?></td>
                                     <td><?= displayTimeStamp($article->updated_at) ?></td>
                                     <td>
                                         <button type="button" class="btn btn-light btn-sm featuredArticle"
