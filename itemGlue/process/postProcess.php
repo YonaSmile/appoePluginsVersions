@@ -172,9 +172,11 @@ if (checkPostAndTokenRequest()) {
             //Delete post data
             unset($_POST);
 
+            $files = $ArticleMedia->upload();
+
             $Response->status = 'success';
             $Response->error_code = 0;
-            $Response->error_msg = trans('Images téléchargées') . ' : ' . $ArticleMedia->upload();
+            $Response->error_msg = trans('Images téléchargées') . ' : ' . $files['countUpload'];
         }
     }
 }
