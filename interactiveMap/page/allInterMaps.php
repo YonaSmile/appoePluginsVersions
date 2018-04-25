@@ -17,7 +17,7 @@ $allCartes = extractFromObjArr($InteractiveMap->showAll(), 'id');
                        class="sortableTable table table-striped table-hover table-bordered">
                     <thead>
                     <tr>
-                        <th><?= trans('Nom'); ?></th>
+                        <th><?= trans('Titre'); ?></th>
                         <th><?= trans('Largeur'); ?></th>
                         <th><?= trans('Hauteur'); ?></th>
                         <th><?= trans('Modifié le'); ?></th>
@@ -28,11 +28,16 @@ $allCartes = extractFromObjArr($InteractiveMap->showAll(), 'id');
                     <?php if ($allCartes): ?>
                         <?php foreach ($allCartes as $carte): ?>
                             <tr data-idcarte="<?= $carte->id ?>">
-                                <td><?= $carte->name ?></td>
+                                <td><?= $carte->title ?></td>
                                 <td><?= $carte->width; ?></td>
                                 <td><?= $carte->height ?></td>
                                 <td><?= displayTimeStamp($carte->updated_at) ?></td>
                                 <td>
+                                    <a href="<?= getPluginUrl('interactiveMap/page/updateInterMapContent/', $carte->id) ?>"
+                                       class="btn btn-info btn-sm"
+                                       title="<?= trans('Consulter'); ?>">
+                                        <span class="fa fa-eye"></span>
+                                    </a>
                                     <a href="<?= getPluginUrl('interactiveMap/page/updateInterMap/', $carte->id) ?>"
                                        class="btn btn-warning btn-sm" title="<?= trans('Modifier'); ?>">
                                         <span class="fas fa-cog"></span>

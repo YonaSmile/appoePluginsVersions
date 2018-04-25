@@ -48,6 +48,16 @@ $data = array(
         'parent_id' => 80,
         'pluginName' => 'interactiveMap',
         'order_menu' => '83'
+    ),
+    5 => array(
+        'id' => 84,
+        'slug' => 'updateInterMapContent',
+        'name' => 'Éditer la carte',
+        'min_role_id' => 1,
+        'statut' => 0,
+        'parent_id' => 80,
+        'pluginName' => 'interactiveMap',
+        'order_menu' => '84'
     )
 );
 

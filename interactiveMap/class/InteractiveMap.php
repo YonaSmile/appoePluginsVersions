@@ -13,15 +13,15 @@ class InteractiveMap
 
     private $dbh = null;
 
-    public function __construct($lang = null)
+    public function __construct($id = null)
     {
         if (is_null($this->dbh)) {
             $this->dbh = \App\DB::connect();
         }
 
-        if (!is_null($lang)) {
-            $this->lang = $lang;
-            $this->showAll();
+        if (!is_null($id)) {
+            $this->id = $id;
+            $this->show();
         }
     }
 
@@ -190,7 +190,7 @@ class InteractiveMap
         if ($error[0] != '00000') {
             return false;
         } else {
-            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            return $stmt->fetchAll(\PDO::FETCH_OBJ);
         }
     }
 
@@ -222,16 +222,32 @@ class InteractiveMap
     public function update()
     {
 
-        $sql = 'UPDATE appoe_plugin_interactiveMap SET title = :title, data = :data, width = :width, height = :height, status = :status WHERE id = :id';
+        $sql = 'UPDATE appoe_plugin_interactiveMap SET title = :title, width = :width, height = :height, status = :status WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':title', $this->title);
-        $stmt->bindParam(':data', $this->data);
         $stmt->bindParam(':width', $this->width);
         $stmt->bindParam(':height', $this->height);
         $stmt->bindParam(':status', $this->status);
         $stmt->bindParam(':id', $this->id);
 
+        $stmt->execute();
+
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public function updateData()
+    {
+        $sql = 'UPDATE appoe_plugin_interactiveMap SET data = :data WHERE id = :id';
+
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':data', $this->data);
+        $stmt->bindParam(':id', $this->id);
         $stmt->execute();
 
         $error = $stmt->errorInfo();
