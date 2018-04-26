@@ -264,7 +264,7 @@ if (!empty($_GET['id'])): ?>
                                     <?= App\Form::text('ID', 'id', 'text', !empty($_POST['id']) ? $_POST['id'] : '', true, 150); ?>
                                 </div>
                                 <div class="col-12 col-4 my-2">
-                                    <?= App\Form::text(trans('Map (SVG)'), 'map[]', 'file'); ?>
+                                    <?= App\Form::text(trans('Map (SVG,JPG)'), 'map[]', 'file'); ?>
                                 </div>
                                 <div class="col-12 col-4 my-2">
                                     <?= App\Form::text(trans('Mini Map (JPG)'), 'minimap[]', 'file'); ?>

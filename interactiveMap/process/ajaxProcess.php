@@ -128,6 +128,8 @@ if (checkAjaxRequest()) {
                 if ($InteractiveMap->updateData()) {
                     echo 'true';
                 }
+            } else {
+                echo 'false';
             }
         }
 

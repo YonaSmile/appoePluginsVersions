@@ -7,6 +7,11 @@
 ;(function($) {
 	"use strict";
 
+    function htmlDecode(value){
+        var decoded = $('<textarea/>').html(value).text();
+        return decoded;
+    }
+
 	var Mapplic = function(element) {
 
 		var self = this;
@@ -116,7 +121,7 @@
 						else this.link.hide();
 					}
 					this.title.text(location.title);
-					if (location.description) this.desc.html(location.description);
+					if (location.description) this.desc.html(htmlDecode(location.description));
 					else this.desc.empty();
 					this.content[0].scrollTop = 0;
 
@@ -229,7 +234,7 @@
 				this.location = location;
 
 				this.title.text(location.title);
-				this.desc.html(location.description);
+				this.desc.html(htmlDecode(location.description));
 
 				if (location.link) this.link.attr('href', location.link).show();
 				else this.link.hide();
@@ -320,7 +325,7 @@
 			this.show = function(location) {
 				if (self.tooltip.location != location) {
 					this.title.text(location.title);
-					if (this.hovertipdesc) this.desc.html(location.description);
+					if (this.hovertipdesc) this.desc.html(htmlDecode(location.description));
 					this.position(location);
 
 					this.el.stop().fadeIn(100);
@@ -821,7 +826,9 @@
 
 					// Shown level
 					if (!shownLevel || level.show)	shownLevel = level.id;
-					
+
+					self.currentLevel = shownLevel;
+
 					// Iterate through locations
 					$.each(level.locations, function(index, location) {
 						// Geolocation
@@ -879,7 +886,7 @@
 
 			// Developer tools
 			if (self.o.developer) self.devtools = new DevTools().init();
-			console.log(self.devtools);
+			//console.log(self.devtools);
 
 			// Level switcher
 			if (nrlevels > 1) {
@@ -1197,6 +1204,11 @@
 		}
 
 		/* PUBLIC METHODS */
+
+        self.getCurrentLevel = function(){
+            return self.o.currentLevel;
+        }
+
 		self.switchLevel = function(target) {
 			switch (target) {
 				case '+':

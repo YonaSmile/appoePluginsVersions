@@ -54,23 +54,33 @@ if (!empty($_GET['id'])): ?>
             <div class="my-1"></div>
             <div class="row">
                 <div class="col-12 col-lg-8">
-                    <div class="col-12 mb-3">
-                        <h5 class="strong py-2 border-bottom text-uppercase text-vert">
-                            <?= trans('La carte'); ?>
-                        </h5>
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <h5 class="strong py-2 border-bottom text-uppercase text-vert">
+                                <?= trans('La carte'); ?>
+                            </h5>
+                        </div>
                     </div>
-                    <div id="mapplic"></div>
-                    <div class="custom-control custom-checkbox mt-4 mb-2">
-                        <input type="checkbox" class="custom-control-input" id="addPointsChecker">
-                        <label class="custom-control-label" for="addPointsChecker">
-                            <?= trans('Insérer des emplacements à chaque click sur la carte'); ?>
-                        </label>
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <div id="mapplic"></div>
+                        </div>
                     </div>
-                    <div class="custom-control custom-checkbox my-2">
-                        <input type="checkbox" class="custom-control-input" id="addPointsCheckerSameTitle">
-                        <label class="custom-control-label" for="addPointsCheckerSameTitle">
-                            <?= trans('Définir le titre par le nom de l\'emplacement'); ?>
-                        </label>
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <div class="custom-control custom-checkbox mt-4 mb-2">
+                                <input type="checkbox" class="custom-control-input" id="addPointsChecker">
+                                <label class="custom-control-label" for="addPointsChecker">
+                                    <?= trans('Insérer des emplacements à chaque click sur la carte'); ?>
+                                </label>
+                            </div>
+                            <div class="custom-control custom-checkbox my-2">
+                                <input type="checkbox" class="custom-control-input" id="addPointsCheckerSameTitle">
+                                <label class="custom-control-label" for="addPointsCheckerSameTitle">
+                                    <?= trans('Définir le titre par le nom de l\'emplacement'); ?>
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="col-12 col-lg-4">
@@ -92,28 +102,11 @@ if (!empty($_GET['id'])): ?>
 
             $(document).ready(function () {
 
-                var currentLevel = $('.mapplic-levels option:selected').val();
+                //var currentLevel = $('.mapplic-levels option:selected').val();
 
                 var idMap = '<?= $InteractiveMap->getId(); ?>';
 
                 var freeToAdd = true;
-
-                function reloadPointContainer(location) {
-
-                    if (location && !$('#mapplic').hasClass('mapplic-fullscreen')) {
-
-                        var currentLevel = $('.mapplic-levels option:selected').val();
-                        $('#pointContenair').html('<i class="fas fa-circle-notch fa-spin"></i>');
-
-                        var src = '<?= INTERACTIVE_MAP_URL . 'allPoints.php?'; ?>';
-                        var data = 'id=' + idMap + '&level=' + currentLevel + '&location=' + location;
-                        $('#pointContenair').load(src + data);
-                    }
-                }
-
-                function uniqId() {
-                    return Math.round(new Date().getTime() + (Math.random() * 100));
-                }
 
                 var mapplic = $('#mapplic').mapplic({
                     source: '<?= INTERACTIVE_MAP_URL . slugify($InteractiveMap->getTitle()); ?>.json',
@@ -123,11 +116,28 @@ if (!empty($_GET['id'])): ?>
                     fillcolor: true, 		// Disable default fill color
                     fullscreen: true, 		// Enable fullscreen
                     maxscale: 3, 			// Setting maxscale to 3 times bigger than the original file
-                    developer: true,
+                    developer: false,
                     landmark: true
                 });
 
                 var self = mapplic.data('mapplic');
+
+                mapplic.on('mapready', function(e, self) {
+                    window.currentLevel = self.currentLevel;
+                });
+
+                mapplic.on('locationopened', function (e, location) {
+                    window.currentLevel = self.currentLevel;
+                    if (!$('#addPointsChecker').is(':checked')) {
+                        reloadPointContainer(location.id);
+                    }
+                });
+
+                mapplic.on('levelswitched', function (e, level) {
+                    window.currentLevel = level;
+                    self.moveTo(0, 0, 0, 0);
+                    self.hideLocation();
+                });
 
                 $('#pointContenair').on('click', 'button.refreshInterMapPoint', function (event) {
                     $('#loader').fadeIn('fast');
@@ -162,27 +172,6 @@ if (!empty($_GET['id'])): ?>
                     }
                 });
 
-                mapplic.on('locationopened', function (e, location) {
-                    //if (!$('#addPointsChecker').is(':checked')) {
-                    reloadPointContainer(location.id);
-
-                    //}
-                });
-
-                $('#pointContenair').bind('blur change', $('form.locationForm input, form.locationForm textarea, form.locationForm select'), function (e) {
-                    var $input = $(e.target);
-                    $.post(
-                        '<?= INTERACTIVE_MAP_URL; ?>process/ajaxProcess.php',
-                        $('form.locationForm').serialize(),
-                        function (data) {
-                            if (data) {
-                                $('form.locationForm input, form.locationForm textarea, form.locationForm select').removeClass('is-valid');
-                                $input.addClass('is-valid');
-                            }
-                        }
-                    );
-                });
-
                 $(document).on('click', 'a.mapplic-pin, li.mapplic-list-location', function (e) {
                     var locationPointer = $(this);
                     $(".mapplic-levels option").each(function () {
@@ -212,13 +201,20 @@ if (!empty($_GET['id'])): ?>
                             } else {
                                 var id = e.target.id;
                             }
+
                             var map = $('.mapplic-map'),
                                 x = (e.pageX - map.offset().left) / map.width(),
                                 y = (e.pageY - map.offset().top) / map.height();
 
                             var xPoint = parseFloat(x).toFixed(4);
                             var yPoint = parseFloat(y).toFixed(4);
-                            var currentLevel = $('.mapplic-levels option:selected').val();
+
+                            if ($('.mapplic-levels option:selected').length) {
+                                var currentLevel = $('.mapplic-levels option:selected').val();
+                            } else {
+                                var currentLevel = window.currentLevel;
+                            }
+
                             var title = '';
                             if ($('#addPointsCheckerSameTitle').is(':checked')) {
                                 title = id;
@@ -238,9 +234,17 @@ if (!empty($_GET['id'])): ?>
                                         reloadPointContainer(id);
                                         var top = yPoint * 100,
                                             left = xPoint * 100;
+
                                         $('.mapplic-layer a').removeClass('mapplic-active');
-                                        $('.mapplic-layer')
-                                            .append('<a href="#" class="mapplic-pin default mapplic-active" style="top: ' + top + '%; left: ' + left + '%;" data-location="' + id + '"></a>');
+                                        $('.mapplic-layer[data-floor="'+currentLevel+'"]')
+                                            .append('<a href="#" class="mapplic-pin default mapplic-active" style="top: ' + parseFloat(top).toFixed(4) + '%; left: ' + parseFloat(left).toFixed(4) + '%;" data-location="' + id + '"></a>');
+                                        freeToAdd = true;
+                                    }
+                                    else if (data == 'false' || data === false) {
+                                        $('#pointContenair').html('<?= trans('Cet emplacement est déjà réservé'); ?>');
+                                        freeToAdd = true;
+                                    } else {
+                                        $('#pointContenair').html('<?= trans('Cet emplacement est déjà réservé'); ?>');
                                         freeToAdd = true;
                                     }
                                 }
@@ -249,10 +253,27 @@ if (!empty($_GET['id'])): ?>
                     }
                 });
 
-                mapplic.on('levelswitched', function (e, level) {
-                    self.moveTo(0, 0, 0, 0);
-                });
+                function reloadPointContainer(location) {
 
+                    if (location && !$('#mapplic').hasClass('mapplic-fullscreen')) {
+
+                        if ($('.mapplic-levels option:selected').length) {
+                            var currentLevel = $('.mapplic-levels option:selected').val();
+                        } else {
+                            var currentLevel = window.currentLevel;
+                        }
+
+                        $('#pointContenair').html('<i class="fas fa-circle-notch fa-spin"></i>');
+
+                        var src = '<?= INTERACTIVE_MAP_URL . 'allPoints.php?'; ?>';
+                        var data = 'id=' + idMap + '&level=' + currentLevel + '&location=' + location;
+                        $('#pointContenair').load(src + data);
+                    }
+                }
+
+                function uniqId() {
+                    return Math.round(new Date().getTime() + (Math.random() * 100));
+                }
             });
         </script>
     <?php else: ?>
