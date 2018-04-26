@@ -75,6 +75,12 @@ if (!empty($_GET['id'])): ?>
                                 </label>
                             </div>
                             <div class="custom-control custom-checkbox my-2">
+                                <input type="checkbox" class="custom-control-input" id="addPointsCheckerByXy">
+                                <label class="custom-control-label" for="addPointsCheckerByXy">
+                                    <?= trans('Définir l\'emplacement par point et non par zone'); ?>
+                                </label>
+                            </div>
+                            <div class="custom-control custom-checkbox my-2">
                                 <input type="checkbox" class="custom-control-input" id="addPointsCheckerSameTitle">
                                 <label class="custom-control-label" for="addPointsCheckerSameTitle">
                                     <?= trans('Définir le titre par le nom de l\'emplacement'); ?>
@@ -117,12 +123,17 @@ if (!empty($_GET['id'])): ?>
                     fullscreen: true, 		// Enable fullscreen
                     maxscale: 3, 			// Setting maxscale to 3 times bigger than the original file
                     developer: false,
-                    landmark: true
+                    landmark: true,
+                    tooltip: {
+                        thumb: true,
+                        desc: true,
+                        link: false
+                    }
                 });
 
                 var self = mapplic.data('mapplic');
 
-                mapplic.on('mapready', function(e, self) {
+                mapplic.on('mapready', function (e, self) {
                     window.currentLevel = self.currentLevel;
                 });
 
@@ -182,7 +193,12 @@ if (!empty($_GET['id'])): ?>
                             return false;
                         }
                     });
+                });
 
+                $('#addPointsChecker').change(function () {
+                    if (this.checked) {
+                        $('#addPointsCheckerSameTitle').prop("checked", true);
+                    }
                 });
 
                 $(document).on('click', '.mapplic-layer', function (e) {
@@ -195,11 +211,11 @@ if (!empty($_GET['id'])): ?>
                             $('#pointContenair').html('<i class="fas fa-circle-notch fa-spin"></i>');
 
                             var element = $(this).children('.mapplic-map-image').prop("tagName");
-
-                            if (element != 'DIV') {
-                                var id = uniqId();
-                            } else {
-                                var id = e.target.id;
+                            var id = uniqId();
+                            if (element == 'DIV') {
+                                if (!$('#addPointsCheckerByXy').is(':checked')) {
+                                    id = e.target.id;
+                                }
                             }
 
                             var map = $('.mapplic-map'),
@@ -236,7 +252,7 @@ if (!empty($_GET['id'])): ?>
                                             left = xPoint * 100;
 
                                         $('.mapplic-layer a').removeClass('mapplic-active');
-                                        $('.mapplic-layer[data-floor="'+currentLevel+'"]')
+                                        $('.mapplic-layer[data-floor="' + currentLevel + '"]')
                                             .append('<a href="#" class="mapplic-pin default mapplic-active" style="top: ' + parseFloat(top).toFixed(4) + '%; left: ' + parseFloat(left).toFixed(4) + '%;" data-location="' + id + '"></a>');
                                         freeToAdd = true;
                                     }

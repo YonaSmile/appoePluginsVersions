@@ -25,14 +25,15 @@ if (!empty($_GET['id']) && !empty($_GET['level']) && isset($_GET['location'])): 
                             </div>
                         </div>
                         <form method="post" class="locationForm" enctype="multipart/form-data" action="">
-                            <input type="hidden" name="idMap" value="<?= $InteractiveMap->getId(); ?>">
-                            <input type="hidden" name="id" value="<?= $location['id']; ?>">
+                            <input type="hidden" id="idMap" name="idMap" value="<?= $InteractiveMap->getId(); ?>">
+                            <input type="hidden" id="id" name="id" value="<?= $location['id']; ?>">
                             <input type="hidden" name="updateMapLocation" value="OK">
-                            <input type="hidden" name="description" id="ckeditData" value="">
-                            <input type="hidden" name="level" value="<?= $_GET['level']; ?>">
-                            <?= App\Form::text(trans('Titre'), 'title', 'text', $location['title']); ?>
-                            <?= App\Form::text(trans('A Propos'), 'about', 'text', $location['about']); ?>
+                            <input type="hidden" name="description" id="ckeditData" value="<?= $location['description']; ?>">
+                            <input type="hidden" id="level" name="level" value="<?= $_GET['level']; ?>">
+                            <?= App\Form::text(trans('Titre'), 'title', 'text', $location['title'], false, 250, '', '', 'form-control-sm'); ?>
+                            <?= App\Form::text(trans('A Propos'), 'about', 'text', $location['about'], false, 250, '', '', 'form-control-sm'); ?>
                             <?= App\Form::textarea(trans('description'), 'ckeditDescription', $location['description'], 5, false, '', 'ckeditorBasic'); ?>
+                            <?= App\Form::text(trans('Photo'), 'thumbnail[]', 'file', '', false, 350, '', '', 'form-control-sm'); ?>
                             <?= App\Form::select(trans('Catégorie'), 'category', $allCategories, $location['category']); ?>
                         </form>
                         <hr>
@@ -52,6 +53,58 @@ if (!empty($_GET['id']) && !empty($_GET['level']) && isset($_GET['location'])): 
                         </div>
 
                         <script>
+
+                            // Variable to store your files
+                            var files;
+
+                            // Add events
+                            $('input[type=file]').on('change', prepareUpload);
+
+                            // Grab the files and set them to our variable
+                            function prepareUpload(event) {
+                                event.stopPropagation();
+                                event.preventDefault();
+
+                                files = event.target.files;
+                                uploadFiles();
+                            }
+
+                            function uploadFiles() {
+
+                                // Create a formdata object and add the files
+                                var data = new FormData();
+                                $.each(files, function (key, value) {
+                                    data.append(key, value);
+                                });
+
+                                var idMap = $('form.locationForm input#idMap').val();
+                                var level = $('form.locationForm input#level').val();
+                                var idLocation = $('form.locationForm input#id').val();
+
+                                $.ajax({
+                                    url: '<?= INTERACTIVE_MAP_URL; ?>process/ajaxProcess.php?uploadThumbnail&idMap=' + idMap + '&level=' + level + '&idLocation=' + idLocation,
+                                    type: 'POST',
+                                    data: data,
+                                    cache: false,
+                                    processData: false, // Don't process the files
+                                    contentType: false, // Set content type to false as jQuery will tell the server its a query string request
+                                    success: function (data, textStatus, jqXHR) {
+                                        if (typeof data.error === 'undefined') {
+                                            // Success so call function to process the form
+
+                                        }
+                                        else {
+                                            // Handle errors here
+                                            console.log('ERRORS RESPONSE: ' + data.error);
+                                        }
+                                    },
+                                    error: function (jqXHR, textStatus, errorThrown) {
+                                        // Handle errors here
+                                        console.log('ERRORS SENDING: ' + textStatus, 'DETAILS: '+ errorThrown);
+                                        // STOP LOADING SPINNER
+                                    }
+                                });
+                            }
 
                             function updateInterMapData(input) {
                                 $.post(

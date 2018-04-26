@@ -207,5 +207,51 @@ if (checkAjaxRequest()) {
                 echo 'true';
             }
         }
+
+        if (isset($_GET['uploadThumbnail'])
+            && !empty($_GET['idMap'])
+            && !empty($_GET['level'])
+            && !empty($_GET['idLocation'])) {
+
+            $File = new App\Plugin\InteractiveMap\InterMapMedia($_GET['idMap']);
+            $File->setUserId(getUserIdSession());
+
+            $arrayFiles = array();
+            foreach ($_FILES as $file) {
+                $arrayFiles = array(
+                    'name' => array($file['name']),
+                    'type' => array($file['type']),
+                    'tmp_name' => array($file['tmp_name']),
+                    'error' => array($file['error']),
+                    'size' => array($file['size']),
+                );
+
+                $File->setUploadFiles($arrayFiles);
+                $thumbnail = $File->upload();
+            }
+
+            $thumbnailSrc = !empty($thumbnail['filename'][0]) ? FILE_DIR_URL . $thumbnail['filename'][0] : '';
+
+            $InteractiveMap = new App\Plugin\InteractiveMap\InteractiveMap($_GET['idMap']);
+            $map = json_decode($InteractiveMap->getData(), true);
+
+            for ($i = 0; $i <= count($map['levels']); $i++) {
+                if ($map['levels'][$i]['id'] == $_GET['level']) {
+                    foreach ($map['levels'][$i]['locations'] as $key => $location) {
+                        if ($location['id'] == $_GET['idLocation']) {
+                            $map['levels'][$i]['locations'][$key]['thumbnail'] = $thumbnailSrc;
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+
+            $InteractiveMap->setData(json_encode($map));
+            if ($InteractiveMap->updateData()) {
+
+                echo trans('L\'image a été enregistré');
+            }
+        }
     }
 }
