@@ -25,6 +25,8 @@ if (checkPostAndTokenRequest()) {
             $InteractiveMap->setData($jsonArray);
             if ($InteractiveMap->save()) {
 
+                interMap_writeMapFile($InteractiveMap->getData(), $InteractiveMap->getTitle());
+
                 $Traduction = new App\Plugin\Traduction\Traduction();
                 $Traduction->setMetaKey($_POST['title']);
                 $Traduction->setMetaValue($Traduction->getMetaKey());
@@ -66,6 +68,7 @@ if (checkPostAndTokenRequest()) {
                     //Delete post data
                     unset($_POST);
 
+                    interMap_writeMapFile($InteractiveMap->getData(), $InteractiveMap->getTitle());
                     $Response->status = 'success';
                     $Response->error_code = 0;
                     $Response->error_msg = trans('La nouvelle carte a été enregistré');
@@ -120,6 +123,7 @@ if (checkPostAndTokenRequest()) {
                 $InteractiveMap->setData(json_encode($map));
                 if ($InteractiveMap->updateData()) {
 
+                    interMap_writeMapFile($InteractiveMap->getData(), $InteractiveMap->getTitle());
                     $Response->status = 'success';
                     $Response->error_code = 0;
                     $Response->error_msg = trans('Le niveau a été enregistré');

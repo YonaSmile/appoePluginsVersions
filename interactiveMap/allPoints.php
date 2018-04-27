@@ -28,7 +28,8 @@ if (!empty($_GET['id']) && !empty($_GET['level']) && isset($_GET['location'])): 
                             <input type="hidden" id="idMap" name="idMap" value="<?= $InteractiveMap->getId(); ?>">
                             <input type="hidden" id="id" name="id" value="<?= $location['id']; ?>">
                             <input type="hidden" name="updateMapLocation" value="OK">
-                            <input type="hidden" name="description" id="ckeditData" value="<?= $location['description']; ?>">
+                            <input type="hidden" name="description" id="ckeditData"
+                                   value="<?= $location['description']; ?>">
                             <input type="hidden" id="level" name="level" value="<?= $_GET['level']; ?>">
                             <?= App\Form::text(trans('Titre'), 'title', 'text', $location['title'], false, 250, '', '', 'form-control-sm'); ?>
                             <?= App\Form::text(trans('A Propos'), 'about', 'text', $location['about'], false, 250, '', '', 'form-control-sm'); ?>
@@ -51,60 +52,82 @@ if (!empty($_GET['id']) && !empty($_GET['level']) && isset($_GET['location'])): 
                                         data-id="<?= $location['id']; ?>"><?= trans('Supprimer'); ?></button>
                             </div>
                         </div>
-
                         <script>
+                            $(document).ready(function () {
 
-                            // Variable to store your files
-                            var files;
+                                // Variable to store your files
+                                var files;
 
-                            // Add events
-                            $('input[type=file]').on('change', prepareUpload);
+                                // Add events
+                                $('input[type=file]').on('change', prepareUpload);
 
-                            // Grab the files and set them to our variable
-                            function prepareUpload(event) {
-                                event.stopPropagation();
-                                event.preventDefault();
+                                // Grab the files and set them to our variable
+                                function prepareUpload(event) {
+                                    event.stopPropagation();
+                                    event.preventDefault();
 
-                                files = event.target.files;
-                                uploadFiles();
-                            }
+                                    files = event.target.files;
+                                    uploadFiles();
+                                }
 
-                            function uploadFiles() {
+                                function uploadFiles() {
 
-                                // Create a formdata object and add the files
-                                var data = new FormData();
-                                $.each(files, function (key, value) {
-                                    data.append(key, value);
-                                });
+                                    // Create a formdata object and add the files
+                                    var data = new FormData();
+                                    $.each(files, function (key, value) {
+                                        data.append(key, value);
+                                    });
 
-                                var idMap = $('form.locationForm input#idMap').val();
-                                var level = $('form.locationForm input#level').val();
-                                var idLocation = $('form.locationForm input#id').val();
+                                    var idMap = $('form.locationForm input#idMap').val();
+                                    var level = $('form.locationForm input#level').val();
+                                    var idLocation = $('form.locationForm input#id').val();
 
-                                $.ajax({
-                                    url: '<?= INTERACTIVE_MAP_URL; ?>process/ajaxProcess.php?uploadThumbnail&idMap=' + idMap + '&level=' + level + '&idLocation=' + idLocation,
-                                    type: 'POST',
-                                    data: data,
-                                    cache: false,
-                                    processData: false, // Don't process the files
-                                    contentType: false, // Set content type to false as jQuery will tell the server its a query string request
-                                    success: function (data, textStatus, jqXHR) {
-                                        if (typeof data.error === 'undefined') {
-                                            // Success so call function to process the form
+                                    $.ajax({
+                                        url: '<?= INTERACTIVE_MAP_URL; ?>process/ajaxProcess.php?uploadThumbnail&idMap=' + idMap + '&level=' + level + '&idLocation=' + idLocation,
+                                        type: 'POST',
+                                        data: data,
+                                        cache: false,
+                                        processData: false, // Don't process the files
+                                        contentType: false, // Set content type to false as jQuery will tell the server its a query string request
+                                        success: function (data, textStatus, jqXHR) {
+                                            if (typeof data.error === 'undefined') {
+                                                // Success so call function to process the form
 
-                                        }
-                                        else {
+                                            }
+                                            else {
+                                                // Handle errors here
+                                                console.log('ERRORS RESPONSE: ' + data.error);
+                                            }
+                                        },
+                                        error: function (jqXHR, textStatus, errorThrown) {
                                             // Handle errors here
-                                            console.log('ERRORS RESPONSE: ' + data.error);
+                                            console.log('ERRORS SENDING: ' + textStatus, 'DETAILS: ' + errorThrown);
+                                            // STOP LOADING SPINNER
                                         }
-                                    },
-                                    error: function (jqXHR, textStatus, errorThrown) {
-                                        // Handle errors here
-                                        console.log('ERRORS SENDING: ' + textStatus, 'DETAILS: '+ errorThrown);
-                                        // STOP LOADING SPINNER
-                                    }
+                                    });
+                                }
+
+                                $('form.locationForm').bind('blur change', $(' input, textarea, select'), function (e) {
+                                    var $input = $(e.target);
+                                    updateInterMapData($input);
+                                });
+
+                            });
+
+
+                            CKEDITOR.replaceAll('ckeditorBasic');
+
+                            for (var i in CKEDITOR.instances) {
+
+                                CKEDITOR.instances[i].on('blur', function () {
+                                    var id = this.element.$.id;
+                                    var $input = $('#' + id);
+                                    var value = this.getData();
+                                    $('form.locationForm input#ckeditData').val(value);
+                                    updateInterMapData($input);
                                 });
                             }
+
 
                             function updateInterMapData(input) {
                                 $.post(
@@ -119,37 +142,6 @@ if (!empty($_GET['id']) && !empty($_GET['level']) && isset($_GET['location'])): 
                                     }
                                 );
                             }
-
-                            CKEDITOR.replaceAll('ckeditorBasic');
-                            CKEDITOR.config.toolbar = [
-                                {
-                                    name: 'basicstyles',
-                                    groups: ['basicstyles', 'cleanup'],
-                                    items: ['Bold', 'Italic', 'Underline', 'Strike', 'Superscript']
-                                },
-                                {
-                                    name: 'links',
-                                    items: ['Link', 'Unlink']
-                                },
-                                {name: 'styles', items: ['Styles']}
-                            ];
-                            CKEDITOR.config.height = 200;
-
-                            for (var i in CKEDITOR.instances) {
-
-                                CKEDITOR.instances[i].on('blur', function () {
-                                    var id = this.element.$.id;
-                                    var $input = $('#' + id);
-                                    var value = this.getData();
-                                    $('form.locationForm input#ckeditData').val(value);
-                                    updateInterMapData($input);
-                                });
-                            }
-
-                            $('form.locationForm').bind('blur change', $(' input, textarea, select'), function (e) {
-                                var $input = $(e.target);
-                                updateInterMapData($input);
-                            });
                         </script>
                         <?php break; ?>
 

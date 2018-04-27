@@ -69,10 +69,12 @@ if (!empty($_GET['id'])): ?>
                     <div class="row">
                         <div class="col-12 mb-3">
                             <div class="custom-control custom-checkbox mt-4 mb-2">
-                                <input type="checkbox" class="custom-control-input" id="addPointsChecker">
+                                <input type="checkbox" class="custom-control-input" id="addPointsChecker"
+                                       aria-describedby="pointCheckHelpBlock">
                                 <label class="custom-control-label" for="addPointsChecker">
                                     <?= trans('Insérer des emplacements à chaque click sur la carte'); ?>
                                 </label>
+                                <small id="pointCheckHelpBlock" class="form-text text-muted"></small>
                             </div>
                             <div class="custom-control custom-checkbox my-2">
                                 <input type="checkbox" class="custom-control-input" id="addPointsCheckerByXy">
@@ -108,13 +110,11 @@ if (!empty($_GET['id'])): ?>
 
             $(document).ready(function () {
 
-                //var currentLevel = $('.mapplic-levels option:selected').val();
-
                 var idMap = '<?= $InteractiveMap->getId(); ?>';
 
                 var freeToAdd = true;
 
-                var mapplic = $('#mapplic').mapplic({
+                var interMapOptions = {
                     source: '<?= INTERACTIVE_MAP_URL . slugify($InteractiveMap->getTitle()); ?>.json',
                     sidebar: true, 			// Enable sidebar
                     minimap: true, 			// Enable minimap
@@ -129,7 +129,9 @@ if (!empty($_GET['id'])): ?>
                         desc: true,
                         link: false
                     }
-                });
+                };
+
+                var mapplic = $('#mapplic').mapplic(interMapOptions);
 
                 var self = mapplic.data('mapplic');
 
@@ -197,7 +199,12 @@ if (!empty($_GET['id'])): ?>
 
                 $('#addPointsChecker').change(function () {
                     if (this.checked) {
+                        $('#pointCheckHelpBlock').html('<?= trans("Un rechargement de la carte est nécessaire"); ?>');
                         $('#addPointsCheckerSameTitle').prop("checked", true);
+                    } else {
+                        $('#pointCheckHelpBlock').html('');
+                        $('#addPointsCheckerSameTitle').prop("checked", false);
+                        $('#addPointsCheckerByXy').prop("checked", false);
                     }
                 });
 
@@ -207,7 +214,7 @@ if (!empty($_GET['id'])): ?>
 
                         if (freeToAdd) {
                             freeToAdd = false;
-
+                            var currentLevel = '';
                             $('#pointContenair').html('<i class="fas fa-circle-notch fa-spin"></i>');
 
                             var element = $(this).children('.mapplic-map-image').prop("tagName");
@@ -226,9 +233,9 @@ if (!empty($_GET['id'])): ?>
                             var yPoint = parseFloat(y).toFixed(4);
 
                             if ($('.mapplic-levels option:selected').length) {
-                                var currentLevel = $('.mapplic-levels option:selected').val();
+                                currentLevel = $('.mapplic-levels option:selected').val();
                             } else {
-                                var currentLevel = window.currentLevel;
+                                currentLevel = window.currentLevel;
                             }
 
                             var title = '';
@@ -273,10 +280,11 @@ if (!empty($_GET['id'])): ?>
 
                     if (location && !$('#mapplic').hasClass('mapplic-fullscreen')) {
 
+                        var currentLevel = '';
                         if ($('.mapplic-levels option:selected').length) {
-                            var currentLevel = $('.mapplic-levels option:selected').val();
+                            currentLevel = $('.mapplic-levels option:selected').val();
                         } else {
-                            var currentLevel = window.currentLevel;
+                            currentLevel = window.currentLevel;
                         }
 
                         $('#pointContenair').html('<i class="fas fa-circle-notch fa-spin"></i>');
@@ -290,6 +298,20 @@ if (!empty($_GET['id'])): ?>
                 function uniqId() {
                     return Math.round(new Date().getTime() + (Math.random() * 100));
                 }
+
+                CKEDITOR.config.toolbar = [
+                    {
+                        name: 'basicstyles',
+                        groups: ['basicstyles', 'cleanup'],
+                        items: ['Bold', 'Italic', 'Underline', 'Strike', 'Superscript']
+                    },
+                    {
+                        name: 'links',
+                        items: ['Link', 'Unlink']
+                    },
+                    {name: 'styles', items: ['Styles']}
+                ];
+                CKEDITOR.config.height = 200;
             });
         </script>
     <?php else: ?>

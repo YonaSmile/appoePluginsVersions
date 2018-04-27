@@ -375,28 +375,30 @@ if (!empty($_GET['id'])): ?>
                 $('.deleteInterMapArr').on('click', function (event) {
                     event.preventDefault();
 
-                    var $btn = $(this);
-                    var $container = $btn.parent().parent().parent().parent('div.accordion');
+                    if (confirm('<?= trans('Cette action est irreversible !'); ?>')) {
+                        var $btn = $(this);
+                        var $container = $btn.parent().parent().parent().parent('div.accordion');
 
-                    var parentJson = $(this).data('parentjson');
-                    var id = $(this).data('id');
+                        var parentJson = $(this).data('parentjson');
+                        var id = $(this).data('id');
 
-                    if (id.length && parentJson.length) {
-                        $.post(
-                            '<?= INTERACTIVE_MAP_URL; ?>process/ajaxProcess.php',
-                            {
-                                deleteInterMapArr: 'OK',
-                                idMap: idMap,
-                                parent: parentJson,
-                                id: id
-                            }, function (data) {
-                                if (data && (data == 'true' || data === true)) {
-                                    $container.slideUp();
-                                } else {
-                                    $container.effect('shake');
+                        if (id.length && parentJson.length) {
+                            $.post(
+                                '<?= INTERACTIVE_MAP_URL; ?>process/ajaxProcess.php',
+                                {
+                                    deleteInterMapArr: 'OK',
+                                    idMap: idMap,
+                                    parent: parentJson,
+                                    id: id
+                                }, function (data) {
+                                    if (data && (data == 'true' || data === true)) {
+                                        $container.slideUp();
+                                    } else {
+                                        $container.effect('shake');
+                                    }
                                 }
-                            }
-                        )
+                            )
+                        }
                     }
                 });
 

@@ -1,5 +1,6 @@
 <?php
 require_once('../main.php');
+require_once('../include/interMap_function.php');
 if (checkAjaxRequest()) {
 
     if (getUserIdSession()) {
@@ -30,7 +31,7 @@ if (checkAjaxRequest()) {
                 array_push($map['categories'], $newCategory);
                 $InteractiveMap->setData(json_encode($map));
                 if ($InteractiveMap->updateData()) {
-
+                    interMap_writeMapFile($InteractiveMap->getData(), $InteractiveMap->getTitle());
                     echo trans('La nouvelle catégorie a été enregistré');
                 }
             } else {
@@ -58,6 +59,7 @@ if (checkAjaxRequest()) {
 
             $InteractiveMap->setData(json_encode($map));
             if ($InteractiveMap->updateData()) {
+                interMap_writeMapFile($InteractiveMap->getData(), $InteractiveMap->getTitle());
                 echo 'true';
             }
 
@@ -81,6 +83,7 @@ if (checkAjaxRequest()) {
 
             $InteractiveMap->setData(json_encode($map));
             if ($InteractiveMap->updateData()) {
+                interMap_writeMapFile($InteractiveMap->getData(), $InteractiveMap->getTitle());
                 echo 'true';
             }
 
@@ -126,6 +129,7 @@ if (checkAjaxRequest()) {
 
                 $InteractiveMap->setData(json_encode($map));
                 if ($InteractiveMap->updateData()) {
+                    interMap_writeMapFile($InteractiveMap->getData(), $InteractiveMap->getTitle());
                     echo 'true';
                 }
             } else {
@@ -158,7 +162,7 @@ if (checkAjaxRequest()) {
 
             $InteractiveMap->setData(json_encode($map));
             if ($InteractiveMap->updateData()) {
-
+                interMap_writeMapFile($InteractiveMap->getData(), $InteractiveMap->getTitle());
                 echo trans('Le point a été mis à jour');
             }
         }
@@ -185,7 +189,7 @@ if (checkAjaxRequest()) {
 
             $InteractiveMap->setData(json_encode($map));
             if ($InteractiveMap->updateData()) {
-
+                interMap_writeMapFile($InteractiveMap->getData(), $InteractiveMap->getTitle());
                 echo trans('Le point a été supprimé');
             }
 
@@ -204,6 +208,7 @@ if (checkAjaxRequest()) {
 
             $InteractiveMap->setData($jsonArray);
             if ($InteractiveMap->updateData()) {
+                interMap_writeMapFile($InteractiveMap->getData(), $InteractiveMap->getTitle());
                 echo 'true';
             }
         }
@@ -249,7 +254,7 @@ if (checkAjaxRequest()) {
 
             $InteractiveMap->setData(json_encode($map));
             if ($InteractiveMap->updateData()) {
-
+                interMap_writeMapFile($InteractiveMap->getData(), $InteractiveMap->getTitle());
                 echo trans('L\'image a été enregistré');
             }
         }
