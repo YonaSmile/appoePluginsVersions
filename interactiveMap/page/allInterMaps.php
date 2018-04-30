@@ -60,9 +60,9 @@ $allCartes = extractFromObjArr($InteractiveMap->showAll(), 'id');
     <script>
         $(document).ready(function () {
             $('.deleteMap').on('click', function () {
+
                 var idCarte = $(this).data('idcarte');
-                var $btn = $(this);
-                if (confirm('<?= trans('Vous allez supprimer cette carte'); ?>')) {
+                if (confirm('<?= trans('Vous allez archiver cette carte'); ?>')) {
                     $.post(
                         '<?= INTERACTIVE_MAP_URL . 'process/ajaxProcess.php'; ?>',
                         {

@@ -182,7 +182,7 @@ class InteractiveMap
     public function showAll()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_interactiveMap ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_interactiveMap WHERE status = 1 ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();
 

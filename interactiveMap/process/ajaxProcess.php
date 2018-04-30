@@ -7,6 +7,7 @@ if (checkAjaxRequest()) {
 
         $_POST = cleanRequest($_POST);
 
+        //Add new map
         if (!empty($_POST['addMapCategory'])
             && !empty($_POST['idMap'])
             && !empty($_POST['id'])
@@ -39,6 +40,17 @@ if (checkAjaxRequest()) {
             }
         }
 
+        //Archive Map
+        if (!empty($_POST['idMapDelete'])) {
+            $InteractiveMap = new App\Plugin\InteractiveMap\InteractiveMap($_POST['idMapDelete']);
+
+            $InteractiveMap->setStatus(0);
+            if ($InteractiveMap->update()) {
+                echo 'true';
+            }
+        }
+
+        //Update Map details
         if (
             !empty($_POST['updateInterMap'])
             && !empty($_POST['idMap'])
@@ -65,6 +77,7 @@ if (checkAjaxRequest()) {
 
         }
 
+        //Delete primary details form Map
         if (
             !empty($_POST['deleteInterMapArr'])
             && !empty($_POST['idMap'])
@@ -89,6 +102,7 @@ if (checkAjaxRequest()) {
 
         }
 
+        // Add map location
         if (!empty($_POST['addMapLocation'])
             && !empty($_POST['idMap'])
             && !empty($_POST['id'])
@@ -137,6 +151,7 @@ if (checkAjaxRequest()) {
             }
         }
 
+        //Update Map location details
         if (!empty($_POST['updateMapLocation'])
             && !empty($_POST['idMap'])
             && !empty($_POST['id'])
@@ -167,6 +182,7 @@ if (checkAjaxRequest()) {
             }
         }
 
+        // Delete Map location
         if (!empty($_POST['deleteMapLocation'])
             && !empty($_POST['idMap'])
             && !empty($_POST['locationId'])
@@ -195,6 +211,7 @@ if (checkAjaxRequest()) {
 
         }
 
+        //Restart Map details
         if (!empty($_POST['rebootInterMap']) && !empty($_POST['idMap'])) {
 
             $InteractiveMap = new App\Plugin\InteractiveMap\InteractiveMap($_POST['idMap']);
@@ -213,6 +230,7 @@ if (checkAjaxRequest()) {
             }
         }
 
+        // Add / Update location's thumbnail
         if (isset($_GET['uploadThumbnail'])
             && !empty($_GET['idMap'])
             && !empty($_GET['level'])
