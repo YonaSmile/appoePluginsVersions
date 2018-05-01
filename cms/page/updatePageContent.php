@@ -111,6 +111,9 @@ if (!empty($_GET['id'])): ?>
         <script type="text/javascript">
 
             function updateCmsContent($input, metaValue) {
+
+                busyApp();
+
                 var idCms = '<?= $Cms->getId(); ?>';
                 var idCmsContent = $input.data('idcmscontent');
                 var metaKey = $input.attr('id');
@@ -130,6 +133,7 @@ if (!empty($_GET['id'])): ?>
                             }
 
                             $('small.' + metaKey).html('<?= trans('Enregistré'); ?>');
+                            availableApp();
                         }
                     }
                 )
