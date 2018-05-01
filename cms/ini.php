@@ -29,5 +29,10 @@ const CMS_LOCATIONS = array(
     13 => 'Menu Latéral 3',
     14 => 'Menu Latéral 4',
     15 => 'Menu Special',
-    16 => 'Menu Autre'
+    16 => 'Menu Autre 1',
+    17 => 'Menu Autre 2',
+    18 => 'Menu Autre 3',
+    19 => 'Menu Autre 4',
+    20 => 'Menu Autre 5',
+    21 => 'Menu Autre 6'
 );
