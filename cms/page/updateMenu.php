@@ -39,7 +39,7 @@ $allPages[10] = trans('Aucun parent');
             <div class="col-12 col-lg-6">
                 <div class="row">
                     <div class="col-12">
-                        <h5><?= $value; ?> <span class="badge badge-info"><?= $key; ?></span> </h5>
+                        <h5><?= $value; ?></h5>
                     </div>
                 </div>
                 <div class="row mb-4" id="menuAdminUpdate">
@@ -174,6 +174,8 @@ $allPages[10] = trans('Aucun parent');
         $('.updateMenuData').on('keyup blur', function (event) {
             event.preventDefault();
 
+            busyApp();
+
             var $input = $(this);
             var column = $input.data('column');
             var idMenu = $input.data('menuid');
@@ -191,7 +193,8 @@ $allPages[10] = trans('Aucun parent');
                 },
                 function (data) {
                     if (data === true || data == 'true') {
-                        $inputInfo.html('<?= trans('Enregistré'); ?>')
+                        $inputInfo.html('<?= trans('Enregistré'); ?>');
+                        availableApp();
                     }
                 }
             );
