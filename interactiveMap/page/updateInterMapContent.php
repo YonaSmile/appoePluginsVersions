@@ -159,6 +159,7 @@ if (!empty($_GET['id'])): ?>
 
                 $('#pointContenair').on('click', 'button.deleteInterMapPoint', function (event) {
                     event.preventDefault();
+                    busyApp();
                     var $btn = $(this);
                     var idMap = $btn.data('idmap');
                     var level = $btn.data('level');
@@ -179,6 +180,7 @@ if (!empty($_GET['id'])): ?>
                                     self.hideLocation();
                                     $('#pointContenair').html('');
                                     $('li.mapplic-list-location[data-location="' + locationId + '"]').remove();
+                                    availableApp();
                                 }
                             }
                         );
@@ -213,6 +215,7 @@ if (!empty($_GET['id'])): ?>
                     if ($('#addPointsChecker').is(':checked')) {
 
                         if (freeToAdd) {
+                            busyApp();
                             freeToAdd = false;
                             var currentLevel = '';
                             $('#pointContenair').html('<i class="fas fa-circle-notch fa-spin"></i>');
@@ -270,6 +273,7 @@ if (!empty($_GET['id'])): ?>
                                         $('#pointContenair').html('<?= trans('Cet emplacement est déjà réservé'); ?>');
                                         freeToAdd = true;
                                     }
+                                    availableApp();
                                 }
                             );
                         }

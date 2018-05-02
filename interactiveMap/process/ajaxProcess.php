@@ -168,6 +168,7 @@ if (checkAjaxRequest()) {
                             $map['levels'][$i]['locations'][$key]['about'] = !empty($_POST['about']) ? $_POST['about'] : '';
                             $map['levels'][$i]['locations'][$key]['description'] = !empty($_POST['description']) ? $_POST['description'] : '';
                             $map['levels'][$i]['locations'][$key]['category'] = !empty($_POST['category']) ? $_POST['category'] : '';
+                            $map['levels'][$i]['locations'][$key]['pin'] = !empty($_POST['pin']) ? $_POST['pin'] : 'hidden';
                             break;
                         }
                     }

@@ -36,6 +36,29 @@ if (!empty($_GET['id']) && !empty($_GET['level']) && isset($_GET['location'])): 
                             <?= App\Form::textarea(trans('description'), 'ckeditDescription', $location['description'], 5, false, '', 'ckeditorBasic'); ?>
                             <?= App\Form::text(trans('Photo'), 'thumbnail[]', 'file', '', false, 350, '', '', 'form-control-sm'); ?>
                             <?= App\Form::select(trans('Catégorie'), 'category', $allCategories, $location['category']); ?>
+                            <input type="hidden" id="pin" name="pin" value="<?= !empty($location['pin']) ? $location['pin'] : 'red'; ?>">
+                            <?php if (INTERACTIVE_MAP_PINS): ?>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input"
+                                        <?= !empty($location['pin']) && $location['pin'] != 'hidden' ? 'checked' : ''; ?>
+                                           id="checkMarker">
+                                    <label class="custom-control-label"
+                                           for="checkMarker"><?= trans('Choix du marqueur'); ?></label>
+                                </div>
+                                <div class="btn-group" role="group"
+                                     id="markersChoisesImg" <?= !empty($location['pin']) && $location['pin'] != 'hidden' ? '' : 'style="display: none"'; ?>
+                                     aria-label="markerChoise">
+                                    <?php foreach (INTERACTIVE_MAP_PINS as $key => $pin): ?>
+                                        <?php if (file_exists(INTERACTIVE_MAP_PATH . 'images/' . $pin)): ?>
+                                            <button type="button"
+                                                    class="btn <?= !empty($location['pin']) && $location['pin'] == $key ? 'bg-info' : ''; ?> btn-light markerChoiseBtn p-2"
+                                                    data-pinchoise="<?= $key; ?>">
+                                                <img src="<?= INTERACTIVE_MAP_URL . 'images/' . $pin; ?>">
+                                            </button>
+                                        <?php endif; ?>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php endif; ?>
                         </form>
                         <hr>
                         <div class="row">
@@ -72,6 +95,8 @@ if (!empty($_GET['id']) && !empty($_GET['level']) && isset($_GET['location'])): 
 
                                 function uploadFiles() {
 
+                                    busyApp();
+
                                     // Create a formdata object and add the files
                                     var data = new FormData();
                                     $.each(files, function (key, value) {
@@ -91,21 +116,40 @@ if (!empty($_GET['id']) && !empty($_GET['level']) && isset($_GET['location'])): 
                                         contentType: false, // Set content type to false as jQuery will tell the server its a query string request
                                         success: function (data, textStatus, jqXHR) {
                                             if (typeof data.error === 'undefined') {
-                                                // Success so call function to process the form
-
+                                                $('input[type=file]').addClass('is-valid');
+                                                availableApp();
                                             }
                                             else {
                                                 // Handle errors here
-                                                console.log('ERRORS RESPONSE: ' + data.error);
+                                                //console.log('ERRORS RESPONSE: ' + data.error);
                                             }
                                         },
                                         error: function (jqXHR, textStatus, errorThrown) {
                                             // Handle errors here
-                                            console.log('ERRORS SENDING: ' + textStatus, 'DETAILS: ' + errorThrown);
-                                            // STOP LOADING SPINNER
+                                            //console.log('ERRORS SENDING: ' + textStatus, 'DETAILS: ' + errorThrown);
                                         }
                                     });
                                 }
+
+                                $('#checkMarker').change(function (event) {
+                                    if ($(this).is(':checked')) {
+                                        event.stopPropagation();
+                                        event.preventDefault();
+                                        $('#markersChoisesImg').slideDown('fast');
+                                    } else {
+                                        $('#markersChoisesImg').slideUp('fast');
+                                        $('button.markerChoiseBtn').removeClass('bg-info');
+                                        $('input#pin').val('hidden');
+                                    }
+                                });
+
+                                $('button.markerChoiseBtn').on('click', function () {
+                                    var $btn = $(this);
+                                    $('button.markerChoiseBtn').removeClass('bg-info');
+                                    $btn.addClass('bg-info');
+                                    $('input#pin').val($btn.data('pinchoise'));
+                                    updateInterMapData($('input#pin'));
+                                });
 
                                 $('form.locationForm').bind('blur change', $(' input, textarea, select'), function (e) {
                                     var $input = $(e.target);
@@ -130,6 +174,7 @@ if (!empty($_GET['id']) && !empty($_GET['level']) && isset($_GET['location'])): 
 
 
                             function updateInterMapData(input) {
+                                busyApp();
                                 $.post(
                                     '<?= INTERACTIVE_MAP_URL; ?>process/ajaxProcess.php',
                                     $('form.locationForm').serialize(),
@@ -138,6 +183,7 @@ if (!empty($_GET['id']) && !empty($_GET['level']) && isset($_GET['location'])): 
                                             $('form.locationForm input, form.locationForm textarea, form.locationForm select').removeClass('is-valid');
                                             input.addClass('is-valid');
                                             $('form.locationForm').effect('highlight');
+                                            availableApp();
                                         }
                                     }
                                 );
