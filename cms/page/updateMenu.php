@@ -39,7 +39,7 @@ $allPages[10] = trans('Aucun parent');
             <div class="col-12 col-lg-6">
                 <div class="row">
                     <div class="col-12">
-                        <h5><?= $value; ?></h5>
+                        <h5><?= $value; ?> <span class="badge badge-info"><?= $key; ?></span></h5>
                     </div>
                 </div>
                 <div class="row mb-4" id="menuAdminUpdate">
