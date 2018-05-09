@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Plugin\ItemGlue;
 class Article
 {
@@ -14,7 +15,7 @@ class Article
 
     public function __construct($idArticle = null)
     {
-        if(is_null($this->dbh)) {
+        if (is_null($this->dbh)) {
             $this->dbh = \App\DB::connect();
         }
 
@@ -225,6 +226,36 @@ class Article
         }
     }
 
+    public function showByCategory($idCategory, $parentId = false, $countArticles = false)
+    {
+        $categorySQL = ' AND C.id = :idCategory ';
+        if (true === $parentId) {
+            $categorySQL = ' AND (C.id = :idCategory OR C.parentId = :idCategory) ';
+        }
+
+        $sql = 'SELECT DISTINCT ART.*, C.id AS idCategory, C.name AS categoryName
+        FROM appoe_categoryRelations AS CR 
+        RIGHT JOIN appoe_plugin_itemGlue_articles AS ART 
+        ON(CR.typeId = ART.id) 
+        INNER JOIN appoe_categories AS C
+        ON(C.id = CR.categoryId)
+        WHERE CR.type = "ITEMGLUE" AND ART.statut > 0' . $categorySQL . '
+        GROUP BY ART.id ORDER BY ART.statut DESC, ART.updated_at DESC';
+
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':idCategory', $idCategory);
+        $stmt->execute();
+
+        $count = $stmt->rowCount();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            $data = $stmt->fetchAll(\PDO::FETCH_OBJ);
+
+            return (!$countArticles) ? $data : $count;
+        }
+    }
 
     /**
      * @param bool $countArticles
