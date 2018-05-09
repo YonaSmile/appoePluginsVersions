@@ -54,19 +54,22 @@ function getSpecificArticlesCategory($categoryName, $parentId = null, $favorite 
 
                 $all['countCategories'][$allCategories[$categoryRelation->categoryId]->name] += 1;
 
-                //push into Articles
-                if (!array_key_exists($categoryRelation->typeId, $all['articles'])) {
-                    $all['articles'][$categoryRelation->typeId] = $allArticles[$categoryRelation->typeId];
-                    $all['categories'][$categoryRelation->typeId] = array();
-                }
+                if (array_key_exists($categoryRelation->typeId, $allArticles)) {
 
-                //push into categories
-                if (!in_array($categoryRelation->categoryId, $all['categories'][$categoryRelation->typeId])) {
-                    $all['categories'][$categoryRelation->typeId][] = $allCategories[$categoryRelation->categoryId]->name;
+                    //push into Articles
+                    if (!array_key_exists($categoryRelation->typeId, $all['articles'])) {
+                        $all['articles'][$categoryRelation->typeId] = $allArticles[$categoryRelation->typeId];
+                        $all['categories'][$categoryRelation->typeId] = array();
+                    }
 
-                    //push into only-categories
-                    if (!in_array($allCategories[$categoryRelation->categoryId]->name, $all['onlyCategories'])) {
-                        $all['onlyCategories'][] = $allCategories[$categoryRelation->categoryId]->name;
+                    //push into categories
+                    if (!in_array($categoryRelation->categoryId, $all['categories'][$categoryRelation->typeId])) {
+                        $all['categories'][$categoryRelation->typeId][] = $allCategories[$categoryRelation->categoryId]->name;
+
+                        //push into only-categories
+                        if (!in_array($allCategories[$categoryRelation->categoryId]->name, $all['onlyCategories'])) {
+                            $all['onlyCategories'][] = $allCategories[$categoryRelation->categoryId]->name;
+                        }
                     }
                 }
             }
