@@ -15,7 +15,7 @@ class Cms
 
     public function __construct($idCms = null)
     {
-        if(is_null($this->dbh)) {
+        if (is_null($this->dbh)) {
             $this->dbh = \App\DB::connect();
         }
 
@@ -249,17 +249,16 @@ class Cms
     }
 
     /**
-     * @param $forMenu
      * @param $countPage
      *
      * @return array|bool|int
      */
-    public function showAllPages($forMenu = true, $countPage = false)
+    public function showAllPages($countPage = false)
     {
 
-        $statut = $forMenu ? ' statut = 1 ' : ' statut >= 1 ';
-        $sql = 'SELECT * FROM appoe_plugin_cms WHERE type = "PAGE" AND ' . $statut . ' ORDER BY created_at ASC';
+        $sql = 'SELECT * FROM appoe_plugin_cms WHERE type = "PAGE" AND statut = :statut ORDER BY created_at ASC';
         $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':statut', $this->statut);
         $stmt->execute();
 
         $count = $stmt->rowCount();

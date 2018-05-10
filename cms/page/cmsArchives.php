@@ -2,11 +2,12 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
-                <h1 class="display-4 bigTitle"><?= trans('Pages'); ?></h1>
+                <h1 class="display-4 bigTitle"><?= trans('Archives des pages'); ?></h1>
             </div>
         </div>
         <hr class="my-4">
         <?php $Cms = new App\Plugin\Cms\Cms();
+        $Cms->setStatut(0);
         $allCmsPages = $Cms->showAllPages();
         $allPages = extractFromObjArr($allCmsPages, 'id');
         ?>
@@ -42,10 +43,6 @@
                                                class="btn btn-warning btn-sm" title="<?= trans('Modifier'); ?>">
                                                 <span class="fas fa-cog"></span>
                                             </a>
-                                            <button type="button" class="btn btn-danger btn-sm deleteCms"
-                                                    title="<?= trans('Archiver'); ?>" data-idcms="<?= $cmsPage->id ?>">
-                                                <span class="fas fa-archive"></span>
-                                            </button>
                                         <?php endif; ?>
                                     </td>
                                 </tr>
@@ -57,27 +54,4 @@
             </div>
         </div>
     </div>
-<?php if ($User->getRole() > 3): ?>
-    <script>
-        $(document).ready(function () {
-            $('.deleteCms').on('click', function () {
-                var idCms = $(this).data('idcms');
-                var $btn = $(this);
-                if (confirm('<?= trans('Vous allez supprimer cette page'); ?>')) {
-                    $.post(
-                        '<?= CMS_URL . 'process/ajaxProcess.php'; ?>',
-                        {
-                            idCmsDelete: idCms
-                        },
-                        function (data) {
-                            if (data === true || data == 'true') {
-                                $('tr[data-idcms="' + idCms + '"]').slideUp();
-                            }
-                        }
-                    );
-                }
-            });
-        });
-    </script>
-<?php endif; ?>
 <?php require('footer.php'); ?>

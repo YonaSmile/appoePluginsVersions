@@ -9,8 +9,8 @@ const PLUGIN_TABLES = array(
 );
 
 const CMS_PAGE_STATUS = array(
-    1 => 'Accessible',
-    2 => 'Non accessible'
+    0 => 'Non accessible',
+    1 => 'Accessible'
 );
 
 const CMS_LOCATIONS = array(

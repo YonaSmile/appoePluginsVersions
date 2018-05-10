@@ -1,7 +1,7 @@
 <?php
 require('main.php');
 $Cms = new App\Plugin\Cms\Cms();
-$pagesCount = $Cms->showAllPages(false, true);
+$pagesCount = $Cms->showAllPages(true);
 
 if ($pagesCount) {
     echo json_encode(
