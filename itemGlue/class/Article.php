@@ -233,17 +233,21 @@ class Article
             $categorySQL = ' AND (C.id = :idCategory OR C.parentId = :idCategory) ';
         }
 
-        $sql = 'SELECT DISTINCT ART.*, C.id AS idCategory, C.name AS categoryName
+        $sql = 'SELECT DISTINCT ART.id, ART.name, ART.description, ART.slug, ART.statut, 
+        C.id AS idCategory, C.name AS categoryName, AC.content
         FROM appoe_categoryRelations AS CR 
         RIGHT JOIN appoe_plugin_itemGlue_articles AS ART 
         ON(CR.typeId = ART.id) 
         INNER JOIN appoe_categories AS C
         ON(C.id = CR.categoryId)
-        WHERE CR.type = "ITEMGLUE" AND ART.statut > 0' . $categorySQL . '
-        GROUP BY ART.id ORDER BY ART.statut DESC, ART.updated_at DESC';
+        INNER JOIN appoe_plugin_itemGlue_articles_content AS AC
+        ON(AC.idArticle = ART.id)
+        WHERE CR.type = "ITEMGLUE" AND ART.statut > 0 AND AC.lang = :lang' . $categorySQL . '
+        GROUP BY ART.id ORDER BY ART.statut DESC, AC.updated_at DESC';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':idCategory', $idCategory);
+        $stmt->bindValue(':lang', LANG);
         $stmt->execute();
 
         $count = $stmt->rowCount();
