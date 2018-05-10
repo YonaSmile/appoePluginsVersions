@@ -283,7 +283,7 @@ if (!empty($_GET['id'])): ?>
                 function reloadPointContainer(location) {
 
                     if (location && !$('#mapplic').hasClass('mapplic-fullscreen')) {
-
+                        busyApp();
                         var currentLevel = '';
                         if ($('.mapplic-levels option:selected').length) {
                             currentLevel = $('.mapplic-levels option:selected').val();
@@ -295,7 +295,9 @@ if (!empty($_GET['id'])): ?>
 
                         var src = '<?= INTERACTIVE_MAP_URL . 'allPoints.php?'; ?>';
                         var data = 'id=' + idMap + '&level=' + currentLevel + '&location=' + location;
-                        $('#pointContenair').load(src + data);
+                        $('#pointContenair').load(src + data, function () {
+                            availableApp();
+                        });
                     }
                 }
 
