@@ -9,7 +9,7 @@ const PLUGIN_TABLES = array(
 );
 
 const ITEMGLUE_ARTICLES_STATUS = array(
-    0 => 'Non accessible',
+    2 => 'En vedette',
     1 => 'Accessible',
-    2 => 'En vedette'
+    0 => 'Non accessible'
 );
