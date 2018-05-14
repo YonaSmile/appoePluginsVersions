@@ -52,7 +52,7 @@
                                                class="btn btn-warning btn-sm" title="<?= trans('Modifier'); ?>">
                                                 <span class="fas fa-cog"></span>
                                             </a>
-                                            <button type="button" class="btn btn-danger btn-sm deleteArticle"
+                                            <button type="button" class="btn btn-danger btn-sm archiveArticle"
                                                     title="<?= trans('Archiver'); ?>"
                                                     data-idarticle="<?= $article->id ?>">
                                                 <span class="fas fa-archive"></span>
@@ -72,19 +72,21 @@
         $(document).ready(function () {
 
             <?php if ($User->getRole() > 3): ?>
-            $('.deleteArticle').on('click', function () {
+            $('.archiveArticle').on('click', function () {
 
                 var idArticle = $(this).data('idarticle');
-                if (confirm('<?= trans('Vous allez supprimer cet article'); ?>')) {
+                if (confirm('<?= trans('Vous allez archiver cet article'); ?>')) {
+                    busyApp();
                     $.post(
                         '<?= ITEMGLUE_URL . 'process/ajaxProcess.php'; ?>',
                         {
-                            deleteArticle: 'OK',
-                            idArticleDelete: idArticle
+                            archiveArticle: 'OK',
+                            idArticleArchive: idArticle
                         },
                         function (data) {
                             if (data === true || data == 'true') {
                                 $('tr[data-idarticle="' + idArticle + '"]').slideUp();
+                                availableApp();
                             }
                         }
                     );
@@ -108,7 +110,7 @@
                 var textTitleFeatured = nowStatut == 2 ? '<?= trans('Article standard'); ?>' : '<?= trans('Article en vedette'); ?>';
 
                 if (confirm(textConfirmFeatured)) {
-
+                    busyApp();
                     $.post(
                         '<?= ITEMGLUE_URL . 'process/ajaxProcess.php'; ?>',
                         {
@@ -122,11 +124,10 @@
                                 $btn.data('statutarticle', nowStatut);
                                 $btn.attr('title', textTitleFeatured);
                                 $iconContainer.html(iconFeatured);
+                                availableApp();
                             }
                         }
                     );
-
-
                 }
             });
         });

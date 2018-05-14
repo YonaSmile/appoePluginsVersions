@@ -343,12 +343,30 @@ class Article
      */
     public function delete()
     {
+        //Get Media of Article
+        $ArticleMedia = new \App\Plugin\ItemGlue\ArticleMedia($this->id);
+        $allMedia = $ArticleMedia->showFiles();
 
-        $this->statut = 0;
-        if ($this->update()) {
-            return true;
-        } else {
+        foreach ($allMedia as $media) {
+            $ArticleMedia->setId($media->id);
+            $ArticleMedia->setName($media->name);
+            $ArticleMedia->delete();
+        }
+
+        $sql = 'DELETE FROM appoe_categoryRelations WHERE  type = "ITEMGLUE" AND typeId = :id;';
+        $sql .= 'DELETE FROM appoe_plugin_itemGlue_articles_meta WHERE idArticle = :id;';
+        $sql .= 'DELETE FROM appoe_plugin_itemGlue_articles_content WHERE idArticle = :id;';
+        $sql .= 'DELETE FROM appoe_plugin_itemGlue_articles WHERE id = :id;';
+
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':id', $this->id);
+        $stmt->execute();
+
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
             return false;
+        } else {
+            return true;
         }
     }
 

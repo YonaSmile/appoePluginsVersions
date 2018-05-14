@@ -44,7 +44,11 @@
                                                class="btn btn-warning btn-sm" title="<?= trans('Modifier'); ?>">
                                                 <span class="fas fa-cog"></span>
                                             </a>
-
+                                            <button type="button" class="btn btn-danger btn-sm deleteArticle"
+                                                    title="<?= trans('Supprimer'); ?>"
+                                                    data-idarticle="<?= $article->id ?>">
+                                                <span class="fas fa-times"></span>
+                                            </button>
                                         <?php endif; ?>
                                     </td>
                                 </tr>
@@ -56,4 +60,31 @@
             </div>
         </div>
     </div>
+    <script>
+        $(document).ready(function () {
+
+            <?php if ($User->getRole() > 3): ?>
+            $('.deleteArticle').on('click', function () {
+
+                var idArticle = $(this).data('idarticle');
+                if (confirm('<?= trans('Vous allez supprimer définitivement cet article'); ?>')) {
+                    busyApp();
+                    $.post(
+                        '<?= ITEMGLUE_URL . 'process/ajaxProcess.php'; ?>',
+                        {
+                            deleteArticle: 'OK',
+                            idArticleDelete: idArticle
+                        },
+                        function (data) {
+                            if (data === true || data == 'true') {
+                                $('tr[data-idarticle="' + idArticle + '"]').slideUp();
+                                availableApp();
+                            }
+                        }
+                    );
+                }
+            });
+            <?php endif; ?>
+        });
+    </script>
 <?php require('footer.php'); ?>

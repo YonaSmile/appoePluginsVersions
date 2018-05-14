@@ -8,6 +8,14 @@ if (checkAjaxRequest()) {
 
         $_POST = cleanRequest($_POST);
 
+        if (isset($_POST['archiveArticle']) && !empty($_POST['idArticleArchive'])) {
+            $Article = new App\Plugin\ItemGlue\Article($_POST['idArticleArchive']);
+            $Article->setStatut(0);
+            if ($Article->update()) {
+                echo 'true';
+            }
+        }
+
         if (isset($_POST['deleteArticle']) && !empty($_POST['idArticleDelete'])) {
             $Article = new App\Plugin\ItemGlue\Article($_POST['idArticleDelete']);
             if ($Article->delete()) {
