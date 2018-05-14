@@ -62,16 +62,17 @@
         $(document).ready(function () {
             $('.deleteCms').on('click', function () {
                 var idCms = $(this).data('idcms');
-                var $btn = $(this);
-                if (confirm('<?= trans('Vous allez supprimer cette page'); ?>')) {
+                if (confirm('<?= trans('Vous allez archiver cette page'); ?>')) {
+                    busyApp();
                     $.post(
                         '<?= CMS_URL . 'process/ajaxProcess.php'; ?>',
                         {
-                            idCmsDelete: idCms
+                            idCmsArchive: idCms
                         },
                         function (data) {
                             if (data === true || data == 'true') {
                                 $('tr[data-idcms="' + idCms + '"]').slideUp();
+                                availableApp();
                             }
                         }
                     );

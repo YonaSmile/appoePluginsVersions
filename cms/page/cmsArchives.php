@@ -43,6 +43,10 @@
                                                class="btn btn-warning btn-sm" title="<?= trans('Modifier'); ?>">
                                                 <span class="fas fa-cog"></span>
                                             </a>
+                                            <button type="button" data-deletecmsid="<?= $cmsPage->id ?>"
+                                               class="btn btn-danger btn-sm deleteCms" title="<?= trans('Supprimer'); ?>">
+                                                <span class="fas fa-times"></span>
+                                            </button>
                                         <?php endif; ?>
                                     </td>
                                 </tr>
@@ -54,4 +58,26 @@
             </div>
         </div>
     </div>
+<script>
+    $(document).ready(function () {
+        $('.deleteCms').on('click', function () {
+            var idCms = $(this).data('deletecmsid');
+            if (confirm('<?= trans('Vous allez supprimer définitivement cette page'); ?>')) {
+                busyApp();
+                $.post(
+                    '<?= CMS_URL . 'process/ajaxProcess.php'; ?>',
+                    {
+                        idCmsDelete: idCms
+                    },
+                    function (data) {
+                        if (data === true || data == 'true') {
+                            $('tr[data-idcms="' + idCms + '"]').slideUp();
+                            availableApp();
+                        }
+                    }
+                );
+            }
+        });
+    });
+</script>
 <?php require('footer.php'); ?>

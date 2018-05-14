@@ -330,12 +330,19 @@ class Cms
      */
     public function delete()
     {
+        $sql = 'DELETE FROM appoe_plugin_cms_menu WHERE idCms = :id;';
+        $sql .= 'DELETE FROM appoe_plugin_cms_content WHERE idCms = :id;';
+        $sql .= 'DELETE FROM appoe_plugin_cms WHERE id = :id;';
 
-        $this->statut = 0;
-        if ($this->update()) {
-            return true;
-        } else {
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':id', $this->id);
+        $stmt->execute();
+
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
             return false;
+        } else {
+            return true;
         }
     }
 

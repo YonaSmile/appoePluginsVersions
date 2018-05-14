@@ -6,6 +6,14 @@ if (checkAjaxRequest()) {
 
         $_POST = cleanRequest($_POST);
 
+        if (!empty($_POST['idCmsArchive'])) {
+            $Cms = new App\Plugin\Cms\Cms($_POST['idCmsArchive']);
+            $Cms->setStatut(0);
+            if ($Cms->update()) {
+                echo 'true';
+            }
+        }
+
         if (!empty($_POST['idCmsDelete'])) {
             $Cms = new App\Plugin\Cms\Cms($_POST['idCmsDelete']);
             if ($Cms->delete()) {
