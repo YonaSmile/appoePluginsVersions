@@ -12,5 +12,13 @@ if (checkAjaxRequest()) {
                 echo 'true';
             }
         }
+
+        if(isset($_POST['unpackPerson']) && !empty($_POST['idUnpackPerson'])){
+            $People = new App\Plugin\People\People($_POST['idUnpackPerson']);
+            $People->setStatus(1);
+            if ($People->update()) {
+                echo 'true';
+            }
+        }
     }
 }

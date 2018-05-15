@@ -39,7 +39,7 @@ if (!empty($_GET['id'])): ?>
                         <?= App\Form::text(trans('Date de naissance'), 'birthDate', 'date', $People->getBirthDate(), false, 10); ?>
                     </div>
                     <div class="col-12 col-lg-4 my-2">
-                        <?= App\Form::text(trans('Adresse Email'), 'email', 'email', $People->getEmail(), true, 255); ?>
+                        <?= App\Form::text(trans('Adresse Email'), 'email', 'email', $People->getEmail(), false, 255); ?>
                     </div>
                     <div class="col-12 col-lg-4 my-2">
                         <?= App\Form::text(trans('Téléphone'), 'tel', 'tel', $People->getTel(), false, 10); ?>

@@ -8,10 +8,7 @@ if (checkPostAndTokenRequest()) {
 
     if (isset($_POST['ADDPERSON'])) {
 
-        if (!empty($_POST['name'])
-            && !empty($_POST['type'])
-            && !empty($_POST['email'])
-        ) {
+        if (!empty($_POST['name']) && !empty($_POST['type'])) {
 
             $People = new App\Plugin\People\People();
 
@@ -35,7 +32,7 @@ if (checkPostAndTokenRequest()) {
             } else {
                 $Response->status = 'danger';
                 $Response->error_code = 1;
-                $Response->error_msg = trans('Cette adresse email est déjà utilisé');
+                $Response->error_msg = trans('Cette personne exist déjà');
             }
         } else {
             $Response->status = 'danger';
@@ -47,11 +44,7 @@ if (checkPostAndTokenRequest()) {
 
     if (isset($_POST['UPDATEPERSON'])) {
 
-        if (!empty($_POST['id'])
-            && !empty($_POST['name'])
-            && !empty($_POST['type'])
-            && !empty($_POST['email'])
-        ) {
+        if (!empty($_POST['id']) && !empty($_POST['name']) && !empty($_POST['type'])) {
 
             $People = new App\Plugin\People\People($_POST['id']);
 
@@ -76,7 +69,7 @@ if (checkPostAndTokenRequest()) {
             } else {
                 $Response->status = 'danger';
                 $Response->error_code = 1;
-                $Response->error_msg = trans('Cette adresse email est déjà utilisé');
+                $Response->error_msg = trans('Cette personne exist déjà');
             }
         } else {
 

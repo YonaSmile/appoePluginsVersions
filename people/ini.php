@@ -8,5 +8,5 @@ const PLUGIN_TABLES = array(
 
 const PEOPLE_STATUS = array(
     1 => 'Active',
-    2 => 'Non active'
+    0 => 'Non active'
 );

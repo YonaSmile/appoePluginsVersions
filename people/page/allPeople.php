@@ -7,8 +7,7 @@
         </div>
         <hr class="my-4">
         <?php $People = new App\Plugin\People\People();
-        $People->setStatus(1);
-        $allPersons = $People->showAll(false);
+        $allPersons = $People->showAll();
         ?>
         <div class="row">
             <div class="col-12">
@@ -36,7 +35,7 @@
                                     <td><?= $person->firstName; ?></td>
                                     <td>
                                         <strong><?= (!empty($person->birthDate) && $person->birthDate != '0000-00-00') ? age($person->birthDate) : '' ?></strong>
-                                        <small>(<?= displayFrDate($person->birthDate); ?>)</small>
+                                        <small><?= displayFrDate($person->birthDate); ?></small>
                                     </td>
                                     <td><?= $person->email ?></td>
                                     <td><?= $person->city ?></td>

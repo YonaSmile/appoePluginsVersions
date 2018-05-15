@@ -36,7 +36,7 @@
                     <?= App\Form::text(trans('Date de naissance'), 'birthDate', 'date', !empty($_POST['birthDate']) ? $_POST['birthDate'] : '', false, 10); ?>
                 </div>
                 <div class="col-12 col-lg-4 my-2">
-                    <?= App\Form::text(trans('Adresse Email'), 'email', 'email', !empty($_POST['email']) ? $_POST['email'] : '', true, 255); ?>
+                    <?= App\Form::text(trans('Adresse Email'), 'email', 'email', !empty($_POST['email']) ? $_POST['email'] : '', false, 255); ?>
                 </div>
                 <div class="col-12 col-lg-4 my-2">
                     <?= App\Form::text(trans('Téléphone'), 'tel', 'tel', !empty($_POST['tel']) ? $_POST['tel'] : '', false, 10); ?>

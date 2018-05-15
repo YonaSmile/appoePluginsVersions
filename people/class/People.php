@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Plugin\People;
 class People
 {
@@ -7,7 +8,7 @@ class People
     protected $name;
     protected $firstName = null;
     protected $birthDate = null;
-    protected $email;
+    protected $email = null;
     protected $tel = null;
     protected $address = null;
     protected $zip = null;
@@ -23,7 +24,7 @@ class People
 
     public function __construct($idPerson = null)
     {
-        if(is_null($this->dbh)) {
+        if (is_null($this->dbh)) {
             $this->dbh = \App\DB::connect();
         }
 
@@ -298,8 +299,8 @@ class People
                 `name` VARCHAR(150) NOT NULL,
                 `firstName` VARCHAR(150) DEFAULT NULL,
                 `birthDate` DATE DEFAULT NULL,
-                `email` VARCHAR(255) NOT NULL,
-                UNIQUE (`type`, `email`),
+                `email` VARCHAR(255) DEFAULT NULL,
+                UNIQUE (`type`, `name`, `firstName`, `birthDate`, `email`, `address`),
                 `tel` VARCHAR(15) DEFAULT NULL,
                 `address` VARCHAR(255) DEFAULT NULL,
                 `zip` VARCHAR(7) DEFAULT NULL,
@@ -493,10 +494,15 @@ class People
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id, type, email FROM appoe_plugin_people WHERE email = :email AND type = :type';
+        $sql = 'SELECT id FROM appoe_plugin_people WHERE type = :type AND name = :name AND firstName = :firstName 
+                AND birthDate = :birthDate AND email = :email AND address = :address';
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':email', $this->email);
         $stmt->bindParam(':type', $this->type);
+        $stmt->bindParam(':name', $this->name);
+        $stmt->bindParam(':firstName', $this->firstName);
+        $stmt->bindParam(':birthDate', $this->birthDate);
+        $stmt->bindParam(':email', $this->email);
+        $stmt->bindParam(':address', $this->address);
         $stmt->execute();
 
         $count = $stmt->rowCount();
