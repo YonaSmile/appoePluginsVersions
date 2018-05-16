@@ -50,6 +50,11 @@
                                                 <span class="fas fa-times"></span>
                                             </button>
                                         <?php endif; ?>
+                                        <button type="button" class="btn btn-success btn-sm unpackArticle"
+                                                title="<?= trans('désarchiver'); ?>"
+                                                data-idarticle="<?= $article->id ?>">
+                                            <i class="fas fa-check"></i>
+                                        </button>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -62,6 +67,26 @@
     </div>
     <script>
         $(document).ready(function () {
+
+            $('.unpackArticle').on('click', function () {
+                var idArticle = $(this).data('idarticle');
+                if (confirm('<?= trans('Vous allez désarchiver cet article'); ?>')) {
+                    busyApp();
+                    $.post(
+                        '<?= ITEMGLUE_URL . 'process/ajaxProcess.php'; ?>',
+                        {
+                            unpackArticle: 'OK',
+                            idUnpackArticle: idArticle
+                        },
+                        function (data) {
+                            if (data === true || data == 'true') {
+                                $('tr[data-idarticle="' + idArticle + '"]').slideUp();
+                                availableApp();
+                            }
+                        }
+                    );
+                }
+            });
 
             <?php if ($User->getRole() > 3): ?>
             $('.deleteArticle').on('click', function () {

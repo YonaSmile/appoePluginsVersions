@@ -16,6 +16,14 @@ if (checkAjaxRequest()) {
             }
         }
 
+        if (isset($_POST['unpackArticle']) && !empty($_POST['idUnpackArticle'])) {
+            $Article = new App\Plugin\ItemGlue\Article($_POST['idUnpackArticle']);
+            $Article->setStatut(1);
+            if ($Article->update()) {
+                echo 'true';
+            }
+        }
+
         if (isset($_POST['deleteArticle']) && !empty($_POST['idArticleDelete'])) {
             $Article = new App\Plugin\ItemGlue\Article($_POST['idArticleDelete']);
             if ($Article->delete()) {
@@ -53,7 +61,7 @@ if (checkAjaxRequest()) {
                     if ($ArticleMeta->save()) {
 
                         //Add translation
-                        if(isset($_POST['addTradValue'])) {
+                        if (isset($_POST['addTradValue'])) {
                             $Traduction = new App\Plugin\Traduction\Traduction();
                             $Traduction->setLang(LANG);
                             $Traduction->setMetaKey($ArticleMeta->getMetaValue());

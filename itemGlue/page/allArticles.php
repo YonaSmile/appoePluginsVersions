@@ -52,12 +52,12 @@
                                                class="btn btn-warning btn-sm" title="<?= trans('Modifier'); ?>">
                                                 <span class="fas fa-cog"></span>
                                             </a>
-                                            <button type="button" class="btn btn-danger btn-sm archiveArticle"
-                                                    title="<?= trans('Archiver'); ?>"
-                                                    data-idarticle="<?= $article->id ?>">
-                                                <span class="fas fa-archive"></span>
-                                            </button>
                                         <?php endif; ?>
+                                        <button type="button" class="btn btn-danger btn-sm archiveArticle"
+                                                title="<?= trans('Archiver'); ?>"
+                                                data-idarticle="<?= $article->id ?>">
+                                            <span class="fas fa-archive"></span>
+                                        </button>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -71,7 +71,6 @@
     <script>
         $(document).ready(function () {
 
-            <?php if ($User->getRole() > 3): ?>
             $('.archiveArticle').on('click', function () {
 
                 var idArticle = $(this).data('idarticle');
@@ -92,7 +91,6 @@
                     );
                 }
             });
-            <?php endif; ?>
 
             $('.featuredArticle').on('click', function () {
 
