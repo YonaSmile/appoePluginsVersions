@@ -164,35 +164,37 @@ if (!empty($_GET['id'])): ?>
                             <?php endforeach; ?>
                         </div>
                     <?php endif; ?>
-                    <div class="row">
-                        <div class="col-12 my-3">
-                            <button id="addMetaArticleBtn" type="button" class="btn float-right"
-                                    data-toggle="modal"
-                                    data-target="#modalAddArticleMeta">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                            <h5 class="strong py-2 border-bottom text-uppercase text-vert">
-                                <?= trans('Détails de l\'article'); ?>
-                            </h5>
-                        </div>
-                        <?php
-                        $ArticleMeta = new App\Plugin\ItemGlue\ArticleMeta($Article->getId());
-                        if (!is_null($ArticleMeta->getData())): ?>
-                            <div class="col-12 d-flex flex-column" id="articleMetaContainer">
-                                <?php foreach ($ArticleMeta->getData() as $data): ?>
-                                    <div class="d-flex align-items-stretch my-1 fileContent">
-                                        <span class="bg-info p-2 text-white"><?= $data->metaKey; ?></span><span
-                                                class="bg-secondary p-2 text-white"><?= $data->metaValue; ?></span>
-                                        <button type="button" class="deleteArticleMeta btn btn-danger btn-sm"
-                                                style="position: absolute; top: 0; right: 0;"
-                                                data-idmetaarticle="<?= $data->id; ?>">
-                                            <i class="fas fa-times"></i>
-                                        </button>
-                                    </div>
-                                <?php endforeach; ?>
+                    <?php if ($User->getRole() > 3): ?>
+                        <div class="row">
+                            <div class="col-12 my-3">
+                                <button id="addMetaArticleBtn" type="button" class="btn float-right"
+                                        data-toggle="modal"
+                                        data-target="#modalAddArticleMeta">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                                <h5 class="strong py-2 border-bottom text-uppercase text-vert">
+                                    <?= trans('Détails de l\'article'); ?>
+                                </h5>
                             </div>
-                        <?php endif; ?>
-                    </div>
+                            <?php
+                            $ArticleMeta = new App\Plugin\ItemGlue\ArticleMeta($Article->getId());
+                            if (!is_null($ArticleMeta->getData())): ?>
+                                <div class="col-12 d-flex flex-column" id="articleMetaContainer">
+                                    <?php foreach ($ArticleMeta->getData() as $data): ?>
+                                        <div class="d-flex align-items-stretch my-1 fileContent">
+                                            <span class="bg-info p-2 text-white"><?= $data->metaKey; ?></span><span
+                                                    class="bg-secondary p-2 text-white"><?= $data->metaValue; ?></span>
+                                            <button type="button" class="deleteArticleMeta btn btn-danger btn-sm"
+                                                    style="position: absolute; top: 0; right: 0;"
+                                                    data-idmetaarticle="<?= $data->id; ?>">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

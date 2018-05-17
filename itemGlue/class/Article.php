@@ -255,9 +255,7 @@ class Article
         if ($error[0] != '00000') {
             return false;
         } else {
-            $data = $stmt->fetchAll(\PDO::FETCH_OBJ);
-
-            return (!$countArticles) ? $data : $count;
+            return (!$countArticles) ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
         }
     }
 
