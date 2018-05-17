@@ -1,8 +1,6 @@
 <?php
-function getSpecificArticlesCategory($categoryName, $parentId = null, $favorite = 1)
+function getSpecificArticlesCategory($categoryId, $parentId = false, $favorite = 1)
 {
-    $categoryName = removeAccents(html_entity_decode($categoryName));
-
     //get all articles categories
     $Category = new App\Category();
     $Category->setType('ITEMGLUE');
@@ -28,52 +26,44 @@ function getSpecificArticlesCategory($categoryName, $parentId = null, $favorite 
         //search only in categories relations
         foreach ($allCategoriesRelations as $relationId => $categoryRelation) {
 
-            $access = false;
+            //check parent Id and Id
+            if (false !== $parentId) {
 
-            //check parent Id and parent Name
-            if (!is_null($parentId)) {
-
-                if ($allCategories[$categoryRelation->categoryId]->parentId != $parentId
-                    && removeAccents(html_entity_decode($allCategories[$allCategories[$categoryRelation->categoryId]->parentId]->name)) === $categoryName
-                ) {
-                    $access = true;
+                if ($allCategories[$categoryRelation->categoryId]->parentId != $categoryId && $categoryRelation->categoryId != $categoryId) {
+                    continue;
                 }
 
             } else {
-                if (removeAccents(html_entity_decode($allCategories[$categoryRelation->categoryId]->name)) === $categoryName) {
-                    $access = true;
+                if ($categoryRelation->id != $categoryId) {
+                    continue;
                 }
             }
 
-            if ($access) {
+            //count categories
+            if (!array_key_exists($allCategories[$categoryRelation->categoryId]->name, $all['countCategories'])) {
+                $all['countCategories'][$allCategories[$categoryRelation->categoryId]->name] = 0;
+            }
 
-                //count categories
-                if (!array_key_exists($allCategories[$categoryRelation->categoryId]->name, $all['countCategories'])) {
-                    $all['countCategories'][$allCategories[$categoryRelation->categoryId]->name] = 0;
+            $all['countCategories'][$allCategories[$categoryRelation->categoryId]->name] += 1;
+
+            if (array_key_exists($categoryRelation->typeId, $allArticles)) {
+
+                //push into Articles
+                if (!array_key_exists($categoryRelation->typeId, $all['articles'])) {
+                    $all['articles'][$categoryRelation->typeId] = $allArticles[$categoryRelation->typeId];
+                    $all['categories'][$categoryRelation->typeId] = array();
                 }
 
-                $all['countCategories'][$allCategories[$categoryRelation->categoryId]->name] += 1;
+                //push into categories
+                if (!in_array($categoryRelation->categoryId, $all['categories'][$categoryRelation->typeId])) {
+                    $all['categories'][$categoryRelation->typeId][] = $allCategories[$categoryRelation->categoryId]->name;
 
-                if (array_key_exists($categoryRelation->typeId, $allArticles)) {
-
-                    //push into Articles
-                    if (!array_key_exists($categoryRelation->typeId, $all['articles'])) {
-                        $all['articles'][$categoryRelation->typeId] = $allArticles[$categoryRelation->typeId];
-                        $all['categories'][$categoryRelation->typeId] = array();
-                    }
-
-                    //push into categories
-                    if (!in_array($categoryRelation->categoryId, $all['categories'][$categoryRelation->typeId])) {
-                        $all['categories'][$categoryRelation->typeId][] = $allCategories[$categoryRelation->categoryId]->name;
-
-                        //push into only-categories
-                        if (!in_array($allCategories[$categoryRelation->categoryId]->name, $all['onlyCategories'])) {
-                            $all['onlyCategories'][] = $allCategories[$categoryRelation->categoryId]->name;
-                        }
+                    //push into only-categories
+                    if (!in_array($allCategories[$categoryRelation->categoryId]->name, $all['onlyCategories'])) {
+                        $all['onlyCategories'][] = $allCategories[$categoryRelation->categoryId]->name;
                     }
                 }
             }
-
         }
     }
 
