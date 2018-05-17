@@ -29,7 +29,7 @@ function getSpecificArticlesCategory($categoryId, $parentId = false, $favorite =
             //check parent Id and Id
             if (false !== $parentId) {
 
-                if ($allCategories[$categoryRelation->categoryId]->parentId != $categoryId && $categoryRelation->categoryId != $categoryId) {
+                if ($allCategories[$categoryRelation->categoryId]->parentId != $categoryId) {
                     continue;
                 }
 
