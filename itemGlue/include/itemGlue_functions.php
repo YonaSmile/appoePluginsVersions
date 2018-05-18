@@ -18,7 +18,6 @@ function getSpecificArticlesCategory($categoryId, $parentId = false, $favorite =
 
     $all['articles'] = array();
     $all['categories'] = array();
-    $all['onlyCategories'] = array();
     $all['countCategories'] = array();
 
     if ($allCategoriesRelations) {
@@ -57,11 +56,6 @@ function getSpecificArticlesCategory($categoryId, $parentId = false, $favorite =
                 //push into categories
                 if (!in_array($categoryRelation->categoryId, $all['categories'][$categoryRelation->typeId])) {
                     $all['categories'][$categoryRelation->typeId][] = $allCategories[$categoryRelation->categoryId]->name;
-
-                    //push into only-categories
-                    if (!in_array($allCategories[$categoryRelation->categoryId]->name, $all['onlyCategories'])) {
-                        $all['onlyCategories'][] = $allCategories[$categoryRelation->categoryId]->name;
-                    }
                 }
             }
         }
