@@ -72,24 +72,27 @@ if (!empty($_GET['id'])): ?>
                         $allContent = extractFromObjArr($allContentArr, 'metaKey');
 
                         $pageContent = getFileContent(TEMPLATES_PATH . $Cms->getSlug() . '.php');
-                        $pageContent = explode('%%', trim(strip_tags($pageContent)));
-                        $pageContent = array_filter($pageContent, 'trim');
-                        $pageContent = array_unique($pageContent);
 
-                        foreach ($pageContent as $content) {
-                            echo '<div class="col-12">';
-                            if (strpos($content, '_')) {
-                                list($metaKey, $formType) = explode('_', $content);
-                                $metaKeyDisplay = ucfirst(str_replace('-', ' ', $metaKey));
-                                $idCmsContent = !empty($allContent[$metaKey]) ? $allContent[$metaKey]->id : '';
-                                $valueCmsContent = !empty($allContent[$metaKey]) ? $allContent[$metaKey]->metaValue : '';
-                                if ($formType == 'text') {
-                                    echo App\Form::text($metaKeyDisplay, $metaKey, 'text', $valueCmsContent, false, 250, 'data-idcmscontent="' . $idCmsContent . '"', '', '', '...');
-                                } elseif ($formType == 'textarea') {
-                                    echo App\Form::textarea($metaKeyDisplay, $metaKey, $valueCmsContent, 8, false, 'data-idcmscontent="' . $idCmsContent . '"', 'ckeditor');
+                        if (preg_match_all("/{{(.*?)}}/", $pageContent, $m)) {
+
+                            foreach ($m[1] as $i => $varname) {
+                                if (strpos($varname, '_')) {
+                                    echo '<div class="col-12">';
+
+                                    list($metaKey, $formType) = explode('_', $varname);
+                                    $metaKeyDisplay = ucfirst(str_replace('-', ' ', $metaKey));
+                                    $idCmsContent = !empty($allContent[$metaKey]) ? $allContent[$metaKey]->id : '';
+                                    $valueCmsContent = !empty($allContent[$metaKey]) ? $allContent[$metaKey]->metaValue : '';
+
+                                    if ($formType == 'text') {
+                                        echo App\Form::text($metaKeyDisplay, $metaKey, 'text', $valueCmsContent, false, 250, 'data-idcmscontent="' . $idCmsContent . '"', '', '', '...');
+                                    } elseif ($formType == 'textarea') {
+                                        echo App\Form::textarea($metaKeyDisplay, $metaKey, $valueCmsContent, 8, false, 'data-idcmscontent="' . $idCmsContent . '"', 'ckeditor');
+                                    }
+
+                                    echo '</div>';
                                 }
                             }
-                            echo '</div>';
                         }
                         ?>
                     </div>
