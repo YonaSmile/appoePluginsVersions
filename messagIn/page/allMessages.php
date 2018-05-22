@@ -7,9 +7,9 @@
         </div>
         <hr class="my-4">
         <?php $MessagIn = new App\Plugin\MessagIn\MessagIn();
-        $MessagIn->setToUser($User->getId());
+        $MessagIn->setToUser($USER->getId());
         $allMessages = $MessagIn->showAll();
-        $listUsers = $User->showAll();
+        $listUsers = $USER->showAll();
         $counter = 0;
         $displayList = ''; ?>
         <div class="row">
@@ -17,7 +17,7 @@
                 <h2 class="h5 mb-3"><?= trans('Les utilisateurs'); ?></h2>
                 <div class="nav navUserMessages flex-column nav-pills" id="v-pills-tab" role="tablist">
                     <?php foreach ($listUsers as $user): ?>
-                        <?php if ($user->id != $User->getId()): ?>
+                        <?php if ($user->id != $USER->getId()): ?>
                             <a class="nav-link userMessages" id="v-pills-user-<?= $user->id; ?>-tab" data-toggle="pill"
                                href="#v-pills-user-<?= $user->id; ?>"
                                role="tab" aria-controls="v-pills-user-<?= $user->id; ?>"
@@ -35,7 +35,7 @@
                     <div class="tab-content" id="v-pills-tabContent">
                         <?php foreach ($listUsers as $user): ?>
                             <?php $counter = 0;
-                            if ($user->id != $User->getId()): ?>
+                            if ($user->id != $USER->getId()): ?>
                                 <div class="tab-pane fade show msgContainer" id="v-pills-user-<?= $user->id; ?>"
                                      role="tabpanel" aria-labelledby="v-pills-user-<?= $user->id; ?>-tab">
                                     <div class="list-group" data-iduser="<?= $user->id; ?>">

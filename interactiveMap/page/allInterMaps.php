@@ -56,7 +56,7 @@ $allCartes = extractFromObjArr($InteractiveMap->showAll(), 'id');
         </div>
     </div>
 </div>
-<?php if ($User->getRole() > 3): ?>
+<?php if ($USER->getRole() > 3): ?>
     <script>
         $(document).ready(function () {
             $('.deleteMap').on('click', function () {

@@ -20,7 +20,7 @@ if (!empty($_GET['id'])): ?>
             </div>
             <div class="row">
                 <div class="col-12">
-                    <?php if ($Menu->checkUserPermission($User->getRole(), 'updatePage')): ?>
+                    <?php if ($Menu->checkUserPermission($USER->getRole(), 'updatePage')): ?>
                         <a id="updatePageBtn"
                            href="<?= getPluginUrl('cms/page/update/', $Cms->getId()); ?>"
                            class="btn btn-warning btn-sm">

@@ -24,16 +24,16 @@
             <div class="row">
 
                 <div class="col-12 col-lg-6">
-                    <p class="p-3"><?= trans('De la part de'); ?> <?= $User->getNom() . ' ' . $User->getPrenom(); ?></p>
+                    <p class="p-3"><?= trans('De la part de'); ?> <?= $USER->getNom() . ' ' . $USER->getPrenom(); ?></p>
                 </div>
 
                 <div class="col-12 col-lg-6">
-                    <?php $allUsers = $User->showAll(); ?>
+                    <?php $allUsers = $USER->showAll(); ?>
                     <div class="form-group">
                         <label for="toUser"><?= trans('destiné à'); ?></label>
                         <select class="form-control custom-select" id="toUser" name="toUser" required>
                             <?php foreach ($allUsers as $user): ?>
-                                <?php if ($User->getId() != $user->id): ?>
+                                <?php if ($USER->getId() != $user->id): ?>
                                     <option value="<?= $user->id; ?>"><?= $user->nom . ' ' . $user->prenom; ?></option>
                                 <?php endif; ?>
                             <?php endforeach; ?>

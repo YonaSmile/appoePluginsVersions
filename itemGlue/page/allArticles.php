@@ -47,7 +47,7 @@
                                            class="btn btn-info btn-sm" title="<?= trans('Consulter'); ?>">
                                             <span class="fa fa-eye"></span>
                                         </a>
-                                        <?php if ($User->getRole() > 3): ?>
+                                        <?php if ($USER->getRole() > 3): ?>
                                             <a href="<?= getPluginUrl('itemGlue/page/update/', $article->id) ?>"
                                                class="btn btn-warning btn-sm" title="<?= trans('Modifier'); ?>">
                                                 <span class="fas fa-cog"></span>

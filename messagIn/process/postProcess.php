@@ -16,7 +16,7 @@ if (checkPostAndTokenRequest()) {
 
         //Add Projet
         $MessagIn->feed($_POST);
-        $MessagIn->setFromUser($User->getId());
+        $MessagIn->setFromUser($USER->getId());
 
 
         if ($MessagIn->save()) {

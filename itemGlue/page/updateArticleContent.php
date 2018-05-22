@@ -32,7 +32,7 @@ if (!empty($_GET['id'])): ?>
             </div>
             <div class="row">
                 <div class="col-12">
-                    <?php if ($Menu->checkUserPermission($User->getRole(), 'updateArticle')): ?>
+                    <?php if ($Menu->checkUserPermission($USER->getRole(), 'updateArticle')): ?>
                         <a id="updateArticleBtn"
                            href="<?= getPluginUrl('itemGlue/page/update/', $Article->getId()); ?>"
                            class="btn btn-warning btn-sm">
@@ -164,7 +164,7 @@ if (!empty($_GET['id'])): ?>
                             <?php endforeach; ?>
                         </div>
                     <?php endif; ?>
-                    <?php if ($User->getRole() > 3): ?>
+                    <?php if ($USER->getRole() > 3): ?>
                         <div class="row">
                             <div class="col-12 my-3">
                                 <button id="addMetaArticleBtn" type="button" class="btn float-right"
