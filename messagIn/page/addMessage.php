@@ -44,7 +44,7 @@
             <div class="my-4"></div>
             <div class="row">
                 <div class="col-12">
-                    <?= App\Form::textarea(trans('Texte'), 'text', '', 5, true); ?>
+                    <?= App\Form::textarea(trans('Texte'), 'text', '', 5, true, '', 'ckeditor'); ?>
                 </div>
             </div>
 
