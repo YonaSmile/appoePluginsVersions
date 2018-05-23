@@ -70,16 +70,16 @@ if (!empty($_GET['id'])): ?>
                     <div class="row">
                         <?php
                         $allContent = extractFromObjArr($allContentArr, 'metaKey');
-
                         $pageContent = getFileContent(TEMPLATES_PATH . $Cms->getSlug() . '.php');
 
-                        if (preg_match_all("/{{(.*?)}}/", $pageContent, $m)) {
+                        if (preg_match_all("/{{(.*?)}}/", $pageContent, $match)) {
 
-                            foreach ($m[1] as $i => $varname) {
-                                if (strpos($varname, '_')) {
+                            $template = array_unique($match[1]);
+                            foreach ($template as $i => $adminZone) {
+                                if (strpos($adminZone, '_')) {
                                     echo '<div class="col-12">';
 
-                                    list($metaKey, $formType) = explode('_', $varname);
+                                    list($metaKey, $formType) = explode('_', $adminZone);
                                     $metaKeyDisplay = ucfirst(str_replace('-', ' ', $metaKey));
                                     $idCmsContent = !empty($allContent[$metaKey]) ? $allContent[$metaKey]->id : '';
                                     $valueCmsContent = !empty($allContent[$metaKey]) ? $allContent[$metaKey]->metaValue : '';
