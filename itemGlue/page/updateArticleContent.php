@@ -84,34 +84,38 @@ if (!empty($_GET['id'])): ?>
             <div class="my-1"></div>
             <div class="row">
                 <div class="col-12 col-lg-8">
-                    <div class="col-12 mb-3">
-                        <h5 class="strong py-2 border-bottom text-uppercase text-vert">
-                            <?= trans('Contenu de l\'article'); ?>
-                        </h5>
+                    <div class="row">
+                        <div class="col-12">
+                            <h2 class="subTitle"><?= trans('Contenu de l\'article'); ?></h2>
+                        </div>
                     </div>
-                    <form action="" id="contentArticleManage" method="post">
+                    <form action="" id="contentArticleManage" class="row" method="post">
                         <?= getTokenField(); ?>
                         <input type="hidden" name="articleId" value="<?= $Article->getId(); ?>">
+                        <div class="col-12">
                         <textarea name="articleContent" id="articleContent"
                                   class="ckeditor"><?= html_entity_decode($ArticleContent->getContent()); ?></textarea>
+                        </div>
                         <div class="my-2"></div>
-                        <?= App\Form::checkbox(trans('Catégories'), 'categories', $listCatgories, $allCategoryRelations); ?>
-                        <?= App\Form::submit(trans('Enregistrer'), 'SAVEARTICLECONTENT'); ?>
+                        <div class="col-12">
+                            <?= App\Form::checkbox(trans('Catégories'), 'categories', $listCatgories, $allCategoryRelations, 'checkCategories'); ?>
+                        </div>
+                        <div class="col-12">
+                            <?= App\Form::submit(trans('Enregistrer'), 'SAVEARTICLECONTENT'); ?>
+                        </div>
                     </form>
                 </div>
                 <div class="col-12 col-lg-4">
                     <div class="row">
-                        <div class="col-12 mb-3">
-                            <h5 class="strong py-2 border-bottom text-uppercase text-vert">
-                                <?= trans('Médias de l\'article'); ?>
-                            </h5>
+                        <div class="col-12">
+                            <h2 class="subTitle"><?= trans('Médias de l\'article'); ?></h2>
                         </div>
                     </div>
                     <form class="row" id="galleryArticleForm" action="" method="post" enctype="multipart/form-data">
                         <?= getTokenField(); ?>
                         <input type="hidden" name="articleId" value="<?= $Article->getId(); ?>">
                         <div class="col-12">
-                            <?= App\Form::text(trans('Télécharger des images'), 'inputFile[]', 'file', '', true, 800, 'multiple'); ?>
+                            <?= App\Form::text(trans('Sélection des médias'), 'inputFile[]', 'file', '', true, 800, 'multiple'); ?>
                         </div>
                         <div class="col-12">
                             <?= App\Form::submit(trans('Enregistrer'), 'ADDIMAGESTOARTICLE'); ?>
@@ -120,46 +124,43 @@ if (!empty($_GET['id'])): ?>
                     <?php
                     if ($allArticleMedias): ?>
                         <hr class="mt-2 mb-3 mx-5">
-                        <div class="row">
+                        <div class="card-columns" style="column-count:2">
                             <?php foreach ($allArticleMedias as $file): ?>
-                                <div class="col-12 col-lg-6">
-                                    <div class="card bg-none border-0 my-1">
-                                        <?php if (isImage(FILE_DIR_PATH . $file->name)): ?>
-                                            <img src="<?= FILE_DIR_URL . $file->name; ?>"
-                                                 alt="<?= $file->description; ?>"
-                                                 class="img-fluid img-thumbnail seeOnOverlay">
-                                            <form method="post" data-imageid="<?= $file->id; ?>">
-                                                <input type="text" name="description"
-                                                       class="form-control imageDescription"
-                                                       value="<?= $file->description; ?>"
-                                                       placeholder="<?= trans('Description'); ?>">
-                                                <input type="url" name="link" class="form-control imagelink"
-                                                       value="<?= $file->link; ?>"
-                                                       placeholder="<?= trans('Lien'); ?>">
-                                                <input type="tel" name="position" class="form-control imagePosition"
-                                                       value="<?= $file->position; ?>"
-                                                       placeholder="<?= trans('Position'); ?>">
-                                                <input type="hidden" class="typeId" name="typeId"
-                                                       value="<?= $file->typeId; ?>">
-                                                <small></small>
-                                            </form>
-                                            <button type="button" class="deleteImage btn btn-danger btn-sm"
-                                                    data-imageid="<?= $file->id; ?>"
-                                                    style="position: absolute; top: 0; right: 0;">
-                                                <i class="fas fa-times"></i>
+                                <div class="card bg-none border-0 my-1">
+                                    <?php if (isImage(FILE_DIR_PATH . $file->name)): ?>
+                                        <img src="<?= FILE_DIR_URL . $file->name; ?>"
+                                             alt="<?= $file->description; ?>"
+                                             class="img-fluid img-thumbnail seeOnOverlay">
+                                    <?php else: ?>
+                                        <a href="<?= FILE_DIR_URL . $file->name; ?>" target="_blank">
+                                            <img src="<?= getImgAccordingExtension(getFileExtension($file->name)); ?>">
+                                        </a>
+                                        <small class="fileLink" data-src="<?= FILE_DIR_URL . $file->name; ?>">
+                                            <button class="btn btn-sm btn-outline-info btn-block copyLinkOnClick">
+                                                <?= trans('Copier le lien du média'); ?>
                                             </button>
-                                        <?php else: ?>
-                                            <a href="<?= FILE_DIR_URL . $file->name; ?>" target="_blank">
-                                                <img src="<?= getImgAccordingExtension(getFileExtension($file->name)); ?>">
-                                            </a>
-                                            <small><?= FILE_DIR_URL . $file->name; ?></small>
-                                            <button type="button" class="deleteImage btn btn-danger btn-sm"
-                                                    data-imageid="<?= $file->id; ?>"
-                                                    style="position: absolute; top: 0; right: 0;">
-                                                <i class="fas fa-times"></i>
-                                            </button>
-                                        <?php endif; ?>
-                                    </div>
+                                        </small>
+                                    <?php endif; ?>
+                                    <form method="post" data-imageid="<?= $file->id; ?>">
+                                        <input type="text" name="description"
+                                               class="form-control imageDescription"
+                                               value="<?= $file->description; ?>"
+                                               placeholder="<?= trans('Description'); ?>">
+                                        <input type="url" name="link" class="form-control imagelink"
+                                               value="<?= $file->link; ?>"
+                                               placeholder="<?= trans('Lien'); ?>">
+                                        <input type="tel" name="position" class="form-control imagePosition"
+                                               value="<?= $file->position; ?>"
+                                               placeholder="<?= trans('Position'); ?>">
+                                        <input type="hidden" class="typeId" name="typeId"
+                                               value="<?= $file->typeId; ?>">
+                                        <small class="infosMedia"></small>
+                                    </form>
+                                    <button type="button" class="deleteImage btn btn-danger btn-sm"
+                                            data-imageid="<?= $file->id; ?>"
+                                            style="position: absolute; top: 0; right: 0;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
                                 </div>
                             <?php endforeach; ?>
                         </div>
@@ -167,14 +168,14 @@ if (!empty($_GET['id'])): ?>
                     <?php if ($USER->getRole() > 3): ?>
                         <div class="row">
                             <div class="col-12 my-3">
-                                <button id="addMetaArticleBtn" type="button" class="btn float-right"
-                                        data-toggle="modal"
-                                        data-target="#modalAddArticleMeta">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                                <h5 class="strong py-2 border-bottom text-uppercase text-vert">
+                                <h2 class="subTitle" style="position: relative">
                                     <?= trans('Détails de l\'article'); ?>
-                                </h5>
+                                    <button id="addMetaArticleBtn" type="button" class="btn btn-outline-info btn-sm"
+                                            data-toggle="modal" style="position: absolute;bottom: 0;right: 0;"
+                                            data-target="#modalAddArticleMeta">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </h2>
                             </div>
                             <?php
                             $ArticleMeta = new App\Plugin\ItemGlue\ArticleMeta($Article->getId());
@@ -254,8 +255,19 @@ if (!empty($_GET['id'])): ?>
                     $('#loader').fadeIn('fast');
                 });
 
-                $('input.imageDescription, input.imagelink, input.imagePosition').on('keyup', function () {
+                $('input[name="categories[]"]').each(function () {
+                    if ($(this).next('label').text().charAt(0) !== '-') {
+                        $(this).parent('.checkCategories').wrap('<div class="mr-5 my-4 pb-2 border-bottom">');
+                    } else {
+                        $(this).parent('.checkCategories').prev('div').append($(this).parent('.checkCategories'));
+                    }
+                }).eq(0).parent('.checkCategories').parent('div').parent('div')
+                    .addClass('d-flex flex-row justify-content-start flex-wrap my-3')
+                    .children('strong.inputLabel').addClass('w-100');
 
+                $('input.imageDescription, input.imagelink, input.imagePosition').on('keyup', function () {
+                    busyApp();
+                    $('small.infosMedia').hide().html('');
                     var $input = $(this);
                     var $form = $input.parent('form');
                     var idImage = $form.data('imageid');
@@ -263,7 +275,7 @@ if (!empty($_GET['id'])): ?>
                     var link = $form.children('input.imagelink').val();
                     var position = $form.children('input.imagePosition').val();
                     var typeId = $form.children('input.typeId').val();
-                    var $info = $form.children('small');
+                    var $info = $form.children('small.infosMedia');
                     $info.html('');
 
                     $.post(
@@ -278,7 +290,8 @@ if (!empty($_GET['id'])): ?>
                         },
                         function (data) {
                             if (data && (data == 'true' || data === true)) {
-                                $info.html('<?= trans('Enregistré'); ?>');
+                                $info.html('<?= trans('Enregistré'); ?>').show();
+                                availableApp();
                             }
                         }
                     )
@@ -286,6 +299,7 @@ if (!empty($_GET['id'])): ?>
 
                 $('.deleteImage').on('click', function () {
                     if (confirm('<?= trans('Vous allez supprimer cette image'); ?>')) {
+                        busyApp();
                         var $btn = $(this);
                         var idImage = $btn.data('imageid');
 
@@ -298,6 +312,7 @@ if (!empty($_GET['id'])): ?>
                             function (data) {
                                 if (data && (data == 'true' || data === true)) {
                                     $btn.parent('div').fadeOut('fast');
+                                    availableApp();
                                 }
                             }
                         )
@@ -314,6 +329,7 @@ if (!empty($_GET['id'])): ?>
                     var $errorContainer = $('#addArticleMetaError');
 
                     if (metaKey.length && metaValue.length) {
+                        busyApp();
                         $.post(
                             '<?= ITEMGLUE_URL; ?>process/ajaxProcess.php',
                             $('form#addArticleMetaForm').serialize(),
@@ -329,6 +345,7 @@ if (!empty($_GET['id'])): ?>
                                         + '</span><span class="bg-secondary p-2 text-white">'
                                         + metaValue.val()
                                         + '</span></div>');
+                                    availableApp();
                                 } else {
                                     $errorContainer.html(data);
                                 }
@@ -347,7 +364,7 @@ if (!empty($_GET['id'])): ?>
                     var idMetaArticle = $btn.data('idmetaarticle');
 
                     if (confirm('<?= trans('Vous allez supprimer ce détail'); ?>')) {
-
+                        busyApp();
                         $.post(
                             '<?= ITEMGLUE_URL; ?>process/ajaxProcess.php',
                             {
@@ -360,6 +377,7 @@ if (!empty($_GET['id'])): ?>
                                         .fadeOut('fast')
                                         .delay(100)
                                         .removeClass('d-flex');
+                                    availableApp();
                                 }
                             }
                         )
@@ -369,6 +387,14 @@ if (!empty($_GET['id'])): ?>
                 $('.otherArticlesSelect').change(function () {
                     var otherEventslink = $('option:selected', this).data('href');
                     location.assign(otherEventslink);
+                });
+
+                var textDefaultCopyFile = '<?= trans('Copier le lien du média'); ?>';
+                $('.copyLinkOnClick').on('click', function (e) {
+                    e.preventDefault();
+                    $('.copyLinkOnClick').text(textDefaultCopyFile);
+                    copyToClipboard($(this).parent().data('src'));
+                    $(this).text('<?= trans('copié'); ?>');
                 });
             });
         </script>
