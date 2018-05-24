@@ -60,9 +60,7 @@ if (!empty($_GET['id'])): ?>
             <div class="my-2"></div>
             <div class="row">
                 <div class="col-12">
-                    <h5 class="strong py-3 border border-right-0 border-top-0 border-left-0 text-uppercase text-vert">
-                        <?= trans('Contenu de la page'); ?>
-                    </h5>
+                    <h2 class="subTitle text-uppercase"><?= trans('Contenu de la page'); ?></h2>
                 </div>
             </div>
             <?php if (file_exists(TEMPLATES_PATH . $Cms->getSlug() . '.php')): ?>
