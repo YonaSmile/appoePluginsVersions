@@ -263,7 +263,10 @@ if (!empty($_GET['id'])): ?>
 
                                         $('.mapplic-layer a').removeClass('mapplic-active');
                                         $('.mapplic-layer[data-floor="' + currentLevel + '"]')
-                                            .append('<a href="#" class="mapplic-pin default mapplic-active" style="top: ' + parseFloat(top).toFixed(4) + '%; left: ' + parseFloat(left).toFixed(4) + '%;" data-location="' + id + '"></a>');
+                                            .append('<a href="#" class="mapplic-pin default mapplic-active" style="top: ' +
+                                                parseFloat(top).toFixed(4) +
+                                                '%; left: ' + parseFloat(left).toFixed(4) +
+                                                '%;" data-location="' + id + '"></a>');
                                         freeToAdd = true;
                                     }
                                     else if (data == 'false' || data === false) {

@@ -242,6 +242,7 @@
 
 .mapplic-pin.orange { background-image: url('/app/plugin/interactiveMap/images/pin-orange.png'); }
 .mapplic-pin.yellow { background-image: url('/app/plugin/interactiveMap/images/pin-yellow.png'); }
+.mapplic-pin.white { background-image: url('/app/plugin/interactiveMap/images/pin-white.png'); }
 .mapplic-pin.green { background-image: url('/app/plugin/interactiveMap/images/pin-green.png'); }
 .mapplic-pin.blue { background-image: url('/app/plugin/interactiveMap/images/pin-blue.png'); }
 .mapplic-pin.purple { background-image: url('/app/plugin/interactiveMap/images/pin-purple.png'); }
