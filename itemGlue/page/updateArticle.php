@@ -4,7 +4,7 @@ if (!empty($_GET['id'])): ?>
     $Article = new App\Plugin\ItemGlue\Article();
     $Article->setId($_GET['id']);
     if ($Article->show()) : ?>
-        <?php require(ITEMGLUE_PATH. 'process/postProcess.php'); ?>
+        <?php require(ITEMGLUE_PATH . 'process/postProcess.php'); ?>
         <div class="container">
             <div class="row">
                 <div class="col-12">
@@ -26,6 +26,11 @@ if (!empty($_GET['id'])): ?>
                     </div>
                 </div>
             <?php endif; ?>
+            <div class="custom-control custom-checkbox my-3">
+                <input type="checkbox" class="custom-control-input" id="updateSlugAuto">
+                <label class="custom-control-label"
+                       for="updateSlugAuto"><?= trans('Mettre à jour le lien de l\'article automatiquement'); ?></label>
+            </div>
             <form action="" method="post" id="updatePageForm">
                 <?= getTokenField(); ?>
                 <input type="hidden" name="id" value="<?= $Article->getId(); ?>">
@@ -56,8 +61,15 @@ if (!empty($_GET['id'])): ?>
         </div>
         <script>
             $(document).ready(function () {
+
+                $('#updateSlugAuto').on('change', function () {
+                    $('input#slug').val(convertToSlug($('input#name').val()));
+                });
+
                 $('input#name').keyup(function () {
-                    $('input#slug').val(convertToSlug($(this).val()));
+                    if ($('#updateSlugAuto').is(':checked')) {
+                        $('input#slug').val(convertToSlug($(this).val()));
+                    }
                 });
             });
         </script>

@@ -26,6 +26,11 @@ if (!empty($_GET['id'])): ?>
                     </div>
                 </div>
             <?php endif; ?>
+            <div class="custom-control custom-checkbox my-3">
+                <input type="checkbox" class="custom-control-input" id="updateSlugAuto">
+                <label class="custom-control-label"
+                       for="updateSlugAuto"><?= trans('Mettre à jour le lien de la page automatiquement'); ?></label>
+            </div>
             <form action="" method="post" id="updatePageForm">
                 <?= getTokenField(); ?>
                 <input type="hidden" name="id" value="<?= $Cms->getId(); ?>">
@@ -56,8 +61,14 @@ if (!empty($_GET['id'])): ?>
         </div>
         <script>
             $(document).ready(function () {
+                $('#updateSlugAuto').on('change', function () {
+                    $('input#slug').val(convertToSlug($('input#name').val()));
+                });
+
                 $('input#name').keyup(function () {
-                    $('input#slug').val(convertToSlug($(this).val()));
+                    if ($('#updateSlugAuto').is(':checked')) {
+                        $('input#slug').val(convertToSlug($(this).val()));
+                    }
                 });
             });
         </script>
