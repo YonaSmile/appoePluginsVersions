@@ -164,10 +164,11 @@ if (!empty($_GET['id'])): ?>
                                 </div>
                             <?php endforeach; ?>
                         </div>
+                        <hr class="mt-2 mt-3 mb-1 mx-5">
                     <?php endif; ?>
                     <?php if ($USER->getRole() > 3): ?>
                         <div class="row">
-                            <div class="col-12 my-3">
+                            <div class="col-12">
                                 <h2 class="subTitle" style="position: relative">
                                     <?= trans('Détails de l\'article'); ?>
                                     <button id="addMetaArticleBtn" type="button" class="btn btn-outline-info btn-sm"
