@@ -133,7 +133,9 @@ if (!empty($_GET['id'])): ?>
                                 $input.data('idcmscontent', data);
                             }
 
-                            $('small.' + metaKey).html('<?= trans('Enregistré'); ?>');
+                            $('small.categoryIdFloatContenaire').fadeOut(function () {
+                                $('small.' + metaKey).html('<?= trans('Enregistré'); ?>').stop().fadeIn();
+                            });
                             availableApp();
                         }
                     }
