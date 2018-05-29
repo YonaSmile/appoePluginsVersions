@@ -32,7 +32,7 @@ require( CMS_PATH . 'process/postProcess.php' );
                 <?= App\Form::text( trans('Nom du lien URL').' (slug)', 'slug', 'text', ! empty( $_POST['slug'] ) ? $_POST['slug'] : '', true, 100 ); ?>
             </div>
             <div class="col-12 my-2">
-                <?= App\Form::radio(trans('Statut de la page'), 'statut', array_map('trans', CMS_PAGE_STATUS), ! empty( $_POST['statut'] ) ? $_POST['statut'] : '', true); ?>
+                <?= App\Form::radio(trans('Statut de la page'), 'statut', array_map('trans', CMS_PAGE_STATUS), ! empty( $_POST['statut'] ) ? $_POST['statut'] : 1, true); ?>
             </div>
         </div>
         <div class="my-2"></div>
