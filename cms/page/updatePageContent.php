@@ -7,9 +7,7 @@ if (!empty($_GET['id'])): ?>
         <?php
         $allCmsPages = $Cms->showAllPages();
         $allPages = extractFromObjArr($allCmsPages, 'id');
-
         $CmsContent = new App\Plugin\Cms\CmsContent($Cms->getId(), LANG);
-        $allContentArr = $CmsContent->getData();
         ?>
         <div class="container">
             <div class="row">
@@ -66,33 +64,7 @@ if (!empty($_GET['id'])): ?>
             <?php if (file_exists(TEMPLATES_PATH . $Cms->getSlug() . '.php')): ?>
                 <form action="" method="post" id="pageContentManageForm">
                     <div class="row">
-                        <?php
-                        $allContent = extractFromObjArr($allContentArr, 'metaKey');
-                        $pageContent = getFileContent(TEMPLATES_PATH . $Cms->getSlug() . '.php');
-
-                        if (preg_match_all("/{{(.*?)}}/", $pageContent, $match)) {
-
-                            $template = array_unique($match[1]);
-                            foreach ($template as $i => $adminZone) {
-                                if (strpos($adminZone, '_')) {
-                                    echo '<div class="col-12">';
-
-                                    list($metaKey, $formType) = explode('_', $adminZone);
-                                    $metaKeyDisplay = ucfirst(str_replace('-', ' ', $metaKey));
-                                    $idCmsContent = !empty($allContent[$metaKey]) ? $allContent[$metaKey]->id : '';
-                                    $valueCmsContent = !empty($allContent[$metaKey]) ? $allContent[$metaKey]->metaValue : '';
-
-                                    if ($formType == 'text') {
-                                        echo App\Form::text($metaKeyDisplay, $metaKey, 'text', $valueCmsContent, false, 250, 'data-idcmscontent="' . $idCmsContent . '"', '', '', '...');
-                                    } elseif ($formType == 'textarea') {
-                                        echo App\Form::textarea($metaKeyDisplay, $metaKey, $valueCmsContent, 8, false, 'data-idcmscontent="' . $idCmsContent . '"', 'ckeditor');
-                                    }
-
-                                    echo '</div>';
-                                }
-                            }
-                        }
-                        ?>
+                        <?= showTemplateZones(TEMPLATES_PATH . $Cms->getSlug() . '.php', $CmsContent->getData()); ?>
                     </div>
                     <div class="my-2"></div>
                     <div class="row">
