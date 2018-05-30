@@ -105,7 +105,7 @@ if (!empty($_GET['id'])): ?>
                                 $input.data('idcmscontent', data);
                             }
 
-                            $('small.categoryIdFloatContenaire').fadeOut(function () {
+                            $('small.categoryIdFloatContenaire').stop().fadeOut(function () {
                                 $('small.' + metaKey).html('<?= trans('Enregistré'); ?>').stop().fadeIn();
                             });
                             availableApp();
