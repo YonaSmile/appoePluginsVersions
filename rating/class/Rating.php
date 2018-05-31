@@ -129,7 +129,7 @@ class Rating
                     PRIMARY KEY (`id`),
                     `type` VARCHAR(150) NOT NULL,
                     `typeId` INT(11) UNSIGNED NOT NULL,
-                    `user` VARCHAR(255) NOT NULL
+                    `user` VARCHAR(255) NOT NULL,
                     UNIQUE (`type`, `typeId`, `user`),
                     `score` TINYINT(2) NOT NULL,
                 	`updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -151,7 +151,7 @@ class Rating
      */
     public function show($countRating = false)
     {
-        $sql = 'SELECT * FROM appoe_plugin_rating WHERE type = :type AND typeId = :typeId ORDER BY updateAt DESC';
+        $sql = 'SELECT * FROM appoe_plugin_rating WHERE type = :type AND typeId = :typeId ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':type', $this->type);
         $stmt->bindParam(':typeId', $this->typeId);
@@ -174,7 +174,7 @@ class Rating
      */
     public function showAll($countRating = false)
     {
-        $sql = 'SELECT * FROM appoe_plugin_rating ORDER BY updateAt DESC';
+        $sql = 'SELECT * FROM appoe_plugin_rating ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();
 
@@ -203,14 +203,12 @@ class Rating
         $stmt->bindParam(':score', $this->score);
         $stmt->execute();
 
-        $personId = $this->dbh->lastInsertId();
+        $this->id = $this->dbh->lastInsertId();
 
         $error = $stmt->errorInfo();
         if ($error[0] != '00000') {
             return false;
         } else {
-            $this->id = $personId;
-
             return true;
         }
     }

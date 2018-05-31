@@ -1,37 +1,36 @@
-<?php require( 'header.php' );
-require( ITEMGLUE_PATH . 'process/postProcess.php' );
+<?php require('header.php');
+require(ITEMGLUE_PATH . 'process/postProcess.php');
 ?>
 <div class="container">
     <div class="row">
         <div class="col-12">
-            <h1 class="bigTitle"><?= trans( 'Nouvel article' ); ?></h1>
+            <h1 class="bigTitle"><?= trans('Nouvel article'); ?></h1>
             <hr class="my-4">
         </div>
     </div>
-	<?php if ( isset( $Response ) ): ?>
+    <?php if (isset($Response)): ?>
         <div class="row">
             <div class="col-12">
                 <div class="alert alert-<?= $Response->display()->status ?>" role="alert">
-					<?= $Response->display()->error_msg; ?>
+                    <?= $Response->display()->error_msg; ?>
                 </div>
             </div>
         </div>
-	<?php endif; ?>
+    <?php endif; ?>
     <form action="" method="post" id="addArticleForm">
-		<?= getTokenField(); ?>
-
+        <?= getTokenField(); ?>
         <div class="row">
             <div class="col-12 my-2">
-				<?= App\Form::text( trans('Nom'), 'name', 'text', ! empty( $_POST['name'] ) ? $_POST['name'] : '', true, 70 ); ?>
+                <?= App\Form::text(trans('Nom'), 'name', 'text', !empty($_POST['name']) ? $_POST['name'] : '', true, 70); ?>
             </div>
             <div class="col-12 my-2">
-				<?= App\Form::text( trans('Description'), 'description', 'text', ! empty( $_POST['description'] ) ? $_POST['description'] : '', true, 160 ); ?>
+                <?= App\Form::text(trans('Description'), 'description', 'text', !empty($_POST['description']) ? $_POST['description'] : '', true, 160); ?>
             </div>
             <div class="col-12 my-2">
-				<?= App\Form::text( trans('Nom du lien URL').' (slug)', 'slug', 'text', ! empty( $_POST['slug'] ) ? $_POST['slug'] : '', true, 100 ); ?>
+                <?= App\Form::text(trans('Nom du lien URL') . ' (slug)', 'slug', 'text', !empty($_POST['slug']) ? $_POST['slug'] : '', true, 100); ?>
             </div>
             <div class="col-12 my-2">
-				<?= App\Form::radio(trans('Statut de l\'article'), 'statut', array_map('trans', ITEMGLUE_ARTICLES_STATUS), ! empty( $_POST['statut'] ) ? $_POST['statut'] : '', true); ?>
+                <?= App\Form::radio(trans('Statut de l\'article'), 'statut', array_map('trans', ITEMGLUE_ARTICLES_STATUS), !empty($_POST['statut']) ? $_POST['statut'] : 1, true); ?>
             </div>
         </div>
         <div class="my-2"></div>
@@ -52,4 +51,4 @@ require( ITEMGLUE_PATH . 'process/postProcess.php' );
         });
     });
 </script>
-<?php require( 'footer.php' ); ?>
+<?php require('footer.php'); ?>

@@ -1,6 +1,7 @@
 Options +FollowSymlinks
 RewriteEngine On
-RewriteBase /app/plugin/people/page/
+RewriteBase /app/plugin/rating/page/
+RewriteRule ^allRating/$  allRating.php [L]
 
 RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} !-d
