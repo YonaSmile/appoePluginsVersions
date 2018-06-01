@@ -37,7 +37,7 @@ jQuery(document).ready(function ($) {
 
     $('.starClick').bind('click', function () {
 
-        $('.total_votes').html('<i class="fas fa-circle-notch fa-spin"></i>');
+        $('.total_votes').html('Merci');
 
         var star = this;
         var widget = $(this).parent();
@@ -62,6 +62,8 @@ jQuery(document).ready(function ($) {
     });
 
     function set_votes(widget) {
+
+        $('.total_votes').html('<i class="fas fa-circle-notch fa-spin"></i>');
 
         var avg = $(widget).data('fsr').whole_avg;
         var votes = $(widget).data('fsr').number_votes;
