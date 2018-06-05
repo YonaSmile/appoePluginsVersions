@@ -111,7 +111,7 @@ class ArticleMeta
         `metaKey` VARCHAR(150) NOT NULL,
         `metaValue` VARCHAR(500) NOT NULL,
         `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        UNIQUE (`idArticle`, `metaKey`, `lang`)
+        UNIQUE (`idArticle`, `metaKey`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;';
 
         $stmt = $this->dbh->prepare($sql);
@@ -225,7 +225,7 @@ class ArticleMeta
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id, idArticle, metaKey FROM appoe_plugin_itemGlue_articles_meta WHERE idArticle = :idArticle AND metaKey = :metaKey';
+        $sql = 'SELECT id FROM appoe_plugin_itemGlue_articles_meta WHERE idArticle = :idArticle AND metaKey = :metaKey';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':idArticle', $this->idArticle);
         $stmt->bindParam(':metaKey', $this->metaKey);
