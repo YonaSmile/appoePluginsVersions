@@ -1,17 +1,23 @@
 jQuery(document).ready(function ($) {
 
+    var starClick = 0;
+
     $('.total_votes').html('');
 
     $('.starClick').hover(
         // Handles the mouseover
         function () {
-            $(this).prevAll().andSelf().addClass('ratings_over');
-            $(this).nextAll().removeClass('ratings_vote');
+            if (starClick == 0) {
+                $(this).prevAll().andSelf().addClass('ratings_over');
+                $(this).nextAll().removeClass('ratings_vote');
+            }
         },
         // Handles the mouseout
         function () {
-            $(this).prevAll().andSelf().removeClass('ratings_over');
-            set_votes($(this).parent());
+            if (starClick == 0) {
+                $(this).prevAll().andSelf().removeClass('ratings_over');
+                set_votes($(this).parent());
+            }
         }
     );
 
@@ -37,28 +43,31 @@ jQuery(document).ready(function ($) {
 
     $('.starClick').bind('click', function () {
 
-        $('.total_votes').html('Merci');
+        if (starClick == 0) {
 
-        var star = this;
-        var widget = $(this).parent();
+            starClick++;
+            var star = this;
+            var widget = $(this).parent();
 
-        var clicked_data = {
-            clicked_on: $(star).attr('class').split(' ')[0],
-            widget_id: widget.attr('id').split('-')[1],
-            widget_type: widget.data('type')
-        };
+            var clicked_data = {
+                clicked_on: $(star).attr('class').split(' ')[0],
+                widget_id: widget.attr('id').split('-')[1],
+                widget_type: widget.data('type')
+            };
 
-        $.post(
-            '/app/plugin/rating/process/ajaxProcess.php',
-            clicked_data,
-            function (INFO) {
-                if (INFO) {
-                    widget.data('fsr', INFO);
-                    set_votes(widget);
-                }
-            },
-            'json'
-        );
+            $.post(
+                '/app/plugin/rating/process/ajaxProcess.php',
+                clicked_data,
+                function (INFO) {
+                    if (INFO) {
+                        $('.total_votes').html(INFO);
+                        /*widget.data('fsr', INFO);
+                        set_votes(widget);*/
+                    }
+                },
+                'json'
+            );
+        }
     });
 
     function set_votes(widget) {

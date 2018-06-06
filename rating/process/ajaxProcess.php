@@ -24,10 +24,12 @@ if (checkAjaxRequest()) {
 
         if ($Rating->save()) {
 
-            $data = getRate($Rating->getData(), 1, $match[1]);
+            /*$data = getRate($Rating->getData());
             $data['widget_id'] = 'item-' . $_POST['widget_id'];
 
-            echo json_encode($data);
+            echo json_encode($data);*/
+
+            echo json_encode('Merci');
         }
     }
 

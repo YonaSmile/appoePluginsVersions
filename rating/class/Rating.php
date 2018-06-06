@@ -8,6 +8,7 @@ class Rating
     protected $typeId;
     protected $user;
     protected $score;
+    protected $status;
     protected $updatedAt;
 
     private $data;
@@ -22,7 +23,7 @@ class Rating
         if (!is_null($type) && !is_null($typeId)) {
             $this->type = $type;
             $this->typeId = $typeId;
-            $this->show();
+            $this->showByType();
         }
     }
 
@@ -109,6 +110,22 @@ class Rating
     /**
      * @return mixed
      */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param mixed $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getData()
     {
         return $this->data;
@@ -132,6 +149,7 @@ class Rating
                     `user` VARCHAR(255) NOT NULL,
                     UNIQUE (`type`, `typeId`, `user`),
                     `score` TINYINT(2) NOT NULL,
+                    `status` TINYINT(1) NOT NULL DEFAULT 0,
                 	`updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 				) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;';
 
@@ -146,15 +164,13 @@ class Rating
     }
 
     /**
-     * @param $countRating
-     * @return array|int
+     * @return bool
      */
-    public function show($countRating = false)
+    public function show()
     {
-        $sql = 'SELECT * FROM appoe_plugin_rating WHERE type = :type AND typeId = :typeId ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_rating WHERE id = :id';
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':type', $this->type);
-        $stmt->bindParam(':typeId', $this->typeId);
+        $stmt->bindParam(':id', $this->id);
         $stmt->execute();
 
         $count = $stmt->rowCount();
@@ -162,31 +178,69 @@ class Rating
         if ($error[0] != '00000') {
             return false;
         } else {
-            $this->data = $stmt->fetchAll(\PDO::FETCH_OBJ);
+            if ($count == 1) {
+                $row = $stmt->fetch(\PDO::FETCH_OBJ);
+                $this->feed($row);
+                return true;
 
-            return (!$countRating) ? $this->data : $count;
+            } else {
+                return false;
+            }
         }
     }
 
     /**
      * @param $countRating
+     * * @param $status
      * @return array|int
      */
-    public function showAll($countRating = false)
+    public function showByType($countRating = false, $status = 1)
     {
-        $sql = 'SELECT * FROM appoe_plugin_rating ORDER BY updated_at DESC';
-        $stmt = $this->dbh->prepare($sql);
-        $stmt->execute();
+        if (is_int($status)) {
+            $sql = 'SELECT * FROM appoe_plugin_rating WHERE type = :type AND typeId = :typeId AND status = :status ORDER BY updated_at DESC';
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->bindParam(':type', $this->type);
+            $stmt->bindParam(':typeId', $this->typeId);
+            $stmt->bindParam(':status', $status);
+            $stmt->execute();
 
-        $count = $stmt->rowCount();
-        $error = $stmt->errorInfo();
-        if ($error[0] != '00000') {
-            return false;
-        } else {
-            $this->data = $stmt->fetchAll(\PDO::FETCH_OBJ);
+            $count = $stmt->rowCount();
+            $error = $stmt->errorInfo();
+            if ($error[0] != '00000') {
+                return false;
+            } else {
+                $this->data = $stmt->fetchAll(\PDO::FETCH_OBJ);
 
-            return (!$countRating) ? $this->data : $count;
+                return (!$countRating) ? $this->data : $count;
+            }
         }
+        return false;
+    }
+
+    /**
+     * @param $countRating
+     * @param $status
+     * @return array|int
+     */
+    public function showAll($countRating = false, $status = 1)
+    {
+        if (is_int($status)) {
+            $sql = 'SELECT * FROM appoe_plugin_rating WHERE status = :status ORDER BY updated_at DESC';
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->bindParam(':status', $status);
+            $stmt->execute();
+
+            $count = $stmt->rowCount();
+            $error = $stmt->errorInfo();
+            if ($error[0] != '00000') {
+                return false;
+            } else {
+                $this->data = $stmt->fetchAll(\PDO::FETCH_OBJ);
+
+                return (!$countRating) ? $this->data : $count;
+            }
+        }
+        return false;
     }
 
     /**

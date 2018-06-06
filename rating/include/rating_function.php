@@ -22,11 +22,11 @@ function getRate($dbRates, $moreVotes = 0, $moreSum = 0)
     return $data;
 }
 
-function getAllRates()
+function getAllRates($status = 1)
 {
 
     $Rating = new App\Plugin\Rating\Rating();
-    $allRating = $Rating->showAll();
+    $allRating = $Rating->showAll(false, $status);
 
     $types = array();
     foreach ($allRating as $rating) {

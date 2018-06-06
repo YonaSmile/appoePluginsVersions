@@ -242,7 +242,7 @@ class Article
         ON(C.id = CR.categoryId)
         INNER JOIN appoe_plugin_itemGlue_articles_content AS AC
         ON(AC.idArticle = ART.id)
-        WHERE CR.type = "ITEMGLUE" AND ART.statut > 0 AND AC.lang = :lang' . $categorySQL . '
+        WHERE CR.type = "ITEMGLUE" AND ART.statut > 0 AND C.status > 0 AND AC.lang = :lang' . $categorySQL . '
         GROUP BY ART.id ORDER BY ART.statut DESC, AC.updated_at DESC';
 
         $stmt = $this->dbh->prepare($sql);

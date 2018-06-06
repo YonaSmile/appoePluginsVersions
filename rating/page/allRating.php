@@ -1,6 +1,8 @@
 <?php
 require('header.php');
+$unconfirmedRating = getAllRates(0);
 $allRating = getAllRates();
+$Article = new App\Plugin\ItemGlue\Article();
 ?>
     <div class="container">
         <div class="row">
@@ -11,34 +13,32 @@ $allRating = getAllRates();
         </div>
         <div class="row">
             <div class="col-12">
-                <?php if ($allRating): ?>
-                    <?php $Cls = new App\Plugin\ItemGlue\Article(); ?>
-                    <h2 class="subTitle"><?= trans('Article'); ?></h2>
-                    <div class="table-responsive">
-                        <table id="ratingTable"
-                               class="sortableTable table table-striped table-hover table-bordered">
-                            <thead>
-                            <tr>
-                                <th><?= trans('Titre'); ?></th>
-                                <th><?= trans('Note'); ?></th>
-                                <th><?= trans('Nombre d\'évaluations'); ?></th>
-                                <th><?= trans('Score'); ?></th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-
-                            <?php foreach ($allRating['ITEMGLUE'] as $typeId => $rating): ?>
-                                <?php
-                                $Cls->setId($typeId);
-                                $Cls->show();
+                <div class="table-responsive">
+                    <table id="ratingTable"
+                           class="sortableTable table table-striped table-hover table-bordered">
+                        <thead>
+                        <tr>
+                            <th><?= trans('Titre'); ?></th>
+                            <th><?= trans('Note'); ?></th>
+                            <th><?= trans('Nombre d\'évaluations'); ?></th>
+                            <th><?= trans('Score'); ?></th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php if ($allRating): foreach ($allRating as $key => $type): ?>
+                            <!-- TODO -->
+                            <h2 class="subTitle"><?= trans('Article'); ?></h2>
+                            <?php foreach ($type as $typeId => $rating) :
+                                $Article->setId($typeId);
+                                $Article->show();
                                 ?>
                                 <tr>
-                                    <td><?= $Cls->getName(); ?></td>
+                                    <td><?= $Article->getName(); ?></td>
                                     <td>
-                                        <span style="margin-right: 10px;">
-                                            <strong><?= $rating['average'] ?></strong>/5
-                                        </span> <?= showRatings('ITEMGLUE', $typeId, false, 'littleStars', true); ?>
+                                    <span style="margin-right: 10px;">
+                                        <strong><?= $rating['average'] ?></strong>/5
+                                    </span> <?= showRatings($key, $typeId, false, 'littleStars', true); ?>
                                     </td>
                                     <td><?= $rating['nbVotes'] ?></td>
                                     <td><?= $rating['score'] ?></td>
@@ -50,12 +50,10 @@ $allRating = getAllRates();
                                         </button>
                                     </td>
                                 </tr>
-                            <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
-
-                <?php endif; ?>
+                            <?php endforeach; endforeach; endif; ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
