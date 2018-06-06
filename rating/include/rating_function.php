@@ -50,30 +50,19 @@ function getAllRates()
     return $types;
 }
 
-function showRatings($type, $typeId)
+function showRatings($type, $typeId, $clicable = true, $sizeClass = 'largeStars', $minimize = false)
 {
-    return '<div class="movie_choice">
+    $html = '<div class="movie_choice">
                 <div id="item-' . $typeId . '" data-type="' . $type . '" class="rate_widget">
-                    <div class="star_1 ratings_stars"></div>
-                    <div class="star_2 ratings_stars"></div>
-                    <div class="star_3 ratings_stars"></div>
-                    <div class="star_4 ratings_stars"></div>
-                    <div class="star_5 ratings_stars"></div>
-                    <div class="total_votes">...</div>
-                </div>
-            </div>';
-}
+                    <div class="star_1 ratings_stars ' . ($clicable ? ' starClick ' : '') . $sizeClass . '"></div>
+                    <div class="star_2 ratings_stars ' . ($clicable ? ' starClick ' : '') . $sizeClass . '"></div>
+                    <div class="star_3 ratings_stars ' . ($clicable ? ' starClick ' : '') . $sizeClass . '"></div>
+                    <div class="star_4 ratings_stars ' . ($clicable ? ' starClick ' : '') . $sizeClass . '"></div>
+                    <div class="star_5 ratings_stars ' . ($clicable ? ' starClick ' : '') . $sizeClass . '"></div>';
+    if (!$minimize) {
+        $html .= '<div class="total_votes" >...</div>';
+    }
+    $html .= '</div></div>';
 
-function showLetRatings($type, $typeId)
-{
-    return '<div class="movie_choice">
-                <div id="item-' . $typeId . '" data-type="' . $type . '" class="rate_widget">
-                    <div class="star_1 ratings_stars starClick"></div>
-                    <div class="star_2 ratings_stars starClick"></div>
-                    <div class="star_3 ratings_stars starClick"></div>
-                    <div class="star_4 ratings_stars starClick"></div>
-                    <div class="star_5 ratings_stars starClick"></div>
-                    <div class="total_votes">...</div>
-                </div>
-            </div>';
+    return $html;
 }

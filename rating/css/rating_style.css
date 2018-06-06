@@ -1,36 +1,51 @@
 .rate_widget {
     overflow: visible;
-    padding: 10px 10px 0;
     position: relative;
-    width: 180px;
-    height: 50px;
 }
 
 .ratings_stars {
     background: url('../images/star_empty.png') no-repeat;
+    background-size: 100%;
     float: left;
-    height: 28px;
     padding: 2px;
-    width: 32px;
 }
 
 .ratings_vote {
     background: url('../images/star_full.png') no-repeat;
+    background-size: 100%;
 }
 
 .ratings_over {
     background: url('../images/star_highlight.png') no-repeat;
+    background-size: 100%;
 }
 
 .total_votes {
-    top: 50px;
-    left: 10px;
-    padding: 0;
-    position: absolute;
+    padding: 5px 0;
+    display: block;
+    float: none;
+    clear: both;
 }
 
 .movie_choice {
     font: 10px verdana, sans-serif;
-    margin: 0 auto 40px auto;
-    width: 180px;
+    margin: 0 auto;
+    display: inline-block;
+    vertical-align: middle;
+    overflow: visible;
+}
+
+.largeStars {
+    height: 30px;
+    width: 30px;
+}
+
+.mediumStars {
+    height: 20px;
+    width: 20px;
+}
+
+.littleStars {
+    height: 15px;
+    width: 15px;
 }
