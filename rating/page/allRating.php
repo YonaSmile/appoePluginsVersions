@@ -35,7 +35,11 @@ $allRating = getAllRates();
                                 ?>
                                 <tr>
                                     <td><?= $Cls->getName(); ?></td>
-                                    <td><strong><?= $rating['average'] ?></strong>/5</td>
+                                    <td>
+                                        <span style="margin-right: 10px;">
+                                            <strong><?= $rating['average'] ?></strong>/5
+                                        </span> <?= showRatings('ITEMGLUE', $typeId, false, 'littleStars', true); ?>
+                                    </td>
                                     <td><?= $rating['nbVotes'] ?></td>
                                     <td><?= $rating['score'] ?></td>
                                     <td>
@@ -62,7 +66,7 @@ $allRating = getAllRates();
                 var type = $btn.data('type');
                 var typeId = $btn.data('typeid');
 
-                if(confirm('<?= trans('Vous allez réinitialiser les évaluations'); ?>')) {
+                if (confirm('<?= trans('Vous allez réinitialiser les évaluations'); ?>')) {
                     $.post(
                         '<?= RATING_URL; ?>process/ajaxProcess.php',
                         {
