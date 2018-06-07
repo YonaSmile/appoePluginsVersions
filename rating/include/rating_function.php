@@ -7,18 +7,20 @@ function getAverage($data)
 
 function getRate($dbRates, $moreVotes = 0, $moreSum = 0)
 {
-
+    $data = array();
     $numberVotes = count($dbRates) + $moreVotes;
     $sum = $moreSum;
 
-    foreach ($dbRates as $key => $values) {
-        $sum += $values->score;
-    }
+    if ($numberVotes > 0) {
+        foreach ($dbRates as $key => $values) {
+            $sum += $values->score;
+        }
 
-    $data['number_votes'] = $numberVotes;
-    $data['total_points'] = $sum;
-    $data['dec_avg'] = round($data['total_points'] / $data['number_votes'], 1);
-    $data['whole_avg'] = round($data['dec_avg']);
+        $data['number_votes'] = $numberVotes;
+        $data['total_points'] = $sum;
+        $data['dec_avg'] = round($data['total_points'] / $data['number_votes'], 1);
+        $data['whole_avg'] = round($data['dec_avg']);
+    }
     return $data;
 }
 
@@ -50,10 +52,16 @@ function getAllRates($status = 1)
     return $types;
 }
 
+function getUnconfirmedRates()
+{
+    $Rating = new App\Plugin\Rating\Rating();
+    return $Rating->showAll(false, 0);
+}
+
 function showRatings($type, $typeId, $clicable = true, $sizeClass = 'largeStars', $minimize = false)
 {
     $html = '<div class="movie_choice">
-                <div id="item-' . $typeId . '" data-type="' . $type . '" class="rate_widget">
+                <div id="' . strtoupper($type) . '-item-' . $typeId . '" data-type="' . $type . '" class="rate_widget">
                     <div class="star_1 ratings_stars ' . ($clicable ? ' starClick ' : '') . $sizeClass . '"></div>
                     <div class="star_2 ratings_stars ' . ($clicable ? ' starClick ' : '') . $sizeClass . '"></div>
                     <div class="star_3 ratings_stars ' . ($clicable ? ' starClick ' : '') . $sizeClass . '"></div>
@@ -65,4 +73,19 @@ function showRatings($type, $typeId, $clicable = true, $sizeClass = 'largeStars'
     $html .= '</div></div>';
 
     return $html;
+}
+
+function getObj($type)
+{
+
+    switch ($type) {
+        case 'ITEMGLUE':
+            return new App\Plugin\ItemGlue\Article();
+            break;
+        case 'CMS':
+            return new App\Plugin\Cms\Cms();
+            break;
+        default:
+            return false;
+    }
 }

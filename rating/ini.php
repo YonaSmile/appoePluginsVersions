@@ -5,3 +5,8 @@ define('RATING_URL', WEB_PLUGIN_URL . 'rating/');
 const PLUGIN_TABLES = array(
     'appoe_plugin_rating'
 );
+
+const TYPES_NAMES = array(
+    'ITEMGLUE' => 'Article',
+    'CMS' => 'Page'
+);

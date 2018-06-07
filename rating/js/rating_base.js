@@ -24,7 +24,7 @@ jQuery(document).ready(function ($) {
     $('.rate_widget').each(function (i) {
         var widget = this;
         var out_data = {
-            widget_id: $(widget).attr('id').split('-')[1],
+            widget_id: $(widget).attr('id').split('-')[2],
             widget_type: $(widget).data('type'),
             fetch: 1
         };
@@ -51,7 +51,7 @@ jQuery(document).ready(function ($) {
 
             var clicked_data = {
                 clicked_on: $(star).attr('class').split(' ')[0],
-                widget_id: widget.attr('id').split('-')[1],
+                widget_id: widget.attr('id').split('-')[2],
                 widget_type: widget.data('type')
             };
 
@@ -72,14 +72,18 @@ jQuery(document).ready(function ($) {
 
     function set_votes(widget) {
 
-        $('.total_votes', widget).html('<i class="fas fa-circle-notch fa-spin"></i>');
+        $('.total_votes', widget).html('');
 
-        var avg = $(widget).data('fsr').whole_avg;
-        var votes = $(widget).data('fsr').number_votes;
-        var exact = $(widget).data('fsr').dec_avg;
+        if ($(widget).data('fsr').whole_avg) {
+            $('.total_votes', widget).html('<i class="fas fa-circle-notch fa-spin"></i>');
 
-        $(widget).find('.star_' + avg).prevAll().andSelf().addClass('ratings_vote');
-        $(widget).find('.star_' + avg).nextAll().removeClass('ratings_vote');
-        $(widget).find('.total_votes').text(votes + ' évaluations ( note : ' + exact + ' )');
+            var avg = $(widget).data('fsr').whole_avg;
+            var votes = $(widget).data('fsr').number_votes;
+            var exact = $(widget).data('fsr').dec_avg;
+
+            $(widget).find('.star_' + avg).prevAll().andSelf().addClass('ratings_vote');
+            $(widget).find('.star_' + avg).nextAll().removeClass('ratings_vote');
+            $(widget).find('.total_votes').text(votes + ' évaluations ( note : ' + exact + ' )');
+        }
     }
 });

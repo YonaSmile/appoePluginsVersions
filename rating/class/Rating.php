@@ -272,13 +272,14 @@ class Rating
      */
     public function update()
     {
-        $sql = 'UPDATE appoe_plugin_rating SET type = :type, typeId = :typeId, user = :user, score = :score WHERE id = :id';
+        $sql = 'UPDATE appoe_plugin_rating SET type = :type, typeId = :typeId, user = :user, score = :score, status = :status WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':type', $this->type);
         $stmt->bindParam(':typeId', $this->typeId);
         $stmt->bindParam(':user', $this->user);
         $stmt->bindParam(':score', $this->score);
+        $stmt->bindParam(':status', $this->status);
         $stmt->bindParam(':id', $this->id);
 
         $stmt->execute();
