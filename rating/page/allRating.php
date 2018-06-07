@@ -94,7 +94,6 @@ $allRating = getAllRates();
             $('.confirmRating').on('click', function () {
 
                 busyApp();
-                $('#allRatingTable').html('<i class="fas fa-circle-notch fa-spin"></i>');
 
                 var $btn = $(this);
                 var idRating = $btn.data('idrating');
@@ -109,9 +108,11 @@ $allRating = getAllRates();
                     }, function (data) {
                         if (data == 'true' || data === true) {
                             $btn.parent('td').parent('tr').fadeOut(function () {
-                                $('#allRatingTable').load('<?= RATING_URL; ?>page/getAllRating.php', function () {
-                                    availableApp();
-                                });
+                                $('#allRatingTable')
+                                    .html('<i class="fas fa-circle-notch fa-spin"></i>')
+                                    .load('<?= RATING_URL; ?>page/getAllRating.php', function () {
+                                        availableApp();
+                                    });
                             });
                         }
                     }
