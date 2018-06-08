@@ -1,9 +1,0 @@
-Options +FollowSymlinks
-RewriteEngine On
-RewriteBase /app/plugin/rating/page/
-RewriteRule ^allRating/$  allRating.php [L]
-
-RewriteEngine on
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule (.*) /404.php

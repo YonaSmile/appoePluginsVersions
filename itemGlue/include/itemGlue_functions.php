@@ -66,36 +66,40 @@ function getSpecificArticlesCategory($categoryId, $parentId = false, $favorite =
 
 function getSpecificArticlesDetailsBySlug($slug)
 {
-    $Traduction = new App\Plugin\Traduction\Traduction(LANG);
-    $slug = $Traduction->transToOrigin($slug);
+    if (!empty($slug)) {
+        $Traduction = new App\Plugin\Traduction\Traduction(LANG);
+        $slug = $Traduction->transToOrigin($slug);
 
-    //get article
-    $Article = new App\Plugin\ItemGlue\Article();
-    $Article->setSlug($slug);
-    $Article->showBySlug();
+        //get article
+        $Article = new App\Plugin\ItemGlue\Article();
+        $Article->setSlug($slug);
+        if ($Article->showBySlug()) {
 
-    //get article content
-    $ArticleContent = new App\Plugin\ItemGlue\ArticleContent($Article->getId(), LANG);
+            //get article content
+            $ArticleContent = new App\Plugin\ItemGlue\ArticleContent($Article->getId(), LANG);
 
-    //get all categories in relation with article
-    $CategoryRelation = new App\CategoryRelations('ITEMGLUE', $Article->getId());
-    $allCategoriesRelations = $CategoryRelation->getData();
+            //get all categories in relation with article
+            $CategoryRelation = new App\CategoryRelations('ITEMGLUE', $Article->getId());
+            $allCategoriesRelations = $CategoryRelation->getData();
 
-    //get article metas
-    $ArticleMeta = new App\Plugin\ItemGlue\ArticleMeta($Article->getId());
-    $allArticleMeta = $ArticleMeta->getData();
+            //get article metas
+            $ArticleMeta = new App\Plugin\ItemGlue\ArticleMeta($Article->getId());
+            $allArticleMeta = $ArticleMeta->getData();
 
-    //get article medias
-    $ArticleMedia = new App\Plugin\ItemGlue\ArticleMedia($Article->getId());
-    $allArticleMedia = $ArticleMedia->showFiles();
+            //get article medias
+            $ArticleMedia = new App\Plugin\ItemGlue\ArticleMedia($Article->getId());
+            $allArticleMedia = $ArticleMedia->showFiles();
 
-    $all['article'] = $Article;
-    $all['content'] = $ArticleContent;
-    $all['meta'] = $allArticleMeta;
-    $all['categories'] = $allCategoriesRelations;
-    $all['media'] = $allArticleMedia;
+            $all['article'] = $Article;
+            $all['content'] = $ArticleContent;
+            $all['meta'] = $allArticleMeta;
+            $all['categories'] = $allCategoriesRelations;
+            $all['media'] = $allArticleMedia;
 
-    return $all;
+            return $all;
+        }
+    }
+    return false;
 }
 
 function getCategoriesByArticle($id)
