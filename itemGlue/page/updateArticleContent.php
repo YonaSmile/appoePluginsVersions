@@ -224,7 +224,7 @@ if (!empty($_GET['id'])): ?>
                                 <div class="col-12 col-4 my-2">
                                     <div class="custom-control custom-checkbox">
                                         <input type="checkbox" class="custom-control-input" name="addTradValue"
-                                               id="customCheck1" checked>
+                                               id="customCheck1">
                                         <label class="custom-control-label"
                                                for="customCheck1"><?= trans('Ajouter une traduction'); ?></label>
                                     </div>
