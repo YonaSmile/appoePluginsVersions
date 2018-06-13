@@ -23,10 +23,10 @@ function checkExistingFiles()
         }
 
         //Edit
-        $parsed_json['users'] = array();
+        $parsed_json_mehoubarim['users'] = array();
 
         //Write
-        mehoubarim_jsonWrite($parsed_json);
+        mehoubarim_jsonWrite($parsed_json_mehoubarim);
     }
 
     //Visitor File
@@ -36,11 +36,11 @@ function checkExistingFiles()
         }
 
         //Edit
-        $parsed_json['visitors'] = array();
-        $parsed_json['totalPagesViews'] = array();
+        $parsed_json_visitors['visitors'] = array();
+        $parsed_json_visitors['totalPagesViews'] = array();
 
         //Write
-        mehoubarim_jsonWrite($parsed_json, VISITORS_JSON);
+        mehoubarim_jsonWrite($parsed_json_visitors, VISITORS_JSON);
     }
 
     //Global File
@@ -50,10 +50,10 @@ function checkExistingFiles()
         }
 
         //Edit
-        $parsed_json['dateBegin'] = date('Y-m-d H:i');
+        $parsed_json_global['dateBegin'] = date('Y-m-d H:i');
 
         //Write
-        mehoubarim_jsonWrite($parsed_json, GLOBAL_JSON);
+        mehoubarim_jsonWrite($parsed_json_global, GLOBAL_JSON);
     }
 
     return true;
