@@ -23,7 +23,7 @@ function checkExistingFiles()
         }
 
         //Edit
-        $parsed_json = array('users');
+        $parsed_json['users'] = array();
 
         //Write
         mehoubarim_jsonWrite($parsed_json);
