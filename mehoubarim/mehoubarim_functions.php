@@ -11,6 +11,55 @@ const STATUS_CONNECTED_USER = array(
 );
 
 /**
+ * check and create necessarily files
+ */
+function checkExistingFiles()
+{
+
+    //Connected Users File
+    if (!file_exists(MEHOUBARIM_JSON)) {
+        if (false === fopen(MEHOUBARIM_JSON, 'w+')) {
+            return checkExistingFiles();
+        }
+
+        //Edit
+        $parsed_json = array('users');
+
+        //Write
+        mehoubarim_jsonWrite($parsed_json);
+    }
+
+    //Visitor File
+    if (!file_exists(VISITORS_JSON)) {
+        if (false === fopen(VISITORS_JSON, 'w+')) {
+            return checkExistingFiles();
+        }
+
+        //Edit
+        $parsed_json['visitors'] = array();
+        $parsed_json['totalPagesViews'] = array();
+
+        //Write
+        mehoubarim_jsonWrite($parsed_json, VISITORS_JSON);
+    }
+
+    //Global File
+    if (!file_exists(GLOBAL_JSON)) {
+        if (false === fopen(GLOBAL_JSON, 'w+')) {
+            return checkExistingFiles();
+        }
+
+        //Edit
+        $parsed_json['dateBegin'] = date('Y-m-d H:i');
+
+        //Write
+        mehoubarim_jsonWrite($parsed_json, GLOBAL_JSON);
+    }
+
+    return true;
+}
+
+/**
  * write on json file
  *
  * @param $data
@@ -31,8 +80,12 @@ function mehoubarim_jsonWrite($data, $file = MEHOUBARIM_JSON)
  */
 function mehoubarim_jsonRead($file = MEHOUBARIM_JSON)
 {
-    $json = file_get_contents($file);
-    $parsed_json = json_decode($json, true);
+    $parsed_json = array();
+
+    if (checkExistingFiles()) {
+        $json = file_get_contents($file);
+        $parsed_json = json_decode($json, true);
+    }
 
     return $parsed_json;
 }
@@ -141,33 +194,35 @@ function mehoubarim_pageFreeToChanges()
         $parsed_json = mehoubarim_jsonRead();
 
         //Check
-        foreach ($parsed_json['users'] as $user => $param) {
+        if ($parsed_json) {
+            foreach ($parsed_json['users'] as $user => $param) {
 
-            if ($user != $userSessionId) {
-                if (isset($param['pageConsulting']) && $param['pageConsulting'] == $_SERVER['REQUEST_URI']) {
-                    if (preg_match('/update/i', basename($_SERVER['PHP_SELF']))) {
-                        if ($param['status'] == 'Actif') {
+                if ($user != $userSessionId) {
+                    if (isset($param['pageConsulting']) && $param['pageConsulting'] == $_SERVER['REQUEST_URI']) {
+                        if (preg_match('/update/i', basename($_SERVER['PHP_SELF']))) {
+                            if ($param['status'] == 'Actif') {
 
-                            //Edit
-                            $parsed_json['users'][$userSessionId]['pageConsulting'] = '';
+                                //Edit
+                                $parsed_json['users'][$userSessionId]['pageConsulting'] = '';
 
-                            //Write
-                            mehoubarim_jsonWrite($parsed_json);
+                                //Write
+                                mehoubarim_jsonWrite($parsed_json);
 
-                            return $user;
+                                return $user;
 
-                        } else {
+                            } else {
 
-                            //Edit
-                            $parsed_json['users'][$user]['pageConsulting'] = '';
+                                //Edit
+                                $parsed_json['users'][$user]['pageConsulting'] = '';
 
-                            //Write
-                            mehoubarim_jsonWrite($parsed_json);
+                                //Write
+                                mehoubarim_jsonWrite($parsed_json);
+                            }
                         }
                     }
                 }
-            }
 
+            }
         }
         return true;
     }
@@ -190,23 +245,25 @@ function mehoubarim_connectedUserStatus()
     $parsed_json = mehoubarim_jsonRead();
 
     //Check
-    foreach ($parsed_json['users'] as $user => $connectedUser) {
+    if ($parsed_json) {
+        foreach ($parsed_json['users'] as $user => $connectedUser) {
 
-        $lastConnect = $connectedUser['lastConnect'];
-        $statut = $connectedUser['status'];
+            $lastConnect = $connectedUser['lastConnect'];
+            $statut = $connectedUser['status'];
 
-        if ($statut != 'Déconnecté') {
+            if ($statut != 'Déconnecté') {
 
-            foreach ($statutArray as $timeArr => $statusArr) {
-                if ($lastConnect >= $timeArr) {
-                    $statut = $statusArr;
-                    break;
+                foreach ($statutArray as $timeArr => $statusArr) {
+                    if ($lastConnect >= $timeArr) {
+                        $statut = $statusArr;
+                        break;
+                    }
+                    $statut = 'Déconnecté';
                 }
-                $statut = 'Déconnecté';
-            }
 
-            //Edit
-            $parsed_json['users'][$user]['status'] = $statut;
+                //Edit
+                $parsed_json['users'][$user]['status'] = $statut;
+            }
         }
     }
 

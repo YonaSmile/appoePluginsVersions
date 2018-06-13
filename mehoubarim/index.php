@@ -7,28 +7,29 @@ $UserManager = new App\Users(getUserIdSession());
 
 //Connected User
 mehoubarim_connectedUserStatus();
-
-
-foreach (mehoubarim_connectedUsers() as $connectedUserId => $connectedUserData): ?>
-    <?php
-    $mehoubarim_UserStat->setId($connectedUserId);
-    if ($mehoubarim_UserStat->show() && $mehoubarim_UserStat->getStatut() && $mehoubarim_UserStat->getRole() < 5): ?>
-        <li>
-            <a>
-                <?php if ($UserManager->getRole() == '5' && $connectedUserData['status'] != 'Déconnecté'): ?>
-                    <span class="logoutUser float-left linkBtn" data-userid="<?= $mehoubarim_UserStat->getId(); ?>">
+$mehoubarim = mehoubarim_connectedUsers();
+if ($mehoubarim && is_array($mehoubarim)):
+    foreach ($mehoubarim as $connectedUserId => $connectedUserData): ?>
+        <?php
+        $mehoubarim_UserStat->setId($connectedUserId);
+        if ($mehoubarim_UserStat->show() && $mehoubarim_UserStat->getStatut() && $mehoubarim_UserStat->getRole() < 5): ?>
+            <li>
+                <a>
+                    <?php if ($UserManager->getRole() == '5' && $connectedUserData['status'] != 'Déconnecté'): ?>
+                        <span class="logoutUser float-left linkBtn" data-userid="<?= $mehoubarim_UserStat->getId(); ?>">
                         <i class="fas fa-times"></i></span>
-                <?php endif; ?>
-                <small>
-                    <?= $mehoubarim_UserStat->getNom() . ' ' . $mehoubarim_UserStat->getPrenom(); ?>
-                </small>
-                <span class="badge badge-<?= STATUS_CONNECTED_USER[$connectedUserData['status']]; ?>">
+                    <?php endif; ?>
+                    <small>
+                        <?= $mehoubarim_UserStat->getNom() . ' ' . $mehoubarim_UserStat->getPrenom(); ?>
+                    </small>
+                    <span class="badge badge-<?= STATUS_CONNECTED_USER[$connectedUserData['status']]; ?>">
                     <?= trans($connectedUserData['status']); ?>
                 </span>
-            </a>
-        </li>
-    <?php endif; ?>
-<?php endforeach; ?>
+                </a>
+            </li>
+        <?php endif; ?>
+    <?php endforeach;
+endif; ?>
 <script>
 
     jQuery(document).ajaxSend(function (e, xhr, options) {
