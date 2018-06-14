@@ -93,13 +93,56 @@ if (!empty($_GET['id'])): ?>
                         </button>
                     </div>
                     <div class="modal-body" id="libraryModalContent">
-                        <div class="spinner">
-                            <div class="rect1"></div>
-                            <div class="rect2"></div>
-                            <div class="rect3"></div>
-                            <div class="rect4"></div>
-                            <div class="rect5"></div>
-                        </div>
+                        <?php
+                        $Media = new App\Media();
+                        $Category = new App\Category();
+
+                        $Category->setType('MEDIA');
+                        $allCategories = $Category->showByType();
+
+                        $listCatgories = extractFromObjToArrForList($Category->showByType(), 'id');
+                        $allLibrary = extractFromObjToSimpleArr($allCategories, 'id', 'name');
+
+                        if ($allLibrary): ?>
+                            <div class="container-fluid">
+                                <?php foreach ($allLibrary as $id => $name): ?>
+                                    <?php
+                                    $Media->setTypeId($id);
+                                    $allFiles = $Media->showFiles();
+                                    if ($allFiles): ?>
+                                        <h5 class="libraryName p-3" id="media-<?= $id; ?>"><?= $name; ?></h5>
+                                        <hr class="my-3 mx-5">
+                                        <div class="card-columns">
+                                            <?php foreach ($allFiles as $file): ?>
+                                                <div class="card fileContent bg-none border-0">
+                                                    <?php if (isImage(FILE_DIR_PATH . $file->name)): ?>
+                                                        <img src="<?= getThumb($file->name, 370); ?>"
+                                                             alt="<?= $file->description; ?>"
+                                                             data-originsrc="<?= FILE_DIR_URL . $file->name; ?>"
+                                                             class="img-fluid seeOnOverlay">
+                                                    <?php else: ?>
+                                                        <a href="<?= FILE_DIR_URL . $file->name; ?>" target="_blank">
+                                                            <img src="<?= getImgAccordingExtension(getFileExtension($file->name)); ?>">
+                                                        </a>
+                                                    <?php endif; ?>
+                                                    <div class="form-group mt-1 mb-0">
+                                                        <small style="font-size: 9px;">
+                                                            <strong class="fileLink"
+                                                                    data-src="<?= FILE_DIR_URL . $file->name; ?>">
+                                                                <button class="btn btn-sm btn-outline-info btn-block copyLinkOnClick">
+                                                                    <?= trans('Choisir'); ?>
+                                                                </button>
+                                                            </strong>
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                        <div class="my-3"></div>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -141,14 +184,21 @@ if (!empty($_GET['id'])): ?>
 
             $(document).ready(function () {
 
-                var idCmsInput;
+                $(document).on('dblclick', 'input.urlFile', function (event) {
+                    event.stopPropagation();
+                    event.preventDefault();
 
-                $(document).on('click', '.libraryButton', function () {
-
-                    window.idCmsInput = $(this).data('idcmsinput');
-
+                    var idInput = $(this).attr('id');
+                    $('#libraryModal').data('inputid', idInput);
                     $('#libraryModal').modal('show');
-                    $('#libraryModalContent').load('<?= CMS_URL; ?>page/getMediaLibrary.php');
+                });
+
+                $('#libraryModal').on('click', '.copyLinkOnClick', function (e) {
+                    e.preventDefault();
+
+                    var src = $(this).parent().data('src');
+                    $('input#' + $('#libraryModal').data('inputid')).val(src).trigger('focus');
+                    $('#libraryModal').modal('hide');
                 });
 
                 $('form#pageContentManageForm').submit(function (event) {
@@ -185,13 +235,6 @@ if (!empty($_GET['id'])): ?>
                     location.assign(otherEventslink);
                 });
 
-                $('#libraryModal').on('click', '.copyLinkOnClick', function (e) {
-                    e.preventDefault();
-
-                    var src = $(this).parent().data('src');
-                    $('input[data-idcmscontent="' + window.idCmsInput + '"]').val(src).trigger('focus');
-                    $('#libraryModal').modal('hide');
-                });
             });
         </script>
     <?php else: ?>
