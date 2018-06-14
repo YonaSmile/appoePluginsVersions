@@ -1,6 +1,5 @@
 <?php
 require_once($_SERVER['DOCUMENT_ROOT'] . '/app/main.php');
-includePluginsFiles();
 $Traduction = new App\Plugin\Traduction\Traduction(LANG);
 
 $Media = new App\Media();
@@ -14,7 +13,6 @@ $allLibrary = extractFromObjToSimpleArr($allCategories, 'id', 'name');
 
 if ($allLibrary): ?>
     <div class="container-fluid">
-        <div id="shortAccessBtns" class="mb-4"></div>
         <?php foreach ($allLibrary as $id => $name): ?>
             <?php
             $Media->setTypeId($id);
@@ -50,18 +48,4 @@ if ($allLibrary): ?>
             <?php endif; ?>
         <?php endforeach; ?>
     </div>
-    <script>
-        $(document).ready(function () {
-
-            $('form#galleryForm').submit(function () {
-                $('#loader').fadeIn('fast');
-            });
-
-            $.each($('h5.libraryName'), function () {
-                var id = $(this).attr('id');
-                $('#shortAccessBtns').append('<a class="btn btn-info mr-3 mb-3" href="#' + id + '">' + $(this).text() + '</a>');
-            });
-
-        });
-    </script>
 <?php endif; ?>
