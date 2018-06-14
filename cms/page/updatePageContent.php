@@ -81,6 +81,30 @@ if (!empty($_GET['id'])): ?>
         </div>
         <div class="my-4"></div>
 
+        <div class="modal fade bd-example-modal-lg" id="libraryModal" tabindex="-1" role="dialog"
+             aria-labelledby="mediaLibraryModalTitle" aria-hidden="true" data-inputid="">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"
+                            id="mediaLibraryModalTitle"><?= trans('Choisissez le fichier média'); ?></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="libraryModalContent">
+                        <div class="spinner">
+                            <div class="rect1"></div>
+                            <div class="rect2"></div>
+                            <div class="rect3"></div>
+                            <div class="rect4"></div>
+                            <div class="rect5"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script type="text/javascript">
 
             function updateCmsContent($input, metaValue) {
@@ -117,6 +141,16 @@ if (!empty($_GET['id'])): ?>
 
             $(document).ready(function () {
 
+                var idCmsInput;
+
+                $(document).on('click', '.libraryButton', function () {
+
+                    window.idCmsInput = $(this).data('idcmsinput');
+
+                    $('#libraryModal').modal('show');
+                    $('#libraryModalContent').load('<?= CMS_URL; ?>page/getMediaLibrary.php');
+                });
+
                 $('form#pageContentManageForm').submit(function (event) {
                     event.preventDefault();
                 });
@@ -149,6 +183,14 @@ if (!empty($_GET['id'])): ?>
                 $('.otherPagesSelect').change(function () {
                     var otherEventslink = $('option:selected', this).data('href');
                     location.assign(otherEventslink);
+                });
+
+                $('#libraryModal').on('click', '.copyLinkOnClick', function (e) {
+                    e.preventDefault();
+
+                    var src = $(this).parent().data('src');
+                    $('input[data-idcmscontent="' + window.idCmsInput + '"]').val(src).trigger('focus');
+                    $('#libraryModal').modal('hide');
                 });
             });
         </script>
