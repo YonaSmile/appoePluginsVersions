@@ -25,6 +25,10 @@ if (!empty($_GET['id'])): ?>
                             <span class="fas fa-cog"></span> <?= trans('Modifier la page'); ?>
                         </a>
                     <?php endif; ?>
+                    <a href="<?= webUrl($Cms->getSlug() . '/'); ?>"
+                       class="btn btn-info btn-sm" target="_blank">
+                        <span class="fas fa-external-link-alt"></span> <?= trans('Visualiser la page'); ?>
+                    </a>
                     <select class="custom-select otherPagesSelect otherProjetSelect notPrint float-right"
                             title="<?= trans('Parcourir les pages'); ?>...">
                         <option selected="selected" disabled><?= trans('Parcourir les pages'); ?>...</option>
