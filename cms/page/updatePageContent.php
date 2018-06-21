@@ -123,7 +123,7 @@ if (!empty($_GET['id'])): ?>
                                                         <img src="<?= getThumb($file->name, 370); ?>"
                                                              alt="<?= $file->description; ?>"
                                                              data-originsrc="<?= FILE_DIR_URL . $file->name; ?>"
-                                                             class="img-fluid seeOnOverlay">
+                                                             class="img-fluid seeOnOverlay seeDataOnHover">
                                                     <?php else: ?>
                                                         <a href="<?= FILE_DIR_URL . $file->name; ?>" target="_blank">
                                                             <img src="<?= getImgAccordingExtension(getFileExtension($file->name)); ?>">
