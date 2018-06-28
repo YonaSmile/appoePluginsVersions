@@ -144,7 +144,7 @@ class CmsMenu
         $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_cms_menu` (
                 `id` INT(11) NOT NULL  AUTO_INCREMENT,
                 PRIMARY KEY (`id`),
-                `idCms` INT(11) NOT NULL,
+                `idCms` VARCHAR(255) NOT NULL,
                 `name` VARCHAR(100) NOT NULL,
                 `parentId` INT(11) NOT NULL,
                 `position` INT(11) NULL DEFAULT NULL,
@@ -208,8 +208,8 @@ class CmsMenu
         ac.type, ac.description, ac.slug 
         FROM appoe_plugin_cms_menu AS acm 
         LEFT JOIN appoe_plugin_cms AS ac ON (acm.idCms = ac.id) 
-        WHERE ac.statut = 1' . $locationCondition . ' 
-        ORDER BY acm.parentId, acm.position ASC';
+        WHERE (ac.statut = 1 OR acm.idCms like "http%")' . $locationCondition . ' 
+        ORDER BY acm.parentId ASC, acm.position ASC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();
 

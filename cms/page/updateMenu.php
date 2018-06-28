@@ -8,7 +8,6 @@ $Cms = new App\Plugin\Cms\Cms();
 $CmsMenu = new App\Plugin\Cms\CmsMenu();
 
 $allCmsMenu = $CmsMenu->showAll();
-
 $MENUS = constructMenu($allCmsMenu);
 
 $allPages = extractFromObjToSimpleArr($Cms->showAllPages(), 'id', 'name');
@@ -123,7 +122,13 @@ $allPages[10] = trans('Aucun parent');
                     <div class="modal-body" id="modalAddMenuPageBody">
                         <?= getTokenField(); ?>
                         <div class="row">
-                            <div class="col-12 my-2">
+                            <div class="col-12 mt-2">
+                                <?= App\Form::radio(trans('Type de menu'), 'radioBtnIdCMS', array('Page' => 'Page', 'URL' => 'URL'), !empty($_POST['radioBtnIdCMS']) ? $_POST['radioBtnIdCMS'] : 'Page', true, 'custom-control-inline'); ?>
+                            </div>
+                            <div class="col-12 my-2 idCmsChoise" data-cmstype="URL" style="display: none;">
+                                <?= App\Form::text(trans('Lien URL'), 'idCms', 'url', !empty($_POST['idCms']) ? $_POST['idCms'] : '', true, 255, 'disabled'); ?>
+                            </div>
+                            <div class="col-12 my-2 idCmsChoise" data-cmstype="Page">
                                 <?= App\Form::select(trans('Page'), 'idCms', $allPages, !empty($_POST['idCms']) ? $_POST['idCms'] : '', true); ?>
                             </div>
                             <div class="col-12 my-2">
@@ -150,6 +155,18 @@ $allPages[10] = trans('Aucun parent');
     </div>
     <script>
         $(document).ready(function () {
+
+            $('input[name="radioBtnIdCMS"]').on('change', function () {
+
+                var dataType = $(this).val();
+
+                $('.idCmsChoise').slideUp(400, function () {
+                    $(this).find('[name="idCms"]').attr('disabled', true);
+                    $('.idCmsChoise[data-cmstype="'+dataType+'"]').slideDown(400, function () {
+                        $(this).find('[name="idCms"]').attr('disabled', false);
+                    });
+                });
+            });
 
             $('select#location').on('change', function () {
                 var location = $(this).val();

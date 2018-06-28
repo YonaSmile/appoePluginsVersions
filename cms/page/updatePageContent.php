@@ -96,7 +96,8 @@ if (!empty($_GET['id'])): ?>
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body" id="libraryModalContent">
+                    <div class="modal-body pt-1" id="libraryModalContent">
+                        <a href="<?= getUrl('updateMedia/'); ?>" class="btn btn-info btn-sm mb-3"><?= trans('Nouveau média'); ?></a>
                         <?php
                         $Media = new App\Media();
                         $Category = new App\Category();
@@ -114,7 +115,7 @@ if (!empty($_GET['id'])): ?>
                                     $Media->setTypeId($id);
                                     $allFiles = $Media->showFiles();
                                     if ($allFiles): ?>
-                                        <h5 class="libraryName p-3" id="media-<?= $id; ?>"><?= $name; ?></h5>
+                                        <h6 class="libraryName p-3" id="media-<?= $id; ?>"><?= $name; ?></h6>
                                         <hr class="my-3 mx-5">
                                         <div class="card-columns">
                                             <?php foreach ($allFiles as $file): ?>
