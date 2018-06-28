@@ -7,6 +7,7 @@ class InteractiveMap
     private $id;
     private $title;
     private $data;
+    private $options = null;
     private $width;
     private $height;
     private $status = null;
@@ -55,6 +56,22 @@ class InteractiveMap
     public function setData($data)
     {
         $this->data = $data;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    /**
+     * @param mixed $options
+     */
+    public function setOptions($options)
+    {
+        $this->options = $options;
     }
 
     /**
@@ -129,6 +146,7 @@ class InteractiveMap
                     `title` varchar(250) NOT NULL,
                     UNIQUE (`title`),
                     `data` mediumtext NOT NULL,
+                    `options` TEXT NULL DEFAULT NULL
                     `width` smallint(6) NOT NULL DEFAULT 0,
                     `height` smallint(6) NOT NULL DEFAULT 0,
                     `status` tinyint(4) NOT NULL DEFAULT 1,
@@ -199,11 +217,12 @@ class InteractiveMap
      */
     public function save()
     {
-        $sql = 'INSERT INTO appoe_plugin_interactiveMap (title, data, width, height) 
-                VALUES (:title, :data, :width, :height)';
+        $sql = 'INSERT INTO appoe_plugin_interactiveMap (title, data, options, width, height) 
+                VALUES (:title, :data, :options, :width, :height)';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':title', $this->title);
         $stmt->bindParam(':data', $this->data);
+        $stmt->bindParam(':options', $this->options);
         $stmt->bindParam(':width', $this->width);
         $stmt->bindParam(':height', $this->height);
         $stmt->execute();
@@ -222,9 +241,10 @@ class InteractiveMap
     public function update()
     {
 
-        $sql = 'UPDATE appoe_plugin_interactiveMap SET title = :title, width = :width, height = :height, status = :status WHERE id = :id';
+        $sql = 'UPDATE appoe_plugin_interactiveMap SET options = :options, title = :title, width = :width, height = :height, status = :status WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':options', $this->options);
         $stmt->bindParam(':title', $this->title);
         $stmt->bindParam(':width', $this->width);
         $stmt->bindParam(':height', $this->height);

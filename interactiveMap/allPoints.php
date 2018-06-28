@@ -35,8 +35,15 @@ if (!empty($_GET['id']) && !empty($_GET['level']) && isset($_GET['location'])): 
                             <?= App\Form::text(trans('A Propos'), 'about', 'text', $location['about'], false, 250, '', '', 'form-control-sm'); ?>
                             <?= App\Form::textarea(trans('description'), 'ckeditDescription', $location['description'], 5, false, '', 'ckeditorBasic'); ?>
                             <?= App\Form::text(trans('Photo'), 'thumbnail[]', 'file', '', false, 350, '', '', 'form-control-sm'); ?>
-                            <?= App\Form::select(trans('Catégorie'), 'category', $allCategories, $location['category']); ?>
-                            <input type="hidden" id="pin" name="pin" value="<?= !empty($location['pin']) ? $location['pin'] : 'red'; ?>">
+                            <?= App\Form::select(trans('Catégorie'), 'category', $allCategories, $location['category'], false); ?>
+                            <div style="position: relative">
+                                <?= App\Form::text(trans('Couleur de remplissage'), 'fill', 'color', !empty($location['fill']) ? $location['fill'] : '', false, 50, '', '', 'form-control-sm'); ?>
+                                <button type="button" style="position: absolute; right: 0;top:50%;"
+                                        class="btn btn-danger btn-sm cleanColor">
+                                    <i class="fas fa-times"></i></button>
+                            </div>
+                            <input type="hidden" id="pin" name="pin"
+                                   value="<?= !empty($location['pin']) ? $location['pin'] : 'red'; ?>">
                             <?php if (INTERACTIVE_MAP_PINS): ?>
                                 <div class="custom-control custom-checkbox">
                                     <input type="checkbox" class="custom-control-input"
@@ -130,6 +137,13 @@ if (!empty($_GET['id']) && !empty($_GET['level']) && isset($_GET['location'])): 
                                         }
                                     });
                                 }
+
+                                $('button.cleanColor').on('click', function (event) {
+                                    event.stopPropagation();
+                                    event.preventDefault();
+
+                                    $('input#fill').val('#343F4B').trigger('change');
+                                });
 
                                 $('#checkMarker').change(function (event) {
                                     if ($(this).is(':checked')) {

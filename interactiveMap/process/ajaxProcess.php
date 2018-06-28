@@ -122,7 +122,9 @@ if (checkAjaxRequest()) {
                 'category' => '',
                 'thumbnail' => '',
                 'x' => $_POST['xPoint'],
-                'y' => $_POST['yPoint']
+                'y' => $_POST['yPoint'],
+                'fill' => '',
+                'pin' => 'hidden'
             );
 
             $fountCount = 0;
@@ -169,6 +171,7 @@ if (checkAjaxRequest()) {
                             $map['levels'][$i]['locations'][$key]['description'] = !empty($_POST['description']) ? $_POST['description'] : '';
                             $map['levels'][$i]['locations'][$key]['category'] = !empty($_POST['category']) ? $_POST['category'] : '';
                             $map['levels'][$i]['locations'][$key]['pin'] = !empty($_POST['pin']) ? $_POST['pin'] : 'hidden';
+                            $map['levels'][$i]['locations'][$key]['fill'] = !empty($_POST['fill']) ? $_POST['fill'] : '';
                             break;
                         }
                     }

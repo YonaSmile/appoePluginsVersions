@@ -119,7 +119,9 @@ if (!empty($_GET['id'])): ?>
                     sidebar: true, 			// Enable sidebar
                     minimap: true, 			// Enable minimap
                     markers: true, 		// Disable markers
-                    fillcolor: true, 		// Disable default fill color
+                    fillcolor: '', 		// Disable default fill color
+                    mapfill: true,
+                    lightbox: true,
                     fullscreen: true, 		// Enable fullscreen
                     maxscale: 3, 			// Setting maxscale to 3 times bigger than the original file
                     developer: false,
