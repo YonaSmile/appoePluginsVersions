@@ -36,7 +36,7 @@ if (!empty($_GET['id']) && !empty($_GET['level']) && isset($_GET['location'])): 
                             <?= App\Form::textarea(trans('description'), 'ckeditDescription', $location['description'], 5, false, '', 'ckeditorBasic'); ?>
                             <?= App\Form::text(trans('Photo'), 'thumbnail[]', 'file', '', false, 350, '', '', 'form-control-sm'); ?>
                             <?= App\Form::select(trans('Catégorie'), 'category', $allCategories, $location['category'], false); ?>
-                            <div style="position: relative">
+                            <div style="position: relative;">
                                 <?= App\Form::text(trans('Couleur de remplissage'), 'fill', 'color', !empty($location['fill']) ? $location['fill'] : '', false, 50, '', '', 'form-control-sm'); ?>
                                 <button type="button" style="position: absolute; right: 0;top:50%;"
                                         class="btn btn-danger btn-sm cleanColor">
