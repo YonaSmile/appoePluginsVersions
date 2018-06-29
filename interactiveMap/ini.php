@@ -24,3 +24,22 @@ const INTERACTIVE_MAP_PINS = array(
     'transparent' => 'transparent',
     'iconpin' => 'iconpin'
 );
+
+const MAP_JS_OPTIONS = array(
+    'sidebar' => 'Activer le SideBar',
+    'search' => 'Activer la recherche',
+    'minimap' => 'Afficher la mini-carte',
+    'markers' => 'Afficher les marqueurs',
+    'fullscreen' => 'Afficher les options plein écran',
+    'zoombuttons' => 'Afficher les options zoom',
+    'zoomoutclose' => 'Autoriser dézoomage automatique',
+    'clearbutton' => 'Afficher les options de nettoyage'
+);
+
+const MAP_JS_ACTIONS = array(
+    'tooltip' => 'Info-bulle',
+    'open-link' => 'Ouvrir le lien',
+    'open-link-new-tab' => 'ouvrir le lien, nouvel onglet',
+    'lightbox' => 'boite mise ne avant',
+    'none' => 'Sans'
+);
