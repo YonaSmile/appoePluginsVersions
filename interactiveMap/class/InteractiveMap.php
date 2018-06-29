@@ -195,20 +195,22 @@ class InteractiveMap
     }
 
     /**
+     * @param $countMap
      * @return array|bool
      */
-    public function showAll()
+    public function showAll($countMap = false)
     {
 
         $sql = 'SELECT * FROM appoe_plugin_interactiveMap WHERE status = 1 ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();
 
+        $count = $stmt->rowCount();
         $error = $stmt->errorInfo();
         if ($error[0] != '00000') {
             return false;
         } else {
-            return $stmt->fetchAll(\PDO::FETCH_OBJ);
+            return !$countMap ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
         }
     }
 
