@@ -199,6 +199,60 @@ if (!empty($_GET['id'])): ?>
                             </div>
                         </div>
                     </div>
+
+                    <div class="card">
+                        <div class="card-header" id="headingOptions">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link" type="button" data-toggle="collapse"
+                                        data-target="#interMapOptions" aria-expanded="true"
+                                        aria-controls="collapseOne">
+                                    <?= trans('Options'); ?>
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="interMapOptions" class="collapse" aria-labelledby="headingOptions"
+                             data-parent="#accordion">
+                            <div class="card-body">
+                                <?php
+                                $mapOptions = json_decode($InteractiveMap->getOptions(), true);
+                                $optionsChoised = array();
+
+                                if(isset($mapOptions['checkbox'])) {
+                                    foreach ($mapOptions['checkbox'] as $key => $value) {
+                                        $optionsChoised[$value] = $value;
+                                    }
+                                }
+
+                                ?>
+                                <form action="" method="post" id="addInterMapOptionsForm">
+                                    <?= getTokenField(); ?>
+                                    <input type="hidden" name="idMap" value="<?= $InteractiveMap->getId(); ?>">
+                                    <div class="row">
+                                        <div class="col-12 my-2">
+                                            <?= App\Form::checkbox(trans('Options'), 'options', MAP_JS_OPTIONS, $optionsChoised, 'custom-control-inline'); ?>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 col-lg-4 my-2">
+                                            <?= App\Form::select(trans('Action lors du clic'), 'action', MAP_JS_ACTIONS, !empty($mapOptions['action']) ? $mapOptions['action'] : 'tooltip', true); ?>
+                                        </div>
+                                        <div class="col-12 col-lg-4 my-2">
+                                            <?= App\Form::text(trans('Zoom autorisé'), 'maxscale', 'number', $mapOptions['maxscale'], true, 1); ?>
+                                        </div>
+                                        <div class="col-12 col-lg-4 my-2">
+                                            <?= App\Form::text(trans('Couleur de remplissage (hex)'), 'mapfill', 'text', $mapOptions['mapfill'], false, 7); ?>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 my-2">
+                                            <button class="btn btn-block btn-primary" type="submit" name="ADDOPTIONS">
+                                                <?= trans('Enregistrer'); ?></button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -217,16 +271,16 @@ if (!empty($_GET['id'])): ?>
                         <div class="modal-body" id="modalAddInterMapCategorieBody">
                             <?= getTokenField(); ?>
                             <div class="row">
-                                <div class="col-12 col-4 my-2">
+                                <div class="col-12 my-2">
                                     <?= App\Form::text(trans('Titre'), 'title', 'text', !empty($_POST['title']) ? $_POST['title'] : '', true, 300); ?>
                                 </div>
-                                <div class="col-12 col-8 my-2">
+                                <div class="col-12 my-2">
                                     <?= App\Form::text('ID', 'id', 'text', !empty($_POST['id']) ? $_POST['id'] : '', true, 150); ?>
                                 </div>
-                                <div class="col-12 col-4 my-2">
+                                <div class="col-12 my-2">
                                     <?= App\Form::text(trans('Couleur'), 'color', 'text', !empty($_POST['color']) ? $_POST['color'] : '', true, 300); ?>
                                 </div>
-                                <div class="col-12 col-4 my-2">
+                                <div class="col-12 my-2">
                                     <?= App\Form::radio(trans('Développement la catégorie'), 'show', array('false' => 'Non', 'true' => 'Oui'), 'false', true, 'custom-control-inline'); ?>
                                 </div>
                             </div>
@@ -256,16 +310,16 @@ if (!empty($_GET['id'])): ?>
                             <?= getTokenField(); ?>
                             <input type="hidden" name="idMap" value="<?= $InteractiveMap->getId(); ?>">
                             <div class="row">
-                                <div class="col-12 col-4 my-2">
+                                <div class="col-12 my-2">
                                     <?= App\Form::text(trans('Titre'), 'title', 'text', !empty($_POST['title']) ? $_POST['title'] : '', true, 300); ?>
                                 </div>
-                                <div class="col-12 col-8 my-2">
+                                <div class="col-12 my-2">
                                     <?= App\Form::text('ID', 'id', 'text', !empty($_POST['id']) ? $_POST['id'] : '', true, 150); ?>
                                 </div>
-                                <div class="col-12 col-4 my-2">
+                                <div class="col-12 my-2">
                                     <?= App\Form::text(trans('Map (SVG,JPG)'), 'map[]', 'file'); ?>
                                 </div>
-                                <div class="col-12 col-4 my-2">
+                                <div class="col-12 my-2">
                                     <?= App\Form::text(trans('Mini Map (JPG)'), 'minimap[]', 'file'); ?>
                                 </div>
                             </div>

@@ -29,3 +29,43 @@ function interMap_readMapFile($title)
 
     return $parsed_json;
 }
+
+/**
+ * get map
+ *
+ * @param $idMap
+ * @return bool|object
+ */
+function interMap_get($idMap)
+{
+    $InteractiveMap = new App\Plugin\InteractiveMap\InteractiveMap();
+    $InteractiveMap->setId($idMap);
+
+    if ($InteractiveMap->show()) {
+        $InteractiveMap->setOptions(interMap_getOptionJSON($InteractiveMap->getOptions()));
+        $InteractiveMap->setTitle(slugify($InteractiveMap->getTitle()));
+        return $InteractiveMap;
+    }
+    return false;
+}
+
+/**
+ * return all map options in Json
+ *
+ * @param $optionsJSON
+ * @return string
+ */
+function interMap_getOptionJSON($optionsJSON)
+{
+    $optionsJSON = json_decode($optionsJSON, true);
+
+    $dataJSON = array();
+    if (isset($optionsJSON['checkbox'])) {
+        foreach ($optionsJSON['checkbox'] as $checkbox) {
+            $dataJSON[$checkbox] = true;
+        }
+    }
+
+    unset($optionsJSON['checkbox']);
+    return json_encode(array_merge($dataJSON, $optionsJSON));
+}

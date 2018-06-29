@@ -1,19 +1,22 @@
 function getInteractiveMap(filename, element, options = []) {
 
     var interMapOptions = {
-        source: '/app/plugin/interactiveMap/'+filename+'.json',
-        sidebar: false, 			// Enable sidebar
+        source: '/app/plugin/interactiveMap/' + filename + '.json',
+        sidebar: false,
         search: false,
-        minimap: false, 			// Enable minimap
-        markers: false, 		// Disable markers
-        fillcolor: '', 		// Disable default fill color
-        fullscreen: true, 		// Enable fullscreen
-        maxscale: 3, 			// Setting maxscale to 3 times bigger than the original file
+        minimap: false,
+        markers: false,
+        clearbutton: false,
+        zoombuttons: false,
+        zoomoutclose: false,
+        fillcolor: '',
+        fullscreen: false,
+        maxscale: 3,
         developer: false,
         mapfill: true,
         lightbox: true,
         landmark: true,
-        action: 'tooltip', //tooltip, open-link, open-link-new-tab, lightbox and none
+        action: 'tooltip',
         tooltip: {
             thumb: true,
             desc: true,
@@ -21,7 +24,7 @@ function getInteractiveMap(filename, element, options = []) {
         }
     };
 
-    $.extend( interMapOptions, options );
+    $.extend(interMapOptions, options);
 
     $(element).mapplic(interMapOptions);
 }

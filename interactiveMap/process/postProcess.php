@@ -141,4 +141,45 @@ if (checkPostAndTokenRequest()) {
             $Response->error_msg = trans('Tous les champs sont obligatoires');
         }
     }
+
+    if (isset($_POST['ADDOPTIONS'])) {
+        if (!empty($_POST['idMap'])
+            && !empty($_POST['action'])
+            && !empty($_POST['maxscale'])
+            && isset($_POST['mapfill'])
+        ) {
+
+            $InteractiveMap = new App\Plugin\InteractiveMap\InteractiveMap($_POST['idMap']);
+            $data = array();
+
+            //get options checkbox
+            if (isset($_POST['options'])) {
+                $data['checkbox'] = $_POST['options'];
+            }
+
+            $data['action'] = $_POST['action'];
+            $data['maxscale'] = $_POST['maxscale'];
+            $data['mapfill'] = !empty($_POST['mapfill']) ? $_POST['mapfill'] : '';
+
+            $InteractiveMap->setOptions(json_encode($data));
+
+            if ($InteractiveMap->update()) {
+
+                $Response->status = 'success';
+                $Response->error_code = 0;
+                $Response->error_msg = trans('Les options ont été enregistrées');
+            } else {
+
+                $Response->status = 'danger';
+                $Response->error_code = 1;
+                $Response->error_msg = trans('Une erreur s\'est produite');
+            }
+
+        } else {
+
+            $Response->status = 'danger';
+            $Response->error_code = 1;
+            $Response->error_msg = trans('Tous les champs sont obligatoires');
+        }
+    }
 }
