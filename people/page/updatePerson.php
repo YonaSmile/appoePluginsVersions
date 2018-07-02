@@ -4,7 +4,7 @@ if (!empty($_GET['id'])): ?>
     $People = new App\Plugin\People\People();
     $People->setId($_GET['id']);
     if ($People->show()) : ?>
-        <?php require(PEOPLE_PATH. 'process/postProcess.php'); ?>
+        <?php require(PEOPLE_PATH . 'process/postProcess.php'); ?>
         <div class="container">
             <div class="row">
                 <div class="col-12">
@@ -29,8 +29,13 @@ if (!empty($_GET['id'])): ?>
                         <?= App\Form::select(trans('Enregistrement de type'), 'type', getAppTypes(), $People->getType(), true); ?>
                     </div>
                     <div class="col-12 col-lg-4 my-2">
+                        <?= App\Form::select(trans('Nature de la personne'), 'nature', PEOPLE_NATURE, $People->getNature(), true); ?>
+                    </div>
+                    <div class="col-12 col-lg-4 my-2">
                         <?= App\Form::text(trans('Nom'), 'name', 'text', $People->getName(), true, 150); ?>
                     </div>
+                </div>
+                <div class="row">
                     <div class="col-12 col-lg-4 my-2">
                         <?= App\Form::text(trans('Prénom'), 'firstName', 'text', $People->getFirstName(), false, 150); ?>
                     </div>
@@ -41,14 +46,17 @@ if (!empty($_GET['id'])): ?>
                     <div class="col-12 col-lg-4 my-2">
                         <?= App\Form::text(trans('Adresse Email'), 'email', 'email', $People->getEmail(), false, 255); ?>
                     </div>
+                </div>
+                <div class="row">
                     <div class="col-12 col-lg-4 my-2">
                         <?= App\Form::text(trans('Téléphone'), 'tel', 'tel', $People->getTel(), false, 10); ?>
                     </div>
 
-                    <div class="col-12 my-2">
+                    <div class="col-12 col-lg-8 my-2">
                         <?= App\Form::text(trans('Adresse postale'), 'address', 'text', $People->getAddress(), false, 255); ?>
                     </div>
-
+                </div>
+                <div class="row">
                     <div class="col-12 col-lg-2 my-2">
                         <?= App\Form::text(trans('Code postal'), 'zip', 'tel', $People->getZip(), false, 7); ?>
                     </div>

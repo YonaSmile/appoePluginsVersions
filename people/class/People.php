@@ -5,8 +5,10 @@ class People
 {
     protected $id;
     protected $type;
+    protected $nature;
     protected $name;
     protected $firstName = null;
+    protected $entitled = null;
     protected $birthDate = null;
     protected $email = null;
     protected $tel = null;
@@ -69,6 +71,22 @@ class People
     /**
      * @return mixed
      */
+    public function getNature()
+    {
+        return $this->nature;
+    }
+
+    /**
+     * @param mixed $nature
+     */
+    public function setNature($nature)
+    {
+        $this->nature = $nature;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getName()
     {
         return $this->name;
@@ -96,6 +114,22 @@ class People
     public function setFirstName($firstName)
     {
         $this->firstName = $firstName;
+    }
+
+    /**
+     * @return null
+     */
+    public function getEntitled()
+    {
+        return $this->entitled;
+    }
+
+    /**
+     * @param null $entitled
+     */
+    public function setEntitled($entitled)
+    {
+        $this->entitled = $entitled;
     }
 
     /**
@@ -296,8 +330,10 @@ class People
                 `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
                 PRIMARY KEY (`id`),
                 `type` VARCHAR(150) NOT NULL,
+                `nature` VARCHAR(150) NOT NULL,
                 `name` VARCHAR(150) NOT NULL,
                 `firstName` VARCHAR(150) DEFAULT NULL,
+                `entitled` VARCHAR(350) DEFAULT NULL,
                 `birthDate` DATE DEFAULT NULL,
                 `email` VARCHAR(255) DEFAULT NULL,
                 UNIQUE (`type`, `name`, `firstName`, `birthDate`, `email`, `address`),
@@ -404,14 +440,17 @@ class People
      */
     public function save()
     {
+        $this->entitled = $this->name . ' ' . $this->firstName;
 
         $sql = 'INSERT INTO appoe_plugin_people 
-                (type, name, firstName, birthDate, email, tel, address, zip, city, country, options, status, createdAt) 
-                VALUES (:type, :name, :firstName, :birthDate, :email, :tel, :address, :zip, :city, :country, :options, :status, NOW())';
+                (type, nature, name, firstName, entitled, birthDate, email, tel, address, zip, city, country, options, status, createdAt) 
+                VALUES (:type, :nature, :name, :firstName, :entitled, :birthDate, :email, :tel, :address, :zip, :city, :country, :options, :status, NOW())';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':type', $this->type);
+        $stmt->bindParam(':nature', $this->nature);
         $stmt->bindParam(':name', $this->name);
+        $stmt->bindParam(':entitled', $this->entitled);
         $stmt->bindParam(':firstName', $this->firstName);
         $stmt->bindParam(':birthDate', $this->birthDate);
         $stmt->bindParam(':email', $this->email);
@@ -442,15 +481,19 @@ class People
     public function update()
     {
 
-        $sql = 'UPDATE appoe_plugin_people SET type = :type, name = :name, firstName = :firstName, 
-                birthDate = :birthDate, email = :email, tel = :tel, address = :address, zip = :zip, 
+        $this->entitled = $this->name . ' ' . $this->firstName;
+
+        $sql = 'UPDATE appoe_plugin_people SET type = :type, nature = :nature, name = :name, firstName = :firstName, 
+                entitled = :entitled, birthDate = :birthDate, email = :email, tel = :tel, address = :address, zip = :zip, 
                 city = :city, country = :country, options = :options, status = :status 
                 WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':type', $this->type);
+        $stmt->bindParam(':nature', $this->nature);
         $stmt->bindParam(':name', $this->name);
         $stmt->bindParam(':firstName', $this->firstName);
+        $stmt->bindParam(':entitled', $this->entitled);
         $stmt->bindParam(':birthDate', $this->birthDate);
         $stmt->bindParam(':email', $this->email);
         $stmt->bindParam(':tel', $this->tel);
