@@ -14,6 +14,14 @@ if (checkAjaxRequest()) {
             }
         }
 
+        if (isset($_POST['unpackPage']) && !empty($_POST['idUnpackPage'])) {
+            $Page = new App\Plugin\Cms\Cms($_POST['idUnpackPage']);
+            $Page->setStatut(1);
+            if ($Page->update()) {
+                echo 'true';
+            }
+        }
+
         if (!empty($_POST['idCmsDelete'])) {
             $Cms = new App\Plugin\Cms\Cms($_POST['idCmsDelete']);
             if ($Cms->delete()) {

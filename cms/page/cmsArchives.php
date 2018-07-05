@@ -44,10 +44,16 @@
                                                 <span class="fas fa-cog"></span>
                                             </a>
                                             <button type="button" data-deletecmsid="<?= $cmsPage->id ?>"
-                                               class="btn btn-danger btn-sm deleteCms" title="<?= trans('Supprimer'); ?>">
+                                                    class="btn btn-danger btn-sm deleteCms"
+                                                    title="<?= trans('Supprimer'); ?>">
                                                 <span class="fas fa-times"></span>
                                             </button>
                                         <?php endif; ?>
+                                        <button type="button" class="btn btn-success btn-sm unpackPage"
+                                                title="<?= trans('désarchiver'); ?>"
+                                                data-idpage="<?= $cmsPage->id ?>">
+                                            <i class="fas fa-check"></i>
+                                        </button>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -58,26 +64,47 @@
             </div>
         </div>
     </div>
-<script>
-    $(document).ready(function () {
-        $('.deleteCms').on('click', function () {
-            var idCms = $(this).data('deletecmsid');
-            if (confirm('<?= trans('Vous allez supprimer définitivement cette page'); ?>')) {
-                busyApp();
-                $.post(
-                    '<?= CMS_URL . 'process/ajaxProcess.php'; ?>',
-                    {
-                        idCmsDelete: idCms
-                    },
-                    function (data) {
-                        if (data === true || data == 'true') {
-                            $('tr[data-idcms="' + idCms + '"]').slideUp();
-                            availableApp();
+    <script>
+        $(document).ready(function () {
+
+            $('.unpackPage').on('click', function () {
+                var idPage = $(this).data('idpage');
+                if (confirm('<?= trans('Vous allez désarchiver cette page'); ?>')) {
+                    busyApp();
+                    $.post(
+                        '<?= CMS_URL . 'process/ajaxProcess.php'; ?>',
+                        {
+                            unpackPage: 'OK',
+                            idUnpackPage: idPage
+                        },
+                        function (data) {
+                            if (data === true || data == 'true') {
+                                $('tr[data-idcms="' + idPage + '"]').slideUp();
+                                availableApp();
+                            }
                         }
-                    }
-                );
-            }
+                    );
+                }
+            });
+
+            $('.deleteCms').on('click', function () {
+                var idCms = $(this).data('deletecmsid');
+                if (confirm('<?= trans('Vous allez supprimer définitivement cette page'); ?>')) {
+                    busyApp();
+                    $.post(
+                        '<?= CMS_URL . 'process/ajaxProcess.php'; ?>',
+                        {
+                            idCmsDelete: idCms
+                        },
+                        function (data) {
+                            if (data === true || data == 'true') {
+                                $('tr[data-idcms="' + idCms + '"]').slideUp();
+                                availableApp();
+                            }
+                        }
+                    );
+                }
+            });
         });
-    });
-</script>
+    </script>
 <?php require('footer.php'); ?>
