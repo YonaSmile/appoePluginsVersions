@@ -270,22 +270,23 @@ if (!empty($_GET['id'])): ?>
                             <?= getTokenField(); ?>
                             <div class="row">
                                 <div class="col-12 my-2">
-                                    <?= App\Form::text(trans('Titre'), 'title', 'text', !empty($_POST['title']) ? $_POST['title'] : '', true, 300); ?>
+                                    <?= App\Form::text('Titre', 'title', 'text', !empty($_POST['title']) ? $_POST['title'] : '', true, 300); ?>
                                 </div>
                                 <div class="col-12 my-2">
                                     <?= App\Form::text('ID', 'id', 'text', !empty($_POST['id']) ? $_POST['id'] : '', true, 150); ?>
                                 </div>
                                 <div class="col-12 my-2">
-                                    <?= App\Form::text(trans('Couleur'), 'color', 'text', !empty($_POST['color']) ? $_POST['color'] : '', true, 300); ?>
+                                    <?= App\Form::text('Couleur', 'color', 'text', !empty($_POST['color']) ? $_POST['color'] : '', true, 300); ?>
                                 </div>
                                 <div class="col-12 my-2">
-                                    <?= App\Form::radio(trans('Développement la catégorie'), 'show', array('false' => 'Non', 'true' => 'Oui'), 'false', true, 'custom-control-inline'); ?>
+                                    <?= App\Form::radio('Développement la catégorie', 'show', array('false' => 'Non', 'true' => 'Oui'), 'false', true, 'custom-control-inline'); ?>
                                 </div>
                             </div>
                             <div id="addInterMapCategorieError"></div>
                         </div>
                         <div class="modal-footer" id="modalAddInterMapCategorieFooter">
-                            <button type="submit" id="addInterMapCatBtn" name="ADDINTERMAPCATEGORY"
+                            <?= App\Form::target('ADDINTERMAPCATEGORY'); ?>
+                            <button type="submit" id="addInterMapCatBtn" name="ADDINTERMAPCATEGORYSUBMIT"
                                     class="btn btn-primary"><?= trans('Enregistrer'); ?></button>
                             <button type="button" class="btn btn-secondary"
                                     data-dismiss="modal"><?= trans('Fermer'); ?></button>
@@ -309,22 +310,23 @@ if (!empty($_GET['id'])): ?>
                             <input type="hidden" name="idMap" value="<?= $InteractiveMap->getId(); ?>">
                             <div class="row">
                                 <div class="col-12 my-2">
-                                    <?= App\Form::text(trans('Titre'), 'title', 'text', !empty($_POST['title']) ? $_POST['title'] : '', true, 300); ?>
+                                    <?= App\Form::text('Titre', 'title', 'text', !empty($_POST['title']) ? $_POST['title'] : '', true, 300); ?>
                                 </div>
                                 <div class="col-12 my-2">
                                     <?= App\Form::text('ID', 'id', 'text', !empty($_POST['id']) ? $_POST['id'] : '', true, 150); ?>
                                 </div>
                                 <div class="col-12 my-2">
-                                    <?= App\Form::text(trans('Map (SVG,JPG)'), 'map[]', 'file'); ?>
+                                    <?= App\Form::text('Map (SVG,JPG)', 'map[]', 'file'); ?>
                                 </div>
                                 <div class="col-12 my-2">
-                                    <?= App\Form::text(trans('Mini Map (JPG)'), 'minimap[]', 'file'); ?>
+                                    <?= App\Form::text('Mini Map (JPG)', 'minimap[]', 'file'); ?>
                                 </div>
                             </div>
                             <div id="addInterMapLevelError"></div>
                         </div>
                         <div class="modal-footer" id="modalAddInterMapLevelFooter">
-                            <button type="submit" name="ADDINTERMAPLEVEL"
+                            <?= App\Form::target('ADDINTERMAPLEVEL'); ?>
+                            <button type="submit" name="ADDINTERMAPLEVELSUBMIT"
                                     class="btn btn-primary"><?= trans('Enregistrer'); ?></button>
                             <button type="button" class="btn btn-secondary"
                                     data-dismiss="modal"><?= trans('Fermer'); ?></button>
@@ -382,7 +384,7 @@ if (!empty($_GET['id'])): ?>
                             }, function (data) {
                                 if (data) {
                                     $('#addInterMapCategorieError').html(data);
-                                    $('#addInterMapCatBtn').removeClass('disabled').html('<?= trans('Enregistrer'); ?>');
+                                    $('#addInterMapCatBtn').removeClass('disabled').attr('disabled', false).html('<?= trans('Enregistrer'); ?>');
                                 }
                             }
                         )

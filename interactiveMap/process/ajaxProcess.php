@@ -27,16 +27,20 @@ if (checkAjaxRequest()) {
                 'show' => $_POST['show']
             );
 
-            if (!in_array($_POST['id'], $map['categories'])) {
-
-                array_push($map['categories'], $newCategory);
-                $InteractiveMap->setData(json_encode($map));
-                if ($InteractiveMap->updateData()) {
-                    interMap_writeMapFile($InteractiveMap->getData(), $InteractiveMap->getTitle());
-                    echo trans('La nouvelle catégorie a été enregistré');
+            //check if category exist
+            foreach ($map['categories'] as $category) {
+                if ($_POST['id'] == $category['id'] ||
+                    $_POST['title'] == $category['id']) {
+                    echo trans('Cette catégorie existe déjà');
+                    exit();
                 }
-            } else {
-                echo trans('Cette catégorie existe déjà');
+            }
+
+            array_push($map['categories'], $newCategory);
+            $InteractiveMap->setData(json_encode($map));
+            if ($InteractiveMap->updateData()) {
+                interMap_writeMapFile($InteractiveMap->getData(), $InteractiveMap->getTitle());
+                echo trans('La nouvelle catégorie a été enregistré');
             }
         }
 
@@ -62,9 +66,10 @@ if (checkAjaxRequest()) {
             $InteractiveMap = new App\Plugin\InteractiveMap\InteractiveMap($_POST['idMap']);
             $map = json_decode($InteractiveMap->getData(), true);
 
-            for ($i = 0; $i < count($map[$_POST['parent']]); $i++) {
-                if ($map[$_POST['parent']][$i]['id'] == $_POST['id']) {
-                    $map[$_POST['parent']][$i][$_POST['name']] = $_POST['value'];
+            //get details
+            foreach ($map[$_POST['parent']] as $key => $category) {
+                if ($_POST['id'] == $category['id']) {
+                    $map[$_POST['parent']][$key][$_POST['name']] = $_POST['value'];
                     break;
                 }
             }
@@ -87,9 +92,10 @@ if (checkAjaxRequest()) {
             $InteractiveMap = new App\Plugin\InteractiveMap\InteractiveMap($_POST['idMap']);
             $map = json_decode($InteractiveMap->getData(), true);
 
-            for ($i = 0; $i < count($map[$_POST['parent']]); $i++) {
-                if ($map[$_POST['parent']][$i]['id'] == $_POST['id']) {
-                    unset($map[$_POST['parent']][$i]);
+            //get details
+            foreach ($map[$_POST['parent']] as $key => $category) {
+                if ($_POST['id'] == $category['id']) {
+                    unset($map[$_POST['parent']][$key]);
                     break;
                 }
             }
@@ -162,16 +168,16 @@ if (checkAjaxRequest()) {
             $InteractiveMap = new App\Plugin\InteractiveMap\InteractiveMap($_POST['idMap']);
             $map = json_decode($InteractiveMap->getData(), true);
 
-            for ($i = 0; $i <= count($map['levels']); $i++) {
-                if ($map['levels'][$i]['id'] == $_POST['level']) {
-                    foreach ($map['levels'][$i]['locations'] as $key => $location) {
+            foreach ($map['levels'] as $firstKey => $level) {
+                if ($level['id'] == $_POST['level']) {
+                    foreach ($map['levels'][$firstKey]['locations'] as $key => $location) {
                         if ($location['id'] == $_POST['id']) {
-                            $map['levels'][$i]['locations'][$key]['title'] = !empty($_POST['title']) ? $_POST['title'] : '';
-                            $map['levels'][$i]['locations'][$key]['about'] = !empty($_POST['about']) ? $_POST['about'] : '';
-                            $map['levels'][$i]['locations'][$key]['description'] = !empty($_POST['description']) ? $_POST['description'] : '';
-                            $map['levels'][$i]['locations'][$key]['category'] = !empty($_POST['category']) ? $_POST['category'] : '';
-                            $map['levels'][$i]['locations'][$key]['pin'] = !empty($_POST['pin']) ? $_POST['pin'] : 'hidden';
-                            $map['levels'][$i]['locations'][$key]['fill'] = !empty($_POST['fill']) ? $_POST['fill'] : '';
+                            $map['levels'][$firstKey]['locations'][$key]['title'] = !empty($_POST['title']) ? $_POST['title'] : '';
+                            $map['levels'][$firstKey]['locations'][$key]['about'] = !empty($_POST['about']) ? $_POST['about'] : '';
+                            $map['levels'][$firstKey]['locations'][$key]['description'] = !empty($_POST['description']) ? $_POST['description'] : '';
+                            $map['levels'][$firstKey]['locations'][$key]['category'] = !empty($_POST['category']) ? $_POST['category'] : '';
+                            $map['levels'][$firstKey]['locations'][$key]['pin'] = !empty($_POST['pin']) ? $_POST['pin'] : 'hidden';
+                            $map['levels'][$firstKey]['locations'][$key]['fill'] = !empty($_POST['fill']) ? $_POST['fill'] : '';
                             break;
                         }
                     }
@@ -195,11 +201,11 @@ if (checkAjaxRequest()) {
             $InteractiveMap = new App\Plugin\InteractiveMap\InteractiveMap($_POST['idMap']);
             $map = json_decode($InteractiveMap->getData(), true);
 
-            for ($i = 0; $i <= count($map['levels']); $i++) {
-                if ($map['levels'][$i]['id'] == $_POST['level']) {
-                    foreach ($map['levels'][$i]['locations'] as $key => $location) {
+            foreach ($map['levels'] as $firstKey => $level) {
+                if ($level['id'] == $_POST['level']) {
+                    foreach ($map['levels'][$firstKey]['locations'] as $key => $location) {
                         if ($location['id'] == $_POST['locationId']) {
-                            unset($map['levels'][$i]['locations'][$key]);
+                            unset($map['levels'][$firstKey]['locations'][$key]);
                             break;
                         }
                     }
@@ -262,11 +268,11 @@ if (checkAjaxRequest()) {
             $InteractiveMap = new App\Plugin\InteractiveMap\InteractiveMap($_GET['idMap']);
             $map = json_decode($InteractiveMap->getData(), true);
 
-            for ($i = 0; $i <= count($map['levels']); $i++) {
-                if ($map['levels'][$i]['id'] == $_GET['level']) {
-                    foreach ($map['levels'][$i]['locations'] as $key => $location) {
+            foreach ($map['levels'] as $firstKey => $level) {
+                if ($level['id'] == $_GET['level']) {
+                    foreach ($map['levels'][$firstKey]['locations'] as $key => $location) {
                         if ($location['id'] == $_GET['idLocation']) {
-                            $map['levels'][$i]['locations'][$key]['thumbnail'] = $thumbnailSrc;
+                            $map['levels'][$firstKey]['locations'][$key]['thumbnail'] = $thumbnailSrc;
                             break;
                         }
                     }

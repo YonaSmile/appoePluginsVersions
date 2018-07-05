@@ -71,7 +71,7 @@ if (checkPostAndTokenRequest()) {
                     interMap_writeMapFile($InteractiveMap->getData(), $InteractiveMap->getTitle());
                     $Response->status = 'success';
                     $Response->error_code = 0;
-                    $Response->error_msg = trans('La nouvelle carte a été enregistré');
+                    $Response->error_msg = trans('La carte a été enregistré');
 
                 } else {
                     $Response->status = 'danger';
@@ -94,6 +94,7 @@ if (checkPostAndTokenRequest()) {
         ) {
             $InteractiveMap = new App\Plugin\InteractiveMap\InteractiveMap($_POST['idMap']);
             $map = json_decode($InteractiveMap->getData(), true);
+            $access = true;
 
             $File = new App\Plugin\InteractiveMap\InterMapMedia($_POST['idMap']);
             $File->setUserId(getUserIdSession());
@@ -116,8 +117,20 @@ if (checkPostAndTokenRequest()) {
                 'locations' => array()
             );
 
-            if (!in_array($_POST['id'], $map['levels'])) {
+            foreach ($map['levels'] as $level) {
+                if ($_POST['id'] == $level['id'] ||
+                    $_POST['title'] == $level['id']) {
 
+                    $Response->status = 'danger';
+                    $Response->error_code = 1;
+                    $Response->error_msg = trans('Ce niveau existe déjà');
+
+                    $access = false;
+                    break;
+                }
+            }
+
+            if ($access) {
                 array_push($map['levels'], $newLevel);
 
                 $InteractiveMap->setData(json_encode($map));
@@ -128,12 +141,8 @@ if (checkPostAndTokenRequest()) {
                     $Response->error_code = 0;
                     $Response->error_msg = trans('Le niveau a été enregistré');
                 }
-            } else {
-
-                $Response->status = 'danger';
-                $Response->error_code = 1;
-                $Response->error_msg = trans('Ce niveau existe déjà');
             }
+
         } else {
 
             $Response->status = 'danger';
