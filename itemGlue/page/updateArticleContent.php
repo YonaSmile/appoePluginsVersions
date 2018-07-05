@@ -98,10 +98,11 @@ if (!empty($_GET['id'])): ?>
                         </div>
                         <div class="my-2"></div>
                         <div class="col-12">
-                            <?= App\Form::checkbox(trans('Catégories'), 'categories', $listCatgories, $allCategoryRelations, 'checkCategories'); ?>
+                            <?= App\Form::checkbox('Catégories', 'categories', $listCatgories, $allCategoryRelations, 'checkCategories'); ?>
                         </div>
                         <div class="col-12">
-                            <?= App\Form::submit(trans('Enregistrer'), 'SAVEARTICLECONTENT'); ?>
+                            <?= App\Form::target('SAVEARTICLECONTENT'); ?>
+                            <?= App\Form::submit('Enregistrer', 'SAVEARTICLECONTENTSUBMIT'); ?>
                         </div>
                     </form>
                 </div>
@@ -115,10 +116,11 @@ if (!empty($_GET['id'])): ?>
                         <?= getTokenField(); ?>
                         <input type="hidden" name="articleId" value="<?= $Article->getId(); ?>">
                         <div class="col-12">
-                            <?= App\Form::text(trans('Sélection des médias'), 'inputFile[]', 'file', '', true, 800, 'multiple'); ?>
+                            <?= App\Form::text('Sélection des médias', 'inputFile[]', 'file', '', true, 800, 'multiple'); ?>
                         </div>
                         <div class="col-12">
-                            <?= App\Form::submit(trans('Enregistrer'), 'ADDIMAGESTOARTICLE'); ?>
+                            <?= App\Form::target('ADDIMAGESTOARTICLE'); ?>
+                            <?= App\Form::submit('Enregistrer', 'ADDIMAGESTOARTICLESUBMIT'); ?>
                         </div>
                     </form>
                     <?php
@@ -212,14 +214,14 @@ if (!empty($_GET['id'])): ?>
                         </div>
                         <div class="modal-body" id="modalArticleMetaBody">
                             <input type="hidden" name="idArticle" value="<?= $Article->getId(); ?>">
-                            <input type="hidden" name="ADDARTICLEMETA" value="OK">
+                            <?= App\Form::target('ADDARTICLEMETA'); ?>
                             <?= getTokenField(); ?>
                             <div class="row">
                                 <div class="col-12 col-8 my-2">
-                                    <?= App\Form::text(trans('Clef'), 'metaKey', 'text', !empty($_POST['metaKey']) ? $_POST['metaKey'] : '', true, 150); ?>
+                                    <?= App\Form::text('Clef', 'metaKey', 'text', !empty($_POST['metaKey']) ? $_POST['metaKey'] : '', true, 150); ?>
                                 </div>
                                 <div class="col-12 col-4 my-2">
-                                    <?= App\Form::text(trans('Valeur'), 'metaValue', 'text', !empty($_POST['metaValue']) ? $_POST['metaValue'] : '', true, 300); ?>
+                                    <?= App\Form::text('Valeur', 'metaValue', 'text', !empty($_POST['metaValue']) ? $_POST['metaValue'] : '', true, 300); ?>
                                 </div>
                                 <div class="col-12 col-4 my-2">
                                     <div class="custom-control custom-checkbox">
@@ -240,7 +242,7 @@ if (!empty($_GET['id'])): ?>
                             <div id="addArticleMetaError"></div>
                         </div>
                         <div class="modal-footer" id="modalArticleMetaFooter">
-                            <button type="submit" name="ADDARTICLEMETA"
+                            <button type="submit" name="ADDARTICLEMETASUBMIT"
                                     class="btn btn-primary"><?= trans('Enregistrer'); ?></button>
                             <button type="button" class="btn btn-secondary"
                                     data-dismiss="modal"><?= trans('Fermer'); ?></button>

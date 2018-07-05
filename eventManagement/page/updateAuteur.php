@@ -27,19 +27,19 @@
                 <input type="hidden" name="id" value="<?= $Auteur->getId() ?>">
                 <div class="row">
                     <div class="col-12">
-                        <?= App\Form::text(trans('Nom'), 'nom', 'text', $Auteur->getNom(), true); ?>
+                        <?= App\Form::text('Nom', 'nom', 'text', $Auteur->getNom(), true); ?>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-12">
-                        <?= App\Form::text(trans('Provenance'), 'provenance', 'text', $Auteur->getProvenance(), false); ?>
+                        <?= App\Form::text('Provenance', 'provenance', 'text', $Auteur->getProvenance(), false); ?>
                     </div>
                 </div>
                 <div class="my-4"></div>
                 <div class="row">
                     <div class="col-12">
-                        <button type="submit"
-                                class="btn btn-primary btn-block btn-lg"><?= trans('Enregistrer'); ?></button>
+                        <?= App\Form::target('UPDATEAUTHOR'); ?>
+                        <?= App\Form::submit('Enregistrer', 'UPDATEAUTHORSUBMIT'); ?>
                     </div>
                 </div>
                 <div class="my-4"></div>

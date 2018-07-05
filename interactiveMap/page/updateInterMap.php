@@ -36,29 +36,27 @@ if (!empty($_GET['id'])): ?>
                 <input type="hidden" name="id" value="<?= $InteractiveMap->getId(); ?>">
                 <div class="row">
                     <div class="col-12">
-                        <?= App\Form::text(trans('Titre'), 'title', 'text', $InteractiveMap->getTitle(), true); ?>
+                        <?= App\Form::text('Titre', 'title', 'text', $InteractiveMap->getTitle(), true); ?>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-12 col-md-6">
-                        <?= App\Form::text(trans('Largeur'), 'width', 'text', $InteractiveMap->getWidth(), true); ?>
+                        <?= App\Form::text('Largeur', 'width', 'text', $InteractiveMap->getWidth(), true); ?>
                     </div>
                     <div class="col-12 col-md-6">
-                        <?= App\Form::text(trans('Hauteur'), 'height', 'text', $InteractiveMap->getHeight(), true); ?>
+                        <?= App\Form::text('Hauteur', 'height', 'text', $InteractiveMap->getHeight(), true); ?>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-12 my-2">
-                        <?= App\Form::radio(trans('Statut de la carte'), 'status', array_map('trans', INTERACTIVE_MAP_STATUS), $InteractiveMap->getStatus(), true); ?>
+                        <?= App\Form::radio('Statut de la carte', 'status', array_map('trans', INTERACTIVE_MAP_STATUS), $InteractiveMap->getStatus(), true); ?>
                     </div>
                 </div>
                 <div class="my-2"></div>
                 <div class="row">
                     <div class="col-12">
-                        <button type="submit" name="UPDATEINTERACTIVECARTE"
-                                class="btn btn-outline-primary btn-block btn-lg">
-                            <?= trans('Enregistrer'); ?>
-                        </button>
+                        <?= App\Form::target('UPDATEINTERACTIVECARTE'); ?>
+                        <?= App\Form::submit('Enregistrer', 'UPDATEINTERACTIVECARTESUBMIT'); ?>
                     </div>
                 </div>
             </form>
@@ -110,13 +108,13 @@ if (!empty($_GET['id'])): ?>
                                                             <?= App\Form::text('ID', 'id', 'text', $content['id'], true, 300, 'disabled'); ?>
                                                         </div>
                                                         <div class="col-12 col-lg-3">
-                                                            <?= App\Form::text(trans('Titre'), 'title', 'text', $content['title'], true, 300, '', '', 'updateInterMap'); ?>
+                                                            <?= App\Form::text('Titre', 'title', 'text', $content['title'], true, 300, '', '', 'updateInterMap'); ?>
                                                         </div>
                                                         <div class="col-12 col-lg-3">
-                                                            <?= App\Form::text(trans('Couleur'), 'color', 'text', $content['color'], true, 300, '', '', 'updateInterMap'); ?>
+                                                            <?= App\Form::text('Couleur', 'color', 'text', $content['color'], true, 300, '', '', 'updateInterMap'); ?>
                                                         </div>
                                                         <div class="col-12 col-lg-3">
-                                                            <?= App\Form::text(trans('Développement la catégorie'), 'show', 'text', $content['show'], true, 300, '', '', 'updateInterMap'); ?>
+                                                            <?= App\Form::text('Développement la catégorie', 'show', 'text', $content['show'], true, 300, '', '', 'updateInterMap'); ?>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -174,7 +172,7 @@ if (!empty($_GET['id'])): ?>
                                                             <?= App\Form::text('ID', 'id', 'text', $content['id'], true, 300, 'disabled'); ?>
                                                         </div>
                                                         <div class="col-12 col-lg-3">
-                                                            <?= App\Form::text(trans('Titre'), 'title', 'text', $content['title'], true, 300, '', '', 'updateInterMap'); ?>
+                                                            <?= App\Form::text('Titre', 'title', 'text', $content['title'], true, 300, '', '', 'updateInterMap'); ?>
                                                         </div>
                                                         <?php if (!empty($content['map'])): ?>
                                                             <div class="col-12 col-lg-3">
@@ -217,7 +215,7 @@ if (!empty($_GET['id'])): ?>
                                 $mapOptions = json_decode($InteractiveMap->getOptions(), true);
                                 $optionsChoised = array();
 
-                                if(isset($mapOptions['checkbox'])) {
+                                if (isset($mapOptions['checkbox'])) {
                                     foreach ($mapOptions['checkbox'] as $key => $value) {
                                         $optionsChoised[$value] = $value;
                                     }
@@ -229,24 +227,24 @@ if (!empty($_GET['id'])): ?>
                                     <input type="hidden" name="idMap" value="<?= $InteractiveMap->getId(); ?>">
                                     <div class="row">
                                         <div class="col-12 my-2">
-                                            <?= App\Form::checkbox(trans('Options'), 'options', MAP_JS_OPTIONS, $optionsChoised, 'custom-control-inline'); ?>
+                                            <?= App\Form::checkbox('Options', 'options', MAP_JS_OPTIONS, $optionsChoised, 'custom-control-inline'); ?>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-12 col-lg-4 my-2">
-                                            <?= App\Form::select(trans('Action lors du clic'), 'action', MAP_JS_ACTIONS, !empty($mapOptions['action']) ? $mapOptions['action'] : 'tooltip', true); ?>
+                                            <?= App\Form::select('Action lors du clic', 'action', MAP_JS_ACTIONS, !empty($mapOptions['action']) ? $mapOptions['action'] : 'tooltip', true); ?>
                                         </div>
                                         <div class="col-12 col-lg-4 my-2">
-                                            <?= App\Form::text(trans('Zoom autorisé'), 'maxscale', 'number', $mapOptions['maxscale'], true, 1); ?>
+                                            <?= App\Form::text('Zoom autorisé', 'maxscale', 'number', $mapOptions['maxscale'], true, 1); ?>
                                         </div>
                                         <div class="col-12 col-lg-4 my-2">
-                                            <?= App\Form::text(trans('Couleur de remplissage (hex)'), 'mapfill', 'text', $mapOptions['mapfill'], false, 7); ?>
+                                            <?= App\Form::text('Couleur de remplissage (hex)', 'mapfill', 'text', $mapOptions['mapfill'], false, 7); ?>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-12 my-2">
-                                            <button class="btn btn-block btn-primary" type="submit" name="ADDOPTIONS">
-                                                <?= trans('Enregistrer'); ?></button>
+                                            <?= App\Form::target('ADDOPTIONS'); ?>
+                                            <?= App\Form::submit('Enregistrer', 'ADDOPTIONSSUBMIT'); ?>
                                         </div>
                                     </div>
                                 </form>

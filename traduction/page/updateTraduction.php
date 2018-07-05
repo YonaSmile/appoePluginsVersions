@@ -38,7 +38,8 @@ $allContent = $Traduction->getDbData();
                                placeholder="<?= trans('Mot'); ?>" required="true">
                         <?= getTokenField(); ?>
                         <div class="input-group-append">
-                            <button type="submit" name="ADDTRADUCTION" class="btn btn-outline-info">
+                            <?= App\Form::target('ADDTRADUCTION'); ?>
+                            <button type="submit" name="ADDTRADUCTIONSUBMIT" class="btn btn-outline-info">
                                 <?= trans('Ajouter une traduction'); ?>
                             </button>
                             <button type="button" id="addMultipleTrads" class="btn btn-outline-success"
@@ -68,9 +69,7 @@ $allContent = $Traduction->getDbData();
                 <div class="my-3"></div>
                 <div class="row">
                     <div class="col-12">
-                        <button type="button" class="btn btn-outline-primary btn-block btn-lg">
-                            <?= trans('Enregistrer'); ?>
-                        </button>
+                        <?= App\Form::submit('Enregistrer', 'TRADSUBMIT'); ?>
                     </div>
                 </div>
             </form>
@@ -105,7 +104,8 @@ $allContent = $Traduction->getDbData();
                         </div>
                     </div>
                     <div class="modal-footer" id="modalAddMultipleTradsFooter">
-                        <button type="submit" name="ADDMULTIPLETRADS"
+                        <?= App\Form::target('ADDMULTIPLETRADS'); ?>
+                        <button type="submit" name="ADDMULTIPLETRADSSUBMIT"
                                 class="btn btn-primary"><?= trans('Enregistrer'); ?></button>
                         <button type="button" class="btn btn-secondary"
                                 data-dismiss="modal"><?= trans('Fermer'); ?></button>

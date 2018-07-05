@@ -36,24 +36,23 @@ if (!empty($_GET['id'])): ?>
                 <input type="hidden" name="id" value="<?= $Article->getId(); ?>">
                 <div class="row">
                     <div class="col-12 my-2">
-                        <?= App\Form::text(trans('Nom'), 'name', 'text', $Article->getName(), true, 100); ?>
+                        <?= App\Form::text('Nom', 'name', 'text', $Article->getName(), true, 100); ?>
                     </div>
                     <div class="col-12 my-2">
-                        <?= App\Form::text(trans('Description'), 'description', 'text', $Article->getDescription(), true, 100); ?>
+                        <?= App\Form::text('Description', 'description', 'text', $Article->getDescription(), true, 100); ?>
                     </div>
                     <div class="col-12 my-2">
-                        <?= App\Form::text(trans('Nom du lien URL') . ' (slug)', 'slug', 'text', $Article->getSlug(), true, 100); ?>
+                        <?= App\Form::text('Nom du lien URL' . ' (slug)', 'slug', 'text', $Article->getSlug(), true, 100); ?>
                     </div>
                     <div class="col-12 my-2">
-                        <?= App\Form::radio(trans('Statut de l\'article'), 'statut', array_map('trans', ITEMGLUE_ARTICLES_STATUS), $Article->getStatut(), true); ?>
+                        <?= App\Form::radio('Statut de l\'article', 'statut', array_map('trans', ITEMGLUE_ARTICLES_STATUS), $Article->getStatut(), true); ?>
                     </div>
                 </div>
                 <div class="my-2"></div>
                 <div class="row">
                     <div class="col-12">
-                        <button type="submit" name="UPDATEARTICLE" class="btn btn-outline-primary btn-block btn-lg">
-                            <?= trans('Enregistrer'); ?>
-                        </button>
+                        <?= App\Form::target('UPDATEARTICLE'); ?>
+                        <?= App\Form::submit('Enregistrer', 'UPDATEARTICLESUBMIT'); ?>
                     </div>
                 </div>
             </form>

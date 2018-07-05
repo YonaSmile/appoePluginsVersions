@@ -1,15 +1,15 @@
 <?php
-require( 'header.php' );
-require( CMS_PATH . 'process/postProcess.php' );
+require('header.php');
+require(CMS_PATH . 'process/postProcess.php');
 ?>
 <div class="container">
     <div class="row">
         <div class="col-12">
-            <h1 class="bigTitle"><?= trans( 'Nouvelle page' ); ?></h1>
+            <h1 class="bigTitle"><?= trans('Nouvelle page'); ?></h1>
             <hr class="my-4">
         </div>
     </div>
-    <?php if ( isset( $Response ) ): ?>
+    <?php if (isset($Response)): ?>
         <div class="row">
             <div class="col-12">
                 <div class="alert alert-<?= $Response->display()->status ?>" role="alert">
@@ -23,24 +23,23 @@ require( CMS_PATH . 'process/postProcess.php' );
 
         <div class="row">
             <div class="col-12 my-2">
-                <?= App\Form::text( trans('Nom'), 'name', 'text', ! empty( $_POST['name'] ) ? $_POST['name'] : '', true, 70 ); ?>
+                <?= App\Form::text('Nom', 'name', 'text', !empty($_POST['name']) ? $_POST['name'] : '', true, 70); ?>
             </div>
             <div class="col-12 my-2">
-                <?= App\Form::text( trans('Description'), 'description', 'text', ! empty( $_POST['description'] ) ? $_POST['description'] : '', true, 300 ); ?>
+                <?= App\Form::text('Description', 'description', 'text', !empty($_POST['description']) ? $_POST['description'] : '', true, 300); ?>
             </div>
             <div class="col-12 my-2">
-                <?= App\Form::text( trans('Nom du lien URL').' (slug)', 'slug', 'text', ! empty( $_POST['slug'] ) ? $_POST['slug'] : '', true, 100 ); ?>
+                <?= App\Form::text('Nom du lien URL' . ' (slug)', 'slug', 'text', !empty($_POST['slug']) ? $_POST['slug'] : '', true, 100); ?>
             </div>
             <div class="col-12 my-2">
-                <?= App\Form::radio(trans('Statut de la page'), 'statut', array_map('trans', CMS_PAGE_STATUS), ! empty( $_POST['statut'] ) ? $_POST['statut'] : 1, true); ?>
+                <?= App\Form::radio('Statut de la page', 'statut', array_map('trans', CMS_PAGE_STATUS), !empty($_POST['statut']) ? $_POST['statut'] : 1, true); ?>
             </div>
         </div>
         <div class="my-2"></div>
         <div class="row">
             <div class="col-12">
-                <button type="submit" name="ADDPAGE" class="btn btn-outline-primary btn-block btn-lg">
-                    <?= trans('Enregistrer'); ?>
-                </button>
+                <?= App\Form::target('ADDPAGE'); ?>
+                <?= App\Form::submit('Enregistrer', 'addPageSubmit'); ?>
             </div>
         </div>
     </form>
@@ -53,4 +52,4 @@ require( CMS_PATH . 'process/postProcess.php' );
         });
     });
 </script>
-<?php require( 'footer.php' ); ?>
+<?php require('footer.php'); ?>

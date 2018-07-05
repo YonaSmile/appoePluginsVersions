@@ -88,23 +88,18 @@
                         </p>
                         <form method="post" action="" id="NewEventDateForm">
                             <input type="hidden" name="eventId" id="eventId" value="<?= $Event->getId() ?>">
-                            <input type="hidden" name="addDateEvent" value="OK">
+                            <?= App\Form::target('addDateEvent'); ?>
                             <?= getTokenField(); ?>
                             <div class="row">
                                 <div class="col-12 col-lg-4">
-                                    <?= App\Form::text(trans('Date début'), 'dateDebut', 'text', '', true, 10, '', '', 'datepicker'); ?>
+                                    <?= App\Form::text('Date début', 'dateDebut', 'text', '', true, 10, '', '', 'datepicker'); ?>
                                 </div>
                                 <div class="col-12 col-lg-4">
-                                    <?= App\Form::selectTime(trans('Heure début'), 'heureDebut', true, 0, 24, 55, 5); ?>
+                                    <?= App\Form::selectTime('Heure début', 'heureDebut', true, 0, 24, 55, 5); ?>
                                 </div>
                                 <div class="col-12 col-lg-4">
-                                    <?= App\Form::select(trans('Localisation'), 'localisation', [
-                                        1 => '1a',
-                                        '2',
-                                        '10a',
-                                        '10b',
-                                        '10c'
-                                    ]); ?>
+                                    <?= App\Form::select('Localisation', 'localisation', [
+                                        1 => '1a', '2', '10a', '10b', '10c']); ?>
                                 </div>
                             </div>
                             <small id="addDateErrorMsg" class="text-danger"></small>

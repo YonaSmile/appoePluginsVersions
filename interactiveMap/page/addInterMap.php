@@ -24,21 +24,22 @@ require_once(INTERACTIVE_MAP_PATH . 'process/postProcess.php');
             <?= getTokenField(); ?>
             <div class="row">
                 <div class="col-12">
-                    <?= App\Form::text(trans('Titre'), 'title', 'text', !empty($_POST['title']) ? $_POST['title'] : '', true); ?>
+                    <?= App\Form::text('Titre', 'title', 'text', !empty($_POST['title']) ? $_POST['title'] : '', true); ?>
                 </div>
             </div>
             <div class="row">
                 <div class="col-12 col-md-6">
-                    <?= App\Form::text(trans('Largeur'), 'width', 'text', !empty($_POST['width']) ? $_POST['width'] : '', true); ?>
+                    <?= App\Form::text('Largeur', 'width', 'text', !empty($_POST['width']) ? $_POST['width'] : '', true); ?>
                 </div>
                 <div class="col-12 col-md-6">
-                    <?= App\Form::text(trans('Hauteur'), 'height', 'text', !empty($_POST['height']) ? $_POST['height'] : '', true); ?>
+                    <?= App\Form::text('Hauteur', 'height', 'text', !empty($_POST['height']) ? $_POST['height'] : '', true); ?>
                 </div>
             </div>
             <div class="my-4"></div>
             <div class="row">
                 <div class="col-12">
-                    <button type="submit" name="ADDINTERMAP" class="btn btn-primary btn-block btn-lg"><?= trans('Enregistrer'); ?></button>
+                    <?= App\Form::target('ADDINTERMAP'); ?>
+                    <?= App\Form::submit('Enregistrer', 'ADDINTERMAPSUBMIT'); ?>
                 </div>
             </div>
         </form>

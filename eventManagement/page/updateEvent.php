@@ -50,44 +50,44 @@
                             $auteursArray[$auteur->id] = $auteur->nom;
                         }
 
-                        echo App\Form::select(trans('Auteur'), 'auteurId', $auteursArray, $Event->getAuteurId(), true);
+                        echo App\Form::select('Auteur', 'auteurId', $auteursArray, $Event->getAuteurId(), true);
                         ?>
                     </div>
                     <div class="col-12 col-lg-4">
-                        <?= App\Form::text(trans('Titre'), 'titre', 'text', $Event->getTitre(), true, 250); ?>
+                        <?= App\Form::text('Titre', 'titre', 'text', $Event->getTitre(), true, 250); ?>
                     </div>
                     <div class="col-12 col-lg-4">
-                        <?= App\Form::text(trans('Pitch'), 'pitch', 'text', $Event->getPitch(), false, 255); ?>
+                        <?= App\Form::text('Pitch', 'pitch', 'text', $Event->getPitch(), false, 255); ?>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-12">
-                        <?= App\Form::textarea(trans('Participation'), 'participation', $Event->getParticipation(), 5, false); ?>
+                        <?= App\Form::textarea('Participation', 'participation', $Event->getParticipation(), 5, false); ?>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-12">
-                        <?= App\Form::textarea(trans('Description'), 'description', $Event->getDescription(), 5, true, '', 'ckeditor'); ?>
+                        <?= App\Form::textarea('Description', 'description', $Event->getDescription(), 5, true, '', 'ckeditor'); ?>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-12 col-lg-8">
-                        <?= App\Form::radio(trans('Type de Spectacle'), 'spectacleType', array_map('trans', SPECTACLES_TYPES), $Event->getSpectacleType()); ?>
+                        <?= App\Form::radio('Type de Spectacle', 'spectacleType', array_map('trans', SPECTACLES_TYPES), $Event->getSpectacleType()); ?>
                     </div>
                     <div class="col-12 col-lg-4">
-                        <?= App\Form::radio(trans('IN / OFF'), 'indoor', array_map('trans', INDOOR_OFF), $Event->getIndoor()); ?>
+                        <?= App\Form::radio('IN / OFF', 'indoor', array_map('trans', INDOOR_OFF), $Event->getIndoor()); ?>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-12">
-                        <?= App\Form::text(trans('Nouvelle Image'), 'image', 'file', '', false); ?>
+                        <?= App\Form::text('Nouvelle Image', 'image', 'file', '', false); ?>
                     </div>
                 </div>
                 <div class="my-4"></div>
                 <div class="row">
                     <div class="col-12">
-                        <button type="submit"
-                                class="btn btn-primary btn-block btn-lg"><?= trans('Enregistrer'); ?></button>
+                        <?= App\Form::target('UPDATEEVENT'); ?>
+                        <?= App\Form::submit('Enregistrer', 'UPDATEEVENTSUBMIT'); ?>
                     </div>
                 </div>
             </form>

@@ -44,16 +44,15 @@
             <div class="my-4"></div>
             <div class="row">
                 <div class="col-12">
-                    <?= App\Form::textarea(trans('Texte'), 'text', '', 5, true, '', 'ckeditor'); ?>
+                    <?= App\Form::textarea('Texte', 'text', '', 5, true, '', 'ckeditor'); ?>
                 </div>
             </div>
 
             <div class="my-4"></div>
             <div class="row">
                 <div class="col-12">
-                    <button type="submit" name="ADDMESSAGE"
-                            class="btn btn-outline-primary btn-block btn-lg"><?= trans('Envoyer'); ?>
-                    </button>
+                    <?= App\Form::target('ADDMESSAGE'); ?>
+                    <?= App\Form::submit('Envoyer', 'ADDMESSAGESUBMIT'); ?>
                 </div>
             </div>
         </form>

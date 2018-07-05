@@ -22,18 +22,19 @@
             <?= getTokenField(); ?>
             <div class="row">
                 <div class="col-12">
-                    <?= App\Form::text(trans('Nom'), 'nom', 'text', !empty($_POST['nom']) ? $_POST['nom'] : '', true); ?>
+                    <?= App\Form::text('Nom', 'nom', 'text', !empty($_POST['nom']) ? $_POST['nom'] : '', true); ?>
                 </div>
             </div>
             <div class="row">
                 <div class="col-12">
-                    <?= App\Form::text(trans('Provenance'), 'provenance', 'text', !empty($_POST['provenance']) ? $_POST['provenance'] : '', false); ?>
+                    <?= App\Form::text('Provenance', 'provenance', 'text', !empty($_POST['provenance']) ? $_POST['provenance'] : '', false); ?>
                 </div>
             </div>
             <div class="my-4"></div>
             <div class="row">
                 <div class="col-12">
-                    <button type="submit" class="btn btn-primary btn-block btn-lg"><?= trans('Enregistrer'); ?></button>
+                    <?= App\Form::target('ADDAUTHOR'); ?>
+                    <?= App\Form::submit('Enregistrer', 'ADDAUTHORSUBMIT'); ?>
                 </div>
             </div>
         </form>
