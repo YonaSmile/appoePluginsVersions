@@ -2,26 +2,27 @@
 
 //get messages
 function liveMessages() {
+    return jQuery.get('/app/plugin/messagIn/syncMessages.php');
+}
 
-    jQuery.get(
-        '/app/plugin/messagIn/syncMessages.php',
-        function (data) {
+jQuery(document).ready(function () {
+
+    liveMessages();
+
+    //Start Cron
+    var msgCron = setInterval(function () {
+
+        liveMessages().done(function (data) {
             if ($.isNumeric(data)) {
                 if (!$('#menu-messages > a span.badge').length) {
                     $('#menu-messages > a').append(' <span class="badge badge-pill badge-danger ml-1">' + data + '</span>');
                 } else {
                     $('#menu-messages > a span.badge').html(data);
                 }
+            } else {
+                clearInterval(msgCron);
             }
-        }
-    );
-}
+        });
 
-jQuery(document).ready(function () {
-    liveMessages();
-
-//Start Cron
-    setInterval(function () {
-        liveMessages();
     }, 15000);
 });
