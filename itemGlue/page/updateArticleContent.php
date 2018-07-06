@@ -39,6 +39,11 @@ if (!empty($_GET['id'])): ?>
                             <span class="fas fa-cog"></span> <?= trans('Modifier l\'article'); ?>
                         </a>
                     <?php endif; ?>
+                    <button id="addMetaArticleBtn" type="button" class="btn btn-info btn-sm"
+                            data-toggle="modal"
+                            data-target="#modalAddArticleMeta">
+                        <i class="fas fa-list"></i> <?= trans('Détails de l\'article'); ?>
+                    </button>
                     <select class="custom-select otherArticlesSelect otherProjetSelect notPrint float-right"
                             title="<?= trans('Parcourir les articles'); ?>...">
                         <option selected="selected" disabled><?= trans('Parcourir les articles'); ?>...</option>
@@ -168,86 +173,71 @@ if (!empty($_GET['id'])): ?>
                         </div>
                         <hr class="mt-2 mt-3 mb-1 mx-5">
                     <?php endif; ?>
-                    <?php if ($USER->getRole() > 3): ?>
-                        <div class="row">
-                            <div class="col-12">
-                                <h2 class="subTitle" style="position: relative">
-                                    <?= trans('Détails de l\'article'); ?>
-                                    <button id="addMetaArticleBtn" type="button" class="btn btn-outline-info btn-sm"
-                                            data-toggle="modal" style="position: absolute;bottom: 0;right: 0;"
-                                            data-target="#modalAddArticleMeta">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
-                                </h2>
-                            </div>
-                            <?php
-                            $ArticleMeta = new App\Plugin\ItemGlue\ArticleMeta($Article->getId());
-                            if (!is_null($ArticleMeta->getData())): ?>
-                                <div class="col-12 d-flex flex-column" id="articleMetaContainer">
-                                    <?php foreach ($ArticleMeta->getData() as $data): ?>
-                                        <div class="d-flex align-items-stretch my-1 fileContent">
-                                            <span class="bg-info p-2 text-white"><?= $data->metaKey; ?></span><span
-                                                    class="bg-secondary p-2 text-white"><?= $data->metaValue; ?></span>
-                                            <button type="button" class="deleteArticleMeta btn btn-danger btn-sm"
-                                                    style="position: absolute; top: 0; right: 0;"
-                                                    data-idmetaarticle="<?= $data->id; ?>">
-                                                <i class="fas fa-times"></i>
-                                            </button>
-                                        </div>
-                                    <?php endforeach; ?>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                    <?php endif; ?>
                 </div>
             </div>
         </div>
         <div class="my-4"></div>
+
         <div class="modal fade" id="modalAddArticleMeta" tabindex="-1" role="dialog"
              aria-labelledby="modalAddArticleMetaTitle"
              aria-hidden="true">
-            <div class="modal-dialog" role="document">
+            <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
-                    <form action="" method="post" id="addArticleMetaForm">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="modalAddArticleMetaTitle">Ajouter un détail</h5>
-                        </div>
-                        <div class="modal-body" id="modalArticleMetaBody">
-                            <input type="hidden" name="idArticle" value="<?= $Article->getId(); ?>">
-                            <?= App\Form::target('ADDARTICLEMETA'); ?>
-                            <?= getTokenField(); ?>
-                            <div class="row">
-                                <div class="col-12 col-8 my-2">
-                                    <?= App\Form::text('Clef', 'metaKey', 'text', !empty($_POST['metaKey']) ? $_POST['metaKey'] : '', true, 150); ?>
-                                </div>
-                                <div class="col-12 col-4 my-2">
-                                    <?= App\Form::text('Valeur', 'metaValue', 'text', !empty($_POST['metaValue']) ? $_POST['metaValue'] : '', true, 300); ?>
-                                </div>
-                                <div class="col-12 col-4 my-2">
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" name="addTradValue"
-                                               id="customCheck1">
-                                        <label class="custom-control-label"
-                                               for="customCheck1"><?= trans('Ajouter une traduction'); ?></label>
-                                    </div>
-                                </div>
-                                <script>
-                                    $(document).ready(function () {
-                                        $('input#metaKey').keyup(function () {
-                                            $(this).val(convertToSlug($(this).val()));
-                                        });
-                                    });
-                                </script>
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalAddArticleMetaTitle">Ajouter un détail</h5>
+                    </div>
+                    <div class="modal-body" id="modalArticleMetaBody">
+                        <div class="row">
+                            <div class="col-12 col-lg-6">
+                                <div id="metaArticleContenair"></div>
                             </div>
-                            <div id="addArticleMetaError"></div>
+                            <div class="col-12 col-lg-6">
+                                <form action="" method="post" id="addArticleMetaForm">
+                                    <input type="hidden" name="idArticle" value="<?= $Article->getId(); ?>">
+                                    <input type="hidden" name="UPDATEMETAARTICLE" value="">
+                                    <?= App\Form::target('ADDARTICLEMETA'); ?>
+                                    <?= getTokenField(); ?>
+                                    <div class="row">
+                                        <div class="col-12 my-2">
+                                            <?= App\Form::text('Titre', 'metaKey', 'text', '', true); ?>
+                                        </div>
+                                        <div class="col-12 my-2">
+                                            <?= App\Form::textarea('Contenu', 'metaValue', '', 5, true, '', 'ckeditor'); ?>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 my-2">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" name="addMetaData"
+                                                       id="metaDataAvailable">
+                                                <label class="custom-control-label"
+                                                       for="metaDataAvailable"><?= trans('Activer métadonnée'); ?></label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 my-2">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" name="addTradValue"
+                                                       id="customCheck1">
+                                                <label class="custom-control-label"
+                                                       for="customCheck1"><?= trans('Ajouter une traduction'); ?></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 my-2">
+                                            <?= App\Form::submit('Enregistrer', 'ADDMETAPRODUCTSUBMIT'); ?>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                        <div class="modal-footer" id="modalArticleMetaFooter">
-                            <button type="submit" name="ADDARTICLEMETASUBMIT"
-                                    class="btn btn-primary"><?= trans('Enregistrer'); ?></button>
-                            <button type="button" class="btn btn-secondary"
-                                    data-dismiss="modal"><?= trans('Fermer'); ?></button>
-                        </div>
-                    </form>
+                    </div>
+                    <div class="modal-footer" id="modalArticleMetaFooter">
+                        <button type="button" class="btn btn-secondary"
+                                data-dismiss="modal"><?= trans('Fermer'); ?></button>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -322,68 +312,86 @@ if (!empty($_GET['id'])): ?>
                     }
                 });
 
-                $('form#addArticleMetaForm').on('submit', function (event) {
+                CKEDITOR.config.height = 300;
 
-                    event.preventDefault();
-                    var $btn = $('form#addArticleMetaForm button[type="submit"]');
-                    var metaKey = $('input#metaKey');
-                    var metaValue = $('input#metaValue');
-                    var idArticle = $('input[name="idArticle"]').val();
-                    var $errorContainer = $('#addArticleMetaError');
+                $('#metaArticleContenair').load('<?= ITEMGLUE_URL; ?>page/getMetaArticle.php?idArticle=<?= $Article->getId(); ?>');
 
-                    if (metaKey.length && metaValue.length) {
-                        busyApp();
-                        $.post(
-                            '<?= ITEMGLUE_URL; ?>process/ajaxProcess.php',
-                            $('form#addArticleMetaForm').serialize(),
-                            function (data) {
-                                if ($.isNumeric(data)) {
-                                    $btn.html('Ajouter').removeClass('disabled').attr('disabled', false);
-                                    $('#articleMetaContainer').append(
-                                        '<div class="d-flex align-items-stretch my-1 fileContent">'
-                                        + '<button type="button" class="deleteBtn deleteArticleMeta" '
-                                        + ' data-idmetaarticle="' + data + '">&times;</button>'
-                                        + '<span class="bg-info p-2 text-white">'
-                                        + metaKey.val()
-                                        + '</span><span class="bg-secondary p-2 text-white">'
-                                        + metaValue.val()
-                                        + '</span></div>');
-                                    availableApp();
-                                } else {
-                                    $errorContainer.html(data);
-                                }
-                            }
-                        );
-                    } else {
-                        $errorContainer.html('<?= trans('Tous les champs sont obligatoires'); ?> !');
+                $('#metaDataAvailable').change(function () {
+                    if ($('#metaDataAvailable').is(':checked')) {
+                        $('form#addArticleMetaForm input#metaKey').val(convertToSlug($('form#addArticleMetaForm input#metaKey').val()));
                     }
                 });
 
-                $('#articleMetaContainer').on('click', '.deleteArticleMeta', function (event) {
+                $('form#addArticleMetaForm input#metaKey').keyup(function () {
+                    if ($('#metaDataAvailable').is(':checked')) {
+                        $('form#addArticleMetaForm input#metaKey').val(convertToSlug($('form#addArticleMetaForm input#metaKey').val()));
+                    }
+                });
+
+                $('form#addArticleMetaForm').on('submit', function (event) {
+
                     event.preventDefault();
-                    event.stopPropagation();
+                    var $form = $(this);
+                    busyApp();
 
+                    $.post(
+                        '<?= ITEMGLUE_URL; ?>process/ajaxProcess.php',
+                        {
+                            ADDARTICLEMETA: 'OK',
+                            UPDATEMETAARTICLE: $('input[name="UPDATEMETAARTICLE"]').val(),
+                            idArticle: $('input[name="idArticle"]').val(),
+                            metaKey: $('input#metaKey').val(),
+                            metaValue: CKEDITOR.instances.metaValue.getData()
+                        },
+                        function (data) {
+                            if (data == 'true') {
+                                $('[type="submit"]', $form).attr('disabled', false).html('<?= trans('Enregistrer'); ?>').removeClass('disabled');
+                                CKEDITOR.instances.metaValue.setData('');
+                                $form.trigger('reset');
+                                $('#metaArticleContenair')
+                                    .html(loaderHtml())
+                                    .load('<?= ITEMGLUE_URL; ?>page/getMetaArticle.php?idArticle=<?= $Article->getId(); ?>');
+                                availableApp();
+                            }
+                        }
+                    );
+                });
+
+                $('#metaArticleContenair').on('click', '.metaProductUpdateBtn', function () {
                     var $btn = $(this);
-                    var idMetaArticle = $btn.data('idmetaarticle');
+                    var idMetaArticle = $btn.data('idmetaproduct');
 
-                    if (confirm('<?= trans('Vous allez supprimer ce détail'); ?>')) {
+                    var $contenair = $('div.card[data-idmetaproduct="' + idMetaArticle + '"]');
+                    var title = $contenair.find('h5 button.metaProductTitle-' + idMetaArticle).text();
+                    var content = $contenair.find('div.metaProductContent-' + idMetaArticle).html();
+
+                    $('input[name="UPDATEMETAARTICLE"]').val(idMetaArticle);
+                    $('input#metaKey').val($.trim(title));
+                    CKEDITOR.instances.metaValue.setData(content);
+                });
+
+                $('#metaArticleContenair').on('click', '.metaProductDeleteBtn', function () {
+                    var $btn = $(this);
+                    var idMetaArticle = $btn.data('idmetaproduct');
+
+                    if (confirm('<?= trans('Êtes-vous sûr de vouloir supprimer cette métadonnée ?'); ?>')) {
                         busyApp();
                         $.post(
                             '<?= ITEMGLUE_URL; ?>process/ajaxProcess.php',
                             {
                                 DELETEMETAARTICLE: 'OK',
                                 idMetaArticle: idMetaArticle
-                            }, function (data) {
-                                if (data && (data == 'true' || data === true)) {
-                                    $btn
-                                        .parent('div')
-                                        .fadeOut('fast')
-                                        .delay(100)
-                                        .removeClass('d-flex');
+                            },
+                            function (data) {
+                                if (data == 'true') {
+
+                                    $('#metaArticleContenair')
+                                        .html(loaderHtml())
+                                        .load('<?= ITEMGLUE_URL; ?>page/getMetaArticle.php?idArticle=<?= $Article->getId(); ?>');
                                     availableApp();
                                 }
                             }
-                        )
+                        );
                     }
                 });
 

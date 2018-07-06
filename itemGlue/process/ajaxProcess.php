@@ -50,14 +50,46 @@ if (checkAjaxRequest()) {
             }
         }
 
-        if (isset($_POST['ADDARTICLEMETA']) && !empty($_POST['idArticle'])) {
-            if (!empty($_POST['metaKey']) && !empty($_POST['metaValue'])) {
+        /**
+         * Meta Product
+         */
+        if (isset($_POST['DELETEMETAARTICLE']) && !empty($_POST['idMetaArticle'])) {
+            $ArticleMeta = new App\Plugin\ItemGlue\ArticleMeta();
+            $ArticleMeta->setId($_POST['idMetaArticle']);
+            if ($ArticleMeta->delete()) {
+                echo json_encode(true);
+            }
+        }
 
-                $ArticleMeta = new App\Plugin\ItemGlue\ArticleMeta();
-                $ArticleMeta->feed($_POST);
+        if (isset($_POST['ADDARTICLEMETA'])
+            && !empty($_POST['idArticle'])
+            && !empty($_POST['metaKey'])
+            && !empty($_POST['metaValue'])) {
 
+            $ArticleMeta = new App\Plugin\ItemGlue\ArticleMeta();
+            $ArticleMeta->feed($_POST);
+
+            if (!empty($_POST['UPDATEMETAARTICLE'])) {
+
+                $ArticleMeta->setId($_POST['UPDATEMETAARTICLE']);
+                if ($ArticleMeta->notExist(true)) {
+                    if ($ArticleMeta->update()) {
+
+                        //Add translation
+                        if (isset($_POST['addTradValue'])) {
+                            $Traduction = new App\Plugin\Traduction\Traduction();
+                            $Traduction->setLang(LANG);
+                            $Traduction->setMetaKey($ArticleMeta->getMetaValue());
+                            $Traduction->setMetaValue($ArticleMeta->getMetaValue());
+                            $Traduction->save();
+                        }
+
+                        echo json_encode(true);
+                    }
+                }
+
+            } else {
                 if ($ArticleMeta->notExist()) {
-
                     if ($ArticleMeta->save()) {
 
                         //Add translation
@@ -69,27 +101,11 @@ if (checkAjaxRequest()) {
                             $Traduction->save();
                         }
 
-                        echo $ArticleMeta->getId();
-
-                    } else {
-                        echo trans('Une erreur s\'est produite');
+                        echo json_encode(true);
                     }
-
-                } else {
-                    echo trans('Ce détail exist déjà');
                 }
-
-            } else {
-                echo trans('Tous les champs sont obligatoires');
             }
-        }
 
-        if (isset($_POST['DELETEMETAARTICLE']) && !empty($_POST['idMetaArticle'])) {
-            $ArticleMeta = new App\Plugin\ItemGlue\ArticleMeta();
-            $ArticleMeta->setId($_POST['idMetaArticle']);
-            if ($ArticleMeta->delete()) {
-                echo 'true';
-            }
         }
     }
 }
