@@ -33,7 +33,8 @@ const MAP_JS_OPTIONS = array(
     'fullscreen' => 'Afficher les options plein écran',
     'zoombuttons' => 'Afficher les options zoom',
     'zoomoutclose' => 'Autoriser dézoomage automatique',
-    'clearbutton' => 'Afficher les options de nettoyage'
+    'clearbutton' => 'Afficher les options de nettoyage',
+    'mapfill' => 'Forcer le remplissage du container par la carte'
 );
 
 const MAP_JS_ACTIONS = array(
