@@ -184,7 +184,10 @@ if (!empty($_GET['id'])): ?>
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="modalAddArticleMetaTitle">Ajouter un détail</h5>
+                        <h5 class="modal-title" id="modalAddArticleMetaTitle"><?= trans('Détails de l\'article'); ?></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
                     <div class="modal-body" id="modalArticleMetaBody">
                         <div class="row">
@@ -192,6 +195,18 @@ if (!empty($_GET['id'])): ?>
                                 <div id="metaArticleContenair"></div>
                             </div>
                             <div class="col-12 col-lg-6">
+
+                                <div class="row">
+                                    <div class="col-12 my-2">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" name="addMetaData"
+                                                   id="metaDataAvailable">
+                                            <label class="custom-control-label"
+                                                   for="metaDataAvailable"><?= trans('Activer métadonnée'); ?></label>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <form action="" method="post" id="addArticleMetaForm">
                                     <input type="hidden" name="idArticle" value="<?= $Article->getId(); ?>">
                                     <input type="hidden" name="UPDATEMETAARTICLE" value="">
@@ -206,15 +221,6 @@ if (!empty($_GET['id'])): ?>
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-12 my-2">
-                                            <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" name="addMetaData"
-                                                       id="metaDataAvailable">
-                                                <label class="custom-control-label"
-                                                       for="metaDataAvailable"><?= trans('Activer métadonnée'); ?></label>
-                                            </div>
-                                        </div>
-
                                         <div class="col-12 my-2">
                                             <div class="custom-control custom-checkbox">
                                                 <input type="checkbox" class="custom-control-input" name="addTradValue"
@@ -332,6 +338,9 @@ if (!empty($_GET['id'])): ?>
 
                     event.preventDefault();
                     var $form = $(this);
+                    var metaValue = $('#metaDataAvailable').is(':checked')
+                        ? CKEDITOR.instances.metaValue.document.getBody().getText()
+                        : CKEDITOR.instances.metaValue.getData();
                     busyApp();
 
                     $.post(
@@ -341,8 +350,9 @@ if (!empty($_GET['id'])): ?>
                             UPDATEMETAARTICLE: $('input[name="UPDATEMETAARTICLE"]').val(),
                             idArticle: $('input[name="idArticle"]').val(),
                             metaKey: $('input#metaKey').val(),
-                            metaValue: CKEDITOR.instances.metaValue.getData()
+                            metaValue: metaValue
                         },
+
                         function (data) {
                             if (data == 'true') {
                                 $('[type="submit"]', $form).attr('disabled', false).html('<?= trans('Enregistrer'); ?>').removeClass('disabled');

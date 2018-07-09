@@ -109,7 +109,7 @@ class ArticleMeta
         PRIMARY KEY (`id`),
         `idArticle` INT(11) NOT NULL,
         `metaKey` VARCHAR(150) NOT NULL,
-        `metaValue` VARCHAR(500) NOT NULL,
+        `metaValue` TEXT NOT NULL,
         `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         UNIQUE (`idArticle`, `metaKey`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;';
