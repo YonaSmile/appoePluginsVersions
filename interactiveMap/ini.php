@@ -40,7 +40,7 @@ const MAP_JS_OPTIONS = array(
 const MAP_JS_ACTIONS = array(
     'tooltip' => 'Info-bulle',
     'open-link' => 'Ouvrir le lien',
-    'open-link-new-tab' => 'ouvrir le lien, nouvel onglet',
-    'lightbox' => 'boite mise ne avant',
+    'open-link-new-tab' => 'Ouvrir le lien, nouvel onglet',
+    'lightbox' => 'Boite mise en avant',
     'none' => 'Sans'
 );
