@@ -75,15 +75,6 @@ if (checkAjaxRequest()) {
                 if ($ArticleMeta->notExist(true)) {
                     if ($ArticleMeta->update()) {
 
-                        //Add translation
-                        if (isset($_POST['addTradValue'])) {
-                            $Traduction = new App\Plugin\Traduction\Traduction();
-                            $Traduction->setLang(LANG);
-                            $Traduction->setMetaKey($ArticleMeta->getMetaValue());
-                            $Traduction->setMetaValue($ArticleMeta->getMetaValue());
-                            $Traduction->save();
-                        }
-
                         echo json_encode(true);
                     }
                 }
@@ -92,18 +83,18 @@ if (checkAjaxRequest()) {
                 if ($ArticleMeta->notExist()) {
                     if ($ArticleMeta->save()) {
 
-                        //Add translation
-                        if (isset($_POST['addTradValue'])) {
-                            $Traduction = new App\Plugin\Traduction\Traduction();
-                            $Traduction->setLang(LANG);
-                            $Traduction->setMetaKey($ArticleMeta->getMetaValue());
-                            $Traduction->setMetaValue($ArticleMeta->getMetaValue());
-                            $Traduction->save();
-                        }
-
                         echo json_encode(true);
                     }
                 }
+            }
+
+            //Add translation
+            if (isset($_POST['addTradValue'])) {
+                $Traduction = new App\Plugin\Traduction\Traduction();
+                $Traduction->setLang(LANG);
+                $Traduction->setMetaKey($ArticleMeta->getMetaValue());
+                $Traduction->setMetaValue($ArticleMeta->getMetaValue());
+                $Traduction->save();
             }
 
         }

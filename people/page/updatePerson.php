@@ -64,7 +64,7 @@ if (!empty($_GET['id'])): ?>
                         <?= App\Form::text('Ville', 'city', 'text', $People->getCity(), false, 100); ?>
                     </div>
                     <div class="col-12 col-lg-5 my-2">
-                        <?= App\Form::text('Pays', 'country', 'text', $People->getCountry(), false, 100); ?>
+                        <?= App\Form::select('Pays', 'country', listPays(), !empty($People->getCountry()) ? $People->getCountry() : 'FR', false); ?>
                     </div>
                 </div>
                 <div class="my-2"></div>

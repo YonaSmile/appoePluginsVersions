@@ -22,7 +22,7 @@ class People
     protected $updatedAt;
 
     private $data;
-    private $dbh = null;
+    protected $dbh = null;
 
     public function __construct($idPerson = null)
     {
@@ -564,6 +564,37 @@ class People
                 return false;
             } else {
                 return true;
+            }
+        }
+    }
+
+    /**
+     * Auth people by password in options
+     * @return bool
+     */
+    public function authPeople()
+    {
+        $sql = 'SELECT * FROM appoe_plugin_people WHERE type = :type email = :email';
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':email', $this->email);
+        $stmt->execute();
+        $count = $stmt->rowCount();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            if ($count == 1) {
+                $row = $stmt->fetch(\PDO::FETCH_OBJ);
+                $options = unserialize($row->options);
+                if (password_verify($this->options, $options['password'])) {
+                    $this->feed($row);
+
+                    return true;
+                } else {
+                    return false; // Le mot de passe n'est pas correct;
+                }
+            } else {
+                return false; // La personne n'existe pas;
             }
         }
     }

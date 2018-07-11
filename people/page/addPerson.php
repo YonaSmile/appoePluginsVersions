@@ -59,7 +59,7 @@
                     <?= App\Form::text('Ville', 'city', 'text', !empty($_POST['city']) ? $_POST['city'] : '', false, 100); ?>
                 </div>
                 <div class="col-12 col-lg-5 my-2">
-                    <?= App\Form::text('Pays', 'country', 'text', !empty($_POST['country']) ? $_POST['country'] : 'France', false, 100); ?>
+                    <?= App\Form::select('Pays', 'country', listPays(), !empty($_POST['country']) ? $_POST['country'] : 'FR', false); ?>
                 </div>
             </div>
             <div class="my-2"></div>
