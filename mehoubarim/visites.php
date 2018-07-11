@@ -60,14 +60,21 @@ $globalData = mehoubarim_getGlobal();
         </div>
     </div>
     <script type="text/javascript">
-        jQuery('#resetStats').on('click', function () {
-            jQuery(this).attr('disabled', 'disabled').addClass('disabled')
-                .html('<i class="fas fa-circle-notch fa-spin"></i> <?= trans('Chargement'); ?>...');
-            jQuery('#listVisitorsStats, #listPagesStats').hide();
-            jQuery.post(
-                '/app/plugin/mehoubarim/visites.php',
-                {resetStats: 'OK'}
-            );
+        jQuery(document).ready(function ($) {
+
+            $('#resetStats').on('click', function () {
+
+                $(this).attr('disabled', 'disabled').addClass('disabled')
+                    .html('<i class="fas fa-circle-notch fa-spin"></i> <?= trans('Chargement'); ?>...');
+
+                $('#listVisitorsStats, #listPagesStats').hide();
+
+                $.post(
+                    '/app/plugin/mehoubarim/visites.php',
+                    {resetStats: 'OK'}
+                );
+            });
         });
     </script>
+
 <?php endif; ?>

@@ -1,6 +1,6 @@
 <?php
 const PEOPLE_NATURE = array(
-    0 => 'Société',
-    1 => 'Monsieur',
-    2 => 'Madame'
+    1 => 'Société',
+    2 => 'Monsieur',
+    3 => 'Madame'
 );

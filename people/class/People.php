@@ -574,9 +574,10 @@ class People
      */
     public function authPeople()
     {
-        $sql = 'SELECT * FROM appoe_plugin_people WHERE type = :type email = :email';
+        $sql = 'SELECT * FROM appoe_plugin_people WHERE type = :type AND email = :email';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':email', $this->email);
+        $stmt->bindParam(':type', $this->type);
         $stmt->execute();
         $count = $stmt->rowCount();
         $error = $stmt->errorInfo();
