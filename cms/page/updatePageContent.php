@@ -2,9 +2,16 @@
 if (!empty($_GET['id'])): ?>
     <?php
     $Cms = new App\Plugin\Cms\Cms();
+    $CmsMenu = new App\Plugin\Cms\CmsMenu();
     $Cms->setId($_GET['id']);
     if ($Cms->show()) : ?>
         <?php
+
+        //check if is a page operated by content CMS
+        $menuPages = $CmsMenu->showAll();
+        $allMenuPages = extractFromObjArr($menuPages, 'slug');
+
+        //get all pages for navigations
         $allCmsPages = $Cms->showAllPages();
         $allPages = extractFromObjArr($allCmsPages, 'id');
         $CmsContent = new App\Plugin\Cms\CmsContent($Cms->getId(), LANG);
@@ -25,10 +32,12 @@ if (!empty($_GET['id'])): ?>
                             <span class="fas fa-cog"></span> <?= trans('Modifier la page'); ?>
                         </a>
                     <?php endif; ?>
-                    <a href="<?= webUrl($Cms->getSlug() . '/'); ?>"
-                       class="btn btn-info btn-sm" target="_blank">
-                        <span class="fas fa-external-link-alt"></span> <?= trans('Visualiser la page'); ?>
-                    </a>
+                    <?php if (array_key_exists($Cms->getSlug(), $allMenuPages)): ?>
+                        <a href="<?= webUrl($Cms->getSlug() . '/'); ?>"
+                           class="btn btn-info btn-sm" target="_blank">
+                            <span class="fas fa-external-link-alt"></span> <?= trans('Visualiser la page'); ?>
+                        </a>
+                    <?php endif; ?>
                     <select class="custom-select otherPagesSelect otherProjetSelect notPrint float-right"
                             title="<?= trans('Parcourir les pages'); ?>...">
                         <option selected="selected" disabled><?= trans('Parcourir les pages'); ?>...</option>
@@ -97,7 +106,8 @@ if (!empty($_GET['id'])): ?>
                         </button>
                     </div>
                     <div class="modal-body pt-1" id="libraryModalContent">
-                        <a href="<?= getUrl('updateMedia/'); ?>" class="btn btn-info btn-sm mb-3"><?= trans('Nouveau média'); ?></a>
+                        <a href="<?= getUrl('updateMedia/'); ?>"
+                           class="btn btn-info btn-sm mb-3"><?= trans('Nouveau média'); ?></a>
                         <?php
                         $Media = new App\Media();
                         $Category = new App\Category();
