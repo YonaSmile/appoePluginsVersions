@@ -184,7 +184,8 @@ if (!empty($_GET['id'])): ?>
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="modalAddArticleMetaTitle"><?= trans('Détails de l\'article'); ?></h5>
+                        <h5 class="modal-title"
+                            id="modalAddArticleMetaTitle"><?= trans('Détails de l\'article'); ?></h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -214,7 +215,7 @@ if (!empty($_GET['id'])): ?>
                                     <?= getTokenField(); ?>
                                     <div class="row">
                                         <div class="col-12 my-2">
-                                            <?= App\Form::text('Titre', 'metaKey', 'text', '', true); ?>
+                                            <?= App\Form::text('Titre', 'metaKey', 'text', '', true, 150); ?>
                                         </div>
                                         <div class="col-12 my-2">
                                             <?= App\Form::textarea('Contenu', 'metaValue', '', 5, true, '', 'ckeditor'); ?>
@@ -231,7 +232,13 @@ if (!empty($_GET['id'])): ?>
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-12 my-2">
+                                        <div class="col-12 col-lg-3 my-2">
+                                            <button type="reset" name="reset" id="resetmeta"
+                                                    class="btn btn-outline-danger btn-block btn-lg">
+                                                <?= trans('Annuler'); ?>
+                                            </button>
+                                        </div>
+                                        <div class="col-12 col-lg-9 my-2">
                                             <?= App\Form::submit('Enregistrer', 'ADDMETAPRODUCTSUBMIT'); ?>
                                         </div>
                                     </div>
@@ -334,37 +341,41 @@ if (!empty($_GET['id'])): ?>
                     }
                 });
 
-                $('form#addArticleMetaForm').on('submit', function (event) {
+                $('#resetmeta').on('click', function () {
+                    $('input[name="UPDATEMETAARTICLE"]').val('');
+                    CKEDITOR.instances.metaValue.setData('');
+                    $('form#addArticleMetaForm').trigger('reset');
+                });
 
+                $('form#addArticleMetaForm').on('submit', function (event) {
                     event.preventDefault();
                     var $form = $(this);
-                    var metaValue = $('#metaDataAvailable').is(':checked')
-                        ? CKEDITOR.instances.metaValue.document.getBody().getText()
-                        : CKEDITOR.instances.metaValue.getData();
                     busyApp();
 
-                    $.post(
-                        '<?= ITEMGLUE_URL; ?>process/ajaxProcess.php',
-                        {
-                            ADDARTICLEMETA: 'OK',
-                            UPDATEMETAARTICLE: $('input[name="UPDATEMETAARTICLE"]').val(),
-                            idArticle: $('input[name="idArticle"]').val(),
-                            metaKey: $('input#metaKey').val(),
-                            metaValue: metaValue
-                        },
+                    var data = {
+                        ADDARTICLEMETA: 'OK',
+                        UPDATEMETAARTICLE: $('input[name="UPDATEMETAARTICLE"]').val(),
+                        idArticle: $('input[name="idArticle"]').val(),
+                        metaKey: $('input#metaKey').val(),
+                        metaValue: $('#metaDataAvailable').is(':checked')
+                            ? CKEDITOR.instances.metaValue.document.getBody().getText()
+                            : CKEDITOR.instances.metaValue.getData()
+                    };
 
-                        function (data) {
-                            if (data == 'true') {
-                                $('[type="submit"]', $form).attr('disabled', false).html('<?= trans('Enregistrer'); ?>').removeClass('disabled');
-                                CKEDITOR.instances.metaValue.setData('');
-                                $form.trigger('reset');
-                                $('#metaArticleContenair')
-                                    .html(loaderHtml())
-                                    .load('<?= ITEMGLUE_URL; ?>page/getMetaArticle.php?idArticle=<?= $Article->getId(); ?>');
-                                availableApp();
-                            }
+                    addMetaArticle(data).done(function (results) {
+                        if (results == 'true') {
+                            //clear form
+                            $('#resetmeta').trigger('click');
+
+                            $('#metaArticleContenair')
+                                .html(loaderHtml())
+                                .load('<?= ITEMGLUE_URL; ?>page/getMetaArticle.php?idArticle=<?= $Article->getId(); ?>');
                         }
-                    );
+
+                        $('[type="submit"]', $form).attr('disabled', false).html('<?= trans('Enregistrer'); ?>').removeClass('disabled');
+                        availableApp();
+                    });
+
                 });
 
                 $('#metaArticleContenair').on('click', '.metaProductUpdateBtn', function () {
@@ -386,22 +397,16 @@ if (!empty($_GET['id'])): ?>
 
                     if (confirm('<?= trans('Êtes-vous sûr de vouloir supprimer cette métadonnée ?'); ?>')) {
                         busyApp();
-                        $.post(
-                            '<?= ITEMGLUE_URL; ?>process/ajaxProcess.php',
-                            {
-                                DELETEMETAARTICLE: 'OK',
-                                idMetaArticle: idMetaArticle
-                            },
-                            function (data) {
-                                if (data == 'true') {
 
-                                    $('#metaArticleContenair')
-                                        .html(loaderHtml())
-                                        .load('<?= ITEMGLUE_URL; ?>page/getMetaArticle.php?idArticle=<?= $Article->getId(); ?>');
-                                    availableApp();
-                                }
+                        deleteMetaArticle(idMetaArticle).done(function (data) {
+                            if (data == 'true') {
+
+                                $('#metaArticleContenair')
+                                    .html(loaderHtml())
+                                    .load('<?= ITEMGLUE_URL; ?>page/getMetaArticle.php?idArticle=<?= $Article->getId(); ?>');
                             }
-                        );
+                            availableApp();
+                        });
                     }
                 });
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Plugin\ItemGlue;
 class ArticleMeta
 {
@@ -12,7 +13,7 @@ class ArticleMeta
 
     public function __construct($idArticle = null)
     {
-        if(is_null($this->dbh)) {
+        if (is_null($this->dbh)) {
             $this->dbh = \App\DB::connect();
         }
 
@@ -179,9 +180,10 @@ class ArticleMeta
     public function update()
     {
 
-        $sql = 'UPDATE appoe_plugin_itemGlue_articles_meta SET metaValue = :metaValue WHERE id = :id';
+        $sql = 'UPDATE appoe_plugin_itemGlue_articles_meta SET metaKey = :metaKey, metaValue = :metaValue WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':metaKey', $this->metaKey);
         $stmt->bindParam(':metaValue', $this->metaValue);
         $stmt->bindParam(':id', $this->id);
 
