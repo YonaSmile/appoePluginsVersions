@@ -1,18 +1,8 @@
-function addMeta(data) {
-
-    return $.post(
-        '/app/plugin/itemGlue/process/ajaxProcess.php',
-        {
-            ADDARTICLEMETA: 'OK',
-            UPDATEMETAARTICLE: data.updateMeta,
-            idArticle: data.idArticle,
-            metaKey: data.metaKey,
-            metaValue: data.metaValue
-        }
-    )
+function addMetaArticle(data) {
+    return $.post('/app/plugin/itemGlue/process/ajaxProcess.php', data);
 }
 
-function deleteMeta(idMetaArticle) {
+function deleteMetaArticle(idMetaArticle) {
 
     return $.post(
         '/app/plugin/itemGlue/process/ajaxProcess.php',
