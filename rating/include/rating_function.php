@@ -85,6 +85,9 @@ function getObj($type)
         case 'CMS':
             return new App\Plugin\Cms\Cms();
             break;
+        case 'SHOP':
+            return new App\Plugin\Shop\Product();
+            break;
         default:
             return false;
     }
