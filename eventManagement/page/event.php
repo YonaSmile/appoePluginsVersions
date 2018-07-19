@@ -50,7 +50,7 @@
                                 <th><?= trans('Type'); ?></th>
                             </tr>
                             <tr>
-                                <td><?= $Auteur->getNom(); ?> <em>(<?= $Auteur->getProvenance(); ?>)</em></td>
+                                <td><?= $Auteur->getName(); ?> <em>(<?= $Auteur->getCity(); ?>)</em></td>
                                 <td><?= displayDuree($Event->getDuree()); ?></td>
                                 <td><?= trans(INDOOR_OFF[$Event->getIndoor()]); ?>
                                     - <?= trans(SPECTACLES_TYPES[$Event->getSpectacleType()]); ?></td>

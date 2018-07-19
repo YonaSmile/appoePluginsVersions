@@ -31,7 +31,7 @@
                             <?php $Auteur->setId($evenement->auteurId);
                             $Auteur->show(); ?>
                             <tr>
-                                <td><?= $Auteur->getNom(); ?></td>
+                                <td><?= $Auteur->getName(); ?></td>
                                 <td><?= $evenement->titre; ?></td>
                                 <td><?= displayDuree($evenement->duree) ?></td>
                                 <td><?= trans(SPECTACLES_TYPES[$evenement->spectacleType]); ?></td>

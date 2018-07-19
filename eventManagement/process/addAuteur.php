@@ -6,7 +6,7 @@ if (checkPostAndTokenRequest()) {
 
     $Response = new App\Response();
 
-    if (!empty($_POST['nom'])) {
+    if (!empty($_POST['name'])) {
 
         $Auteur = new App\Plugin\EventManagement\Auteur();
 

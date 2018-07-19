@@ -24,13 +24,9 @@
                 <div class="col-12 col-lg-4">
                     <?php
                     $Auteur = new App\Plugin\EventManagement\Auteur();
-                    $auteurs = $Auteur->showAll();
-                    $auteursArray = array();
-                    foreach ($auteurs as $auteur) {
-                        $auteursArray[$auteur->id] = $auteur->nom;
-                    }
+                    $auteurs = extractFromObjToSimpleArr($Auteur->showByType(), 'id', 'name');
 
-                    echo App\Form::select('Auteur', 'auteurId', $auteursArray, !empty($_POST['auteurId']) ? $_POST['auteurId'] : '', true);
+                    echo App\Form::select('Auteur', 'auteurId', $auteurs, !empty($_POST['auteurId']) ? $_POST['auteurId'] : '', true);
                     ?>
                 </div>
                 <div class="col-12 col-lg-4">

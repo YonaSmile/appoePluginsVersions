@@ -71,7 +71,7 @@
                                                             <div>
                                                                 <small><?= formatDateDiff(new DateTime(date('Y-m-d')), new DateTime($message->created_at)); ?></small>
                                                             </div>
-                                                            <p class="mb-1"><?= nl2br($message->text); ?></p>
+                                                            <p class="mb-1"><?= htmlSpeCharDecode($message->text); ?></p>
                                                         </div>
                                                     </div>
                                                 <?php endif; ?>

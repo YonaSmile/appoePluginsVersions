@@ -27,12 +27,12 @@
                 <input type="hidden" name="id" value="<?= $Auteur->getId() ?>">
                 <div class="row">
                     <div class="col-12">
-                        <?= App\Form::text('Nom', 'nom', 'text', $Auteur->getNom(), true); ?>
+                        <?= App\Form::text('Nom', 'name', 'text', $Auteur->getName(), true); ?>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-12">
-                        <?= App\Form::text('Provenance', 'provenance', 'text', $Auteur->getProvenance(), false); ?>
+                        <?= App\Form::text('Provenance', 'city', 'text', $Auteur->getCity(), false); ?>
                     </div>
                 </div>
                 <div class="my-4"></div>

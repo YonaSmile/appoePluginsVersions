@@ -5,15 +5,19 @@ function liveMessages() {
     return jQuery.get('/app/plugin/messagIn/syncMessages.php');
 }
 
+function badgeMessageCheck(data) {
+    if (!$('a#navbarDropdownMessageMenu > span.badge').length) {
+        $('a#navbarDropdownMessageMenu').append(' <span class="badge badge-pill badge-pill-messagIn badge-danger ml-1">' + data + '</span>');
+    } else {
+        $('a#navbarDropdownMessageMenu span.badge').html(data);
+    }
+}
+
 jQuery(document).ready(function () {
 
     liveMessages().done(function (data) {
         if ($.isNumeric(data) || data == 0) {
-            if (!$('#menu-messages > a span.badge').length) {
-                $('#menu-messages > a').append(' <span class="badge badge-pill badge-danger ml-1">' + data + '</span>');
-            } else {
-                $('#menu-messages > a span.badge').html(data);
-            }
+            badgeMessageCheck(data);
         }
     });
 
@@ -22,11 +26,7 @@ jQuery(document).ready(function () {
 
         liveMessages().done(function (data) {
             if ($.isNumeric(data) || data == 0) {
-                if (!$('#menu-messages > a span.badge').length) {
-                    $('#menu-messages > a').append(' <span class="badge badge-pill badge-danger ml-1">' + data + '</span>');
-                } else {
-                    $('#menu-messages > a span.badge').html(data);
-                }
+                badgeMessageCheck(data);
             } else {
                 clearInterval(msgCron);
             }

@@ -8,7 +8,7 @@
         <div class="my-4"></div>
         <?php
         $Auteur = new App\Plugin\EventManagement\Auteur();
-        $auteurs = $Auteur->showAll();
+        $auteurs = $Auteur->showByType();
         ?>
         <div class="row">
             <div class="col-12">
@@ -25,8 +25,8 @@
                         <tbody>
                         <?php foreach ($auteurs as $auteur): ?>
                             <tr>
-                                <td><?= $auteur->nom ?></td>
-                                <td><?= $auteur->provenance ?></td>
+                                <td><?= $auteur->name ?></td>
+                                <td><?= $auteur->city ?></td>
                                 <td>
                                     <a href="<?= getPluginUrl('eventManagement/page/auteur/', $auteur->id); ?>"
                                        class="btn btn-warning btn-sm"

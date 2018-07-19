@@ -22,12 +22,12 @@
             <?= getTokenField(); ?>
             <div class="row">
                 <div class="col-12">
-                    <?= App\Form::text('Nom', 'nom', 'text', !empty($_POST['nom']) ? $_POST['nom'] : '', true); ?>
+                    <?= App\Form::text('Nom', 'name', 'text', !empty($_POST['name']) ? $_POST['name'] : '', true); ?>
                 </div>
             </div>
             <div class="row">
                 <div class="col-12">
-                    <?= App\Form::text('Provenance', 'provenance', 'text', !empty($_POST['provenance']) ? $_POST['provenance'] : '', false); ?>
+                    <?= App\Form::text('Provenance (ville)', 'city', 'text', !empty($_POST['city']) ? $_POST['city'] : '', false); ?>
                 </div>
             </div>
             <div class="my-4"></div>
