@@ -3,7 +3,7 @@ require('main.php');
 $Article = new App\Plugin\ItemGlue\Article();
 $articlesCount = $Article->showAll(true);
 
-if ($articlesCount) {
+if (false !== $articlesCount) {
     echo json_encode(
         array(
             'name' => trans('Articles'),

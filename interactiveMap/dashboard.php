@@ -3,7 +3,7 @@ require('main.php');
 $InteractiveMap = new App\Plugin\InteractiveMap\InteractiveMap();
 $pagesCount = $InteractiveMap->showAll(true);
 
-if ($pagesCount) {
+if (false !== $pagesCount) {
     echo json_encode(
         array(
             'name' => trans('Maps'),

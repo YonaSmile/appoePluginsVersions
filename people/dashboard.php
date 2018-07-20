@@ -3,7 +3,7 @@ require('main.php');
 $People = new App\Plugin\People\People();
 $peopleCount = $People->showAll(true);
 
-if($peopleCount) {
+if(false !== $peopleCount) {
     echo json_encode(
         array(
             'name' => trans('Personnes'),

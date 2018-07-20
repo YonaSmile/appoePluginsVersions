@@ -3,7 +3,7 @@ require('main.php');
 $Cms = new App\Plugin\Cms\Cms();
 $pagesCount = $Cms->showAllPages(true);
 
-if ($pagesCount) {
+if (false !== $pagesCount) {
     echo json_encode(
         array(
             'name' => trans('Pages'),
