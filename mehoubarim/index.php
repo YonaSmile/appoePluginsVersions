@@ -15,14 +15,17 @@ if ($mehoubarim && is_array($mehoubarim)): ?>
         $mehoubarim_UserStat->setId($connectedUserId);
         if ($mehoubarim_UserStat->show() && $mehoubarim_UserStat->getStatut() && $mehoubarim_UserStat->getRole() < 5): ?>
             <li class="list-inline-item p-2 mr-0">
-                <?php if ($UserManager->getRole() == '5' && $connectedUserData['status'] != 'Déconnecté'): ?>
+                <?php if ($UserManager->getRole() == 5 && $connectedUserData['status'] != 'Déconnecté'): ?>
                     <span class="logoutUser float-left linkBtn" data-userid="<?= $mehoubarim_UserStat->getId(); ?>">
                         <i class="fas fa-times"></i></span>
                 <?php endif; ?>
-                <small>
-                    <span class="text-<?= STATUS_CONNECTED_USER[$connectedUserData['status']]; ?>"><i class="fas fa-user"></i></span>
-                    <?= $mehoubarim_UserStat->getPrenom() . ucfirst(substr($mehoubarim_UserStat->getNom(), 0, 1)); ?>
-                </small>
+                <?php if ($UserManager->getRole() < 5 && $connectedUserData['status'] != 'Déconnecté' || $UserManager->getRole() == 5): ?>
+                    <small>
+                        <span class="text-<?= STATUS_CONNECTED_USER[$connectedUserData['status']]; ?>">
+                            <i class="fas fa-user"></i></span>
+                        <?= $mehoubarim_UserStat->getPrenom() . ucfirst(substr($mehoubarim_UserStat->getNom(), 0, 1)); ?>
+                    </small>
+                <?php endif; ?>
             </li>
         <?php endif; ?>
     <?php endforeach;
