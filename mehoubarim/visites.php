@@ -14,34 +14,37 @@ if ($visitors && is_array($visitors['totalPagesViews']) && is_array($visitors['v
     arsort($visitors['totalPagesViews']);
     ?>
     <strong>
-        <i class="fas fa-clock"></i> <?= trans('Depuis'); ?> <?= !empty($globalData['dateBegin']) ? displayCompleteDate($globalData['dateBegin'], true) : ""; ?>
+        <span class="colorSecondary">
+            <i class="fas fa-clock"></i>
+        </span> <?= trans('Depuis'); ?> <?= !empty($globalData['dateBegin']) ? displayCompleteDate($globalData['dateBegin'], true) : ""; ?>
     </strong>
     <div class="my-4">
-        <div class="my-2 ml-4" style="position: relative;">
+        <div class="my-2 ml-0 ml-lg-4" style="position: relative;">
             <span class="mr-2"><?= trans('Visiteurs'); ?></span>
-            <span class="visitsStatsBadge"><?= count($visitors['visitors']); ?></span>
+            <span class="visitsStatsBadge bgColorSecondary"><?= count($visitors['visitors']); ?></span>
         </div>
-        <div class="my-2 ml-4" style="position: relative;">
+        <div class="my-2 ml-0 ml-lg-4" style="position: relative;">
             <span class="mr-2"> <?= trans('Pages consultées'); ?></span>
-            <span class="visitsStatsBadge"><?= array_sum($visitors['visitors']); ?></span>
+            <span class="visitsStatsBadge bgColorSecondary"><?= array_sum($visitors['visitors']); ?></span>
         </div>
     </div>
-    <strong><?= trans('Les pages les plus consultées'); ?></strong>
+    <strong class="colorSecondary"><?= trans('Les pages les plus consultées'); ?></strong>
     <div class="my-4">
         <?php foreach (array_slice($visitors['totalPagesViews'], 0, 5, true) as $name => $nb): ?>
-            <div class="my-2 ml-4" style="position: relative;">
+            <div class="my-2 ml-0 ml-lg-4" style="position: relative;">
                 <span class="mr-2"><?= ucfirst(strtolower($name)); ?></span>
-                <span class="visitsStatsBadge"><?= $nb; ?></span>
+                <span class="visitsStatsBadge bgColorSecondary"><?= $nb; ?></span>
             </div>
         <?php endforeach; ?>
     </div>
     <div class="text-right">
-        <button class="btn btn-outline-info btn-sm border-radius-0" id="resetStats" type="button">
+        <button class="btn btn-outline-info btn-sm border-radius-0 borderColorSecondary colorSecondary" id="resetStats"
+                type="button">
             <?= trans('Réinitialiser les statistiques'); ?>
         </button>
     </div>
     <div class="progress my-2" style="height: 1px;">
-        <div class="progress-bar bg-info" role="progressbar" id="visitsLoader" style="width: 0;"
+        <div class="progress-bar bgColorSecondary" role="progressbar" id="visitsLoader" style="width: 0;"
              aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
     </div>
     <script type="text/javascript">

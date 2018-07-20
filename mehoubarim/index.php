@@ -8,24 +8,21 @@ $UserManager = new App\Users(getUserIdSession());
 //Connected User
 mehoubarim_connectedUserStatus();
 $mehoubarim = mehoubarim_connectedUsers();
-if ($mehoubarim && is_array($mehoubarim)):
-    foreach ($mehoubarim as $connectedUserId => $connectedUserData): ?>
+if ($mehoubarim && is_array($mehoubarim)): ?>
+    <li class="pt-3 pl-2 pb-0 pr-2"><strong><?= trans('Utilisateurs actifs'); ?></strong></li>
+    <?php foreach ($mehoubarim as $connectedUserId => $connectedUserData): ?>
         <?php
         $mehoubarim_UserStat->setId($connectedUserId);
         if ($mehoubarim_UserStat->show() && $mehoubarim_UserStat->getStatut() && $mehoubarim_UserStat->getRole() < 5): ?>
-            <li>
-                <a>
-                    <?php if ($UserManager->getRole() == '5' && $connectedUserData['status'] != 'Déconnecté'): ?>
-                        <span class="logoutUser float-left linkBtn" data-userid="<?= $mehoubarim_UserStat->getId(); ?>">
+            <li class="list-inline-item p-2 mr-0">
+                <?php if ($UserManager->getRole() == '5' && $connectedUserData['status'] != 'Déconnecté'): ?>
+                    <span class="logoutUser float-left linkBtn" data-userid="<?= $mehoubarim_UserStat->getId(); ?>">
                         <i class="fas fa-times"></i></span>
-                    <?php endif; ?>
-                    <small>
-                        <?= $mehoubarim_UserStat->getNom() . ' ' . $mehoubarim_UserStat->getPrenom(); ?>
-                    </small>
-                    <span class="badge badge-<?= STATUS_CONNECTED_USER[$connectedUserData['status']]; ?>">
-                    <?= trans($connectedUserData['status']); ?>
-                </span>
-                </a>
+                <?php endif; ?>
+                <small>
+                    <span class="text-<?= STATUS_CONNECTED_USER[$connectedUserData['status']]; ?>"><i class="fas fa-user"></i></span>
+                    <?= $mehoubarim_UserStat->getPrenom() . ucfirst(substr($mehoubarim_UserStat->getNom(), 0, 1)); ?>
+                </small>
             </li>
         <?php endif; ?>
     <?php endforeach;
