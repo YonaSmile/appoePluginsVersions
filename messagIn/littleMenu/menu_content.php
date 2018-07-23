@@ -5,10 +5,10 @@
     </a>
     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMessageMenu">
         <a class="dropdown-item" href="<?= getPluginUrl('messagIn/page/allMessages/'); ?>">
-            <?= trans('Tous les messages'); ?>
+            <small><?= trans('Tous les messages'); ?></small>
         </a>
         <a class="dropdown-item" href="<?= getPluginUrl('messagIn/page/addMessage/'); ?>">
-            <?= trans('Nouveau message'); ?>
+            <small><?= trans('Nouveau message'); ?></small>
         </a>
     </div>
 </li>
