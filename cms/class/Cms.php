@@ -354,9 +354,18 @@ class Cms
      */
     public function notExist($forUpdate = false)
     {
+        $condition = ' name = :name OR slug = :slug ';
+        if ($forUpdate) {
+            $condition = ' id != :id AND (name = :name OR slug = :slug) ';
+        }
 
-        $sql = 'SELECT id, name, slug FROM appoe_plugin_cms WHERE name = :name OR slug = :slug';
+        $sql = 'SELECT id, name, slug FROM appoe_plugin_cms WHERE ' . $condition;
         $stmt = $this->dbh->prepare($sql);
+
+        if ($forUpdate) {
+            $stmt->bindParam(':id', $this->id);
+        }
+
         $stmt->bindParam(':name', $this->name);
         $stmt->bindParam(':slug', $this->slug);
         $stmt->execute();
@@ -367,13 +376,6 @@ class Cms
             return false;
         } else {
             if ($count == 1) {
-                if ($forUpdate) {
-                    $data = $stmt->fetch(\PDO::FETCH_OBJ);
-                    if ($data->id == $this->id) {
-                        return true;
-                    }
-                }
-
                 return false;
             } else {
                 return true;
