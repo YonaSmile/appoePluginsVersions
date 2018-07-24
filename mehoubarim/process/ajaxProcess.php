@@ -1,7 +1,5 @@
 <?php
 require_once('../header.php');
-require_once('../mehoubarim_functions.php');
-
 if (checkAjaxRequest()) {
 
     if (getUserIdSession()) {

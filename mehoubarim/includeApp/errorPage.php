@@ -1,6 +1,5 @@
 <?php
 require_once(WEB_PLUGIN_PATH . 'mehoubarim/header.php');
-require_once(WEB_PLUGIN_PATH . 'mehoubarim/mehoubarim_functions.php');
 $mehoubarim_url_parts = explode('/', $_SERVER['PHP_SELF']);
 
 if (in_array('app', $mehoubarim_url_parts)) {
