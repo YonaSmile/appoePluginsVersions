@@ -15,7 +15,7 @@
             <div class="col-12">
                 <div class="table-responsive">
                     <table id="pagesTable"
-                           class="sortableTable table table-striped table-hover table-bordered">
+                           class="sortableTable table table-striped">
                         <thead>
                         <tr>
                             <th><?= trans('Nom'); ?></th>
@@ -35,24 +35,24 @@
                                     <td><?= displayTimeStamp($cmsPage->updated_at) ?></td>
                                     <td>
                                         <a href="<?= getPluginUrl('cms/page/pageContent/', $cmsPage->id) ?>"
-                                           class="btn btn-info btn-sm" title="<?= trans('Consulter'); ?>">
-                                            <span class="fa fa-eye"></span>
+                                           class="btn btn-sm" title="<?= trans('Consulter'); ?>">
+                                            <span class="btnUpdate"><i class="fas fa-cog"></i></span>
                                         </a>
                                         <?php if ($USER->getRole() > 3): ?>
                                             <a href="<?= getPluginUrl('cms/page/update/', $cmsPage->id) ?>"
-                                               class="btn btn-warning btn-sm" title="<?= trans('Modifier'); ?>">
-                                                <span class="fas fa-cog"></span>
+                                               class="btn btn-sm" title="<?= trans('Modifier'); ?>">
+                                                <span class="btnEdit"><i class="fas fa-wrench"></i></span>
                                             </a>
                                             <button type="button" data-deletecmsid="<?= $cmsPage->id ?>"
-                                                    class="btn btn-danger btn-sm deleteCms"
+                                                    class="btn btn-sm deleteCms"
                                                     title="<?= trans('Supprimer'); ?>">
-                                                <span class="fas fa-times"></span>
+                                                <span class="btnArchive"><i class="fas fa-times"></i></span>
                                             </button>
                                         <?php endif; ?>
-                                        <button type="button" class="btn btn-success btn-sm unpackPage"
+                                        <button type="button" class="btn btn-sm unpackPage"
                                                 title="<?= trans('désarchiver'); ?>"
                                                 data-idpage="<?= $cmsPage->id ?>">
-                                            <i class="fas fa-check"></i>
+                                            <span class="btnCheck"> <i class="fas fa-check"></i></span>
                                         </button>
                                     </td>
                                 </tr>

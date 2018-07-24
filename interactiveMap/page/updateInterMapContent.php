@@ -26,7 +26,7 @@ if (!empty($_GET['id'])): ?>
             <div class="row">
                 <div class="col-12">
                     <div class="table-responsive">
-                        <table class="table table-sm table-bordered bg-white">
+                        <table class="table table-sm table-striped bg-white">
                             <tr class="table-info-light">
                                 <th><?= trans('Largeur'); ?></th>
                                 <th><?= trans('Hauteur'); ?></th>

@@ -14,7 +14,7 @@
             <div class="col-12">
                 <div class="table-responsive">
                     <table id="clientTable"
-                           class="sortableTable table table-striped table-hover table-bordered">
+                           class="sortableTable table table-striped">
                         <thead>
                         <tr>
                             <th><?= trans('Nom'); ?></th>
@@ -29,14 +29,14 @@
                                 <td><?= $auteur->city ?></td>
                                 <td>
                                     <a href="<?= getPluginUrl('eventManagement/page/auteur/', $auteur->id); ?>"
-                                       class="btn btn-warning btn-sm"
+                                       class="btn btn-sm"
                                        title="<?= trans('Modifier'); ?>">
-                                        <span class="fa fa-cog"></span>
+                                        <span class="btnEdit"><i class="fas fa-wrench"></i></span>
                                     </a>
-                                    <button type="button" class="btn btn-danger btn-sm deleteAuteur"
+                                    <button type="button" class="btn btn-sm deleteAuteur"
                                             title="<?= trans('Archiver'); ?>"
                                             data-idauteur="<?= $auteur->id ?>">
-                                        <span class="fa fa-archive" aria-hidden="true"></span>
+                                        <span class="btnArchive"><i class="fas fa-archive"></i></span>
                                     </button>
                                 </td>
                             </tr>

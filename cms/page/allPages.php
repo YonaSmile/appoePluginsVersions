@@ -14,7 +14,7 @@
             <div class="col-12">
                 <div class="table-responsive">
                     <table id="pagesTable"
-                           class="sortableTable table table-striped table-hover table-bordered">
+                           class="sortableTable table table-striped">
                         <thead>
                         <tr>
                             <th><?= trans('Nom'); ?></th>
@@ -34,17 +34,17 @@
                                     <td><?= displayTimeStamp($cmsPage->updated_at) ?></td>
                                     <td>
                                         <a href="<?= getPluginUrl('cms/page/pageContent/', $cmsPage->id) ?>"
-                                           class="btn btn-info btn-sm" title="<?= trans('Consulter'); ?>">
-                                            <span class="fa fa-eye"></span>
+                                           class="btn btn-sm" title="<?= trans('Consulter'); ?>">
+                                            <span class="btnUpdate"><i class="fas fa-cog"></i></span>
                                         </a>
                                         <?php if ($USER->getRole() > 3): ?>
                                             <a href="<?= getPluginUrl('cms/page/update/', $cmsPage->id) ?>"
-                                               class="btn btn-warning btn-sm" title="<?= trans('Modifier'); ?>">
-                                                <span class="fas fa-cog"></span>
+                                               class="btn btn-sm" title="<?= trans('Modifier'); ?>">
+                                                <span class="btnEdit"><i class="fas fa-wrench"></i></span>
                                             </a>
-                                            <button type="button" class="btn btn-danger btn-sm deleteCms"
+                                            <button type="button" class="btn btn-sm deleteCms"
                                                     title="<?= trans('Archiver'); ?>" data-idcms="<?= $cmsPage->id ?>">
-                                                <span class="fas fa-archive"></span>
+                                                <span class="btnArchive"><i class="fas fa-archive"></i></span>
                                             </button>
                                         <?php endif; ?>
                                     </td>

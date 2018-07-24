@@ -15,7 +15,7 @@
             <div class="col-12">
                 <div class="table-responsive">
                     <table id="projetsTable"
-                           class="sortableTable table table-striped table-hover table-bordered">
+                           class="sortableTable table table-striped">
                         <thead>
                         <tr>
                             <th><?= trans('Auteur'); ?></th>
@@ -38,19 +38,19 @@
                                 <td><?= trans(INDOOR_OFF[$evenement->indoor]); ?></td>
                                 <td>
                                     <a href="<?= getPluginUrl('eventManagement/page/event/', $evenement->id) ?>"
-                                       class="btn btn-info btn-sm"
+                                       class="btn btn-sm"
                                        title="<?= trans('Consulter'); ?>">
-                                        <span class="fa fa-eye"></span>
+                                        <span class="btnUpdate"><i class="fas fa-cog"></i></span>
                                     </a>
                                     <a href="<?= getPluginUrl('eventManagement/page/event/update/', $evenement->id) ?>"
-                                       class="btn btn-warning btn-sm"
+                                       class="btn btn-sm"
                                        title="<?= trans('Modifier'); ?>">
-                                        <span class="fa fa-cog"></span>
+                                        <span class="btnEdit"><i class="fas fa-wrench"></i></span>
                                     </a>
-                                    <button type="button" class="btn btn-danger btn-sm deleteEvent"
+                                    <button type="button" class="btn btn-sm deleteEvent"
                                             title="<?= trans('Archiver'); ?>"
                                             data-idevent="<?= $evenement->id ?>">
-                                        <span class="fa fa-archive" aria-hidden="true"></span>
+                                        <span class="btnArchive"><i class="fas fa-archive"></i></span>
                                     </button>
                                 </td>
                             </tr>

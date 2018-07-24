@@ -14,7 +14,7 @@ $allCartes = extractFromObjArr($InteractiveMap->showAll(), 'id');
         <div class="col-12">
             <div class="table-responsive">
                 <table id="pagesTable"
-                       class="sortableTable table table-striped table-hover table-bordered">
+                       class="sortableTable table table-striped">
                     <thead>
                     <tr>
                         <th><?= trans('Titre'); ?></th>
@@ -34,17 +34,17 @@ $allCartes = extractFromObjArr($InteractiveMap->showAll(), 'id');
                                 <td><?= displayTimeStamp($carte->updated_at) ?></td>
                                 <td>
                                     <a href="<?= getPluginUrl('interactiveMap/page/updateInterMapContent/', $carte->id) ?>"
-                                       class="btn btn-info btn-sm"
+                                       class="btn btn-sm"
                                        title="<?= trans('Consulter'); ?>">
-                                        <span class="fa fa-eye"></span>
+                                        <span class="btnUpdate"><i class="fas fa-cog"></i></span>
                                     </a>
                                     <a href="<?= getPluginUrl('interactiveMap/page/updateInterMap/', $carte->id) ?>"
-                                       class="btn btn-warning btn-sm" title="<?= trans('Modifier'); ?>">
-                                        <span class="fas fa-cog"></span>
+                                       class="btn btn-sm" title="<?= trans('Modifier'); ?>">
+                                        <span class="btnEdit"><i class="fas fa-wrench"></i></span>
                                     </a>
-                                    <button type="button" class="btn btn-danger btn-sm deleteMap"
+                                    <button type="button" class="btn btn-sm deleteMap"
                                             title="<?= trans('Archiver'); ?>" data-idcarte="<?= $carte->id ?>">
-                                        <span class="fas fa-archive"></span>
+                                        <span class="btnArchive"><i class="fas fa-archive"></i></span>
                                     </button>
                                 </td>
                             </tr>

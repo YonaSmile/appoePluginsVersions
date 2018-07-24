@@ -13,7 +13,7 @@
             <div class="col-12">
                 <div class="table-responsive">
                     <table id="pagesTable"
-                           class="sortableTable table table-striped table-hover table-bordered">
+                           class="sortableTable table table-striped">
                         <thead>
                         <tr>
                             <th><?= trans('Type'); ?></th>
@@ -31,7 +31,7 @@
                             <?php foreach ($allPersons as $person): ?>
                                 <tr data-idperson="<?= $person->id ?>">
                                     <td><?= $person->type ?></td>
-                                    <td><?= trans(PEOPLE_NATURE[$person->nature]); ?></td>
+                                    <td><?= !empty($person->nature) ? trans(PEOPLE_NATURE[$person->nature]) : ''; ?></td>
                                     <td><?= $person->entitled ?></td>
                                     <td>
                                         <strong><?= (!empty($person->birthDate) && $person->birthDate != '0000-00-00') ? age($person->birthDate) : '' ?></strong>
@@ -42,13 +42,13 @@
                                     <td><?= getPaysName($person->country); ?></td>
                                     <td>
                                         <a href="<?= getPluginUrl('people/page/update/', $person->id) ?>"
-                                           class="btn btn-warning btn-sm" title="<?= trans('Modifier'); ?>">
-                                            <span class="fas fa-cog"></span>
+                                           class="btn btn-sm" title="<?= trans('Modifier'); ?>">
+                                            <span class="btnEdit"><i class="fas fa-wrench"></i></span>
                                         </a>
-                                        <button type="button" class="btn btn-danger btn-sm deletePerson"
+                                        <button type="button" class="btn btn-sm deletePerson"
                                                 title="<?= trans('Archiver'); ?>"
                                                 data-idperson="<?= $person->id ?>">
-                                            <span class="fas fa-archive"></span>
+                                            <span class="btnArchive"><i class="fas fa-archive"></i></span>
                                         </button>
                                     </td>
                                 </tr>

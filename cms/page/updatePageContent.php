@@ -52,20 +52,8 @@ if (!empty($_GET['id'])): ?>
             <div class="my-2"></div>
             <div class="row">
                 <div class="col-12">
-                    <div class="table-responsive">
-                        <table class="table table-sm table-bordered bg-white">
-                            <tr class="table-info-light">
-                                <th><?= trans('Nom'); ?></th>
-                                <th><?= trans('Slug'); ?></th>
-                                <th><?= trans('Statut de la page'); ?></th>
-                            </tr>
-                            <tr>
-                                <td><?= $Cms->getName(); ?></td>
-                                <td><?= $Cms->getSlug(); ?></td>
-                                <td><?= CMS_PAGE_STATUS[$Cms->getStatut()] ?></td>
-                            </tr>
-                        </table>
-                    </div>
+                    <p><?= trans('Lien de la page (slug)'); ?>: <?= $Cms->getSlug(); ?></p>
+                    <p><?= trans('Statut de la page'); ?>: <?= CMS_PAGE_STATUS[$Cms->getStatut()] ?></p>
                 </div>
             </div>
             <div class="my-2"></div>

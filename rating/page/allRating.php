@@ -20,7 +20,7 @@ $allRating = getAllRates();
                 <div class="col-12">
                     <div class="table-responsive">
                         <table id="ratingTable"
-                               class="sortableTable table table-striped table-hover table-bordered">
+                               class="sortableTable table table-striped">
                             <thead>
                             <tr>
                                 <th><?= trans('Type'); ?></th>
@@ -43,10 +43,10 @@ $allRating = getAllRates();
                                     <td><strong><?= $rating->score; ?></strong>/5</td>
                                     <td><?= $rating->user ?></td>
                                     <td>
-                                        <button type="button" class="btn btn-success btn-sm confirmRating"
+                                        <button type="button" class="btn btn-sm confirmRating"
                                                 title="<?= trans('Confirmer l\'évaluation'); ?>"
                                                 data-idrating="<?= $rating->id; ?>">
-                                            <span class="fas fa-check"></span>
+                                            <span class="btnCheck"><i class="fas fa-check"></i></span>
                                         </button>
                                     </td>
                                 </tr>

@@ -14,11 +14,10 @@
             <div class="col-12">
                 <div class="table-responsive">
                     <table id="pagesTable"
-                           class="sortableTable table table-striped table-hover table-bordered">
+                           class="sortableTable table table-striped">
                         <thead>
                         <tr>
                             <th><?= trans('Nom'); ?></th>
-                            <th><?= trans('Description'); ?></th>
                             <th><?= trans('Slug'); ?></th>
                             <th><?= trans('Catégories'); ?></th>
                             <th><?= trans('Modifié le'); ?></th>
@@ -30,30 +29,29 @@
                             <?php foreach ($allArticles as $article): ?>
                                 <tr data-idarticle="<?= $article->id ?>">
                                     <td><?= $article->name ?></td>
-                                    <td><?= mb_strimwidth($article->description, 0, 70, '...'); ?></td>
                                     <td><?= $Traduction->trans($article->slug) ?></td>
                                     <td><?= implode(', ', extractFromObjToSimpleArr(getCategoriesByArticle($article->id), 'name')); ?></td>
                                     <td><?= displayTimeStamp($article->updated_at) ?></td>
                                     <td>
                                         <a href="<?= getPluginUrl('itemGlue/page/articleContent/', $article->id) ?>"
-                                           class="btn btn-info btn-sm" title="<?= trans('Consulter'); ?>">
-                                            <span class="fa fa-eye"></span>
+                                           class="btn btn-sm" title="<?= trans('Consulter'); ?>">
+                                            <span class="btnUpdate"><i class="fas fa-cog"></i></span>
                                         </a>
                                         <?php if ($USER->getRole() > 3): ?>
                                             <a href="<?= getPluginUrl('itemGlue/page/update/', $article->id) ?>"
-                                               class="btn btn-warning btn-sm" title="<?= trans('Modifier'); ?>">
-                                                <span class="fas fa-cog"></span>
+                                               class="btn btn-sm" title="<?= trans('Modifier'); ?>">
+                                                <span class="btnEdit"><i class="fas fa-wrench"></i></span>
                                             </a>
-                                            <button type="button" class="btn btn-danger btn-sm deleteArticle"
+                                            <button type="button" class="btn btn-sm deleteArticle"
                                                     title="<?= trans('Supprimer'); ?>"
                                                     data-idarticle="<?= $article->id ?>">
-                                                <span class="fas fa-times"></span>
+                                                <span class="btnArchive"><i class="fas fa-times"></i></span>
                                             </button>
                                         <?php endif; ?>
-                                        <button type="button" class="btn btn-success btn-sm unpackArticle"
+                                        <button type="button" class="btn btn-sm unpackArticle"
                                                 title="<?= trans('désarchiver'); ?>"
                                                 data-idarticle="<?= $article->id ?>">
-                                            <i class="fas fa-check"></i>
+                                            <span class="btnCheck"> <i class="fas fa-check"></i></span>
                                         </button>
                                     </td>
                                 </tr>

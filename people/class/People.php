@@ -5,7 +5,7 @@ class People
 {
     protected $id;
     protected $type;
-    protected $nature;
+    protected $nature = null;
     protected $name;
     protected $firstName = null;
     protected $entitled = null;
@@ -330,7 +330,7 @@ class People
                 `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
                 PRIMARY KEY (`id`),
                 `type` VARCHAR(150) NOT NULL,
-                `nature` VARCHAR(150) NOT NULL,
+                `nature` VARCHAR(150) DEFAULT NULL,
                 `name` VARCHAR(150) NOT NULL,
                 `firstName` VARCHAR(150) DEFAULT NULL,
                 `entitled` VARCHAR(350) DEFAULT NULL,

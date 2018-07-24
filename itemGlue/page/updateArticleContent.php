@@ -60,20 +60,8 @@ if (!empty($_GET['id'])): ?>
             <div class="my-2"></div>
             <div class="row">
                 <div class="col-12">
-                    <div class="table-responsive">
-                        <table class="table table-sm table-bordered bg-white">
-                            <tr class="table-info-light">
-                                <th><?= trans('Nom'); ?></th>
-                                <th><?= trans('Slug'); ?></th>
-                                <th><?= trans('Statut de l\'article'); ?></th>
-                            </tr>
-                            <tr>
-                                <td><?= $Article->getName(); ?></td>
-                                <td><?= $Article->getSlug(); ?></td>
-                                <td><?= ITEMGLUE_ARTICLES_STATUS[$Article->getStatut()] ?></td>
-                            </tr>
-                        </table>
-                    </div>
+                    <p><?= trans('Lien de l\'article (slug)'); ?>: <?= $Article->getSlug(); ?></p>
+                    <p><?= trans('Statut de l\'article'); ?>: <?= ITEMGLUE_ARTICLES_STATUS[$Article->getStatut()] ?></p>
                 </div>
             </div>
             <div class="my-2"></div>

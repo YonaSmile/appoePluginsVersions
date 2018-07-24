@@ -14,7 +14,7 @@
             <div class="col-12">
                 <div class="table-responsive">
                     <table id="pagesTable"
-                           class="sortableTable table table-striped table-hover table-bordered">
+                           class="sortableTable table table-striped">
                         <thead>
                         <tr>
                             <th><?= trans('Type'); ?></th>
@@ -43,13 +43,13 @@
                                     <td><?= $person->country ?></td>
                                     <td>
                                         <a href="<?= getPluginUrl('people/page/update/', $person->id) ?>"
-                                           class="btn btn-warning btn-sm" title="<?= trans('Modifier'); ?>">
-                                            <span class="fas fa-cog"></span>
+                                           class="btn btn-sm" title="<?= trans('Modifier'); ?>">
+                                            <span class="btnEdit"><i class="fas fa-wrench"></i></span>
                                         </a>
-                                        <button type="button" class="btn btn-success btn-sm unpackPerson"
+                                        <button type="button" class="btn btn-sm unpackPerson"
                                                 title="<?= trans('désarchiver'); ?>"
                                                 data-idperson="<?= $person->id ?>">
-                                            <i class="fas fa-check"></i>
+                                            <span class="btnCheck"> <i class="fas fa-check"></i></span>
                                         </button>
                                     </td>
                                 </tr>
