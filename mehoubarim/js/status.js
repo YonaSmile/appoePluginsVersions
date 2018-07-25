@@ -11,7 +11,7 @@ function getUserStatus() {
                     valuenow: 100
                 },
                 {
-                    duration: 15000 - (new Date(jQuery.now()) - start),
+                    duration: 14000,
                     step: function (now) {
                         jQuery(this).attr('aria-valuenow', now)
                     }
@@ -27,5 +27,3 @@ jQuery(document).ready(function () {
         getUserStatus();
     }, 15000);
 });
-
-
