@@ -4,14 +4,8 @@ require(TRADUCTION_PATH . 'process/postProcess.php');
 $Traduction = new App\Plugin\Traduction\Traduction(LANG);
 $allContent = $Traduction->getDbData();
 ?>
+<?= getTitle($Page->getName(), $Page->getSlug()); ?>
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-12">
-                <h1 class="bigTitle"><?= trans('Traductions'); ?></h1>
-                <hr class="mb-2">
-            </div>
-        </div>
-        <div class="my-4"></div>
         <?php if (isset($Response)): ?>
             <div class="row">
                 <div class="col-12">
@@ -56,13 +50,13 @@ $allContent = $Traduction->getDbData();
             <form action="" method="post" id="pageContentManageForm">
                 <div class="row" id="tradContainer">
                     <?php foreach ($allContent as $metaKey => $content): ?>
-                        <div class="col-12 fileContent bg_grey_hover tradContent">
-                            <button type="button" class="deleteTraduction btn btn-danger btn-sm"
-                                    style="position: absolute; top: 0; right: 0;"
-                                    data-keytrad="<?= $metaKey; ?>">
-                                <i class="fas fa-times"></i>
-                            </button>
+                        <div class="col-12 fileContent bg_grey_hover tradContent my-2">
                             <?= App\Form::text($metaKey, $metaKey, 'text', $content['metaValue'], false, 250, 'data-idtrad="' . $content['id'] . '"'); ?>
+                            <button type="button" class="deleteTraduction btn btn-sm"
+                                    style="position: absolute; bottom: 0; right: 0;"
+                                    data-keytrad="<?= $metaKey; ?>">
+                                <span class="btnArchive"><i class="fas fa-times"></i></span>
+                            </button>
                         </div>
                     <?php endforeach; ?>
                 </div>

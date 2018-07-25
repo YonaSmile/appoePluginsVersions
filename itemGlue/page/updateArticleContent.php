@@ -23,13 +23,8 @@ if (!empty($_GET['id'])): ?>
         $ArticleMedia = new App\Plugin\ItemGlue\ArticleMedia($Article->getId());
         $allArticleMedias = $ArticleMedia->showFiles();
         ?>
+        <?= getTitle($Article->getName(), $Page->getSlug()); ?>
         <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <h1 class="bigTitle"><?= $Article->getName(); ?></h1>
-                    <hr class="mb-2">
-                </div>
-            </div>
             <div class="row">
                 <div class="col-12">
                     <?php if ($Menu->checkUserPermission($USER->getRole(), 'updateArticle')): ?>

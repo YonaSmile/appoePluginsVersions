@@ -3,13 +3,8 @@ require('header.php');
 $unconfirmedRating = getUnconfirmedRates();
 $allRating = getAllRates();
 ?>
+<?= getTitle($Page->getName(), $Page->getSlug()); ?>
     <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <h1 class="bigTitle"><?= trans('Évaluations'); ?></h1>
-                <hr class="my-4">
-            </div>
-        </div>
         <div class="row">
             <div class="col-12" id="allRatingTable"><i class="fas fa-circle-notch fa-spin"></i></div>
         </div>

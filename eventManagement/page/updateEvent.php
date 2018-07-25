@@ -2,6 +2,7 @@
     <?php require('header.php');
     $Event = new App\Plugin\EventManagement\Event($_GET['id']);
     if ($Event->getStatut()) : ?>
+        <?= getTitle($Page->getName(), $Page->getSlug()); ?>
         <div class="container">
             <div class="row">
                 <div class="col-12">
@@ -10,12 +11,8 @@
                        title="<?= trans('Consulter'); ?>">
                         <span class="fa fa-eye"></span> <?= trans('Consulter l\'évènement'); ?>
                     </a>
-                    <h1 class="bigTitle"><?= trans('Mise à jour de l\'évènement'); ?></h1>
-                    <hr class="my-4">
                 </div>
             </div>
-
-
             <?php require_once(EVENTMANAGEMENT_PATH . 'process/updateEvent.php'); ?>
 
             <?php if (isset($Response)): ?>

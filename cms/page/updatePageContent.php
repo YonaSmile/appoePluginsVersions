@@ -16,13 +16,8 @@ if (!empty($_GET['id'])): ?>
         $allPages = extractFromObjArr($allCmsPages, 'id');
         $CmsContent = new App\Plugin\Cms\CmsContent($Cms->getId(), LANG);
         ?>
+        <?= getTitle($Cms->getName(), $Page->getSlug()); ?>
         <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <h1 class="bigTitle"><?= $Cms->getName(); ?></h1>
-                    <hr class="mb-2">
-                </div>
-            </div>
             <div class="row">
                 <div class="col-12">
                     <?php if ($Menu->checkUserPermission($USER->getRole(), 'updatePage')): ?>

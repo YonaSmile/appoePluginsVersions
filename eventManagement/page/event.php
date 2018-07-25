@@ -10,13 +10,8 @@
         $EventsDates->setEventId($Event->getId());
         $allEvents = $EventsDates->showAllEvent();
         ?>
+        <?= getTitle($Event->getTitre(), $Page->getSlug()); ?>
         <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <h1 class="bigTitle"><?= trans($Event->getTitre()); ?></h1>
-                    <hr class="mb-2">
-                </div>
-            </div>
             <div class="row">
                 <div class="col-12">
                     <a id="updateEventBtn"

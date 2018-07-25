@@ -1,11 +1,6 @@
 <?php require('header.php'); ?>
+<?= getTitle($Page->getName(), $Page->getSlug()); ?>
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-12">
-                <h1 class="display-4 bigTitle"><?= trans('Évènements'); ?></h1>
-            </div>
-        </div>
-        <div class="my-4"></div>
         <?php
         $Event = new App\Plugin\EventManagement\Event();
         $evenements = $Event->showAll();

@@ -8,6 +8,7 @@ if (!empty($_GET['id'])): ?>
         require(INTERACTIVE_MAP_PATH . 'process/postProcess.php');
         interMap_writeMapFile($InteractiveMap->getData(), $InteractiveMap->getTitle());
         ?>
+        <?= getTitle($Page->getName(), $Page->getSlug()); ?>
         <div class="container">
             <div class="row">
                 <div class="col-12">
@@ -18,8 +19,6 @@ if (!empty($_GET['id'])): ?>
                     <button class="btn btn-warning btn-sm float-right" id="rebootInterMap">
                         <i class="fas fa-redo"></i> <?= trans('Réinitialiser la carte'); ?>
                     </button>
-                    <h1 class="bigTitle"><?= trans('Mise à jour de l\'article'); ?></h1>
-                    <hr class="my-4">
                 </div>
             </div>
             <?php if (isset($Response)): ?>
@@ -35,15 +34,15 @@ if (!empty($_GET['id'])): ?>
                 <?= getTokenField(); ?>
                 <input type="hidden" name="id" value="<?= $InteractiveMap->getId(); ?>">
                 <div class="row">
-                    <div class="col-12">
+                    <div class="col-12 my-2">
                         <?= App\Form::text('Titre', 'title', 'text', $InteractiveMap->getTitle(), true); ?>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-12 col-md-6">
+                    <div class="col-12 col-md-6 my-2">
                         <?= App\Form::text('Largeur', 'width', 'text', $InteractiveMap->getWidth(), true); ?>
                     </div>
-                    <div class="col-12 col-md-6">
+                    <div class="col-12 col-md-6 my-2">
                         <?= App\Form::text('Hauteur', 'height', 'text', $InteractiveMap->getHeight(), true); ?>
                     </div>
                 </div>

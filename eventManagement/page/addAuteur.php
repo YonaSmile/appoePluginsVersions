@@ -1,13 +1,7 @@
 <?php require('header.php'); ?>
+<?php require_once(EVENTMANAGEMENT_PATH . 'process/addAuteur.php'); ?>
+<?= getTitle($Page->getName(), $Page->getSlug()); ?>
     <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <h1 class="bigTitle"><?= trans('Nouvel Auteur'); ?></h1>
-                <hr class="my-4">
-            </div>
-        </div>
-        <?php require_once(EVENTMANAGEMENT_PATH . 'process/addAuteur.php'); ?>
-
         <?php if (isset($Response)): ?>
             <div class="row">
                 <div class="col-12">

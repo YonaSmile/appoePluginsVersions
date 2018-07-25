@@ -2,14 +2,8 @@
 require('header.php');
 require_once(INTERACTIVE_MAP_PATH . 'process/postProcess.php');
 ?>
+<?= getTitle($Page->getName(), $Page->getSlug()); ?>
     <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <h1 class="bigTitle"><?= trans('Nouvelle Carte'); ?></h1>
-                <hr class="my-4">
-            </div>
-        </div>
-
         <?php if (isset($Response)): ?>
             <div class="row">
                 <div class="col-12">
@@ -23,15 +17,15 @@ require_once(INTERACTIVE_MAP_PATH . 'process/postProcess.php');
         <form action="" method="post" id="addInterMapForm">
             <?= getTokenField(); ?>
             <div class="row">
-                <div class="col-12">
+                <div class="col-12 my-2">
                     <?= App\Form::text('Titre', 'title', 'text', !empty($_POST['title']) ? $_POST['title'] : '', true); ?>
                 </div>
             </div>
             <div class="row">
-                <div class="col-12 col-md-6">
+                <div class="col-12 col-md-6 my-2">
                     <?= App\Form::text('Largeur', 'width', 'text', !empty($_POST['width']) ? $_POST['width'] : '', true); ?>
                 </div>
-                <div class="col-12 col-md-6">
+                <div class="col-12 col-md-6 my-2">
                     <?= App\Form::text('Hauteur', 'height', 'text', !empty($_POST['height']) ? $_POST['height'] : '', true); ?>
                 </div>
             </div>

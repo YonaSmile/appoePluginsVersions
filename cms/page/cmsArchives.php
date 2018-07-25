@@ -1,11 +1,6 @@
 <?php require('header.php'); ?>
+<?= getTitle($Page->getName(), $Page->getSlug()); ?>
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-12">
-                <h1 class="display-4 bigTitle"><?= trans('Archives des pages'); ?></h1>
-            </div>
-        </div>
-        <hr class="my-4">
         <?php $Cms = new App\Plugin\Cms\Cms();
         $Cms->setStatut(0);
         $allCmsPages = $Cms->showAllPages();

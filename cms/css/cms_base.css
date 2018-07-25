@@ -1,0 +1,10 @@
+.icon-page > *:first-child:before,
+.icon-cms > *:first-child:before,
+.icon-addPage > *:first-child:before,
+.icon-updateMenu > *:first-child:before,
+.icon-cmsArchives > *:first-child:before,
+.icon-updatePageContent > *:first-child:before,
+.icon-updatePage > *:first-child:before,
+.icon-allPages > *:first-child:before {
+    content: '\f15c';
+}

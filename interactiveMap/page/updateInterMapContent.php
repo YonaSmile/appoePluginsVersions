@@ -7,13 +7,8 @@ if (!empty($_GET['id'])): ?>
     $InteractiveMap->setId($_GET['id']);
     if ($InteractiveMap->show()) : ?>
         <?php interMap_writeMapFile($InteractiveMap->getData(), $InteractiveMap->getTitle()); ?>
+        <?= getTitle($InteractiveMap->getTitle(), $Page->getSlug()); ?>
         <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <h1 class="bigTitle"><?= $InteractiveMap->getTitle(); ?></h1>
-                    <hr class="mb-2">
-                </div>
-            </div>
             <div class="row">
                 <div class="col-12">
                     <a href="<?= getPluginUrl('interactiveMap/page/updateInterMap/', $InteractiveMap->getId()) ?>"

@@ -31,13 +31,15 @@ if (!empty($_GET['id']) && !empty($_GET['level']) && isset($_GET['location'])): 
                             <input type="hidden" name="description" id="ckeditData"
                                    value="<?= $location['description']; ?>">
                             <input type="hidden" id="level" name="level" value="<?= $_GET['level']; ?>">
-                            <?= App\Form::text(trans('Titre'), 'title', 'text', $location['title'], false, 250, '', '', 'form-control-sm'); ?>
-                            <?= App\Form::text(trans('A Propos'), 'about', 'text', $location['about'], false, 250, '', '', 'form-control-sm'); ?>
-                            <?= App\Form::textarea(trans('description'), 'ckeditDescription', $location['description'], 5, false, '', 'ckeditorBasic'); ?>
-                            <?= App\Form::text(trans('Photo'), 'thumbnail[]', 'file', '', false, 350, '', '', 'form-control-sm'); ?>
-                            <?= App\Form::select(trans('Catégorie'), 'category', $allCategories, $location['category'], false); ?>
-                            <div style="position: relative">
-                                <?= App\Form::text(trans('Couleur de remplissage'), 'fill', 'color', !empty($location['fill']) ? $location['fill'] : '', false, 50, '', '', 'form-control-sm'); ?>
+                            <?= App\Form::text('Titre', 'title', 'text', $location['title'], false, 250, '', '', 'form-control-sm mb-2'); ?>
+                            <?= App\Form::text('A Propos', 'about', 'text', $location['about'], false, 250, '', '', 'form-control-sm mb-2'); ?>
+                            <div class="mb-2">
+                                <?= App\Form::textarea('description', 'ckeditDescription', $location['description'], 5, false, '', 'ckeditorBasic'); ?>
+                            </div>
+                            <?= App\Form::text('Photo', 'thumbnail[]', 'file', '', false, 350, '', '', 'form-control-sm mb-2'); ?>
+                            <?= App\Form::select('Catégorie', 'category', $allCategories, $location['category'], false); ?>
+                            <div style="position: relative" class="my-2">
+                                <?= App\Form::text('Couleur de remplissage', 'fill', 'color', !empty($location['fill']) ? $location['fill'] : '', false, 50, '', '', 'form-control-sm mb-2'); ?>
                                 <button type="button" style="position: absolute; right: 0;top:50%;"
                                         class="btn btn-danger btn-sm cleanColor">
                                     <i class="fas fa-times"></i></button>

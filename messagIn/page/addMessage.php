@@ -1,11 +1,6 @@
 <?php require('header.php'); ?>
+<?= getTitle($Page->getName(), $Page->getSlug()); ?>
     <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <h1 class="bigTitle"><?= trans('Nouveau message'); ?></h1>
-                <hr class="my-4">
-            </div>
-        </div>
         <?php require_once('../process/postProcess.php'); ?>
 
         <?php if (isset($Response)): ?>

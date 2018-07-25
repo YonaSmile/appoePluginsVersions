@@ -2,13 +2,8 @@
 require('header.php');
 require(CMS_PATH . 'process/postProcess.php');
 ?>
+<?= getTitle($Page->getName(), $Page->getSlug()); ?>
 <div class="container">
-    <div class="row">
-        <div class="col-12">
-            <h1 class="bigTitle"><?= trans('Nouvelle page'); ?></h1>
-            <hr class="my-4">
-        </div>
-    </div>
     <?php if (isset($Response)): ?>
         <div class="row">
             <div class="col-12">

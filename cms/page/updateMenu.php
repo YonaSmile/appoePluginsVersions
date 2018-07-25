@@ -13,17 +13,16 @@ $MENUS = constructMenu($allCmsMenu);
 $allPages = extractFromObjToSimpleArr($Cms->showAllPages(), 'id', 'name');
 $allPages[10] = trans('Aucun parent');
 ?>
+<?= getTitle($Page->getName(), $Page->getSlug()); ?>
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
-                <h1 class="display-4 bigTitle"><?= trans('Menu'); ?></h1>
+                <button id="addMenuPage" type="button" class="btn btn-primary mb-4" data-toggle="modal"
+                        data-target="#modalAddMenuPage">
+                    <?= trans('Nouvelle page au menu'); ?>
+                </button>
             </div>
         </div>
-        <hr class="my-2">
-        <button id="addMenuPage" type="button" class="btn btn-primary mb-4" data-toggle="modal"
-                data-target="#modalAddMenuPage">
-            <?= trans('Nouvelle page au menu'); ?>
-        </button>
         <?php if (isset($Response)): ?>
             <div class="row my-2">
                 <div class="col-12">

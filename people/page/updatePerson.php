@@ -5,13 +5,8 @@ if (!empty($_GET['id'])): ?>
     $People->setId($_GET['id']);
     if ($People->show()) : ?>
         <?php require(PEOPLE_PATH . 'process/postProcess.php'); ?>
+        <?= getTitle($Page->getName(), $Page->getSlug()); ?>
         <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <h1 class="bigTitle"><?= trans('Fiche de la personne'); ?></h1>
-                    <hr class="my-4">
-                </div>
-            </div>
             <?php if (isset($Response)): ?>
                 <div class="row">
                     <div class="col-12">
