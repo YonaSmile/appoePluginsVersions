@@ -27,3 +27,5 @@ jQuery(document).ready(function () {
         getUserStatus();
     }, 15000);
 });
+
+

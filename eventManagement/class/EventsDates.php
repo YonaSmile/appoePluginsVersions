@@ -98,7 +98,7 @@ class EventsDates {
   				`dateFin` DATETIME NOT NULL,
   				`localisation` VARCHAR(5) DEFAULT NULL,
   				`created_at` DATE NOT NULL,
-  				`update_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  				`updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 				) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;';
 
 		$stmt = $this->dbh->prepare( $sql );
