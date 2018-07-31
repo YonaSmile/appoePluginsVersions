@@ -237,7 +237,7 @@ function mehoubarim_connectedUserStatus()
     $currentTime = time();
     $statutArray = array(
         $currentTime - (60 * 30) => 'Actif',
-        $currentTime - (60 * 60 * 2) => 'En pause',
+        $currentTime - (60 * 60 * 4) => 'En pause',
         $currentTime - (60 * 60 * 12) => 'Inactif'
     );
 
