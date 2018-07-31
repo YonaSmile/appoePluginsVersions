@@ -4,7 +4,7 @@ if (checkAjaxRequest()) {
 
     if (getUserIdSession()) {
 
-        includePluginsFiles(true);
+        includePluginsFiles();
 
         $_POST = cleanRequest($_POST);
 
