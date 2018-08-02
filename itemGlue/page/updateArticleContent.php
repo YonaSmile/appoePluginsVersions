@@ -132,18 +132,25 @@ if (!empty($_GET['id'])): ?>
                                         </small>
                                     <?php endif; ?>
                                     <form method="post" data-imageid="<?= $file->id; ?>">
-                                        <input type="text" name="description"
-                                               class="form-control imageDescription"
-                                               value="<?= $file->description; ?>"
-                                               placeholder="<?= trans('Description'); ?>">
-                                        <input type="url" name="link" class="form-control imagelink"
-                                               value="<?= $file->link; ?>"
-                                               placeholder="<?= trans('Lien'); ?>">
-                                        <input type="tel" name="position" class="form-control imagePosition"
-                                               value="<?= $file->position; ?>"
-                                               placeholder="<?= trans('Position'); ?>">
                                         <input type="hidden" class="typeId" name="typeId"
                                                value="<?= $file->typeId; ?>">
+                                        <input type="text" name="description"
+                                               class="form-control form-control-sm imageDescription"
+                                               value="<?= $file->description; ?>"
+                                               placeholder="<?= trans('Description'); ?>">
+                                        <input type="url" name="link" class="form-control form-control-sm imagelink"
+                                               value="<?= $file->link; ?>"
+                                               placeholder="<?= trans('Lien'); ?>">
+                                        <input type="tel" name="position" class="form-control form-control-sm imagePosition"
+                                               value="<?= $file->position; ?>"
+                                               placeholder="<?= trans('Position'); ?>">
+                                        <select class="custom-select custom-select-sm templatePosition form-control-sm" name="templatePosition">
+                                            <?php if(!getSerializedOptions($file->options, 'templatePosition')): ?>
+                                                <option selected value=""><?= trans('Zone du thème'); ?></option>
+                                            <?php endif; foreach (FILE_TEMPLATE_POSITIONS as $filePositionId => $name): ?>
+                                                <option value="<?= $filePositionId; ?>" <?= $filePositionId == getSerializedOptions($file->options, 'templatePosition') ? 'selected' : ''; ?>><?= $name; ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
                                         <small class="infosMedia"></small>
                                     </form>
                                     <button type="button" class="deleteImage btn btn-danger btn-sm"
@@ -254,7 +261,7 @@ if (!empty($_GET['id'])): ?>
                     .addClass('d-flex flex-row justify-content-start flex-wrap my-3')
                     .children('strong.inputLabel').addClass('w-100');
 
-                $('input.imageDescription, input.imagelink, input.imagePosition').on('keyup', function () {
+                $('input.imageDescription, input.imagelink, input.imagePosition, select.templatePosition').on('keyup change', function () {
                     busyApp();
                     $('small.infosMedia').hide().html('');
                     var $input = $(this);
@@ -264,6 +271,7 @@ if (!empty($_GET['id'])): ?>
                     var link = $form.children('input.imagelink').val();
                     var position = $form.children('input.imagePosition').val();
                     var typeId = $form.children('input.typeId').val();
+                    var templatePosition = $form.children('select.templatePosition').val();
                     var $info = $form.children('small.infosMedia');
                     $info.html('');
 
@@ -275,6 +283,7 @@ if (!empty($_GET['id'])): ?>
                             description: description,
                             link: link,
                             position: position,
+                            templatePosition: templatePosition,
                             typeId: typeId
                         },
                         function (data) {
