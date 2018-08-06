@@ -18,9 +18,10 @@ if ($mehoubarim && is_array($mehoubarim)): ?>
                         <i class="fas fa-times"></i></span>
                 <?php endif; ?>
                 <?php if ($UserManager->getRole() < 5 && $connectedUserData['status'] != 'Déconnecté' || $UserManager->getRole() == 5): ?>
-                        <span class="text-<?= STATUS_CONNECTED_USER[$connectedUserData['status']]; ?>">
+                    <span class="text-<?= STATUS_CONNECTED_USER[$connectedUserData['status']]; ?>"
+                          title="Location: <?= $connectedUserData['pageConsulting']; ?>">
                             <i class="fas fa-user"></i></span>
-                        <?= $mehoubarim_UserStat->getPrenom() . ucfirst(substr($mehoubarim_UserStat->getNom(), 0, 1)); ?>
+                    <?= $mehoubarim_UserStat->getPrenom() . ucfirst(substr($mehoubarim_UserStat->getNom(), 0, 1)); ?>
                 <?php endif; ?>
             </li>
         <?php endif; ?>
