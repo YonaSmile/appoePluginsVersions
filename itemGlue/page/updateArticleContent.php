@@ -118,14 +118,14 @@ if (!empty($_GET['id'])): ?>
                             <?php foreach ($allArticleMedias as $file): ?>
                                 <div class="card bg-none border-0 my-1">
                                     <?php if (isImage(FILE_DIR_PATH . $file->name)): ?>
-                                        <img src="<?= FILE_DIR_URL . $file->name; ?>"
+                                        <img src="<?= WEB_DIR_INCLUDE . $file->name; ?>"
                                              alt="<?= $file->description; ?>"
                                              class="img-fluid img-thumbnail seeOnOverlay">
                                     <?php else: ?>
-                                        <a href="<?= FILE_DIR_URL . $file->name; ?>" target="_blank">
+                                        <a href="<?= WEB_DIR_INCLUDE . $file->name; ?>" target="_blank">
                                             <img src="<?= getImgAccordingExtension(getFileExtension($file->name)); ?>">
                                         </a>
-                                        <small class="fileLink" data-src="<?= FILE_DIR_URL . $file->name; ?>">
+                                        <small class="fileLink" data-src="<?= WEB_DIR_INCLUDE . $file->name; ?>">
                                             <button class="btn btn-sm btn-outline-info btn-block copyLinkOnClick">
                                                 <?= trans('Copier le lien du média'); ?>
                                             </button>

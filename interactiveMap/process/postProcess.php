@@ -112,8 +112,8 @@ if (checkPostAndTokenRequest()) {
             $newLevel = array(
                 'id' => $_POST['id'],
                 'title' => $_POST['title'],
-                'map' => !empty($mapFile['filename'][0]) ? FILE_DIR_URL . $mapFile['filename'][0] : '',
-                'minimap' => !empty($minimapFile['filename'][0]) ? FILE_DIR_URL . $minimapFile['filename'][0] : '',
+                'map' => !empty($mapFile['filename'][0]) ? WEB_DIR_INCLUDE . $mapFile['filename'][0] : '',
+                'minimap' => !empty($minimapFile['filename'][0]) ? WEB_DIR_INCLUDE . $minimapFile['filename'][0] : '',
                 'locations' => array()
             );
 

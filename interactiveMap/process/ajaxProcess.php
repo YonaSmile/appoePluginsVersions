@@ -263,7 +263,7 @@ if (checkAjaxRequest()) {
                 $thumbnail = $File->upload();
             }
 
-            $thumbnailSrc = !empty($thumbnail['filename'][0]) ? FILE_DIR_URL . $thumbnail['filename'][0] : '';
+            $thumbnailSrc = !empty($thumbnail['filename'][0]) ? WEB_DIR_INCLUDE . $thumbnail['filename'][0] : '';
 
             $InteractiveMap = new App\Plugin\InteractiveMap\InteractiveMap($_GET['idMap']);
             $map = json_decode($InteractiveMap->getData(), true);

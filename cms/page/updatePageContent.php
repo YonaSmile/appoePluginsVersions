@@ -116,17 +116,17 @@ if (!empty($_GET['id'])): ?>
                                                     <?php if (isImage(FILE_DIR_PATH . $file->name)): ?>
                                                         <img src="<?= getThumb($file->name, 370); ?>"
                                                              alt="<?= $file->description; ?>"
-                                                             data-originsrc="<?= FILE_DIR_URL . $file->name; ?>"
+                                                             data-originsrc="<?= WEB_DIR_INCLUDE . $file->name; ?>"
                                                              class="img-fluid seeOnOverlay seeDataOnHover">
                                                     <?php else: ?>
-                                                        <a href="<?= FILE_DIR_URL . $file->name; ?>" target="_blank">
+                                                        <a href="<?= WEB_DIR_INCLUDE . $file->name; ?>" target="_blank">
                                                             <img src="<?= getImgAccordingExtension(getFileExtension($file->name)); ?>">
                                                         </a>
                                                     <?php endif; ?>
                                                     <div class="form-group mt-1 mb-0">
                                                         <small style="font-size: 9px;">
                                                             <strong class="fileLink"
-                                                                    data-src="<?= FILE_DIR_URL . $file->name; ?>">
+                                                                    data-src="<?= WEB_DIR_INCLUDE . $file->name; ?>">
                                                                 <button class="btn btn-sm btn-outline-info btn-block copyLinkOnClick">
                                                                     <?= trans('Choisir'); ?>
                                                                 </button>
