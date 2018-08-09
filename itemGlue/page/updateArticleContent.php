@@ -53,13 +53,6 @@ if (!empty($_GET['id'])): ?>
                 </div>
             </div>
             <div class="my-2"></div>
-            <div class="row">
-                <div class="col-12">
-                    <p><?= trans('Lien de l\'article (slug)'); ?>: <?= $Article->getSlug(); ?></p>
-                    <p><?= trans('Statut de l\'article'); ?>: <?= ITEMGLUE_ARTICLES_STATUS[$Article->getStatut()] ?></p>
-                </div>
-            </div>
-            <div class="my-2"></div>
             <?php if (isset($Response)): ?>
                 <div class="row">
                     <div class="col-12">

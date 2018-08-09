@@ -47,13 +47,6 @@ if (!empty($_GET['id'])): ?>
             <div class="my-2"></div>
             <div class="row">
                 <div class="col-12">
-                    <p><?= trans('Lien de la page (slug)'); ?>: <?= $Cms->getSlug(); ?></p>
-                    <p><?= trans('Statut de la page'); ?>: <?= CMS_PAGE_STATUS[$Cms->getStatut()] ?></p>
-                </div>
-            </div>
-            <div class="my-2"></div>
-            <div class="row">
-                <div class="col-12">
                     <h2 class="subTitle text-uppercase"><?= trans('Contenu de la page'); ?></h2>
                 </div>
             </div>
