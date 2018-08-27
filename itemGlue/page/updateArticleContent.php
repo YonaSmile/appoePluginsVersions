@@ -31,17 +31,17 @@ if (!empty($_GET['id'])): ?>
                         <a id="updateArticleBtn"
                            href="<?= getPluginUrl('itemGlue/page/update/', $Article->getId()); ?>"
                            class="btn btn-warning btn-sm">
-                            <span class="fas fa-cog"></span> <?= trans('Modifier l\'article'); ?>
+                            <span class="fas fa-wrench"></span> <?= trans('Modifier les en-têtes'); ?>
                         </a>
                     <?php endif; ?>
                     <button id="addMetaArticleBtn" type="button" class="btn btn-info btn-sm"
                             data-toggle="modal"
                             data-target="#modalAddArticleMeta">
-                        <i class="fas fa-list"></i> <?= trans('Détails de l\'article'); ?>
+                        <i class="fas fa-list"></i> <?= trans('Données complémentaires'); ?>
                     </button>
                     <select class="custom-select otherArticlesSelect otherProjetSelect notPrint float-right"
-                            title="<?= trans('Parcourir les articles'); ?>...">
-                        <option selected="selected" disabled><?= trans('Parcourir les articles'); ?>...</option>
+                            title="<?= trans('Parcourir les autres articles'); ?>...">
+                        <option selected="selected" disabled><?= trans('Parcourir les autres articles'); ?>...</option>
                         <?php if ($allArticles): ?>
                             <?php foreach ($allArticles as $article): ?>
                                 <?php if ($Article->getId() != $article->id): ?>

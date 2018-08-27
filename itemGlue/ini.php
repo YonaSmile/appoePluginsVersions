@@ -10,6 +10,6 @@ const PLUGIN_TABLES = array(
 
 const ITEMGLUE_ARTICLES_STATUS = array(
     2 => 'En vedette',
-    1 => 'Accessible',
-    0 => 'Non accessible'
+    1 => 'Publié',
+    0 => 'Archive'
 );

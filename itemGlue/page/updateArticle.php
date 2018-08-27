@@ -12,7 +12,7 @@ if (!empty($_GET['id'])): ?>
                     <a href="<?= getPluginUrl('itemGlue/page/articleContent/', $Article->getId()) ?>"
                        class="btn btn-info btn-sm float-right"
                        title="Consulter">
-                        <span class="fa fa-eye"></span> <?= trans('Consulter l\'article'); ?>
+                        <span class="fa fa-cog"></span> <?= trans('Consulter l\'article'); ?>
                     </a>
                 </div>
             </div>
