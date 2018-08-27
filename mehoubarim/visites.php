@@ -49,16 +49,17 @@ if ($visitors && is_array($visitors['totalPagesViews']) && is_array($visitors['v
         jQuery(document).ready(function ($) {
 
             $('#resetStats').on('click', function () {
+                if (confirm('<?= trans('Vous allez réinitialiser les statistiques'); ?>')) {
+                    $(this).attr('disabled', 'disabled').addClass('disabled')
+                        .html('<i class="fas fa-circle-notch fa-spin"></i> <?= trans('Chargement'); ?>...');
 
-                $(this).attr('disabled', 'disabled').addClass('disabled')
-                    .html('<i class="fas fa-circle-notch fa-spin"></i> <?= trans('Chargement'); ?>...');
+                    $('#listVisitorsStats, #listPagesStats').hide();
 
-                $('#listVisitorsStats, #listPagesStats').hide();
-
-                $.post(
-                    '/app/plugin/mehoubarim/visites.php',
-                    {resetStats: 'OK'}
-                );
+                    $.post(
+                        '/app/plugin/mehoubarim/visites.php',
+                        {resetStats: 'OK'}
+                    );
+                }
             });
         });
     </script>
