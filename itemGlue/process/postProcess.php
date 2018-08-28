@@ -24,7 +24,7 @@ if (checkPostAndTokenRequest()) {
                     $Traduction->setLang(LANG);
                     $Traduction->setMetaKey($Article->getName());
                     $Traduction->setMetaValue($Article->getName());
-                    if($Traduction->save()){
+                    if ($Traduction->save()) {
                         $Traduction->setMetaKey(slugify($Article->getSlug()));
                         $Traduction->setMetaValue(slugify($Article->getSlug()));
                         $Traduction->save();
@@ -161,21 +161,42 @@ if (checkPostAndTokenRequest()) {
         }
     }
 
-    if (isset($_POST['ADDIMAGESTOARTICLE'])) {
-        if (!empty($_POST['articleId']) && !empty($_FILES)) {
+    if (isset($_POST['ADDIMAGESTOARTICLE']) && !empty($_POST['articleId'])) {
 
-            $ArticleMedia = new App\Plugin\ItemGlue\ArticleMedia($_POST['articleId']);
+        $html = '';
+        $selectedFilesCount = 0;
+
+        $ArticleMedia = new App\Plugin\ItemGlue\ArticleMedia($_POST['articleId']);
+        $ArticleMedia->setUserId(getUserIdSession());
+
+        //Get uploaded files
+        if (!empty($_FILES)) {
             $ArticleMedia->setUploadFiles($_FILES['inputFile']);
-            $ArticleMedia->setUserId(getUserIdSession());
-
-            //Delete post data
-            unset($_POST);
-
             $files = $ArticleMedia->upload();
-
-            $Response->status = 'success';
-            $Response->error_code = 0;
-            $Response->error_msg = trans('Images téléchargées') . ' : ' . $files['countUpload'];
+            $html .= trans('Fichiers importés') . ' : <strong>' . $files['countUpload'] . '</strong>. ' . (!empty($files['errors']) ? '<br><span class="text-danger">' . $files['errors'] . '</span>' : '');
         }
+
+        //Get selected files
+        if (!empty($_POST['textareaSelectedFile'])) {
+
+            $selectedFiles = $_POST['textareaSelectedFile'];
+
+            if (strpos($selectedFiles, '|||')) {
+                $files = explode('|||', $selectedFiles);
+            } else {
+                $files = array($selectedFiles);
+            }
+
+            foreach ($files as $key => $file) {
+                $ArticleMedia->setName($file);
+                if ($ArticleMedia->save()) $selectedFilesCount++;
+            }
+
+            $html .= trans('Fichiers sélectionnés enregistrés') . ' <strong>' . $selectedFilesCount . '</strong>.';
+        }
+
+        $Response->status = 'info';
+        $Response->error_code = 1;
+        $Response->error_msg = $html;
     }
 }
