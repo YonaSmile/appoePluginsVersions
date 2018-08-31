@@ -36,16 +36,16 @@ if (!empty($_GET['id'])): ?>
             <?php endif; ?>
             <nav>
                 <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                    <a class="nav-item nav-link active" id="nav-allLibraries-tab" data-toggle="tab"
+                    <a class="nav-item nav-link <?= empty($Response->MediaTabactive) ? 'active' : ''; ?>" id="nav-allLibraries-tab" data-toggle="tab"
                        href="#nav-allLibraries"
                        role="tab" aria-controls="nav-allLibraries"
                        aria-selected="true"><?= trans('Contenu de l\'article'); ?></a>
-                    <a class="nav-item nav-link" id="nav-newFiles-tab" data-toggle="tab" href="#nav-newFiles" role="tab"
+                    <a class="nav-item nav-link <?= !empty($Response->MediaTabactive) ? 'active' : ''; ?>" id="nav-newFiles-tab" data-toggle="tab" href="#nav-newFiles" role="tab"
                        aria-controls="nav-newFiles" aria-selected="false"><?= trans('Les médias'); ?></a>
                 </div>
             </nav>
             <div class="tab-content border-top-0 bg-white py-3" id="nav-mediaTabContent">
-                <div class="tab-pane fade show active" id="nav-allLibraries" role="tabpanel"
+                <div class="tab-pane fade <?= empty($Response->MediaTabactive) ? 'active show' : ''; ?>" id="nav-allLibraries" role="tabpanel"
                      aria-labelledby="nav-home-tab">
                     <div class="container-fluid">
                         <div class="row">
@@ -101,7 +101,7 @@ if (!empty($_GET['id'])): ?>
                         </div>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="nav-newFiles" role="tabpanel" aria-labelledby="nav-profile-tab">
+                <div class="tab-pane fade <?= !empty($Response->MediaTabactive) ? 'active show' : ''; ?>" id="nav-newFiles" role="tabpanel" aria-labelledby="nav-profile-tab">
                     <div class="container-fluid">
                         <form class="row" id="galleryArticleForm" action="" method="post" enctype="multipart/form-data">
                             <?= getTokenField(); ?>

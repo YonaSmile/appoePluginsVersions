@@ -5,6 +5,7 @@ if (checkPostAndTokenRequest()) {
     $_POST = cleanRequest($_POST);
 
     $Response = new App\Response();
+    $Response->MediaTabactive = false;
 
     if (isset($_POST['ADDARTICLE'])) {
 
@@ -198,5 +199,6 @@ if (checkPostAndTokenRequest()) {
         $Response->status = 'info';
         $Response->error_code = 1;
         $Response->error_msg = $html;
+        $Response->MediaTabactive = true;
     }
 }
