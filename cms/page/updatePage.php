@@ -1,7 +1,7 @@
 <?php require('header.php');
 if (!empty($_GET['id'])): ?>
     <?php
-    $Cms = new App\Plugin\Cms\Cms();
+    $Cms = new \App\Plugin\Cms\Cms();
     $Cms->setId($_GET['id']);
     if ($Cms->show()) : ?>
         <?php require(CMS_PATH . 'process/postProcess.php'); ?>
@@ -37,24 +37,24 @@ if (!empty($_GET['id'])): ?>
                     <div class="col-12 col-lg-8">
                         <div class="row">
                             <div class="col-12 my-2">
-                                <?= App\Form::text('Nom', 'name', 'text', $Cms->getName(), true, 70); ?>
+                                <?= \App\Form::text('Nom', 'name', 'text', $Cms->getName(), true, 70); ?>
                             </div>
                             <div class="col-12 my-2">
-                                <?= App\Form::text('Description', 'description', 'text', $Cms->getDescription(), true, 300); ?>
+                                <?= \App\Form::text('Description', 'description', 'text', $Cms->getDescription(), true, 300); ?>
                             </div>
                             <div class="col-12 mt-2">
-                                <?= App\Form::text('Nom du lien URL' . ' (slug)', 'slug', 'text', $Cms->getSlug(), true, 100); ?>
+                                <?= \App\Form::text('Nom du lien URL' . ' (slug)', 'slug', 'text', $Cms->getSlug(), true, 100); ?>
                             </div>
                         </div>
                     </div>
                     <div class="col-12 col-lg-4 bgColorPrimary">
                         <div class="row">
                             <div class="col-12 p-3">
-                                <?= App\Form::radio('Statut de la page', 'statut', array_map('trans', CMS_PAGE_STATUS), $Cms->getStatut(), true); ?>
+                                <?= \App\Form::radio('Statut de la page', 'statut', array_map('trans', CMS_PAGE_STATUS), $Cms->getStatut(), true); ?>
                             </div>
                             <div class="col-12 mb-3 mt-3">
-                                <?= App\Form::target('UPDATEPAGE'); ?>
-                                <?= App\Form::submit('Enregistrer', 'UPDATEPAGESUBMIT', 'btn-light'); ?>
+                                <?= \App\Form::target('UPDATEPAGE'); ?>
+                                <?= \App\Form::submit('Enregistrer', 'UPDATEPAGESUBMIT', 'btn-light'); ?>
                             </div>
                         </div>
                     </div>

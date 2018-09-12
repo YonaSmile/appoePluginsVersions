@@ -8,7 +8,7 @@
 function loadPage($slug = 'home')
 {
     $pageContent = getContainerErrorMsg('Cette page n\'existe pas');
-    $Cms = new App\Plugin\Cms\Cms();
+    $Cms = new \App\Plugin\Cms\Cms();
 
     //Get Page parameters
     $Cms->setSlug($slug);
@@ -20,7 +20,7 @@ function loadPage($slug = 'home')
         exit();
     }
 
-    $CmsContent = new App\Plugin\Cms\CmsContent($Cms->getId(), LANG);
+    $CmsContent = new \App\Plugin\Cms\CmsContent($Cms->getId(), LANG);
     $allContentArr = $CmsContent->getData();
 
     $pageContent = showTemplateContent(TEMPLATES_PATH . $Cms->getSlug() . '.php', extractFromObjArr($allContentArr, 'metaKey'));

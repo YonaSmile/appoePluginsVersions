@@ -1,7 +1,7 @@
 <?php require('header.php');
 if (!empty($_GET['id'])): ?>
     <?php
-    $InteractiveMap = new App\Plugin\InteractiveMap\InteractiveMap();
+    $InteractiveMap = new \App\Plugin\InteractiveMap\InteractiveMap();
     $InteractiveMap->setId($_GET['id']);
     if ($InteractiveMap->show()) : ?>
         <?php
@@ -35,27 +35,27 @@ if (!empty($_GET['id'])): ?>
                 <input type="hidden" name="id" value="<?= $InteractiveMap->getId(); ?>">
                 <div class="row">
                     <div class="col-12 my-2">
-                        <?= App\Form::text('Titre', 'title', 'text', $InteractiveMap->getTitle(), true); ?>
+                        <?= \App\Form::text('Titre', 'title', 'text', $InteractiveMap->getTitle(), true); ?>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-12 col-md-6 my-2">
-                        <?= App\Form::text('Largeur', 'width', 'text', $InteractiveMap->getWidth(), true); ?>
+                        <?= \App\Form::text('Largeur', 'width', 'text', $InteractiveMap->getWidth(), true); ?>
                     </div>
                     <div class="col-12 col-md-6 my-2">
-                        <?= App\Form::text('Hauteur', 'height', 'text', $InteractiveMap->getHeight(), true); ?>
+                        <?= \App\Form::text('Hauteur', 'height', 'text', $InteractiveMap->getHeight(), true); ?>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-12 my-2">
-                        <?= App\Form::radio('Statut de la carte', 'status', array_map('trans', INTERACTIVE_MAP_STATUS), $InteractiveMap->getStatus(), true); ?>
+                        <?= \App\Form::radio('Statut de la carte', 'status', array_map('trans', INTERACTIVE_MAP_STATUS), $InteractiveMap->getStatus(), true); ?>
                     </div>
                 </div>
                 <div class="my-2"></div>
                 <div class="row">
                     <div class="col-12">
-                        <?= App\Form::target('UPDATEINTERACTIVECARTE'); ?>
-                        <?= App\Form::submit('Enregistrer', 'UPDATEINTERACTIVECARTESUBMIT'); ?>
+                        <?= \App\Form::target('UPDATEINTERACTIVECARTE'); ?>
+                        <?= \App\Form::submit('Enregistrer', 'UPDATEINTERACTIVECARTESUBMIT'); ?>
                     </div>
                 </div>
             </form>
@@ -104,7 +104,7 @@ if (!empty($_GET['id'])): ?>
                                                     <div class="card-body row" data-parentjson="categories"
                                                          data-id="<?= $content['id']; ?>">
                                                         <div class="col-12 col-lg-3">
-                                                            <?= App\Form::text('ID', 'id', 'text', $content['id'], true, 300, 'disabled'); ?>
+                                                            <?= \App\Form::text('ID', 'id', 'text', $content['id'], true, 300, 'disabled'); ?>
                                                         </div>
                                                         <div class="col-12 col-lg-3">
                                                             <?= App\Form::text('Titre', 'title', 'text', $content['title'], true, 300, '', '', 'updateInterMap'); ?>

@@ -2,9 +2,9 @@
 <?= getTitle($Page->getName(), $Page->getSlug()); ?>
     <div class="container-fluid">
         <?php
-        $Event = new App\Plugin\EventManagement\Event();
+        $Event = new \App\Plugin\EventManagement\Event();
         $evenements = $Event->showAll();
-        $Auteur = new App\Plugin\EventManagement\Auteur();
+        $Auteur = new \App\Plugin\EventManagement\Auteur();
         ?>
         <div class="row">
             <div class="col-12">

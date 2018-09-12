@@ -27,7 +27,7 @@ function getRate($dbRates, $moreVotes = 0, $moreSum = 0)
 function getAllRates($status = 1)
 {
 
-    $Rating = new App\Plugin\Rating\Rating();
+    $Rating = new \App\Plugin\Rating\Rating();
     $allRating = $Rating->showAll(false, $status);
 
     $types = array();
@@ -54,7 +54,7 @@ function getAllRates($status = 1)
 
 function getUnconfirmedRates()
 {
-    $Rating = new App\Plugin\Rating\Rating();
+    $Rating = new \App\Plugin\Rating\Rating();
     return $Rating->showAll(false, 0);
 }
 
@@ -80,13 +80,13 @@ function getObj($type)
 
     switch ($type) {
         case 'ITEMGLUE':
-            return new App\Plugin\ItemGlue\Article();
+            return new \App\Plugin\ItemGlue\Article();
             break;
         case 'CMS':
-            return new App\Plugin\Cms\Cms();
+            return new \App\Plugin\Cms\Cms();
             break;
         case 'SHOP':
-            return new App\Plugin\Shop\Product();
+            return new \App\Plugin\Shop\Product();
             break;
         default:
             return false;

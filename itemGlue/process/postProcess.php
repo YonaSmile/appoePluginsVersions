@@ -4,14 +4,14 @@ if (checkPostAndTokenRequest()) {
     //Clean data
     $_POST = cleanRequest($_POST);
 
-    $Response = new App\Response();
+    $Response = new \App\Response();
     $Response->MediaTabactive = false;
 
     if (isset($_POST['ADDARTICLE'])) {
 
         if (!empty($_POST['name']) && !empty($_POST['slug'])) {
 
-            $Article = new App\Plugin\ItemGlue\Article();
+            $Article = new \App\Plugin\ItemGlue\Article();
 
             //Add Article
             $Article->feed($_POST);
@@ -21,7 +21,7 @@ if (checkPostAndTokenRequest()) {
                 if ($Article->save()) {
 
                     //Add Translation
-                    $Traduction = new App\Plugin\Traduction\Traduction();
+                    $Traduction = new \App\Plugin\Traduction\Traduction();
                     $Traduction->setLang(LANG);
                     $Traduction->setMetaKey($Article->getName());
                     $Traduction->setMetaValue($Article->getName());
@@ -63,7 +63,7 @@ if (checkPostAndTokenRequest()) {
             && !empty($_POST['slug'])
         ) {
 
-            $Article = new App\Plugin\ItemGlue\Article($_POST['id']);
+            $Article = new \App\Plugin\ItemGlue\Article($_POST['id']);
 
             //Update Article
             $Article->feed($_POST);
@@ -101,7 +101,7 @@ if (checkPostAndTokenRequest()) {
 
         if (!empty($_POST['articleContent']) && !empty($_POST['articleId'])) {
 
-            $ArticleContent = new App\Plugin\ItemGlue\ArticleContent($_POST['articleId'], LANG);
+            $ArticleContent = new \App\Plugin\ItemGlue\ArticleContent($_POST['articleId'], LANG);
             $ArticleContent->setContent($_POST['articleContent']);
             if (!empty($ArticleContent->getId())) {
                 if ($ArticleContent->update()) {
@@ -119,7 +119,7 @@ if (checkPostAndTokenRequest()) {
                 }
             }
 
-            $CategoryRelation = new App\CategoryRelations('ITEMGLUE', $_POST['articleId']);
+            $CategoryRelation = new \App\CategoryRelations('ITEMGLUE', $_POST['articleId']);
             $allCategories = $CategoryRelation->getData();
             $allSimpleCategories = extractFromObjToSimpleArr($allCategories, 'id', 'categoryId');
 
@@ -167,7 +167,7 @@ if (checkPostAndTokenRequest()) {
         $html = '';
         $selectedFilesCount = 0;
 
-        $ArticleMedia = new App\Plugin\ItemGlue\ArticleMedia($_POST['articleId']);
+        $ArticleMedia = new \App\Plugin\ItemGlue\ArticleMedia($_POST['articleId']);
         $ArticleMedia->setUserId(getUserIdSession());
 
         //Get uploaded files

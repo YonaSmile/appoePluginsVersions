@@ -3,24 +3,24 @@ require('header.php');
 if (!empty($_GET['id'])): ?>
     <?php
     require(ITEMGLUE_PATH . 'process/postProcess.php');
-    $Article = new App\Plugin\ItemGlue\Article();
+    $Article = new \App\Plugin\ItemGlue\Article();
     $Article->setId($_GET['id']);
     if ($Article->show()) : ?>
         <?php
-        $ArticlesBrowse = new App\Plugin\ItemGlue\Article();
+        $ArticlesBrowse = new \App\Plugin\ItemGlue\Article();
         $ArticlesBrowse->setStatut(1);
         $allArticles = $ArticlesBrowse->showAll();
 
-        $ArticleContent = new App\Plugin\ItemGlue\ArticleContent($Article->getId(), LANG);
+        $ArticleContent = new \App\Plugin\ItemGlue\ArticleContent($Article->getId(), LANG);
 
-        $Category = new App\Category();
+        $Category = new \App\Category();
         $Category->setType('ITEMGLUE');
         $listCatgories = extractFromObjToArrForList($Category->showByType(), 'id');
 
-        $CategoryRelation = new App\CategoryRelations('ITEMGLUE', $Article->getId());
+        $CategoryRelation = new \App\CategoryRelations('ITEMGLUE', $Article->getId());
         $allCategoryRelations = extractFromObjToSimpleArr($CategoryRelation->getData(), 'categoryId', 'name');
 
-        $ArticleMedia = new App\Plugin\ItemGlue\ArticleMedia($Article->getId());
+        $ArticleMedia = new \App\Plugin\ItemGlue\ArticleMedia($Article->getId());
         $allArticleMedias = $ArticleMedia->showFiles();
         ?>
         <?= getTitle($Article->getName(), $Page->getSlug()); ?>
@@ -90,11 +90,11 @@ if (!empty($_GET['id'])): ?>
                                     </div>
                                     <div class="my-2"></div>
                                     <div class="col-12">
-                                        <?= App\Form::checkbox('Catégories', 'categories', $listCatgories, $allCategoryRelations, 'checkCategories'); ?>
+                                        <?= \App\Form::checkbox('Catégories', 'categories', $listCatgories, $allCategoryRelations, 'checkCategories'); ?>
                                     </div>
                                     <div class="col-12">
-                                        <?= App\Form::target('SAVEARTICLECONTENT'); ?>
-                                        <?= App\Form::submit('Enregistrer', 'SAVEARTICLECONTENTSUBMIT'); ?>
+                                        <?= \App\Form::target('SAVEARTICLECONTENT'); ?>
+                                        <?= \App\Form::submit('Enregistrer', 'SAVEARTICLECONTENTSUBMIT'); ?>
                                     </div>
                                 </form>
                             </div>
@@ -107,16 +107,16 @@ if (!empty($_GET['id'])): ?>
                             <?= getTokenField(); ?>
                             <input type="hidden" name="articleId" value="<?= $Article->getId(); ?>">
                             <div class="col-12 col-lg-6 my-2">
-                                <?= App\Form::text('Importer des médias', 'inputFile[]', 'file', '', false, 800, 'multiple'); ?>
+                                <?= \App\Form::text('Importer des médias', 'inputFile[]', 'file', '', false, 800, 'multiple'); ?>
                             </div>
                             <div class="col-12 col-lg-6 my-2">
                                 <textarea name="textareaSelectedFile" id="textareaSelectedFile"
                                           class="d-none"></textarea>
-                                <?= App\Form::text('Choisissez des médias', 'inputSelectFiles', 'text', '0 fichiers', false, 300, 'readonly data-toggle="modal" data-target="#allMediasModal"'); ?>
+                                <?= \App\Form::text('Choisissez des médias', 'inputSelectFiles', 'text', '0 fichiers', false, 300, 'readonly data-toggle="modal" data-target="#allMediasModal"'); ?>
                             </div>
                             <div class="col-12">
-                                <?= App\Form::target('ADDIMAGESTOARTICLE'); ?>
-                                <?= App\Form::submit('Enregistrer', 'ADDIMAGESTOARTICLESUBMIT'); ?>
+                                <?= \App\Form::target('ADDIMAGESTOARTICLE'); ?>
+                                <?= \App\Form::submit('Enregistrer', 'ADDIMAGESTOARTICLESUBMIT'); ?>
                             </div>
                         </form>
                         <?php
@@ -232,14 +232,14 @@ if (!empty($_GET['id'])): ?>
                                 <form action="" method="post" id="addArticleMetaForm">
                                     <input type="hidden" name="idArticle" value="<?= $Article->getId(); ?>">
                                     <input type="hidden" name="UPDATEMETAARTICLE" value="">
-                                    <?= App\Form::target('ADDARTICLEMETA'); ?>
+                                    <?= \App\Form::target('ADDARTICLEMETA'); ?>
                                     <?= getTokenField(); ?>
                                     <div class="row">
                                         <div class="col-12 my-2">
-                                            <?= App\Form::text('Titre', 'metaKey', 'text', '', true, 150); ?>
+                                            <?= \App\Form::text('Titre', 'metaKey', 'text', '', true, 150); ?>
                                         </div>
                                         <div class="col-12 my-2">
-                                            <?= App\Form::textarea('Contenu', 'metaValue', '', 5, true, '', 'ckeditor'); ?>
+                                            <?= \App\Form::textarea('Contenu', 'metaValue', '', 5, true, '', 'ckeditor'); ?>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -260,7 +260,7 @@ if (!empty($_GET['id'])): ?>
                                             </button>
                                         </div>
                                         <div class="col-12 col-lg-9 my-2">
-                                            <?= App\Form::submit('Enregistrer', 'ADDMETAPRODUCTSUBMIT'); ?>
+                                            <?= \App\Form::submit('Enregistrer', 'ADDMETAPRODUCTSUBMIT'); ?>
                                         </div>
                                     </div>
                                 </form>

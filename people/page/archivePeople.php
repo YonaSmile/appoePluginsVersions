@@ -1,7 +1,7 @@
 <?php require('header.php'); ?>
 <?= getTitle($Page->getName(), $Page->getSlug()); ?>
     <div class="container-fluid">
-        <?php $People = new App\Plugin\People\People();
+        <?php $People = new \App\Plugin\People\People();
         $People->setStatus(0);
         $allPersons = $People->showAll();
         ?>

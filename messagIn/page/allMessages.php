@@ -1,7 +1,7 @@
 <?php require('header.php'); ?>
 <?= getTitle($Page->getName(), $Page->getSlug()); ?>
     <div class="container-fluid">
-        <?php $MessagIn = new App\Plugin\MessagIn\MessagIn();
+        <?php $MessagIn = new \App\Plugin\MessagIn\MessagIn();
         $MessagIn->setToUser($USER->getId());
         $allMessages = $MessagIn->showAll();
         $listUsers = $USER->showAll();

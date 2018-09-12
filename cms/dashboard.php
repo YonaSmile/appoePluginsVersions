@@ -1,6 +1,6 @@
 <?php
 require('main.php');
-$Cms = new App\Plugin\Cms\Cms();
+$Cms = new \App\Plugin\Cms\Cms();
 $pagesCount = $Cms->showAllPages(true);
 
 $Menu = new \App\Menu();

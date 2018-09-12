@@ -9,7 +9,7 @@ if (checkAjaxRequest()) {
         $_POST = cleanRequest($_POST);
 
         if (isset($_POST['archiveArticle']) && !empty($_POST['idArticleArchive'])) {
-            $Article = new App\Plugin\ItemGlue\Article($_POST['idArticleArchive']);
+            $Article = new \App\Plugin\ItemGlue\Article($_POST['idArticleArchive']);
             $Article->setStatut(0);
             if ($Article->update()) {
                 echo 'true';
@@ -17,7 +17,7 @@ if (checkAjaxRequest()) {
         }
 
         if (isset($_POST['unpackArticle']) && !empty($_POST['idUnpackArticle'])) {
-            $Article = new App\Plugin\ItemGlue\Article($_POST['idUnpackArticle']);
+            $Article = new \App\Plugin\ItemGlue\Article($_POST['idUnpackArticle']);
             $Article->setStatut(1);
             if ($Article->update()) {
                 echo 'true';
@@ -25,14 +25,14 @@ if (checkAjaxRequest()) {
         }
 
         if (isset($_POST['deleteArticle']) && !empty($_POST['idArticleDelete'])) {
-            $Article = new App\Plugin\ItemGlue\Article($_POST['idArticleDelete']);
+            $Article = new \App\Plugin\ItemGlue\Article($_POST['idArticleDelete']);
             if ($Article->delete()) {
                 echo 'true';
             }
         }
 
         if (isset($_POST['featuredArticle']) && !empty($_POST['idArticleFeatured']) && !empty($_POST['newStatut'])) {
-            $Article = new App\Plugin\ItemGlue\Article($_POST['idArticleFeatured']);
+            $Article = new \App\Plugin\ItemGlue\Article($_POST['idArticleFeatured']);
             $Article->setStatut($_POST['newStatut']);
             if ($Article->update()) {
                 echo 'true';
@@ -41,7 +41,7 @@ if (checkAjaxRequest()) {
 
         if (isset($_POST['deleteImage']) && !empty($_POST['idImage'])) {
 
-            $ArticleMedia = new App\Plugin\ItemGlue\ArticleMedia();
+            $ArticleMedia = new \App\Plugin\ItemGlue\ArticleMedia();
             $ArticleMedia->setId($_POST['idImage']);
             if ($ArticleMedia->show()) {
                 if ($ArticleMedia->delete()) {
@@ -54,7 +54,7 @@ if (checkAjaxRequest()) {
          * Meta Product
          */
         if (isset($_POST['DELETEMETAARTICLE']) && !empty($_POST['idMetaArticle'])) {
-            $ArticleMeta = new App\Plugin\ItemGlue\ArticleMeta();
+            $ArticleMeta = new \App\Plugin\ItemGlue\ArticleMeta();
             $ArticleMeta->setId($_POST['idMetaArticle']);
             if ($ArticleMeta->delete()) {
                 echo json_encode(true);
@@ -66,7 +66,7 @@ if (checkAjaxRequest()) {
             && !empty($_POST['metaKey'])
             && !empty($_POST['metaValue'])) {
 
-            $ArticleMeta = new App\Plugin\ItemGlue\ArticleMeta();
+            $ArticleMeta = new \App\Plugin\ItemGlue\ArticleMeta();
             $ArticleMeta->feed($_POST);
 
             if (!empty($_POST['UPDATEMETAARTICLE'])) {
@@ -90,7 +90,7 @@ if (checkAjaxRequest()) {
 
             //Add translation
             if (isset($_POST['addTradValue'])) {
-                $Traduction = new App\Plugin\Traduction\Traduction();
+                $Traduction = new \App\Plugin\Traduction\Traduction();
                 $Traduction->setLang(LANG);
                 $Traduction->setMetaKey($ArticleMeta->getMetaValue());
                 $Traduction->setMetaValue($ArticleMeta->getMetaValue());

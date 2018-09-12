@@ -1,8 +1,8 @@
 <?php require('header.php');
 if (!empty($_GET['id'])): ?>
     <?php
-    $Cms = new App\Plugin\Cms\Cms();
-    $CmsMenu = new App\Plugin\Cms\CmsMenu();
+    $Cms = new \App\Plugin\Cms\Cms();
+    $CmsMenu = new \App\Plugin\Cms\CmsMenu();
     $Cms->setId($_GET['id']);
     if ($Cms->show()) : ?>
         <?php
@@ -14,7 +14,7 @@ if (!empty($_GET['id'])): ?>
         //get all pages for navigations
         $allCmsPages = $Cms->showAllPages();
         $allPages = extractFromObjArr($allCmsPages, 'id');
-        $CmsContent = new App\Plugin\Cms\CmsContent($Cms->getId(), LANG);
+        $CmsContent = new \App\Plugin\Cms\CmsContent($Cms->getId(), LANG);
         ?>
         <?= getTitle($Cms->getName(), $Page->getSlug()); ?>
         <div class="container">
@@ -85,8 +85,8 @@ if (!empty($_GET['id'])): ?>
                         <a href="<?= getUrl('updateMedia/'); ?>"
                            class="btn btn-info btn-sm mb-3"><?= trans('Nouveau média'); ?></a>
                         <?php
-                        $Media = new App\Media();
-                        $Category = new App\Category();
+                        $Media = new \App\Media();
+                        $Category = new \App\Category();
 
                         $Category->setType('MEDIA');
                         $allCategories = $Category->showByType();

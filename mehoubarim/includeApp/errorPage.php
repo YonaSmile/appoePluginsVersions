@@ -6,8 +6,9 @@ if (in_array('app', $mehoubarim_url_parts)) {
     if (in_array('page', $mehoubarim_url_parts)) {
         mehoubarim_connecteUser();
         $mehoubarim = mehoubarim_pageFreeToChanges();
+
         if (true !== $mehoubarim && false !== $mehoubarim) {
-            $UserConnected = new App\Users($mehoubarim);
+            $UserConnected = new \App\Users($mehoubarim);
             $mehoubarim_html = '
            <!doctype html>
            <html lang="fr">

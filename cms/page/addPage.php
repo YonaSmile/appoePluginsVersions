@@ -19,24 +19,24 @@ require(CMS_PATH . 'process/postProcess.php');
             <div class="col-12 col-lg-8">
                 <div class="row">
                     <div class="col-12 my-2">
-                        <?= App\Form::text('Nom', 'name', 'text', !empty($_POST['name']) ? $_POST['name'] : '', true, 70); ?>
+                        <?= \App\Form::text('Nom', 'name', 'text', !empty($_POST['name']) ? $_POST['name'] : '', true, 70); ?>
                     </div>
                     <div class="col-12 my-2">
-                        <?= App\Form::text('Description', 'description', 'text', !empty($_POST['description']) ? $_POST['description'] : '', true, 300); ?>
+                        <?= \App\Form::text('Description', 'description', 'text', !empty($_POST['description']) ? $_POST['description'] : '', true, 300); ?>
                     </div>
                     <div class="col-12 mt-2">
-                        <?= App\Form::text('Nom du lien URL' . ' (slug)', 'slug', 'text', !empty($_POST['slug']) ? $_POST['slug'] : '', true, 100); ?>
+                        <?= \App\Form::text('Nom du lien URL' . ' (slug)', 'slug', 'text', !empty($_POST['slug']) ? $_POST['slug'] : '', true, 100); ?>
                     </div>
                 </div>
             </div>
             <div class="col-12 col-lg-4 bgColorPrimary">
                 <div class="row">
                     <div class="col-12 p-3">
-                        <?= App\Form::radio('Statut de la page', 'statut', array_map('trans', CMS_PAGE_STATUS), !empty($_POST['statut']) ? $_POST['statut'] : 1, true); ?>
+                        <?= \App\Form::radio('Statut de la page', 'statut', array_map('trans', CMS_PAGE_STATUS), !empty($_POST['statut']) ? $_POST['statut'] : 1, true); ?>
                     </div>
                     <div class="col-12 mb-3 mt-3">
-                        <?= App\Form::target('ADDPAGE'); ?>
-                        <?= App\Form::submit('Enregistrer', 'addPageSubmit', 'btn-light'); ?>
+                        <?= \App\Form::target('ADDPAGE'); ?>
+                        <?= \App\Form::submit('Enregistrer', 'addPageSubmit', 'btn-light'); ?>
                     </div>
                 </div>
             </div>

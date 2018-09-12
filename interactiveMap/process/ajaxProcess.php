@@ -15,7 +15,7 @@ if (checkAjaxRequest()) {
             && !empty($_POST['color'])
             && !empty($_POST['show'])
         ) {
-            $InteractiveMap = new App\Plugin\InteractiveMap\InteractiveMap($_POST['idMap']);
+            $InteractiveMap = new \App\Plugin\InteractiveMap\InteractiveMap($_POST['idMap']);
             $map = json_decode($InteractiveMap->getData(), true);
 
             $_POST['id'] = slugify($_POST['id']);
@@ -46,7 +46,7 @@ if (checkAjaxRequest()) {
 
         //Archive Map
         if (!empty($_POST['idMapDelete'])) {
-            $InteractiveMap = new App\Plugin\InteractiveMap\InteractiveMap($_POST['idMapDelete']);
+            $InteractiveMap = new \App\Plugin\InteractiveMap\InteractiveMap($_POST['idMapDelete']);
 
             $InteractiveMap->setStatus(0);
             if ($InteractiveMap->update()) {
@@ -63,7 +63,7 @@ if (checkAjaxRequest()) {
             && !empty($_POST['name'])
             && isset($_POST['value'])
         ) {
-            $InteractiveMap = new App\Plugin\InteractiveMap\InteractiveMap($_POST['idMap']);
+            $InteractiveMap = new \App\Plugin\InteractiveMap\InteractiveMap($_POST['idMap']);
             $map = json_decode($InteractiveMap->getData(), true);
 
             //get details
@@ -89,7 +89,7 @@ if (checkAjaxRequest()) {
             && !empty($_POST['parent'])
             && !empty($_POST['id'])
         ) {
-            $InteractiveMap = new App\Plugin\InteractiveMap\InteractiveMap($_POST['idMap']);
+            $InteractiveMap = new \App\Plugin\InteractiveMap\InteractiveMap($_POST['idMap']);
             $map = json_decode($InteractiveMap->getData(), true);
 
             //get details
@@ -117,7 +117,7 @@ if (checkAjaxRequest()) {
             && !empty($_POST['yPoint'])
             && isset($_POST['title'])
         ) {
-            $InteractiveMap = new App\Plugin\InteractiveMap\InteractiveMap($_POST['idMap']);
+            $InteractiveMap = new \App\Plugin\InteractiveMap\InteractiveMap($_POST['idMap']);
             $map = json_decode($InteractiveMap->getData(), true);
 
             $newPoint = array(
@@ -165,7 +165,7 @@ if (checkAjaxRequest()) {
             && !empty($_POST['id'])
             && !empty($_POST['level'])
         ) {
-            $InteractiveMap = new App\Plugin\InteractiveMap\InteractiveMap($_POST['idMap']);
+            $InteractiveMap = new \App\Plugin\InteractiveMap\InteractiveMap($_POST['idMap']);
             $map = json_decode($InteractiveMap->getData(), true);
 
             foreach ($map['levels'] as $firstKey => $level) {
@@ -198,7 +198,7 @@ if (checkAjaxRequest()) {
             && !empty($_POST['locationId'])
             && !empty($_POST['level'])
         ) {
-            $InteractiveMap = new App\Plugin\InteractiveMap\InteractiveMap($_POST['idMap']);
+            $InteractiveMap = new \App\Plugin\InteractiveMap\InteractiveMap($_POST['idMap']);
             $map = json_decode($InteractiveMap->getData(), true);
 
             foreach ($map['levels'] as $firstKey => $level) {
@@ -224,7 +224,7 @@ if (checkAjaxRequest()) {
         //Restart Map details
         if (!empty($_POST['rebootInterMap']) && !empty($_POST['idMap'])) {
 
-            $InteractiveMap = new App\Plugin\InteractiveMap\InteractiveMap($_POST['idMap']);
+            $InteractiveMap = new \App\Plugin\InteractiveMap\InteractiveMap($_POST['idMap']);
 
             $jsonArray = json_encode(array(
                 'mapwidth' => $InteractiveMap->getWidth(),
@@ -246,7 +246,7 @@ if (checkAjaxRequest()) {
             && !empty($_GET['level'])
             && !empty($_GET['idLocation'])) {
 
-            $File = new App\Plugin\InteractiveMap\InterMapMedia($_GET['idMap']);
+            $File = new \App\Plugin\InteractiveMap\InterMapMedia($_GET['idMap']);
             $File->setUserId(getUserIdSession());
 
             $arrayFiles = array();
@@ -265,7 +265,7 @@ if (checkAjaxRequest()) {
 
             $thumbnailSrc = !empty($thumbnail['filename'][0]) ? WEB_DIR_INCLUDE . $thumbnail['filename'][0] : '';
 
-            $InteractiveMap = new App\Plugin\InteractiveMap\InteractiveMap($_GET['idMap']);
+            $InteractiveMap = new \App\Plugin\InteractiveMap\InteractiveMap($_GET['idMap']);
             $map = json_decode($InteractiveMap->getData(), true);
 
             foreach ($map['levels'] as $firstKey => $level) {

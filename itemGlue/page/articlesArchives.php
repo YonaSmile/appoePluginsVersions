@@ -1,7 +1,7 @@
 <?php require('header.php'); ?>
 <?= getTitle($Page->getName(), $Page->getSlug()); ?>
     <div class="container-fluid">
-        <?php $Article = new App\Plugin\ItemGlue\Article();
+        <?php $Article = new \App\Plugin\ItemGlue\Article();
         $Article->setStatut(0);
         $allArticles = $Article->showAll(false);
         ?>

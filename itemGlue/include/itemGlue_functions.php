@@ -2,17 +2,17 @@
 function getSpecificArticlesCategory($categoryId, $parentId = false, $favorite = 1)
 {
     //get all articles categories
-    $Category = new App\Category();
+    $Category = new \App\Category();
     $Category->setType('ITEMGLUE');
     $allCategories = extractFromObjArr($Category->showByType(), 'id');
 
     //get all articles
-    $Article = new App\Plugin\ItemGlue\Article();
+    $Article = new \App\Plugin\ItemGlue\Article();
     $Article->setStatut($favorite);
     $allArticles = extractFromObjArr($Article->showAll(), 'id');
 
     //get all categories in relation with all articles
-    $CategoryRelation = new App\CategoryRelations();
+    $CategoryRelation = new \App\CategoryRelations();
     $CategoryRelation->setType('ITEMGLUE');
     $allCategoriesRelations = extractFromObjArr($CategoryRelation->showAll(), 'id');
 
@@ -67,27 +67,27 @@ function getSpecificArticlesCategory($categoryId, $parentId = false, $favorite =
 function getSpecificArticlesDetailsBySlug($slug)
 {
     if (!empty($slug)) {
-        $Traduction = new App\Plugin\Traduction\Traduction(LANG);
+        $Traduction = new \App\Plugin\Traduction\Traduction(LANG);
         $slug = $Traduction->transToOrigin($slug);
 
         //get article
-        $Article = new App\Plugin\ItemGlue\Article();
+        $Article = new \App\Plugin\ItemGlue\Article();
         $Article->setSlug($slug);
         if ($Article->showBySlug()) {
 
             //get article content
-            $ArticleContent = new App\Plugin\ItemGlue\ArticleContent($Article->getId(), LANG);
+            $ArticleContent = new \App\Plugin\ItemGlue\ArticleContent($Article->getId(), LANG);
 
             //get all categories in relation with article
-            $CategoryRelation = new App\CategoryRelations('ITEMGLUE', $Article->getId());
+            $CategoryRelation = new \App\CategoryRelations('ITEMGLUE', $Article->getId());
             $allCategoriesRelations = $CategoryRelation->getData();
 
             //get article metas
-            $ArticleMeta = new App\Plugin\ItemGlue\ArticleMeta($Article->getId());
+            $ArticleMeta = new \App\Plugin\ItemGlue\ArticleMeta($Article->getId());
             $allArticleMeta = $ArticleMeta->getData();
 
             //get article medias
-            $ArticleMedia = new App\Plugin\ItemGlue\ArticleMedia($Article->getId());
+            $ArticleMedia = new \App\Plugin\ItemGlue\ArticleMedia($Article->getId());
             $allArticleMedia = $ArticleMedia->showFiles();
 
             $all['article'] = $Article;
@@ -105,9 +105,9 @@ function getSpecificArticlesDetailsBySlug($slug)
 function getCategoriesByArticle($id)
 {
     //get article
-    $Article = new App\Plugin\ItemGlue\Article($id);
+    $Article = new \App\Plugin\ItemGlue\Article($id);
 
     //get all categories in relation with article
-    $CategoryRelation = new App\CategoryRelations('ITEMGLUE', $Article->getId());
+    $CategoryRelation = new \App\CategoryRelations('ITEMGLUE', $Article->getId());
     return $CategoryRelation->getData();
 }

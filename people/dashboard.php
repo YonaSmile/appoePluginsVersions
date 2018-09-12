@@ -1,6 +1,6 @@
 <?php
 require('main.php');
-$People = new App\Plugin\People\People();
+$People = new \App\Plugin\People\People();
 $peopleCount = $People->showAll(true);
 
 $Menu = new \App\Menu();

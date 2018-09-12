@@ -1,6 +1,6 @@
 <?php
 require('main.php');
-$InteractiveMap = new App\Plugin\InteractiveMap\InteractiveMap();
+$InteractiveMap = new \App\Plugin\InteractiveMap\InteractiveMap();
 $pagesCount = $InteractiveMap->showAll(true);
 
 $Menu = new \App\Menu();

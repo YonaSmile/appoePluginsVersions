@@ -1,12 +1,12 @@
 <?php if (!empty($_GET['id'])): ?>
     <?php require('header.php');
-    $Event = new App\Plugin\EventManagement\Event();
+    $Event = new \App\Plugin\EventManagement\Event();
     $Event->setId($_GET['id']);
     if ($Event->show()) : ?>
         <?php
         $AllGeneralesEvents = $Event->showAll();
-        $Auteur = new App\Plugin\EventManagement\Auteur($Event->getAuteurId());
-        $EventsDates = new App\Plugin\EventManagement\EventsDates();
+        $Auteur = new \App\Plugin\EventManagement\Auteur($Event->getAuteurId());
+        $EventsDates = new \App\Plugin\EventManagement\EventsDates();
         $EventsDates->setEventId($Event->getId());
         $allEvents = $EventsDates->showAllEvent();
         ?>

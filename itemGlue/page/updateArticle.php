@@ -1,7 +1,7 @@
 <?php require('header.php');
 if (!empty($_GET['id'])): ?>
     <?php
-    $Article = new App\Plugin\ItemGlue\Article();
+    $Article = new \App\Plugin\ItemGlue\Article();
     $Article->setId($_GET['id']);
     if ($Article->show()) : ?>
         <?php require(ITEMGLUE_PATH . 'process/postProcess.php'); ?>
@@ -37,24 +37,24 @@ if (!empty($_GET['id'])): ?>
                     <div class="col-12 col-lg-8">
                         <div class="row">
                             <div class="col-12 my-2">
-                                <?= App\Form::text('Nom', 'name', 'text', $Article->getName(), true, 70); ?>
+                                <?= \App\Form::text('Nom', 'name', 'text', $Article->getName(), true, 70); ?>
                             </div>
                             <div class="col-12 my-2">
-                                <?= App\Form::text('Description', 'description', 'text', $Article->getDescription(), true, 160); ?>
+                                <?= \App\Form::text('Description', 'description', 'text', $Article->getDescription(), true, 160); ?>
                             </div>
                             <div class="col-12 mt-2">
-                                <?= App\Form::text('Nom du lien URL' . ' (slug)', 'slug', 'text', $Article->getSlug(), true, 100); ?>
+                                <?= \App\Form::text('Nom du lien URL' . ' (slug)', 'slug', 'text', $Article->getSlug(), true, 100); ?>
                             </div>
                         </div>
                     </div>
                     <div class="col-12 col-lg-4 bgColorPrimary">
                         <div class="row">
                             <div class="col-12 pt-2 pb-3">
-                                <?= App\Form::radio('Statut de l\'article', 'statut', array_map('trans', ITEMGLUE_ARTICLES_STATUS), $Article->getStatut(), true); ?>
+                                <?= \App\Form::radio('Statut de l\'article', 'statut', array_map('trans', ITEMGLUE_ARTICLES_STATUS), $Article->getStatut(), true); ?>
                             </div>
                             <div class="col-12 mb-3">
-                                <?= App\Form::target('UPDATEARTICLE'); ?>
-                                <?= App\Form::submit('Enregistrer', 'UPDATEARTICLESUBMIT', 'btn-light'); ?>
+                                <?= \App\Form::target('UPDATEARTICLE'); ?>
+                                <?= \App\Form::submit('Enregistrer', 'UPDATEARTICLESUBMIT', 'btn-light'); ?>
                             </div>
                         </div>
                     </div>

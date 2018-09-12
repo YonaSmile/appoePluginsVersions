@@ -4,11 +4,11 @@ if (checkPostAndTokenRequest()) {
     //Clean data
     $_POST = cleanRequest($_POST);
 
-    $Response = new App\Response();
+    $Response = new \App\Response();
 
     if (!empty($_POST['name'])) {
 
-        $Auteur = new App\Plugin\EventManagement\Auteur();
+        $Auteur = new \App\Plugin\EventManagement\Auteur();
 
         //Add Auteur
         $Auteur->feed($_POST);

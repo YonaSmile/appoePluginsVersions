@@ -4,14 +4,14 @@ if (checkPostAndTokenRequest()) {
     //Clean data
     $_POST = cleanRequest($_POST);
 
-    $Response = new App\Response();
+    $Response = new \App\Response();
 
     if (!empty($_POST['titre'])
         && !empty($_POST['auteurId'])
         && !empty($_POST['description'])
     ) {
 
-        $Event = new App\Plugin\EventManagement\Event();
+        $Event = new \App\Plugin\EventManagement\Event();
 
         //Add Event
         $Event->feed($_POST);

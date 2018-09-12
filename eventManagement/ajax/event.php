@@ -7,7 +7,7 @@ if ( checkAjaxRequest() ) {
 
 		//Delete projet
 		if ( ! empty( $_POST['idDeleteEvent'] ) ) {
-			$Event = new App\Plugin\EventManagement\Event( $_POST['idDeleteEvent'] );
+			$Event = new \App\Plugin\EventManagement\Event( $_POST['idDeleteEvent'] );
 			if ( $Event->delete() ) {
 				echo json_encode( true );
 			}

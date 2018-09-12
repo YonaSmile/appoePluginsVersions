@@ -3,7 +3,7 @@ require('header.php');
 if (!empty($_GET['id'])): ?>
     <?php
     require(INTERACTIVE_MAP_PATH . 'process/postProcess.php');
-    $InteractiveMap = new App\Plugin\InteractiveMap\InteractiveMap();
+    $InteractiveMap = new \App\Plugin\InteractiveMap\InteractiveMap();
     $InteractiveMap->setId($_GET['id']);
     if ($InteractiveMap->show()) : ?>
         <?php interMap_writeMapFile($InteractiveMap->getData(), $InteractiveMap->getTitle()); ?>

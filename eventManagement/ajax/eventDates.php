@@ -6,7 +6,7 @@ if ( checkAjaxRequest() ) {
 
 		//delete Event Date
 		if ( ! empty( $_POST['deleteDateEvent'] ) && ! empty( $_POST['deleteDateEvent'] ) ) {
-			$EventDates = new App\Plugin\EventManagement\EventsDates();
+			$EventDates = new \App\Plugin\EventManagement\EventsDates();
 			$EventDates->setId( $_POST['deleteDateEvent'] );
 			if ( $EventDates->delete() ) {
 				echo 'true';
@@ -23,7 +23,7 @@ if ( checkAjaxRequest() ) {
 			&& $_POST['_token'] == $_SESSION['_token']
 		) {
 
-			$Event = new App\Plugin\EventManagement\Event( $_POST['eventId'] );
+			$Event = new \App\Plugin\EventManagement\Event( $_POST['eventId'] );
 
 			$DateDebut = new DateTime( $_POST['dateDebut'] . $_POST['heureDebut'] );
 			$DateFin   = new DateTime( $_POST['dateDebut'] . $_POST['heureDebut'] );
@@ -42,7 +42,7 @@ if ( checkAjaxRequest() ) {
 
 			$DateFin->add( new DateInterval( 'PT' . $interval ) );
 
-			$EventDates = new App\Plugin\EventManagement\EventsDates();
+			$EventDates = new \App\Plugin\EventManagement\EventsDates();
 			$EventDates->setEventId( $Event->getId() );
 			$EventDates->setDateDebut( $DateDebut->format( 'Y-m-d H:i:s' ) );
 			$EventDates->setDateFin( $DateFin->format( 'Y-m-d H:i:s' ) );

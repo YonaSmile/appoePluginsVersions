@@ -1,6 +1,6 @@
 <?php if (!empty($_GET['id'])): ?>
     <?php require('header.php'); ?>
-    <?php $Auteur = new App\Plugin\EventManagement\Auteur();
+    <?php $Auteur = new \App\Plugin\EventManagement\Auteur();
     $Auteur->setId($_GET['id']);
     if ($Auteur->show()) : ?>
         <?= getTitle($Page->getName(), $Page->getSlug()); ?>

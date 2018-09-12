@@ -1,13 +1,13 @@
 <?php
 require('main.php');
-$Rating = new App\Plugin\Rating\Rating();
+$Rating = new \App\Plugin\Rating\Rating();
 
 //Creating table
 $pluginSetup = $Rating->createTable();
 echo $pluginSetup ? trans('Table') . ' RATING ' . trans('activé') . '.<br>' : $pluginSetup;
 
 //Creating autorisations
-$Menu = new App\Menu();
+$Menu = new \App\Menu();
 $data = array(
     1 => array(
         'id' => 100,

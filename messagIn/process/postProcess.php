@@ -4,7 +4,7 @@ if (checkPostAndTokenRequest()) {
     //Clean data
     $_POST = cleanRequest($_POST);
 
-    $Response = new App\Response();
+    $Response = new \App\Response();
 
     if (isset($_POST['ADDMESSAGE'])
         && !empty($_POST['toUser'])
@@ -12,7 +12,7 @@ if (checkPostAndTokenRequest()) {
     ) {
 
 
-        $MessagIn = new App\Plugin\MessagIn\MessagIn();
+        $MessagIn = new \App\Plugin\MessagIn\MessagIn();
 
         //Add Projet
         $MessagIn->feed($_POST);

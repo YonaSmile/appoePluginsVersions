@@ -4,7 +4,7 @@ if (checkPostAndTokenRequest()) {
     //Clean data
     $_POST = cleanRequest($_POST);
 
-    $Response = new App\Response();
+    $Response = new \App\Response();
 
     if (isset($_POST['ADDPAGE'])) {
 
@@ -12,7 +12,7 @@ if (checkPostAndTokenRequest()) {
             && !empty($_POST['slug'])
         ) {
 
-            $Cms = new App\Plugin\Cms\Cms();
+            $Cms = new \App\Plugin\Cms\Cms();
 
             //Add Page
             $Cms->feed($_POST);
@@ -21,7 +21,7 @@ if (checkPostAndTokenRequest()) {
                 if ($Cms->save()) {
 
                     //Add Translation
-                    $Traduction = new App\Plugin\Traduction\Traduction();
+                    $Traduction = new \App\Plugin\Traduction\Traduction();
                     $Traduction->setLang(LANG);
                     $Traduction->setMetaKey($Cms->getName());
                     $Traduction->setMetaValue($Cms->getName());
@@ -63,7 +63,7 @@ if (checkPostAndTokenRequest()) {
             && !empty($_POST['slug'])
         ) {
 
-            $Cms = new App\Plugin\Cms\Cms($_POST['id']);
+            $Cms = new \App\Plugin\Cms\Cms($_POST['id']);
 
             //Update Page
             $Cms->feed($_POST);
@@ -104,7 +104,7 @@ if (checkPostAndTokenRequest()) {
             && !empty($_POST['location'])
         ) {
             //Add Menu
-            $CmsMenu = new App\Plugin\Cms\CmsMenu();
+            $CmsMenu = new \App\Plugin\Cms\CmsMenu();
             $CmsMenu->feed($_POST);
 
             if($CmsMenu->existParent() || $CmsMenu->getParentId() == 10) {

@@ -38,7 +38,7 @@ function interMap_readMapFile($title)
  */
 function interMap_get($idMap)
 {
-    $InteractiveMap = new App\Plugin\InteractiveMap\InteractiveMap();
+    $InteractiveMap = new \App\Plugin\InteractiveMap\InteractiveMap();
     $InteractiveMap->setId($idMap);
 
     if ($InteractiveMap->show()) {

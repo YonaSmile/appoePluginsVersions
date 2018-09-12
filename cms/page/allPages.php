@@ -1,7 +1,7 @@
 <?php require('header.php'); ?>
 <?= getTitle($Page->getName(), $Page->getSlug()); ?>
     <div class="container-fluid">
-        <?php $Cms = new App\Plugin\Cms\Cms();
+        <?php $Cms = new \App\Plugin\Cms\Cms();
         $allCmsPages = $Cms->showAllPages();
         $allPages = extractFromObjArr($allCmsPages, 'id');
         ?>

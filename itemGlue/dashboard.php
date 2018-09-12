@@ -1,6 +1,6 @@
 <?php
 require('main.php');
-$Article = new App\Plugin\ItemGlue\Article();
+$Article = new \App\Plugin\ItemGlue\Article();
 $articlesCount = $Article->showAll(true);
 
 $Menu = new \App\Menu();

@@ -4,7 +4,7 @@ if (checkPostAndTokenRequest()) {
     //Clean data
     $_POST = cleanRequest($_POST);
 
-    $Response = new App\Response();
+    $Response = new \App\Response();
 
     if (!empty($_POST['id'])
         && !empty($_POST['titre'])
@@ -12,7 +12,7 @@ if (checkPostAndTokenRequest()) {
         && !empty($_POST['description'])
     ) {
 
-        $Event = new App\Plugin\EventManagement\Event();
+        $Event = new \App\Plugin\EventManagement\Event();
 
         //Update Event
         $Event->feed($_POST);

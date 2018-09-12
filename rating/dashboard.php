@@ -1,6 +1,6 @@
 <?php
 require('main.php');
-$Rating = new App\Plugin\Rating\Rating();
+$Rating = new \App\Plugin\Rating\Rating();
 $ratesCount = $Rating->showAll(true);
 
 $Menu = new \App\Menu();

@@ -4,7 +4,7 @@ if (checkPostAndTokenRequest()) {
     //Clean data
     $_POST = cleanRequest($_POST);
 
-    $Response = new App\Response();
+    $Response = new \App\Response();
 
     if (isset($_POST['ADDINTERMAP'])) {
         if (
@@ -20,14 +20,14 @@ if (checkPostAndTokenRequest()) {
                 'levels' => []
             ));
 
-            $InteractiveMap = new App\Plugin\InteractiveMap\InteractiveMap();
+            $InteractiveMap = new \App\Plugin\InteractiveMap\InteractiveMap();
             $InteractiveMap->feed($_POST);
             $InteractiveMap->setData($jsonArray);
             if ($InteractiveMap->save()) {
 
                 interMap_writeMapFile($InteractiveMap->getData(), $InteractiveMap->getTitle());
 
-                $Traduction = new App\Plugin\Traduction\Traduction();
+                $Traduction = new \App\Plugin\Traduction\Traduction();
                 $Traduction->setMetaKey($_POST['title']);
                 $Traduction->setMetaValue($Traduction->getMetaKey());
                 $Traduction->setLang(LANG);
@@ -60,7 +60,7 @@ if (checkPostAndTokenRequest()) {
             && !empty($_POST['height'])
             && isset($_POST['status'])
         ) {
-            $InteractiveMap = new App\Plugin\InteractiveMap\InteractiveMap();
+            $InteractiveMap = new \App\Plugin\InteractiveMap\InteractiveMap();
             $InteractiveMap->feed($_POST);
             if ($InteractiveMap->notExist(true)) {
                 if ($InteractiveMap->update()) {
@@ -92,11 +92,11 @@ if (checkPostAndTokenRequest()) {
             && !empty($_POST['title'])
             && isset($_FILES)
         ) {
-            $InteractiveMap = new App\Plugin\InteractiveMap\InteractiveMap($_POST['idMap']);
+            $InteractiveMap = new \App\Plugin\InteractiveMap\InteractiveMap($_POST['idMap']);
             $map = json_decode($InteractiveMap->getData(), true);
             $access = true;
 
-            $File = new App\Plugin\InteractiveMap\InterMapMedia($_POST['idMap']);
+            $File = new \App\Plugin\InteractiveMap\InterMapMedia($_POST['idMap']);
             $File->setUserId(getUserIdSession());
 
             if (!empty($_FILES['map']['name'])) {
@@ -158,7 +158,7 @@ if (checkPostAndTokenRequest()) {
             && isset($_POST['mapfill'])
         ) {
 
-            $InteractiveMap = new App\Plugin\InteractiveMap\InteractiveMap($_POST['idMap']);
+            $InteractiveMap = new \App\Plugin\InteractiveMap\InteractiveMap($_POST['idMap']);
             $data = array();
 
             //get options checkbox

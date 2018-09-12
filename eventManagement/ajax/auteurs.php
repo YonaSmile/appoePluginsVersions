@@ -5,7 +5,7 @@ if ( checkAjaxRequest() ) {
 	if ( getUserIdSession() ) {
 
 		if ( ! empty( $_POST['idDeleteAuteur'] ) ) {
-			$Auteur = new App\Plugin\EventManagement\Auteur();
+			$Auteur = new \App\Plugin\EventManagement\Auteur();
 			$Auteur->setId( $_POST['idDeleteAuteur'] );
 			if ( $Auteur->show() ) {
 				if ( $Auteur->delete() ) {

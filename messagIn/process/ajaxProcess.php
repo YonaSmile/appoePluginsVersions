@@ -4,7 +4,7 @@ if ( checkAjaxRequest() ) {
 
 	if ( getUserIdSession() ) {
 
-		$MessagIn = new App\Plugin\MessagIn\MessagIn();
+		$MessagIn = new \App\Plugin\MessagIn\MessagIn();
 
 		if ( ! empty( $_POST['idMessageToDelete'] ) ) {
             $MessagIn->setId( $_POST['idMessageToDelete'] );

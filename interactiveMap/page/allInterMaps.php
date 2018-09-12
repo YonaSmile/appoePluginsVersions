@@ -1,6 +1,6 @@
 <?php
 require('header.php');
-$InteractiveMap = new App\Plugin\InteractiveMap\InteractiveMap();
+$InteractiveMap = new \App\Plugin\InteractiveMap\InteractiveMap();
 $allCartes = extractFromObjArr($InteractiveMap->showAll(), 'id');
 ?>
 <?= getTitle($Page->getName(), $Page->getSlug()); ?>

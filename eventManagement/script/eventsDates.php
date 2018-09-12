@@ -2,8 +2,8 @@
 if (checkAjaxRequest() && !empty($_REQUEST['id'])): ?>
 
     <?php
-    $Event = new App\Plugin\EventManagement\Event($_REQUEST['id']);
-    $EventsDates = new App\Plugin\EventManagement\EventsDates();
+    $Event = new \App\Plugin\EventManagement\Event($_REQUEST['id']);
+    $EventsDates = new \App\Plugin\EventManagement\EventsDates();
     $EventsDates->setEventId($Event->getId());
     $allEvents = $EventsDates->showAllEvent();
 

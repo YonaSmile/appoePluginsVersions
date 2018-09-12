@@ -4,12 +4,12 @@ if (checkPostAndTokenRequest()) {
     //Clean data
     $_POST = cleanRequest($_POST);
 
-    $Response = new App\Response();
+    $Response = new \App\Response();
 
     if (isset($_POST['ADDTRADUCTION'])) {
         if (!empty($_POST['metaKeySingle'])) {
 
-            $Traduction = new App\Plugin\Traduction\Traduction();
+            $Traduction = new \App\Plugin\Traduction\Traduction();
             $Traduction->setMetaKey($_POST['metaKeySingle']);
             $Traduction->setMetaValue($Traduction->getMetaKey());
             $Traduction->setLang(LANG);
@@ -36,7 +36,7 @@ if (checkPostAndTokenRequest()) {
     if (isset($_POST['ADDMULTIPLETRADS'])) {
         if (!empty($_POST['metaValue-fr'])) {
 
-            $Traduction = new App\Plugin\Traduction\Traduction();
+            $Traduction = new \App\Plugin\Traduction\Traduction();
 
             foreach (LANGUAGES as $id => $lang) {
                 if (!empty($_POST['metaValue-' . $id])) {

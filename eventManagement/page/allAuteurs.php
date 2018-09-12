@@ -2,7 +2,7 @@
 <?= getTitle($Page->getName(), $Page->getSlug()); ?>
     <div class="container-fluid">
         <?php
-        $Auteur = new App\Plugin\EventManagement\Auteur();
+        $Auteur = new \App\Plugin\EventManagement\Auteur();
         $auteurs = $Auteur->showByType();
         ?>
         <div class="row">

@@ -17,7 +17,7 @@
             <div class="row">
                 <div class="col-12 col-lg-4">
                     <?php
-                    $Auteur = new App\Plugin\EventManagement\Auteur();
+                    $Auteur = new \App\Plugin\EventManagement\Auteur();
                     $auteurs = extractFromObjToSimpleArr($Auteur->showByType(), 'id', 'name');
 
                     echo App\Form::select('Auteur', 'auteurId', $auteurs, !empty($_POST['auteurId']) ? $_POST['auteurId'] : '', true);

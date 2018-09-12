@@ -4,13 +4,13 @@ if (checkPostAndTokenRequest()) {
     //Clean data
     $_POST = cleanRequest($_POST);
 
-    $Response = new App\Response();
+    $Response = new \App\Response();
 
     if (isset($_POST['ADDPERSON'])) {
 
         if (!empty($_POST['name']) && !empty($_POST['type'])) {
 
-            $People = new App\Plugin\People\People();
+            $People = new \App\Plugin\People\People();
 
             //Add person
             $People->feed($_POST);
@@ -46,7 +46,7 @@ if (checkPostAndTokenRequest()) {
 
         if (!empty($_POST['id']) && !empty($_POST['name']) && !empty($_POST['type'])) {
 
-            $People = new App\Plugin\People\People($_POST['id']);
+            $People = new \App\Plugin\People\People($_POST['id']);
 
             //Update Person
             $People->feed($_POST);

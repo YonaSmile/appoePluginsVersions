@@ -2,7 +2,7 @@
 require_once('main.php');
 if ((session_id() != '') && getUserIdSession()) {
 
-    $MessagIn = new App\Plugin\MessagIn\MessagIn(getUserIdSession());
+    $MessagIn = new \App\Plugin\MessagIn\MessagIn(getUserIdSession());
     $messagesCounter = 0;
 
     if ($MessagIn->getData()) {
