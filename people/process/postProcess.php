@@ -37,7 +37,7 @@ if (checkPostAndTokenRequest()) {
         } else {
             $Response->status = 'danger';
             $Response->error_code = 1;
-            $Response->error_msg = trans('Le type, le nom et l\'adresse email sont obligatoires');
+            $Response->error_msg = trans('Le type et le nom sont obligatoires');
         }
     }
 
