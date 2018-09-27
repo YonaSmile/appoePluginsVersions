@@ -69,7 +69,7 @@ function getUnconfirmedRates()
 function showRatings($type, $typeId, $clicable = true, $sizeClass = 'largeStars', $minimize = false)
 {
     $html = '<div class="movie_choice" id="' . $type . '_' . $typeId . '">
-                <div id="' . strtoupper($type) . '-item-' . $typeId . '" data-type="' . $type . '" class="rate_widget">
+                <div id="' . strtoupper($type) . '-item-' . $typeId . '" data-type="' . $type . '" class="rate_widget" data-idstars="'. $type . '_' . $typeId .'">
                     <div class="star_1 ratings_stars ' . ($clicable ? ' starClick ' : '') . $sizeClass . '"></div>
                     <div class="star_2 ratings_stars ' . ($clicable ? ' starClick ' : '') . $sizeClass . '"></div>
                     <div class="star_3 ratings_stars ' . ($clicable ? ' starClick ' : '') . $sizeClass . '"></div>

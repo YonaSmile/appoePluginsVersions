@@ -1,20 +1,22 @@
 jQuery(document).ready(function ($) {
 
-    var starClick = 0;
+    var starClick = [];
 
     $('.total_votes').html('');
 
     $('.starClick').hover(
         // Handles the mouseover
         function () {
-            if (starClick == 0) {
+            var idStars = $(this).parent('div.rate_widget').data('idstars');
+            if ($.inArray(idStars, starClick) == -1) {
                 $(this).prevAll().andSelf().addClass('ratings_over');
                 $(this).nextAll().removeClass('ratings_vote');
             }
         },
         // Handles the mouseout
         function () {
-            if (starClick == 0) {
+            var idStars = $(this).parent('div.rate_widget').data('idstars');
+            if ($.inArray(idStars, starClick) == -1) {
                 $(this).prevAll().andSelf().removeClass('ratings_over');
                 set_votes($(this).parent());
             }
@@ -42,10 +44,10 @@ jQuery(document).ready(function ($) {
     });
 
     $('.starClick').bind('click', function () {
+        var idStars = $(this).parent('div.rate_widget').data('idstars');
+        if ($.inArray(idStars, starClick) == -1) {
 
-        if (starClick == 0) {
-
-            starClick++;
+            starClick.push(idStars);
             var star = this;
             var widget = $(this).parent();
 
