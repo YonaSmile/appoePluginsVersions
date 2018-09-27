@@ -81,17 +81,17 @@ function getStockLimit(idProduct) {
 }
 
 //Add product to shopping card
-function addToShoppingCard(idProduct, name, quantity, price, poids) {
+function addToShoppingCard(Product) {
     return $.post(
         '/app/plugin/shop/process/shipping.php',
         {
             ADDPRODUCTTOCARD: 'OK',
-            idProduct: idProduct,
-            name: name,
-            quantity: quantity,
-            singlePrice: price,
-            totalPoids: quantity * poids,
-            totalPrice: financial(quantity * price)
+            idProduct: Product.idProduct,
+            name: Product.name,
+            quantity: Product.quantity,
+            singlePrice: Product.price,
+            totalPoids: Product.quantity * Product.poids,
+            totalPrice: financial(Product.quantity * Product.price)
         });
 }
 

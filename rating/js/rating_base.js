@@ -60,7 +60,7 @@ jQuery(document).ready(function ($) {
                 clicked_data,
                 function (INFO) {
                     if (INFO) {
-                        $('.total_votes').html(INFO);
+                        $('#' + widget.data('type') + '_' + widget.attr('id').split('-')[2] + ' .total_votes').html(INFO);
                         /*widget.data('fsr', INFO);
                         set_votes(widget);*/
                     }

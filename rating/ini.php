@@ -8,5 +8,6 @@ const PLUGIN_TABLES = array(
 
 const TYPES_NAMES = array(
     'ITEMGLUE' => 'Article',
-    'CMS' => 'Page'
+    'CMS' => 'Page',
+    'SHOP' => 'Produit'
 );

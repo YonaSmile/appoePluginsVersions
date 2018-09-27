@@ -106,8 +106,8 @@ $allRating = getAllRates();
                                 $('#allRatingTable')
                                     .html('<i class="fas fa-circle-notch fa-spin"></i>')
                                     .load('<?= RATING_URL; ?>page/getAllRating.php', function () {
-                                    availableApp();
-                                });
+                                        availableApp();
+                                    });
                             });
                         }
                     }
