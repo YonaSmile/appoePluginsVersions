@@ -1,11 +1,13 @@
 <?php require('header.php');
-if (!empty($_GET['id'])): ?>
-    <?php
+if (!empty($_GET['id'])):
+
     $Cms = new \App\Plugin\Cms\Cms();
-    $CmsMenu = new \App\Plugin\Cms\CmsMenu();
     $Cms->setId($_GET['id']);
-    if ($Cms->show()) : ?>
-        <?php
+
+    if ($Cms->show()):
+
+        $CmsMenu = new \App\Plugin\Cms\CmsMenu();
+        $CmsContent = new \App\Plugin\Cms\CmsContent($Cms->getId(), LANG);
 
         //check if is a page operated by content CMS
         $menuPages = $CmsMenu->showAll();
@@ -13,10 +15,8 @@ if (!empty($_GET['id'])): ?>
 
         //get all pages for navigations
         $allCmsPages = $Cms->showAllPages();
-        $allPages = extractFromObjArr($allCmsPages, 'id');
-        $CmsContent = new \App\Plugin\Cms\CmsContent($Cms->getId(), LANG);
-        ?>
-        <?= getTitle($Cms->getName(), $Page->getSlug()); ?>
+
+        echo getTitle($Cms->getName(), $Page->getSlug()); ?>
         <div class="container">
             <div class="row">
                 <div class="col-12">
@@ -96,8 +96,7 @@ if (!empty($_GET['id'])): ?>
 
                         if ($allLibrary): ?>
                             <div class="container-fluid">
-                                <?php foreach ($allLibrary as $id => $name): ?>
-                                    <?php
+                                <?php foreach ($allLibrary as $id => $name):
                                     $Media->setTypeId($id);
                                     $allFiles = $Media->showFiles();
                                     if ($allFiles): ?>
@@ -130,8 +129,8 @@ if (!empty($_GET['id'])): ?>
                                             <?php endforeach; ?>
                                         </div>
                                         <div class="my-3"></div>
-                                    <?php endif; ?>
-                                <?php endforeach; ?>
+                                    <?php endif;
+                                endforeach; ?>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -196,7 +195,7 @@ if (!empty($_GET['id'])): ?>
                     event.preventDefault();
                 });
 
-                $.each($('input, textarea'), function () {
+                $.each($('input, textarea, select'), function () {
                     var id = $(this).attr('name');
                     $('<small class="' + id + ' categoryIdFloatContenaire">').insertAfter($(this));
                 });
@@ -213,7 +212,7 @@ if (!empty($_GET['id'])): ?>
 
                 }
 
-                $('form#pageContentManageForm').on('blur', 'input, textarea', function (event) {
+                $('form#pageContentManageForm').on('blur', 'input, textarea, select', function (event) {
                     event.preventDefault();
                     var $input = $(this);
                     var metaValue = $input.val();
@@ -228,10 +227,10 @@ if (!empty($_GET['id'])): ?>
 
             });
         </script>
-    <?php else: ?>
-        <?= getContainerErrorMsg(trans('Cette page n\'existe pas')); ?>
-    <?php endif; ?>
-<?php else: ?>
-    <?= trans('Cette page n\'existe pas'); ?>
-<?php endif; ?>
-<?php require('footer.php'); ?>
+    <?php else:
+        echo getContainerErrorMsg(trans('Cette page n\'existe pas'));
+    endif;
+else:
+    echo trans('Cette page n\'existe pas');
+endif;
+require('footer.php'); ?>
