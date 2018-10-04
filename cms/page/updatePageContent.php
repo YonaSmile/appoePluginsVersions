@@ -53,7 +53,10 @@ if (!empty($_GET['id'])):
             <?php if (file_exists(TEMPLATES_PATH . $Cms->getSlug() . '.php')): ?>
                 <form action="" method="post" id="pageContentManageForm">
                     <div class="row">
-                        <?= showTemplateZones(TEMPLATES_PATH . $Cms->getSlug() . '.php', $CmsContent->getData()); ?>
+                        <?php
+                        \App\Template::set(TEMPLATES_PATH . $Cms->getSlug() . '.php', $CmsContent->getData());
+                        \App\Template::show();
+                        ?>
                     </div>
                     <div class="my-2"></div>
                     <div class="row">
