@@ -177,6 +177,15 @@ if (!empty($_GET['id'])):
 
             $(document).ready(function () {
 
+                $('input[rel=cms-img-popover]').popover({
+                    html: true,
+                    trigger: 'hover',
+                    placement: 'top',
+                    content: function () {
+                        return '<img src="'+$(this).val() + '" />';
+                    }
+                });
+
                 $(document).on('dblclick', 'input.urlFile', function (event) {
                     event.stopPropagation();
                     event.preventDefault();
