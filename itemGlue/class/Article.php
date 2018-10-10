@@ -233,7 +233,7 @@ class Article
             $categorySQL = ' AND (C.id = :idCategory OR C.parentId = :idCategory) ';
         }
 
-        $sql = 'SELECT DISTINCT ART.id, ART.name, ART.description, ART.slug, ART.statut, 
+        $sql = 'SELECT DISTINCT ART.id, ART.name, ART.description, ART.slug, ART.userId, ART.created_at, ART.updated_at, ART.statut, 
         C.id AS idCategory, C.name AS categoryName, AC.content
         FROM appoe_categoryRelations AS CR 
         RIGHT JOIN appoe_plugin_itemGlue_articles AS ART 
