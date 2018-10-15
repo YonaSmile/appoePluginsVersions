@@ -4,7 +4,29 @@ function shop_financial($amount)
     return is_float($amount) ? number_format($amount, 2, '.', ' ') : $amount;
 }
 
-function shop_getProductDetails($idProduct = null)
+function shop_getProductDetailsFromSlug($slug)
+{
+
+    $Product = new \App\Plugin\Shop\Product();
+    $Product->setSlug($slug);
+
+    if ($Product->showBySlug()) {
+
+        $ProductContent = new \App\Plugin\Shop\ProductContent($Product->getId(), LANG);
+        $ProductMeta = new \App\Plugin\Shop\ProductMeta($Product->getId());
+        $ProductMedia = new \App\Plugin\Shop\ShopMedia($Product->getId());
+
+        $Product->content = $ProductContent;
+        $Product->meta = extractFromObjToSimpleArr($ProductMeta->getData(), 'meta_key', 'meta_value');
+        $Product->media = $ProductMedia->showFiles();
+
+        return $Product;
+    }
+
+    return false;
+}
+
+function shop_getProductDetails($idProduct = null, Product $Product = null)
 {
     //clear incomplet commandes
     $Commande = new \App\Plugin\Shop\Commande();

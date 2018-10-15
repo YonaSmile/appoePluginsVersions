@@ -268,6 +268,37 @@ class Product
     }
 
     /**
+     * @return bool
+     */
+    public function showBySlug()
+    {
+
+        $sql = 'SELECT * FROM appoe_plugin_shop_products WHERE slug = :slug';
+
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':slug', $this->slug);
+        $stmt->execute();
+
+        $count = $stmt->rowCount();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            if ($count == 1) {
+
+                $row = $stmt->fetch(\PDO::FETCH_OBJ);
+                $this->feed($row);
+
+                return true;
+
+            } else {
+
+                return false;
+            }
+        }
+    }
+
+    /**
      * * @param bool $countProducts
      * @return array|bool
      */
