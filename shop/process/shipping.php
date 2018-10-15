@@ -84,6 +84,11 @@ if (checkAjaxRequest()) {
 
     }
 
+    //Get count of shipping card
+    if (isset($_POST['GETCOUNTSHIPPINGCARD'])) {
+        echo shop_getCountShippingCard();
+    }
+
     if (isset($_POST['GETLIMITSTOCK']) && !empty($_POST['idProduct'])) {
         $Product = new \App\Plugin\Shop\Product();
         $Product->setId($_POST['idProduct']);

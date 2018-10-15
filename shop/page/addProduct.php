@@ -32,15 +32,15 @@ $listCatgories = extractFromObjToArrForList($Category->showByType(), 'id');
                             <?= App\Form::select('Type de produit', 'type', TYPE_PRODUCT, !empty($_POST['type']) ? $_POST['type'] : '', true); ?>
                         </div>
                         <div class="col-12 col-lg-4 mt-2">
-                            <?= App\Form::text('Prix (€)', 'price', 'text', !empty($_POST['price']) ? $_POST['price'] : '', true, 9, '', '', '', 'Ex: 16.97'); ?>
+                            <?= App\Form::text('Prix (€)', 'price', 'text', !empty($_POST['price']) ? $_POST['price'] : '', true, 9, '', '', '', 'Ex: 16.97', false); ?>
                         </div>
 
                         <div class="col-12 col-lg-4 mt-2">
-                            <?= App\Form::text('Poids (en grammes)', 'poids', 'text', !empty($_POST['poids']) ? $_POST['poids'] : '', false, 9, '', '', '', 'Ex: 1500 pour 1.5 kg'); ?>
+                            <?= App\Form::text('Poids (en grammes)', 'poids', 'text', !empty($_POST['poids']) ? $_POST['poids'] : '', false, 9, '', '', '', 'Ex: 1500 pour 1.5 kg', false); ?>
                         </div>
 
                         <div class="col-12 col-lg-4 mt-3">
-                            <?= App\Form::text('Épaisseur (en Millimètre)', 'dimension', 'text', !empty($_POST['dimension']) ? $_POST['dimension'] : '', false, 9, '', '', '', 'Ex: 1000 pour 1 m'); ?>
+                            <?= App\Form::text('Épaisseur (en Millimètre)', 'dimension', 'text', !empty($_POST['dimension']) ? $_POST['dimension'] : '', false, 9, '', '', '', 'Ex: 1000 pour 1 m', false); ?>
                         </div>
                         <div class="col-12 mt-2">
                             <?= App\Form::checkbox('Catégories', 'categories', $listCatgories, '', 'checkCategories'); ?>

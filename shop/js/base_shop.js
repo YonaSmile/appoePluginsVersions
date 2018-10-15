@@ -95,6 +95,15 @@ function addToShoppingCard(Product) {
         });
 }
 
+//Get count of shipping card
+function getCountShippingCard() {
+    return $.post(
+        '/app/plugin/shop/process/shipping.php',
+        {
+            GETCOUNTSHIPPINGCARD: 'OK'
+        });
+}
+
 //Clear product from shopping card
 function clearShoppingProduct(idProduct) {
     return $.post(

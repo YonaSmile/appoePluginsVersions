@@ -110,7 +110,7 @@ class ProductContent
   					`id` INT(11) NOT NULL AUTO_INCREMENT,
                 	PRIMARY KEY (`id`),
                 	`product_id` INT(11) NOT NULL,
-                	`resume` VARCHAR(255) NULL DEFAULT NULL
+                	`resume` VARCHAR(255) NULL DEFAULT NULL,
   					`content` TEXT NOT NULL,
   					`lang` VARCHAR(10) NOT NULL,
                 	`updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

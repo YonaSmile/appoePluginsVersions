@@ -26,7 +26,7 @@ function shop_getProductDetails($idProduct = null)
 
             $ProductMeta->setProductId($Product->getId());
             $ProductMeta->show();
-            $Product->meta = $ProductMeta->getData();
+            $Product->meta = extractFromObjToSimpleArr($ProductMeta->getData(), 'meta_key', 'meta_value');
 
             $ProductMedia->setTypeId($idProduct);
             $Product->media = $ProductMedia->showFiles();
@@ -334,6 +334,22 @@ function shop_clearCard($clearCommand = false)
     }
 
     return true;
+}
+
+function shop_getCountShippingCard()
+{
+
+    $count = 0;
+
+    //get all products
+    foreach ($_COOKIE['PRODUCT'] as $idProduct => $dataProduct) {
+
+        //extract card infos into array
+        $product = @unserialize(base64_decode($dataProduct));
+        $count += $product['quantity'];
+    }
+
+    return $count;
 }
 
 function shop_checkValidProductsCookies()
