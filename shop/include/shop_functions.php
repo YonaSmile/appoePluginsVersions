@@ -15,10 +15,12 @@ function shop_getProductDetailsFromSlug($slug)
         $ProductContent = new \App\Plugin\Shop\ProductContent($Product->getId(), LANG);
         $ProductMeta = new \App\Plugin\Shop\ProductMeta($Product->getId());
         $ProductMedia = new \App\Plugin\Shop\ShopMedia($Product->getId());
+        $CategoryRelation = new \App\CategoryRelations('SHOP', $Product->getId());
 
         $Product->content = $ProductContent;
         $Product->meta = extractFromObjToSimpleArr($ProductMeta->getData(), 'meta_key', 'meta_value');
         $Product->media = $ProductMedia->showFiles();
+        $Product->categories = extractFromObjToSimpleArr($CategoryRelation->getData(), 'categoryId', 'name');
 
         return $Product;
     }
