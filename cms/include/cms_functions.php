@@ -16,16 +16,15 @@ function loadPage($slug = 'home')
 
     //Check if Page exist and accessible
     if ((!$existPage && pageName() == 'Non définie') || $Cms->getStatut() != 1) {
-        echo getContainerErrorMsg('Cette page n\'existe pas');
+        echo $pageContent;
         exit();
     }
 
     $CmsContent = new \App\Plugin\Cms\CmsContent($Cms->getId(), LANG);
-    $allContentArr = $CmsContent->getData();
 
-    $pageContent = showTemplateContent(TEMPLATES_PATH . $Cms->getSlug() . '.php', extractFromObjArr($allContentArr, 'metaKey'));
-
-    return $pageContent;
+    //Get page content in template
+    \App\Template::set(TEMPLATES_PATH . $Cms->getSlug() . '.php', $CmsContent->getData(), true);
+    return \App\Template::get();
 }
 
 /**
