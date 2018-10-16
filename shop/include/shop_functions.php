@@ -362,18 +362,7 @@ function shop_clearCard($clearCommand = false)
 
 function shop_getCountShippingCard()
 {
-
-    $count = 0;
-
-    //get all products
-    foreach ($_COOKIE['PRODUCT'] as $idProduct => $dataProduct) {
-
-        //extract card infos into array
-        $product = @unserialize(base64_decode($dataProduct));
-        $count += $product['quantity'];
-    }
-
-    return $count;
+    return count($_COOKIE['PRODUCT']);
 }
 
 function shop_checkValidProductsCookies()
