@@ -40,12 +40,10 @@
                                            class="btn btn-sm" title="<?= trans('Consulter'); ?>">
                                             <span class="btnUpdate"><i class="fas fa-cog"></i></span>
                                         </a>
-                                        <?php if ($USER->getRole() > 3): ?>
-                                            <a href="<?= getPluginUrl('itemGlue/page/update/', $article->id) ?>"
-                                               class="btn btn-sm" title="<?= trans('Modifier'); ?>">
-                                                <span class="btnEdit"><i class="fas fa-wrench"></i></span>
-                                            </a>
-                                        <?php endif; ?>
+                                        <a href="<?= getPluginUrl('itemGlue/page/update/', $article->id) ?>"
+                                           class="btn btn-sm" title="<?= trans('Modifier'); ?>">
+                                            <span class="btnEdit"><i class="fas fa-wrench"></i></span>
+                                        </a>
                                         <button type="button" class="btn btn-sm archiveArticle"
                                                 title="<?= trans('Archiver'); ?>"
                                                 data-idarticle="<?= $article->id ?>">
