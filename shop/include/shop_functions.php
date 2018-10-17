@@ -41,7 +41,7 @@ function shop_getProductDetailsFromSlug($slug)
  * @param Product|null $Product
  * @return \App\Plugin\Shop\Product|array|Product
  */
-function shop_getProductDetails($idProduct = null, Product $Product = null)
+function shop_getProductDetails($idProduct = null)
 {
     //clear incomplet commandes
     $Commande = new \App\Plugin\Shop\Commande();

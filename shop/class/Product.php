@@ -299,6 +299,44 @@ class Product
     }
 
     /**
+     * @param $idCategory
+     * @param bool $parentId
+     * @param bool $countProducts
+     * @return bool
+     */
+    public function showByCategory($idCategory, $parentId = false, $countProducts = false)
+    {
+        $categorySQL = ' AND C.id = :idCategory ';
+        if (true === $parentId) {
+            $categorySQL = ' AND (C.id = :idCategory OR C.parentId = :idCategory) ';
+        }
+
+        $sql = 'SELECT DISTINCT PRO.*, C.id AS idCategory, C.name AS categoryName, PROCONTENT.resume, PROCONTENT.content
+        FROM appoe_categoryRelations AS CR 
+        RIGHT JOIN appoe_plugin_shop_products AS PRO 
+        ON(CR.typeId = PRO.id) 
+        INNER JOIN appoe_categories AS C
+        ON(C.id = CR.categoryId)
+        INNER JOIN appoe_plugin_shop_products_content AS PROCONTENT
+        ON(PROCONTENT.product_id = PRO.id)
+        WHERE CR.type = "SHOP" AND PRO.status > 0 AND C.status > 0 AND PROCONTENT.lang = :lang' . $categorySQL . '
+        GROUP BY PRO.id ORDER BY PRO.status DESC, PROCONTENT.updated_at DESC';
+
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':idCategory', $idCategory);
+        $stmt->bindValue(':lang', LANG);
+        $stmt->execute();
+
+        $count = $stmt->rowCount();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            return (!$countProducts) ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
+        }
+    }
+
+    /**
      * * @param bool $countProducts
      * @return array|bool
      */
