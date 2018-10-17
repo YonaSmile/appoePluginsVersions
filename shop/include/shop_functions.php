@@ -1,9 +1,17 @@
 <?php
+/**
+ * @param $amount
+ * @return string
+ */
 function shop_financial($amount)
 {
     return is_float($amount) ? number_format($amount, 2, '.', ' ') : $amount;
 }
 
+/**
+ * @param $slug
+ * @return \App\Plugin\Shop\Product|bool
+ */
 function shop_getProductDetailsFromSlug($slug)
 {
 
@@ -28,6 +36,11 @@ function shop_getProductDetailsFromSlug($slug)
     return false;
 }
 
+/**
+ * @param null $idProduct
+ * @param Product|null $Product
+ * @return \App\Plugin\Shop\Product|array|Product
+ */
 function shop_getProductDetails($idProduct = null, Product $Product = null)
 {
     //clear incomplet commandes
@@ -71,6 +84,9 @@ function shop_getProductDetails($idProduct = null, Product $Product = null)
     return $data;
 }
 
+/**
+ * @return int
+ */
 function shop_getShoppingCardPoids()
 {
     $poidsTotal = 0;
@@ -83,6 +99,10 @@ function shop_getShoppingCardPoids()
     return $poidsTotal;
 }
 
+/**
+ * @param bool $saveCommande
+ * @return array
+ */
 function shop_getShoppingCard($saveCommande = false)
 {
     $poidsTotal = 0;
@@ -205,6 +225,10 @@ function shop_getShoppingCard($saveCommande = false)
     return $allDataProducts;
 }
 
+/**
+ * @param $data
+ * @param $Commande
+ */
 function saveCommandDetails($data, $Commande)
 {
     if ($data && $Commande) {
@@ -224,6 +248,11 @@ function saveCommandDetails($data, $Commande)
     }
 }
 
+/**
+ * @param $data
+ * @param string $noRemainingTxt
+ * @return null|string
+ */
 function getRemainingProduct($data, $noRemainingTxt = '')
 {
 
@@ -236,21 +265,34 @@ function getRemainingProduct($data, $noRemainingTxt = '')
     return null;
 }
 
+/**
+ * @param $total
+ */
 function shop_setTotalShopping($total)
 {
     $_SESSION['totalPrice'] = $total;
 }
 
+/**
+ * @param bool $forDB
+ * @return bool|string
+ */
 function shop_getTotalShopping($forDB = false)
 {
     return !empty($_SESSION['totalPrice']) ? number_format($_SESSION['totalPrice'], 2, '.', (!$forDB ? ' ' : '')) : false;
 }
 
+/**
+ * @return bool
+ */
 function shop_checkExistClient()
 {
     return !empty($_COOKIE['CLIENT']) ? true : false;
 }
 
+/**
+ * @return \App\Plugin\Shop\Client|bool
+ */
 function shop_getClientInfo()
 {
     if (!empty($_COOKIE['CLIENT'])) {
@@ -264,6 +306,10 @@ function shop_getClientInfo()
     return false;
 }
 
+/**
+ * @param $idCommande
+ * @return bool
+ */
 function shop_validateCommande($idCommande)
 {
     if ($Commande = new \App\Plugin\Shop\Commande($idCommande)) {
@@ -288,6 +334,11 @@ function shop_validateCommande($idCommande)
     return false;
 }
 
+/**
+ * @param $idCommande
+ * @param bool $productId
+ * @return \App\Plugin\Shop\Commande|bool
+ */
 function shop_getCommandeDetails($idCommande, $productId = false)
 {
     if ($Commande = new \App\Plugin\Shop\Commande($idCommande)) {
@@ -305,6 +356,10 @@ function shop_getCommandeDetails($idCommande, $productId = false)
     return false;
 }
 
+/**
+ * @param null $idCommande
+ * @return bool
+ */
 function shop_clearCommande($idCommande = null)
 {
     $Commande = new \App\Plugin\Shop\Commande();
@@ -343,6 +398,10 @@ function shop_clearCommande($idCommande = null)
     return false;
 }
 
+/**
+ * @param bool $clearCommand
+ * @return bool
+ */
 function shop_clearCard($clearCommand = false)
 {
     //clear all products
@@ -360,11 +419,17 @@ function shop_clearCard($clearCommand = false)
     return true;
 }
 
+/**
+ * @return int
+ */
 function shop_getCountShippingCard()
 {
-    return count($_COOKIE['PRODUCT']);
+    return !empty($_COOKIE['PRODUCT']) ? count($_COOKIE['PRODUCT']) : 0;
 }
 
+/**
+ * @return bool
+ */
 function shop_checkValidProductsCookies()
 {
     if (isset($_COOKIE['PRODUCT'])) {
@@ -409,6 +474,10 @@ function shop_checkValidProductsCookies()
     return true;
 }
 
+/**
+ * @param $id
+ * @return null
+ */
 function getCategoriesByProduct($id)
 {
     //get product

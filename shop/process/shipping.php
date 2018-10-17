@@ -138,6 +138,22 @@ if (checkAjaxRequest()) {
     }
 
     /**
+     * Update client
+     */
+    if (isset($_POST['UPDATEPERSON']) && !empty($_POST['id'])) {
+        $Client = new \App\Plugin\Shop\Client();
+        $Client->setId($_POST['id']);
+        if ($Client->show()) {
+            $Client->feed($_POST);
+            if ($Client->notExist(true)) {
+                if ($Client->update()) {
+                    echo json_encode(true);
+                }
+            }
+        }
+    }
+
+    /**
      * Checkout save client
      */
     if (isset($_POST['ADDPERSON'])) {
