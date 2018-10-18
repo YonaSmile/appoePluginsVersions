@@ -302,7 +302,7 @@ class Product
      * @param $idCategory
      * @param bool $parentId
      * @param bool $countProducts
-     * @return bool
+     * @return bool|array
      */
     public function showByCategory($idCategory, $parentId = false, $countProducts = false)
     {
@@ -332,7 +332,7 @@ class Product
         if ($error[0] != '00000') {
             return false;
         } else {
-            return (!$countProducts) ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
+            return (!$countProducts) ? $stmt->fetchAll(\PDO::FETCH_OBJ) : array('count' => $count, 'products' => $stmt->fetchAll(\PDO::FETCH_OBJ));
         }
     }
 
