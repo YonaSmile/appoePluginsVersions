@@ -36,16 +36,19 @@ if (!empty($_GET['id'])): ?>
             <?php endif; ?>
             <nav>
                 <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                    <a class="nav-item nav-link <?= empty($Response->MediaTabactive) ? 'active' : ''; ?>" id="nav-allLibraries-tab" data-toggle="tab"
+                    <a class="nav-item nav-link <?= empty($Response->MediaTabactive) ? 'active' : ''; ?>"
+                       id="nav-allLibraries-tab" data-toggle="tab"
                        href="#nav-allLibraries"
                        role="tab" aria-controls="nav-allLibraries"
                        aria-selected="true"><?= trans('Contenu de l\'article'); ?></a>
-                    <a class="nav-item nav-link <?= !empty($Response->MediaTabactive) ? 'active' : ''; ?>" id="nav-newFiles-tab" data-toggle="tab" href="#nav-newFiles" role="tab"
+                    <a class="nav-item nav-link <?= !empty($Response->MediaTabactive) ? 'active' : ''; ?>"
+                       id="nav-newFiles-tab" data-toggle="tab" href="#nav-newFiles" role="tab"
                        aria-controls="nav-newFiles" aria-selected="false"><?= trans('Les médias'); ?></a>
                 </div>
             </nav>
             <div class="tab-content border-top-0 bg-white py-3" id="nav-mediaTabContent">
-                <div class="tab-pane fade <?= empty($Response->MediaTabactive) ? 'active show' : ''; ?>" id="nav-allLibraries" role="tabpanel"
+                <div class="tab-pane fade <?= empty($Response->MediaTabactive) ? 'active show' : ''; ?>"
+                     id="nav-allLibraries" role="tabpanel"
                      aria-labelledby="nav-home-tab">
                     <div class="container-fluid">
                         <div class="row">
@@ -101,7 +104,8 @@ if (!empty($_GET['id'])): ?>
                         </div>
                     </div>
                 </div>
-                <div class="tab-pane fade <?= !empty($Response->MediaTabactive) ? 'active show' : ''; ?>" id="nav-newFiles" role="tabpanel" aria-labelledby="nav-profile-tab">
+                <div class="tab-pane fade <?= !empty($Response->MediaTabactive) ? 'active show' : ''; ?>"
+                     id="nav-newFiles" role="tabpanel" aria-labelledby="nav-profile-tab">
                     <div class="container-fluid">
                         <form class="row" id="galleryArticleForm" action="" method="post" enctype="multipart/form-data">
                             <?= getTokenField(); ?>
@@ -126,9 +130,11 @@ if (!empty($_GET['id'])): ?>
                                 <?php foreach ($allArticleMedias as $file): ?>
                                     <div class="card bg-none border-0 my-1">
                                         <?php if (isImage(FILE_DIR_PATH . $file->name)): ?>
-                                            <img src="<?= WEB_DIR_INCLUDE . $file->name; ?>"
+                                            <img src="<?= getThumb($file->name, 370); ?>"
                                                  alt="<?= $file->description; ?>"
-                                                 class="img-fluid img-thumbnail seeOnOverlay">
+                                                 data-originsrc="<?= WEB_DIR_INCLUDE . $file->name; ?>"
+                                                 data-filename="<?= $file->name; ?>"
+                                                 class="img-fluid img-thumbnail seeOnOverlay seeDataOnHover">
                                         <?php else: ?>
                                             <a href="<?= WEB_DIR_INCLUDE . $file->name; ?>" target="_blank">
                                                 <img src="<?= getImgAccordingExtension(getFileExtension($file->name)); ?>">
@@ -142,17 +148,9 @@ if (!empty($_GET['id'])): ?>
                                         <form method="post" data-imageid="<?= $file->id; ?>">
                                             <input type="hidden" class="typeId" name="typeId"
                                                    value="<?= $file->typeId; ?>">
-                                            <input type="text" name="description"
-                                                   class="form-control form-control-sm imageDescription"
-                                                   value="<?= $file->description; ?>"
-                                                   placeholder="<?= trans('Description'); ?>">
-                                            <input type="url" name="link" class="form-control form-control-sm imagelink"
-                                                   value="<?= $file->link; ?>"
-                                                   placeholder="<?= trans('Lien'); ?>">
-                                            <input type="tel" name="position"
-                                                   class="form-control form-control-sm imagePosition"
-                                                   value="<?= $file->position; ?>"
-                                                   placeholder="<?= trans('Position'); ?>">
+                                            <?= \App\Form::text('Description', 'description', 'text', $file->description, false, 300, '', '', 'form-control-sm imageDescription', 'Description'); ?>
+                                            <?= \App\Form::text('Lien', 'link', 'url', $file->link, false, 300, '', '', 'form-control-sm imagelink', 'Lien'); ?>
+                                            <?= \App\Form::text('Position', 'position', 'text', $file->position, false, 300, '', '', 'form-control-sm imagePosition', 'Position'); ?>
                                             <select class="custom-select custom-select-sm templatePosition form-control-sm"
                                                     name="templatePosition">
                                                 <?php if (!getSerializedOptions($file->options, 'templatePosition')): ?>
@@ -298,14 +296,14 @@ if (!empty($_GET['id'])): ?>
                     busyApp();
                     $('small.infosMedia').hide().html('');
                     var $input = $(this);
-                    var $form = $input.parent('form');
+                    var $form = $input.closest('form');
                     var idImage = $form.data('imageid');
-                    var description = $form.children('input.imageDescription').val();
-                    var link = $form.children('input.imagelink').val();
-                    var position = $form.children('input.imagePosition').val();
-                    var typeId = $form.children('input.typeId').val();
-                    var templatePosition = $form.children('select.templatePosition').val();
-                    var $info = $form.children('small.infosMedia');
+                    var description = $form.find('input.imageDescription').val();
+                    var link = $form.find('input.imagelink').val();
+                    var position = $form.find('input.imagePosition').val();
+                    var typeId = $form.find('input.typeId').val();
+                    var templatePosition = $form.find('select.templatePosition').val();
+                    var $info = $form.find('small.infosMedia');
                     $info.html('');
 
                     $.post(
