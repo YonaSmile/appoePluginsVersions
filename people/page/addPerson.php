@@ -12,7 +12,9 @@
                 </div>
             </div>
         <?php endif; ?>
-        <?= addPersonForm(isset($_POST) ? $_POST : array(), array('nameR' => true)); ?>
+        <form action="" method="post" id="addPersonForm">
+            <?= people_addPersonFormFields(array(), isset($_POST) ? $_POST : array(), array('nameR' => true)); ?>
+        </form>
         <div class="my-4"></div>
     </div>
 <?php require('footer.php'); ?>
