@@ -17,11 +17,13 @@ if ($mehoubarim && is_array($mehoubarim)): ?>
                     <span class="logoutUser float-left linkBtn" data-userid="<?= $mehoubarim_UserStat->getId(); ?>">
                         <i class="fas fa-times"></i></span>
                 <?php endif; ?>
-                <?php if ($UserManager->getRole() < 5 && $connectedUserData['status'] != 'Déconnecté' || $UserManager->getRole() == 5): ?>
-                        <span class="text-<?= STATUS_CONNECTED_USER[$connectedUserData['status']]; ?>"
-                              title="Location: <?= $connectedUserData['pageConsulting']; ?>">
-                            <i class="fas fa-user"></i></span>
-                        <?= $mehoubarim_UserStat->getPrenom() . ucfirst(substr($mehoubarim_UserStat->getNom(), 0, 1)); ?>
+                <?php if (($UserManager->getRole() < 5 && $connectedUserData['status'] != 'Déconnecté') || $UserManager->getRole() == 5): ?>
+                    <span class="text-<?= STATUS_CONNECTED_USER[$connectedUserData['status']]; ?>"
+                        <?php if ($UserManager->getRole() == 5): ?>
+                            title="Location: <?= $connectedUserData['pageConsulting']; ?>"
+                        <?php endif; ?>
+                    ><i class="fas fa-user"></i></span>
+                    <?= $mehoubarim_UserStat->getPrenom() . ucfirst(substr($mehoubarim_UserStat->getNom(), 0, 1)); ?>
                 <?php endif; ?>
             </li>
         <?php endif; ?>
