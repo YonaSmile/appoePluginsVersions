@@ -132,7 +132,6 @@ $Secteur = new \App\Plugin\AgapesHotes\Secteur();
                             </div>
                             <div class="col-12 my-2">
                                 <?php
-                                $Secteur->setStatus(1);
                                 $allSecteurs = extractFromObjToSimpleArr($Secteur->showAll(), 'id', 'nom');
                                 echo \App\Form::select('Secteur', 'secteur_id', $allSecteurs, '', true); ?>
                             </div>

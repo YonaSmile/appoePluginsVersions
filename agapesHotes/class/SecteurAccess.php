@@ -200,9 +200,10 @@ class SecteurAccess
     public function showAll($countSecteursAccess = false)
     {
         $this->userId = getUserIdSession();
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_secteurs_access WHERE secteur_id = :secteurId AND status = 1 ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_secteurs_access WHERE secteur_id = :secteurId AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':secteurId', $this->secteurId);
+        $stmt->bindParam(':status', $this->status);
         $stmt->execute();
 
         $count = $stmt->rowCount();

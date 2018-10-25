@@ -200,9 +200,10 @@ class SiteAccess
     public function showAll($countSitesAccess = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_sites_access WHERE site_id = :siteId AND status = 1 ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_sites_access WHERE site_id = :siteId AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':status', $this->status);
         $stmt->execute();
 
         $count = $stmt->rowCount();
