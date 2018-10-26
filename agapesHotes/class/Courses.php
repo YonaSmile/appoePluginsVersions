@@ -194,13 +194,14 @@ class Courses
     }
 
     /**
+     * @param $minimumStatus
      * @param $countCourses
      * @return array|bool
      */
-    public function showAll($countCourses = false)
+    public function showAll($minimumStatus = true, $countCourses = false)
     {
-
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_courses WHERE etablissement_id = :etablissementId AND status = :status ORDER BY updated_at DESC';
+        $sqlStatus = $minimumStatus ? 'status >= :status' : 'status = :status';
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_courses WHERE etablissement_id = :etablissementId AND ' . $sqlStatus . ' ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':etablissementId', $this->etablissementId);
         $stmt->bindParam(':status', $this->status);

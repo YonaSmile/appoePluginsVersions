@@ -194,13 +194,14 @@ class Prestation
     }
 
     /**
+     * @param $minimumStatus
      * @param $countPrestations
      * @return array|bool
      */
-    public function showAll($countPrestations = false)
+    public function showAll($minimumStatus = true, $countPrestations = false)
     {
-
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_prestations WHERE site_id = :siteId AND status = :status ORDER BY updated_at DESC';
+        $sqlStatus = $minimumStatus ? 'status >= :status' : 'status = :status';
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_prestations WHERE site_id = :siteId AND ' . $sqlStatus . ' ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
         $stmt->bindParam(':status', $this->status);
