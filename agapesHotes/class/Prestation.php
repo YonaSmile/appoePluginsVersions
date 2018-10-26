@@ -243,27 +243,24 @@ class Prestation
      */
     public function update()
     {
-        if ($this->id > 100) {
-            $this->userId = getUserIdSession();
-            $sql = 'UPDATE appoe_plugin_agapeshotes_prestations SET nom = :nom, site_id = :siteId, status = :status, userId = :userId WHERE id = :id';
+        $this->userId = getUserIdSession();
+        $sql = 'UPDATE appoe_plugin_agapeshotes_prestations SET nom = :nom, site_id = :siteId, status = :status, userId = :userId WHERE id = :id';
 
-            $stmt = $this->dbh->prepare($sql);
-            $stmt->bindParam(':nom', $this->nom);
-            $stmt->bindParam(':siteId', $this->siteId);
-            $stmt->bindParam(':status', $this->status);
-            $stmt->bindParam(':userId', $this->userId);
-            $stmt->bindParam(':id', $this->id);
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':nom', $this->nom);
+        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':status', $this->status);
+        $stmt->bindParam(':userId', $this->userId);
+        $stmt->bindParam(':id', $this->id);
 
-            $stmt->execute();
+        $stmt->execute();
 
-            $error = $stmt->errorInfo();
-            if ($error[0] != '00000') {
-                return false;
-            } else {
-                return true;
-            }
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            return true;
         }
-        return false;
     }
 
     /**

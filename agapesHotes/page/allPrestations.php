@@ -21,7 +21,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
         <div class="container-fluid">
             <button id="addPrestation" type="button" class="btn btn-info btn-sm mb-4" data-toggle="modal"
                     data-target="#modalAddPrestation">
-                <?= trans('Ajouter un prestation'); ?>
+                <?= trans('Ajouter une prestation'); ?>
             </button>
             <div class="row">
                 <div class="col-12">
@@ -100,7 +100,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                     <form action="" method="post" id="addPrestationForm">
                         <div class="modal-header">
                             <h5 class="modal-title"
-                                id="modalAddPrestationTitle"><?= trans('Ajouter un prestation'); ?></h5>
+                                id="modalAddPrestationTitle"><?= trans('Ajouter une prestation'); ?></h5>
                         </div>
                         <div class="modal-body" id="modalPrestationBody">
                             <div class="row">
