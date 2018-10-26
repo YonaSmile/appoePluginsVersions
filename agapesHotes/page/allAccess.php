@@ -5,6 +5,7 @@ $Site = new \App\Plugin\AgapesHotes\Site();
 $allSecteurs = extractFromObjToSimpleArr($Secteur->showAll(), 'id', 'nom');
 $allSites = extractFromObjToSimpleArr($Site->showAll(), 'id', 'nom');
 
+$allUsers = array();
 $User = new \App\Users();
 foreach ($User->showAll() as $user) {
     if (getRoleId($user->role) < 3) {
@@ -28,6 +29,9 @@ $allSecteursAccess = $SecteurAccess->showAll();
                 data-target="#modalAddSiteAccess">
             <?= trans('Ajouter un accès à un site'); ?>
         </button>
+        <a href="<?= getUrl('addUser/'); ?>" class="btn btn-secondary btn-sm mb-4">
+            <?= trans('Ajouter un utilisateur'); ?>
+        </a>
         <div class="row">
             <?php if ($allSecteursAccess): ?>
                 <div class="col-12 col-lg-6">
