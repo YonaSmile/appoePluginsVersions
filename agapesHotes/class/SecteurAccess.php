@@ -199,7 +199,26 @@ class SecteurAccess
      */
     public function showAll($countSecteursAccess = false)
     {
-        $this->userId = getUserIdSession();
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_secteurs_access WHERE status = :status ORDER BY updated_at DESC';
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':status', $this->status);
+        $stmt->execute();
+
+        $count = $stmt->rowCount();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            return !$countSecteursAccess ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
+        }
+    }
+
+    /**
+     * @param $countSecteursAccess
+     * @return array|bool
+     */
+    public function showAllBySecteur($countSecteursAccess = false)
+    {
         $sql = 'SELECT * FROM appoe_plugin_agapeshotes_secteurs_access WHERE secteur_id = :secteurId AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':secteurId', $this->secteurId);
@@ -243,7 +262,7 @@ class SecteurAccess
      */
     public function update()
     {
-
+        $this->userId = getUserIdSession();
         $sql = 'UPDATE appoe_plugin_agapeshotes_secteurs_access SET secteurUserId = :secteurUserId, secteur_id = :secteurId, status = :status, userId = :userId WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
@@ -268,12 +287,18 @@ class SecteurAccess
      */
     public function delete()
     {
+        $sql = 'DELETE FROM appoe_plugin_agapeshotes_secteurs_access WHERE id = :id';
 
-        $this->status = 0;
-        if ($this->update()) {
-            return true;
-        } else {
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':id', $this->id);
+
+        $stmt->execute();
+
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
             return false;
+        } else {
+            return true;
         }
     }
 
@@ -285,7 +310,7 @@ class SecteurAccess
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id, nom FROM appoe_plugin_agapeshotes_secteurs_access WHERE secteurUserId = :secteurUserId AND secteur_id = :secteurId';
+        $sql = 'SELECT id FROM appoe_plugin_agapeshotes_secteurs_access WHERE secteurUserId = :secteurUserId AND secteur_id = :secteurId';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':secteurUserId', $this->secteurUserId);
         $stmt->bindParam(':secteurId', $this->secteurId);

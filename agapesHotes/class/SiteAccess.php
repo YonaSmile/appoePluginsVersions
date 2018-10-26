@@ -200,6 +200,27 @@ class SiteAccess
     public function showAll($countSitesAccess = false)
     {
 
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_sites_access WHERE status = :status ORDER BY updated_at DESC';
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':status', $this->status);
+        $stmt->execute();
+
+        $count = $stmt->rowCount();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            return !$countSitesAccess ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
+        }
+    }
+
+    /**
+     * @param $countSitesAccess
+     * @return array|bool
+     */
+    public function showAllBySite($countSitesAccess = false)
+    {
+
         $sql = 'SELECT * FROM appoe_plugin_agapeshotes_sites_access WHERE site_id = :siteId AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
@@ -268,12 +289,18 @@ class SiteAccess
      */
     public function delete()
     {
+        $sql = 'DELETE FROM appoe_plugin_agapeshotes_sites_access WHERE id = :id';
 
-        $this->status = 0;
-        if ($this->update()) {
-            return true;
-        } else {
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':id', $this->id);
+
+        $stmt->execute();
+
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
             return false;
+        } else {
+            return true;
         }
     }
 
@@ -285,7 +312,7 @@ class SiteAccess
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id, nom FROM appoe_plugin_agapeshotes_sites_access WHERE siteUserId = :siteUserId AND site_id = :siteId';
+        $sql = 'SELECT id FROM appoe_plugin_agapeshotes_sites_access WHERE siteUserId = :siteUserId AND site_id = :siteId';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteUserId', $this->siteUserId);
         $stmt->bindParam(':siteId', $this->siteId);
