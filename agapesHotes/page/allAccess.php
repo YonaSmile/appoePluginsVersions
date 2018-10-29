@@ -46,20 +46,22 @@ $allSecteursAccess = $SecteurAccess->showAll();
                             </tr>
                             </thead>
                             <tbody>
-                            <?php foreach ($allSecteursAccess as $secteurAccess): ?>
-                                <tr data-idsecteur="<?= $secteurAccess->id ?>">
-                                    <td><?= $allSecteurs[$secteurAccess->secteur_id]; ?></td>
-                                    <td><?= $allUsers[$secteurAccess->secteurUserId]; ?></td>
-                                    <td>
-                                        <button type="button" class="btn btn-sm deleteSecteurAccess"
-                                                title="<?= trans('Supprimer cet accès au secteur'); ?>"
-                                                data-idsecteur="<?= $secteurAccess->id ?>">
-                                            <span class="btnArchive"><i class="fas fa-times"></i></span>
-                                        </button>
-                                    </td>
-                                </tr>
+                            <?php foreach ($allSecteursAccess as $secteurAccess):
+                                if (array_key_exists($secteurAccess->secteurUserId, $allUsers)): ?>
+                                    <tr data-idsecteur="<?= $secteurAccess->id ?>">
+                                        <td><?= $allSecteurs[$secteurAccess->secteur_id]; ?></td>
+                                        <td><?= $allUsers[$secteurAccess->secteurUserId]; ?></td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm deleteSecteurAccess"
+                                                    title="<?= trans('Supprimer cet accès au secteur'); ?>"
+                                                    data-idsecteur="<?= $secteurAccess->id ?>">
+                                                <span class="btnArchive"><i class="fas fa-times"></i></span>
+                                            </button>
+                                        </td>
+                                    </tr>
 
-                            <?php endforeach; ?>
+                                <?php endif;
+                            endforeach; ?>
                             </tbody>
                         </table>
                     </div>
@@ -78,20 +80,22 @@ $allSecteursAccess = $SecteurAccess->showAll();
                             </tr>
                             </thead>
                             <tbody>
-                            <?php foreach ($allSitesAccess as $siteAccess): ?>
-                                <tr data-idsite="<?= $siteAccess->id ?>">
-                                    <td><?= $allSites[$siteAccess->site_id]; ?></td>
-                                    <td><?= $allUsers[$siteAccess->siteUserId]; ?></td>
-                                    <td>
-                                        <button type="button" class="btn btn-sm deleteSiteAccess"
-                                                title="<?= trans('Supprimer cet accès au site'); ?>"
-                                                data-idsite="<?= $siteAccess->id ?>">
-                                            <span class="btnArchive"><i class="fas fa-times"></i></span>
-                                        </button>
-                                    </td>
-                                </tr>
+                            <?php foreach ($allSitesAccess as $siteAccess):
+                                if (array_key_exists($siteAccess->siteUserId, $allUsers)): ?>
+                                    <tr data-idsite="<?= $siteAccess->id ?>">
+                                        <td><?= $allSites[$siteAccess->site_id]; ?></td>
+                                        <td><?= $allUsers[$siteAccess->siteUserId]; ?></td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm deleteSiteAccess"
+                                                    title="<?= trans('Supprimer cet accès au site'); ?>"
+                                                    data-idsite="<?= $siteAccess->id ?>">
+                                                <span class="btnArchive"><i class="fas fa-times"></i></span>
+                                            </button>
+                                        </td>
+                                    </tr>
 
-                            <?php endforeach; ?>
+                                <?php endif;
+                            endforeach; ?>
                             </tbody>
                         </table>
                     </div>
@@ -217,7 +221,7 @@ $allSecteursAccess = $SecteurAccess->showAll();
             $('.deleteSecteurAccess').on('click', function (event) {
                 event.preventDefault();
 
-                if(confirm('Vous allez supprimer cet accès !')) {
+                if (confirm('Vous allez supprimer cet accès !')) {
                     var idSecteur = $(this).data('idsecteur');
                     busyApp();
 
@@ -240,7 +244,7 @@ $allSecteursAccess = $SecteurAccess->showAll();
             $('.deleteSiteAccess').on('click', function (event) {
                 event.preventDefault();
 
-                if(confirm('Vous allez supprimer cet accès !')) {
+                if (confirm('Vous allez supprimer cet accès !')) {
                     var idSite = $(this).data('idsite');
                     busyApp();
 
