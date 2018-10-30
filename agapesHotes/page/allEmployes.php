@@ -1,330 +1,450 @@
-<?php require('header.php'); ?>
-<?= getTitle($Page->getName(), $Page->getSlug()); ?>
-    <div class="container-fluid">
-        <?php
-        if (class_exists('App\Plugin\People\People')) :
+<?php
 
-        //Get Employe
-        $Employe = new \App\Plugin\AgapesHotes\Employe();
-        $allEmployes = $Employe->showByType();
+namespace App\Plugin\AgapesHotes;
+class EmployeContrat
+{
 
-        //Get Site
-        $Site = new \App\Plugin\AgapesHotes\Site();
-        $allDbSites = $Site->showAll();
-        $allSites = extractFromObjToSimpleArr($allDbSites, 'id', 'nom');
+    private $id;
+    private $siteId;
+    private $employeId;
+    private $typeContrat;
+    private $nbHeuresSemaines;
+    private $dateDebut;
+    private $status = 1;
+    private $userId;
+    private $createdAt;
+    private $updated_at;
 
-        //Get Employe Contrat
-        $EmployeContrat = new \App\Plugin\AgapesHotes\EmployeContrat();
-        ?>
-        <button id="addEmplye" type="button" class="btn btn-info btn-sm mb-4" data-toggle="modal"
-                data-target="#modalAddEmploye">
-            <?= trans('Ajouter un employé'); ?>
-        </button>
-        <div class="row">
-            <div class="col-12">
-                <div class="table-responsive">
-                    <table id="pagesTable"
-                           class="sortableTable table table-striped">
-                        <thead>
-                        <tr>
-                            <th><?= trans('Nature'); ?></th>
-                            <th><?= trans('Nom'); ?></th>
-                            <th><?= trans('Prénom'); ?></th>
-                            <th><?= trans('Contrats'); ?></th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <?php if ($allEmployes): ?>
-                            <?php foreach ($allEmployes as $employe): ?>
-                                <tr data-idemploye="<?= $employe->id ?>">
-                                    <td data-nature="<?= $employe->nature; ?>"><?= !empty($employe->nature) ? trans(PEOPLE_NATURE[$employe->nature]) : ''; ?></td>
-                                    <td data-name="<?= $employe->name ?>"><?= $employe->name ?></td>
-                                    <td data-firstname="<?= $employe->firstName ?>"><?= $employe->firstName ?></td>
-                                    <td>
-                                        <?php $allContrats = array();
-                                        foreach ($allDbSites as $site) {
-                                            $EmployeContrat->setSiteId($site->id);
-                                            $EmployeContrat->setEmployeId($employe->id);
-                                            $EmployeContrat->setDateDebut(date('Y-m-d'));
-                                            if ($EmployeContrat->showReelContrat()) {
-                                                $allContrats[$site->id][] = $EmployeContrat->getTypeContrat() . ' - ' . $EmployeContrat->getNbHeuresSemaines() . 'h/s';
-                                            }
-                                        }
-                                        foreach ($allContrats as $siteId => $contrat): ?>
-                                            <span data-toggle="popover" data-placement="top" class="mr-2"
-                                                  data-content=" <?= implode(', ', $contrat); ?>">
-                                                <?= $allSites[$siteId]; ?>
-                                            </span>
-                                        <?php endforeach; ?>
-                                    </td>
-                                    <td>
-                                        <button type="button" class="btn btn-sm updateContrat"
-                                                data-toggle="modal" data-target="#modalUpdateContratEmploye"
-                                                title="<?= trans('Contrat'); ?>"
-                                                data-idemploye="<?= $employe->id ?>"
-                                                data-name="<?= trans(PEOPLE_NATURE[$employe->nature]) . ' ' . $employe->name ?>">
-                                            <span class="btnPrice"><i class="fas fa-file-alt"></i></span>
-                                        </button>
-                                        <button type="button" class="btn btn-sm updateEmploye"
-                                                data-toggle="modal" data-target="#modalupdateEmploye"
-                                                title="<?= trans('Modifier'); ?>"
-                                                data-idemploye="<?= $employe->id ?>"
-                                                data-nature="<?= $employe->nature; ?>"
-                                                data-name="<?= $employe->name ?>"
-                                                data-firstname="<?= $employe->firstName ?>">
-                                            <span class="btnEdit"><i class="fas fa-wrench"></i></span>
-                                        </button>
-                                        <button type="button" class="btn btn-sm archiveEmploye"
-                                                title="<?= trans('Archiver'); ?>"
-                                                data-idemploye="<?= $employe->id ?>">
-                                            <span class="btnArchive"><i class="fas fa-archive"></i></span>
-                                        </button>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="modalAddEmploye" tabindex="-1" role="dialog"
-         aria-labelledby="modalAddEmployeTitle"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <form action="" method="post" id="addEmployeForm">
-                    <div class="modal-header">
-                        <h5 class="modal-title"
-                            id="modalAddEmployeTitle"><?= trans('Ajouter un employé'); ?></h5>
-                    </div>
-                    <div class="modal-body" id="modalAddEmployeBody">
-                        <div class="row">
-                            <div class="col-12 my-2">
-                                <?php
-                                $excludesFileds = array('birthDateF' => false, 'emailF' => false, 'telF' => false, 'addressF' => false, 'zipF' => false, 'cityF' => false, 'countryF' => false);
-                                $requiredFileds = array('natureR' => true, 'nameR' => true, 'firstNameR' => true);
-                                echo people_addPersonFormFields($excludesFileds, array(), $requiredFileds, 'ADDEMPLOYE', false, false);
-                                ?>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12 my-2" id="FormAddEmployeInfos"></div>
-                        </div>
-                    </div>
-                    <div class="modal-footer" id="modalAddEmployeFooter">
-                        <button type="submit" id="saveEmployeBtn"
-                                class="btn btn-primary"><?= trans('Enregistrer'); ?></button>
-                        <button type="button" class="btn btn-secondary"
-                                data-dismiss="modal"><?= trans('Fermer'); ?></button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="modalupdateEmploye" tabindex="-1" role="dialog"
-         aria-labelledby="modalUpdateEmployeTitle"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <form action="" method="post" id="updateEmployeForm">
-                    <div class="modal-header">
-                        <h5 class="modal-title"
-                            id="modalUpdateEmployeTitle"><?= trans('Mettre à jour un employé'); ?></h5>
-                    </div>
-                    <div class="modal-body" id="modalUpdateEmployeBody">
-                        <div class="row">
-                            <div class="col-12 my-2">
-                                <input type="hidden" name="id" value="">
-                                <?php
-                                $excludesFileds = array('birthDateF' => false, 'emailF' => false, 'telF' => false, 'addressF' => false, 'zipF' => false, 'cityF' => false, 'countryF' => false);
-                                $requiredFileds = array('natureR' => true, 'nameR' => true, 'firstNameR' => true);
-                                echo people_addPersonFormFields($excludesFileds, array(), $requiredFileds, 'UPDATEEMPLOYE', false, false);
-                                ?>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12 my-2" id="FormUpdateEmployeInfos"></div>
-                        </div>
-                    </div>
-                    <div class="modal-footer" id="modalUpdateEmployeFooter">
-                        <button type="submit" id="updateEmployeBtn"
-                                class="btn btn-primary"><?= trans('Enregistrer'); ?></button>
-                        <button type="button" class="btn btn-secondary"
-                                data-dismiss="modal"><?= trans('Fermer'); ?></button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="modalUpdateContratEmploye" tabindex="-1" role="dialog"
-         aria-labelledby="modalUpdateContratEmployeTitle"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <form action="" method="post" id="updateContratEmployeForm">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalUpdateContratEmployeTitle"></h5>
-                    </div>
-                    <div class="modal-body" id="modalUpdateContratEmployeBody">
-                        <div class="row">
-                            <?= getTokenField(); ?>
-                            <?= \App\Form::target('UPDATEEMPLOYECONTRAT'); ?>
-                            <input type="hidden" name="employeId" value="">
-                            <div class="col-12 col-lg-4 my-2">
-                                <?= \App\Form::select('Site', 'siteId', $allSites, '', true); ?>
-                            </div>
-                            <div class="col-12 col-lg-8 my-2">
-                                <?= \App\Form::text('Date d\'effet du nouveau contrat', 'dateDebut', 'date', '', true, 10); ?>
-                            </div>
-                            <div class="col-12 col-lg-6 my-2">
-                                <?= \App\Form::text('Type de contrat', 'typeContrat', 'text', '', true, 50, 'list="typeContratsList" autocomplete="off"'); ?>
-                                <datalist id="typeContratsList">
-                                    <option value="CDI">CDI</option>
-                                    <option value="CDD">CDD</option>
-                                </datalist>
-                            </div>
-                            <div class="col-12 col-lg-6 my-2">
-                                <output for="nbHeuresSemaines" class="outputNbHeuresSemaines float-right">35</output>
-                                <?= \App\Form::text('Heures par semaines', 'nbHeuresSemaines', 'range', '35', true, 50, 'min="0.25" max="50" step="0.25"', '', 'custom-range'); ?>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12 my-2" id="FormUpdateContratEmployeInfos"></div>
-                        </div>
-                    </div>
-                    <div class="modal-footer" id="modalUpdateContratEmployeFooter">
-                        <button type="submit" id="saveContratEmployeBtn"
-                                class="btn btn-primary"><?= trans('Enregistrer'); ?></button>
-                        <button type="button" class="btn btn-secondary"
-                                data-dismiss="modal"><?= trans('Fermer'); ?></button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <script>
-        $(document).ready(function () {
+    private $dbh = null;
 
-            $('.updateContrat').on('click', function () {
-                var $btn = $(this);
-                $('#modalUpdateContratEmployeTitle').html('Gérez le contrat de <em>' + $btn.data('name') + '</em>');
-                $('input[name="employeId"]').val($btn.data('idemploye'))
-            });
+    public function __construct($id = null)
+    {
+        if (is_null($this->dbh)) {
+            $this->dbh = \App\DB::connect();
+        }
 
-            $('#saveContratEmployeBtn').on('click', function (event) {
-                event.preventDefault();
+        if (!is_null($id)) {
+            $this->id = $id;
+            $this->show();
+        }
+    }
 
-                $('#FormUpdateContratEmployeInfos').hide().html('');
+    /**
+     * @return null
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
-                busyApp();
-                $.post(
-                    '<?= AGAPESHOTES_URL . 'process/ajaxEmployesProcess.php'; ?>',
-                    $('#updateContratEmployeForm').serialize(),
-                    function (data) {
-                        if (data === true || data == 'true') {
-                            $('#loader').fadeIn(400);
-                            location.reload();
-                        } else {
-                            $('#FormUpdateContratEmployeInfos')
-                                .html('<p class="bg-danger text-white">' + data + '</p>').show();
-                        }
+    /**
+     * @param null $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
 
-                        availableApp();
+    /**
+     * @return mixed
+     */
+    public function getSiteId()
+    {
+        return $this->siteId;
+    }
+
+    /**
+     * @param mixed $siteId
+     */
+    public function setSiteId($siteId)
+    {
+        $this->siteId = $siteId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEmployeId()
+    {
+        return $this->employeId;
+    }
+
+    /**
+     * @param mixed $employeId
+     */
+    public function setEmployeId($employeId)
+    {
+        $this->employeId = $employeId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTypeContrat()
+    {
+        return $this->typeContrat;
+    }
+
+    /**
+     * @param mixed $typeContrat
+     */
+    public function setTypeContrat($typeContrat)
+    {
+        $this->typeContrat = $typeContrat;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNbHeuresSemaines()
+    {
+        return $this->nbHeuresSemaines;
+    }
+
+    /**
+     * @param mixed $nbHeuresSemaines
+     */
+    public function setNbHeuresSemaines($nbHeuresSemaines)
+    {
+        $this->nbHeuresSemaines = $nbHeuresSemaines;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDateDebut()
+    {
+        return $this->dateDebut;
+    }
+
+    /**
+     * @param mixed $dateDebut
+     */
+    public function setDateDebut($dateDebut)
+    {
+        $this->dateDebut = $dateDebut;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param mixed $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUserId()
+    {
+        return $this->userId;
+    }
+
+    /**
+     * @param mixed $userId
+     */
+    public function setUserId($userId)
+    {
+        $this->userId = $userId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param mixed $createdAt
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updated_at;
+    }
+
+    /**
+     * @param mixed $updated_at
+     */
+    public function setUpdatedAt($updated_at)
+    {
+        $this->updated_at = $updated_at;
+    }
+
+    public function createTable()
+    {
+        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapeshotes_employes_contrats` (
+  				`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  				PRIMARY KEY (`id`),
+                `site_id` int(11) UNSIGNED NOT NULL,
+                `employe_id` int(11) UNSIGNED NOT NULL,
+                `typeContrat` varchar(255) NOT NULL,
+                `nbHeuresSemaines` decimal(7,2) UNSIGNED NOT NULL,
+                `dateDebut` date NOT NULL,
+                UNIQUE (`site_id`,`employe_id`, `dateDebut`),
+                `status` tinyint(4) UNSIGNED NOT NULL DEFAULT 1,
+                `userId` int(11) UNSIGNED NOT NULL,
+                `created_at` date NOT NULL,
+                `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;';
+
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->execute();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @return bool
+     */
+    public function show()
+    {
+
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_employes_contrats WHERE id = :id';
+
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':id', $this->id);
+        $stmt->execute();
+
+        $count = $stmt->rowCount();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            if ($count == 1) {
+
+                $row = $stmt->fetch(\PDO::FETCH_OBJ);
+                $this->feed($row);
+
+                return true;
+
+            } else {
+
+                return false;
+            }
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function showReelContrat()
+    {
+
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_employes_contrats 
+        WHERE site_id = :siteId AND employe_id = :employeId AND dateDebut <= :dateDebut ORDER BY dateDebut DESC LIMIT 1';
+
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':employeId', $this->employeId);
+        $stmt->bindParam(':dateDebut', $this->dateDebut);
+        $stmt->execute();
+
+        $count = $stmt->rowCount();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            if ($count == 1) {
+
+                $row = $stmt->fetch(\PDO::FETCH_OBJ);
+                $this->feed($row);
+
+                return true;
+
+            } else {
+
+                return false;
+            }
+        }
+    }
+
+    /**
+     * @param $countContrats
+     * @return array|bool
+     */
+    public function showAll($countContrats = false)
+    {
+
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_employes_contrats 
+        WHERE site_id = :siteId AND status = :status ORDER BY updated_at DESC';
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':status', $this->status);
+        $stmt->execute();
+
+        $count = $stmt->rowCount();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            return !$countContrats ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
+        }
+    }
+
+    /**
+     * @param $countContrats
+     * @return array|bool
+     */
+    public function showAllByEmploye($countContrats = false)
+    {
+
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_employes_contrats 
+        WHERE employe_id = :employeId AND status = :status ORDER BY updated_at DESC';
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':employeId', $this->employeId);
+        $stmt->bindParam(':status', $this->status);
+        $stmt->execute();
+
+        $count = $stmt->rowCount();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            return !$countContrats ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function save()
+    {
+        $this->userId = getUserIdSession();
+        $sql = 'INSERT INTO appoe_plugin_agapeshotes_employes_contrats (site_id, employe_id, typeContrat, nbHeuresSemaines, dateDebut, status, userId, created_at) 
+                VALUES (:siteId, :employeId, :typeContrat, :nbHeuresSemaines, :dateDebut, :status, :userId, CURDATE())';
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':employeId', $this->employeId);
+        $stmt->bindParam(':typeContrat', $this->typeContrat);
+        $stmt->bindParam(':nbHeuresSemaines', $this->nbHeuresSemaines);
+        $stmt->bindParam(':dateDebut', $this->dateDebut);
+        $stmt->bindParam(':status', $this->status);
+        $stmt->bindParam(':userId', $this->userId);
+        $stmt->execute();
+
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function update()
+    {
+        $this->userId = getUserIdSession();
+        $sql = 'UPDATE appoe_plugin_agapeshotes_employes_contrats 
+        SET site_id = :siteId, employe_id = :employeId, typeContrat = :typeContrat, nbHeuresSemaines = :nbHeuresSemaines, dateDebut = :dateDebut, status = :status, userId = :userId WHERE id = :id';
+
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':employeId', $this->employeId);
+        $stmt->bindParam(':typeContrat', $this->typeContrat);
+        $stmt->bindParam(':nbHeuresSemaines', $this->nbHeuresSemaines);
+        $stmt->bindParam(':dateDebut', $this->dateDebut);
+        $stmt->bindParam(':status', $this->status);
+        $stmt->bindParam(':userId', $this->userId);
+        $stmt->bindParam(':id', $this->id);
+
+        $stmt->execute();
+
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function delete()
+    {
+
+        $this->status = 0;
+        if ($this->update()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @param bool $forUpdate
+     *
+     * @return bool
+     */
+    public function notExist($forUpdate = false)
+    {
+
+        $sql = 'SELECT id FROM appoe_plugin_agapeshotes_employes_contrats 
+        WHERE site_id = :siteId AND employe_id = :employeId AND dateDebut = :dateDebut';
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':employeId', $this->employeId);
+        $stmt->bindParam(':dateDebut', $this->dateDebut);
+        $stmt->execute();
+
+        $count = $stmt->rowCount();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            if ($count == 1) {
+                if ($forUpdate) {
+                    $data = $stmt->fetch(\PDO::FETCH_OBJ);
+                    if ($data->id == $this->id) {
+                        return true;
                     }
-                );
-            });
-
-            $('[data-toggle="popover"]').popover({
-                trigger: 'hover'
-            });
-
-            $('input#nbHeuresSemaines').on("input", function () {
-                $(this).val(this.value);
-                $('.outputNbHeuresSemaines').val(this.value);
-            }).trigger("change");
-
-            $('.updateEmploye').on('click', function (event) {
-                event.preventDefault();
-                var idEmploye = $(this).data('idemploye');
-                var nature = $(this).data('nature');
-                var name = $(this).data('name');
-                var firstName = $(this).data('firstname');
-
-                var $form = $('#updateEmployeForm');
-                $form.find('[name="id"]').val(idEmploye);
-                $form.find('[name="nature"]').val(nature);
-                $form.find('[name="name"]').val(name);
-                $form.find('[name="firstName"]').val(firstName);
-            });
-
-            $('#updateEmployeBtn').on('click', function (event) {
-                event.preventDefault();
-
-                $('#FormUpdateEmployeInfos').hide().html('');
-                busyApp();
-                $.post(
-                    '<?= AGAPESHOTES_URL . 'process/ajaxEmployesProcess.php'; ?>',
-                    $('#updateEmployeForm').serialize(),
-                    function (data) {
-                        if (data === true || data == 'true') {
-                            $('#loader').fadeIn(400);
-                            location.reload();
-                        } else {
-                            $('#FormUpdateEmployeInfos')
-                                .html('<p class="bg-danger text-white">' + data + '</p>').show();
-                        }
-
-                        availableApp();
-                    }
-                );
-
-            });
-
-            $('#saveEmployeBtn').on('click', function (event) {
-                event.preventDefault();
-
-                $('#FormAddEmployeInfos').hide().html('');
-                busyApp();
-
-                $.post(
-                    '<?= AGAPESHOTES_URL . 'process/ajaxEmployesProcess.php'; ?>',
-                    $('#addEmployeForm').serialize(),
-                    function (data) {
-                        if (data === true || data == 'true') {
-                            $('#loader').fadeIn(400);
-                            location.reload();
-                        } else {
-                            $('#FormAddEmployeInfos')
-                                .html('<p class="bg-danger text-white">' + data + '</p>').show();
-                        }
-                        availableApp();
-                    }
-                )
-            });
-
-            $('.archiveEmploye').on('click', function () {
-                var idEmploye = $(this).data('idemploye');
-                if (confirm('<?= trans('Vous allez supprimer cet employé'); ?>')) {
-                    busyApp();
-                    $.post(
-                        '<?= AGAPESHOTES_URL . 'process/ajaxEmployesProcess.php'; ?>',
-                        {
-                            ARCHIVEEMPLOYE: 'OK',
-                            idEmploye: idEmploye
-                        },
-                        function (data) {
-                            if (data === true || data == 'true') {
-                                $('tr[data-idemploye="' + idEmploye + '"]').slideUp();
-                            }
-                            availableApp();
-                        }
-                    );
                 }
-            });
-        });
-    </script>
-<?php endif;
-require('footer.php'); ?>
+
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }
+
+    /**
+     * Feed class attributs
+     *
+     * @param $data
+     */
+    public function feed($data)
+    {
+        foreach ($data as $attribut => $value) {
+            $method = 'set' . str_replace(' ', '', ucwords(str_replace('_', ' ', $attribut)));
+
+            if (is_callable(array($this, $method))) {
+                $this->$method($value);
+            }
+        }
+    }
+}

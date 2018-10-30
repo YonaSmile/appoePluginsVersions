@@ -1,14 +1,13 @@
 <?php
 
 namespace App\Plugin\AgapesHotes;
-class EmployeContrat
+class Pti
 {
 
     private $id;
     private $siteId;
     private $employeId;
-    private $typeContrat;
-    private $nbHeuresSemaines;
+    private $nbWeeksInCycle;
     private $dateDebut;
     private $status = 1;
     private $userId;
@@ -80,33 +79,17 @@ class EmployeContrat
     /**
      * @return mixed
      */
-    public function getTypeContrat()
+    public function getNbWeeksInCycle()
     {
-        return $this->typeContrat;
+        return $this->nbWeeksInCycle;
     }
 
     /**
-     * @param mixed $typeContrat
+     * @param mixed $nbWeeksInCycle
      */
-    public function setTypeContrat($typeContrat)
+    public function setNbWeeksInCycle($nbWeeksInCycle)
     {
-        $this->typeContrat = $typeContrat;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getNbHeuresSemaines()
-    {
-        return $this->nbHeuresSemaines;
-    }
-
-    /**
-     * @param mixed $nbHeuresSemaines
-     */
-    public function setNbHeuresSemaines($nbHeuresSemaines)
-    {
-        $this->nbHeuresSemaines = $nbHeuresSemaines;
+        $this->nbWeeksInCycle = $nbWeeksInCycle;
     }
 
     /**
@@ -191,13 +174,12 @@ class EmployeContrat
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapeshotes_employes_contrats` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapeshotes_pti` (
   				`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   				PRIMARY KEY (`id`),
                 `site_id` int(11) UNSIGNED NOT NULL,
                 `employe_id` int(11) UNSIGNED NOT NULL,
-                `typeContrat` varchar(255) NOT NULL,
-                `nbHeuresSemaines` decimal(7,2) UNSIGNED NOT NULL,
+                `nbWeeksInCycle` tinyint(4) UNSIGNED NOT NULL,
                 `dateDebut` date NOT NULL,
                 UNIQUE (`site_id`,`employe_id`, `dateDebut`),
                 `status` tinyint(4) UNSIGNED NOT NULL DEFAULT 1,
@@ -222,7 +204,7 @@ class EmployeContrat
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_employes_contrats WHERE id = :id';
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_pti WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -248,18 +230,41 @@ class EmployeContrat
     }
 
     /**
-     * @return bool
+     * @param $countPti
+     * @return array|bool
      */
-    public function showReelContrat()
+    public function showAll($countPti = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_employes_contrats 
-        WHERE site_id = :siteId AND employe_id = :employeId AND dateDebut <= :dateDebut ORDER BY dateDebut DESC LIMIT 1';
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_pti WHERE status = :status ORDER BY updated_at DESC';
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':status', $this->status);
+        $stmt->execute();
+
+        $count = $stmt->rowCount();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            return !$countPti ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function showAllReelPti()
+    {
+
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_pti 
+        WHERE dateDebut <= :dateDebut AND status = :status AND employe_id = :employeId AND site_id = :siteId
+         ORDER BY dateDebut DESC LIMIT 1';
 
         $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':dateDebut', $this->dateDebut);
         $stmt->bindParam(':siteId', $this->siteId);
         $stmt->bindParam(':employeId', $this->employeId);
-        $stmt->bindParam(':dateDebut', $this->dateDebut);
+        $stmt->bindParam(':status', $this->status);
         $stmt->execute();
 
         $count = $stmt->rowCount();
@@ -271,81 +276,11 @@ class EmployeContrat
 
                 $row = $stmt->fetch(\PDO::FETCH_OBJ);
                 $this->feed($row);
-
                 return true;
 
             } else {
-
                 return false;
             }
-        }
-    }
-
-    /**
-     * @param $countContrats
-     * @return array|bool
-     */
-    public function showAll($countContrats = false)
-    {
-
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_employes_contrats 
-        WHERE status = :status ORDER BY updated_at DESC';
-        $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':status', $this->status);
-        $stmt->execute();
-
-        $count = $stmt->rowCount();
-        $error = $stmt->errorInfo();
-        if ($error[0] != '00000') {
-            return false;
-        } else {
-            return !$countContrats ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
-        }
-    }
-
-    /**
-     * @param $countContrats
-     * @return array|bool
-     */
-    public function showAllBySite($countContrats = false)
-    {
-
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_employes_contrats 
-        WHERE site_id = :siteId AND status = :status ORDER BY updated_at DESC';
-        $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':siteId', $this->siteId);
-        $stmt->bindParam(':status', $this->status);
-        $stmt->execute();
-
-        $count = $stmt->rowCount();
-        $error = $stmt->errorInfo();
-        if ($error[0] != '00000') {
-            return false;
-        } else {
-            return !$countContrats ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
-        }
-    }
-
-    /**
-     * @param $countContrats
-     * @return array|bool
-     */
-    public function showAllByEmploye($countContrats = false)
-    {
-
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_employes_contrats 
-        WHERE employe_id = :employeId AND status = :status ORDER BY updated_at DESC';
-        $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':employeId', $this->employeId);
-        $stmt->bindParam(':status', $this->status);
-        $stmt->execute();
-
-        $count = $stmt->rowCount();
-        $error = $stmt->errorInfo();
-        if ($error[0] != '00000') {
-            return false;
-        } else {
-            return !$countContrats ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
         }
     }
 
@@ -355,13 +290,12 @@ class EmployeContrat
     public function save()
     {
         $this->userId = getUserIdSession();
-        $sql = 'INSERT INTO appoe_plugin_agapeshotes_employes_contrats (site_id, employe_id, typeContrat, nbHeuresSemaines, dateDebut, status, userId, created_at) 
-                VALUES (:siteId, :employeId, :typeContrat, :nbHeuresSemaines, :dateDebut, :status, :userId, CURDATE())';
+        $sql = 'INSERT INTO appoe_plugin_agapeshotes_pti (site_id, employe_id, nbWeeksInCycle, dateDebut, status, userId, created_at) 
+                VALUES (:siteId, :employeId, :nbWeeksInCycle, :dateDebut, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
         $stmt->bindParam(':employeId', $this->employeId);
-        $stmt->bindParam(':typeContrat', $this->typeContrat);
-        $stmt->bindParam(':nbHeuresSemaines', $this->nbHeuresSemaines);
+        $stmt->bindParam(':nbWeeksInCycle', $this->nbWeeksInCycle);
         $stmt->bindParam(':dateDebut', $this->dateDebut);
         $stmt->bindParam(':status', $this->status);
         $stmt->bindParam(':userId', $this->userId);
@@ -381,14 +315,13 @@ class EmployeContrat
     public function update()
     {
         $this->userId = getUserIdSession();
-        $sql = 'UPDATE appoe_plugin_agapeshotes_employes_contrats 
-        SET site_id = :siteId, employe_id = :employeId, typeContrat = :typeContrat, nbHeuresSemaines = :nbHeuresSemaines, dateDebut = :dateDebut, status = :status, userId = :userId WHERE id = :id';
+        $sql = 'UPDATE appoe_plugin_agapeshotes_pti 
+        SET site_id = :siteId, employe_id = :employeId, nbWeeksInCycle = :nbWeeksInCycle, dateDebut = :dateDebut, status = :status, userId = :userId WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
         $stmt->bindParam(':employeId', $this->employeId);
-        $stmt->bindParam(':typeContrat', $this->typeContrat);
-        $stmt->bindParam(':nbHeuresSemaines', $this->nbHeuresSemaines);
+        $stmt->bindParam(':nbWeeksInCycle', $this->nbWeeksInCycle);
         $stmt->bindParam(':dateDebut', $this->dateDebut);
         $stmt->bindParam(':status', $this->status);
         $stmt->bindParam(':userId', $this->userId);
@@ -426,8 +359,7 @@ class EmployeContrat
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id FROM appoe_plugin_agapeshotes_employes_contrats 
-        WHERE site_id = :siteId AND employe_id = :employeId AND dateDebut = :dateDebut';
+        $sql = 'SELECT id FROM appoe_plugin_agapeshotes_pti WHERE site_id = :siteId AND employe_id = :employeId AND dateDebut = :dateDebut';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
         $stmt->bindParam(':employeId', $this->employeId);
