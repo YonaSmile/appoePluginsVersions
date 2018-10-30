@@ -29,11 +29,12 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
         $PrestationPrix->setSiteId($Site->getId());
 
         //Select period
-        $period = new DatePeriod(
-            new \DateTime(date('Y-m-01')),
-            new \DateInterval('P1D'),
-            new \DateTime(date('Y-m-t'))
-        );
+        $start = new \DateTime(date('Y-m-01'));
+        $end = new \DateTime(date('Y-m-t'));
+        $end = $end->modify('+1 day');
+        $interval = new \DateInterval('P1D');
+
+        $period = new \DatePeriod($start, $interval, $end);
         ?>
         <div class="container-fluid">
             <div class="table-responsive col-12">

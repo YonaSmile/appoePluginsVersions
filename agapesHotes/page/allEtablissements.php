@@ -91,13 +91,13 @@ $Secteur = new \App\Plugin\AgapesHotes\Secteur();
                     <div class="modal-body" id="modalAddEtablissementBody">
                         <div class="row">
                             <div class="col-12 my-2">
-                                <?= \App\Form::text('Nom', 'nom', 'text', !empty($_POST['nom']) ? $_POST['nom'] : '', true, 255); ?>
+                                <?= \App\Form::text('Nom', 'nom', 'text', '', true, 255); ?>
                             </div>
                             <div class="col-12 my-2">
                                 <?php
                                 $Site->setStatus(1);
                                 $allSites = extractFromObjToSimpleArr($Site->showAll(), 'id', 'nom');
-                                echo \App\Form::select('Site', 'site_id', $allSites, !empty($_POST['secteur_id']) ? $_POST['secteur_id'] : '', true); ?>
+                                echo \App\Form::select('Site', 'site_id', $allSites, '', true); ?>
                             </div>
                         </div>
                         <div class="row">

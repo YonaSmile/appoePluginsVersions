@@ -141,7 +141,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                                     <input type="hidden" id="idPrestationPrixInput" name="id" value="">
                                     <?= \App\Form::text('Nouveau prix HT', 'prixHT', 'text', '', true, 255); ?>
                                     <div class="my-2"></div>
-                                    <?= \App\Form::text('Date d\'effet du nouveau prix', 'dateDebut', 'text', '', true, 10, '', '', 'datepicker'); ?>
+                                    <?= \App\Form::text('Date d\'effet du nouveau prix', 'dateDebut', 'date', '', true, 10); ?>
                                 </div>
                             </div>
                             <div class="row">

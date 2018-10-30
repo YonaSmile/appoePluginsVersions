@@ -7,11 +7,11 @@ if (checkAjaxRequest()) {
 
         $EmployeProcess = new \App\Plugin\AgapesHotes\Employe();
 
-        // ADD COURSES
+        // ADD EMPLOYE
         if (!empty($_POST['ADDEMPLOYE'])) {
 
             if (!empty($_POST['nature']) && !empty($_POST['name'])
-                && !empty($_POST['firstName']) && valideToken()) {
+                && !empty($_POST['firstName']) && valideAjaxToken()) {
 
                 $EmployeProcess->setNature($_POST['nature']);
                 $EmployeProcess->setName($_POST['name']);
@@ -30,7 +30,7 @@ if (checkAjaxRequest()) {
             }
         }
 
-        // UPDATE COURSES
+        // UPDATE EMPLOYE
         if (!empty($_POST['UPDATEEMPLOYE'])) {
 
             if (!empty($_POST['id']) && !empty($_POST['nature'])
@@ -59,7 +59,7 @@ if (checkAjaxRequest()) {
             }
         }
 
-        // ARCHIVE COURSES
+        // ARCHIVE EMPLOYE
         if (!empty($_POST['ARCHIVEEMPLOYE'])) {
 
             if (!empty($_POST['idEmploye'])) {
@@ -75,6 +75,31 @@ if (checkAjaxRequest()) {
                 } else {
                     echo 'Cet employé n\'existe pas !';
                 }
+            }
+        }
+
+        // ADD, UPDATE EMPLOYE CONTRAT
+        if (!empty($_POST['UPDATEEMPLOYECONTRAT'])) {
+
+            if (!empty($_POST['employeId']) && !empty($_POST['siteId'])
+                && !empty($_POST['dateDebut']) && !empty($_POST['typeContrat'])
+                && !empty($_POST['nbHeuresSemaines']) && valideAjaxToken()) {
+
+                $EmployeContratProcess = new \App\Plugin\AgapesHotes\EmployeContrat();
+
+                $EmployeContratProcess->feed($_POST);
+                if ($EmployeContratProcess->notExist()) {
+
+                    if ($EmployeContratProcess->save()) {
+                        echo json_encode(true);
+                    } else {
+                        echo 'Impossible d\'enregistrer ce contrat !';
+                    }
+                } else {
+                    echo 'Ce contrat existe déjà !';
+                }
+            } else {
+                echo 'Tous les champs sont obligatoires !';
             }
         }
 

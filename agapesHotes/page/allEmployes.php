@@ -3,8 +3,18 @@
     <div class="container-fluid">
         <?php
         if (class_exists('App\Plugin\People\People')) :
+
+        //Get Employe
         $Employe = new \App\Plugin\AgapesHotes\Employe();
         $allEmployes = $Employe->showByType();
+
+        //Get Site
+        $Site = new \App\Plugin\AgapesHotes\Site();
+        $allDbSites = $Site->showAll();
+        $allSites = extractFromObjToSimpleArr($allDbSites, 'id', 'nom');
+
+        //Get Employe Contrat
+        $EmployeContrat = new \App\Plugin\AgapesHotes\EmployeContrat();
         ?>
         <button id="addEmplye" type="button" class="btn btn-info btn-sm mb-4" data-toggle="modal"
                 data-target="#modalAddEmploye">
@@ -20,6 +30,7 @@
                             <th><?= trans('Nature'); ?></th>
                             <th><?= trans('Nom'); ?></th>
                             <th><?= trans('Prénom'); ?></th>
+                            <th><?= trans('Contrats'); ?></th>
                             <th></th>
                         </tr>
                         </thead>
@@ -31,6 +42,30 @@
                                     <td data-name="<?= $employe->name ?>"><?= $employe->name ?></td>
                                     <td data-firstname="<?= $employe->firstName ?>"><?= $employe->firstName ?></td>
                                     <td>
+                                        <?php $allContrats = array();
+                                        foreach ($allDbSites as $site) {
+                                            $EmployeContrat->setSiteId($site->id);
+                                            $EmployeContrat->setEmployeId($employe->id);
+                                            $EmployeContrat->setDateDebut(date('Y-m-d'));
+                                            if ($EmployeContrat->showReelContrat()) {
+                                                $allContrats[$site->id][] = $EmployeContrat->getTypeContrat() . ' - ' . $EmployeContrat->getNbHeuresSemaines() . 'h/s';
+                                            }
+                                        }
+                                        foreach ($allContrats as $siteId => $contrat): ?>
+                                            <span data-toggle="popover" data-placement="top" class="mr-2"
+                                                  data-content=" <?= implode(', ', $contrat); ?>">
+                                                <?= $allSites[$siteId]; ?>
+                                            </span>
+                                        <?php endforeach; ?>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm updateContrat"
+                                                data-toggle="modal" data-target="#modalUpdateContratEmploye"
+                                                title="<?= trans('Contrat'); ?>"
+                                                data-idemploye="<?= $employe->id ?>"
+                                                data-name="<?= trans(PEOPLE_NATURE[$employe->nature]) . ' ' . $employe->name ?>">
+                                            <span class="btnPrice"><i class="fas fa-file-alt"></i></span>
+                                        </button>
                                         <button type="button" class="btn btn-sm updateEmploye"
                                                 data-toggle="modal" data-target="#modalupdateEmploye"
                                                 title="<?= trans('Modifier'); ?>"
@@ -124,8 +159,92 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="modalUpdateContratEmploye" tabindex="-1" role="dialog"
+         aria-labelledby="modalUpdateContratEmployeTitle"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="" method="post" id="updateContratEmployeForm">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalUpdateContratEmployeTitle"></h5>
+                    </div>
+                    <div class="modal-body" id="modalUpdateContratEmployeBody">
+                        <div class="row">
+                            <?= getTokenField(); ?>
+                            <?= \App\Form::target('UPDATEEMPLOYECONTRAT'); ?>
+                            <input type="hidden" name="employeId" value="">
+                            <div class="col-12 col-lg-4 my-2">
+                                <?= \App\Form::select('Site', 'siteId', $allSites, '', true); ?>
+                            </div>
+                            <div class="col-12 col-lg-8 my-2">
+                                <?= \App\Form::text('Date d\'effet du nouveau contrat', 'dateDebut', 'date', '', true, 10); ?>
+                            </div>
+                            <div class="col-12 col-lg-6 my-2">
+                                <?= \App\Form::text('Type de contrat', 'typeContrat', 'text', '', true, 50, 'list="typeContratsList" autocomplete="off"'); ?>
+                                <datalist id="typeContratsList">
+                                    <option value="CDI">CDI</option>
+                                    <option value="CDD">CDD</option>
+                                </datalist>
+                            </div>
+                            <div class="col-12 col-lg-6 my-2">
+                                <output for="nbHeuresSemaines" class="outputNbHeuresSemaines float-right">35</output>
+                                <?= \App\Form::text('Heures par semaines', 'nbHeuresSemaines', 'range', '35', true, 50, 'min="0.25" max="50" step="0.25"', '', 'custom-range'); ?>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 my-2" id="FormUpdateContratEmployeInfos"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer" id="modalUpdateContratEmployeFooter">
+                        <button type="submit" id="saveContratEmployeBtn"
+                                class="btn btn-primary"><?= trans('Enregistrer'); ?></button>
+                        <button type="button" class="btn btn-secondary"
+                                data-dismiss="modal"><?= trans('Fermer'); ?></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     <script>
         $(document).ready(function () {
+
+            $('.updateContrat').on('click', function () {
+                var $btn = $(this);
+                $('#modalUpdateContratEmployeTitle').html('Gérez le contrat de <em>' + $btn.data('name') + '</em>');
+                $('input[name="employeId"]').val($btn.data('idemploye'))
+            });
+
+            $('#saveContratEmployeBtn').on('click', function (event) {
+                event.preventDefault();
+
+                $('#FormUpdateContratEmployeInfos').hide().html('');
+
+                busyApp();
+                $.post(
+                    '<?= AGAPESHOTES_URL . 'process/ajaxEmployesProcess.php'; ?>',
+                    $('#updateContratEmployeForm').serialize(),
+                    function (data) {
+                        if (data === true || data == 'true') {
+                            $('#loader').fadeIn(400);
+                            location.reload();
+                        } else {
+                            $('#FormUpdateContratEmployeInfos')
+                                .html('<p class="bg-danger text-white">' + data + '</p>').show();
+                        }
+
+                        availableApp();
+                    }
+                );
+            });
+
+            $('[data-toggle="popover"]').popover({
+                trigger: 'hover'
+            });
+
+            $('input#nbHeuresSemaines').on("input", function () {
+                $(this).val(this.value);
+                $('.outputNbHeuresSemaines').val(this.value);
+            }).trigger("change");
 
             $('.updateEmploye').on('click', function (event) {
                 event.preventDefault();

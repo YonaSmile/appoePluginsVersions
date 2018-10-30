@@ -198,7 +198,7 @@ class EmployeContrat
                 `employe_id` int(11) UNSIGNED NOT NULL,
                 `typeContrat` varchar(255) NOT NULL,
                 `nbHeuresSemaines` decimal(7,2) UNSIGNED NOT NULL,
-                `dateDebut` datetime NOT NULL,
+                `dateDebut` date NOT NULL,
                 UNIQUE (`site_id`,`employe_id`, `dateDebut`),
                 `status` tinyint(4) UNSIGNED NOT NULL DEFAULT 1,
                 `userId` int(11) UNSIGNED NOT NULL,
@@ -226,6 +226,40 @@ class EmployeContrat
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
+        $stmt->execute();
+
+        $count = $stmt->rowCount();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            if ($count == 1) {
+
+                $row = $stmt->fetch(\PDO::FETCH_OBJ);
+                $this->feed($row);
+
+                return true;
+
+            } else {
+
+                return false;
+            }
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function showReelContrat()
+    {
+
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_employes_contrats 
+        WHERE site_id = :siteId AND employe_id = :employeId AND dateDebut <= :dateDebut ORDER BY dateDebut DESC LIMIT 1';
+
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':employeId', $this->employeId);
+        $stmt->bindParam(':dateDebut', $this->dateDebut);
         $stmt->execute();
 
         $count = $stmt->rowCount();
@@ -345,7 +379,8 @@ class EmployeContrat
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id, nom FROM appoe_plugin_agapeshotes_employes_contrats WHERE site_id = :siteId AND employe_id = :employeId AND dateDebut = :dateDebut';
+        $sql = 'SELECT id FROM appoe_plugin_agapeshotes_employes_contrats 
+        WHERE site_id = :siteId AND employe_id = :employeId AND dateDebut = :dateDebut';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
         $stmt->bindParam(':employeId', $this->employeId);

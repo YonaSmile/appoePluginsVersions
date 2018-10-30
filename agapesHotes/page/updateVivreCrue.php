@@ -113,12 +113,10 @@ if (!empty($_GET['secteur']) && !empty($_GET['site']) && !empty($_GET['etablisse
                                     <?= \App\Form::text('Nom de l\'article', 'nom', 'text', !empty($_POST['nom']) ? $_POST['nom'] : '', true, 255, 'list="coursesList" autocomplete="off"'); ?>
                                     <datalist id="coursesList">
                                         <?php if ($allCourses):
-                                        foreach ($allCourses
-
-                                        as $cours): ?>
-                                        <option value="<?= $cours->nom; ?>">
+                                            foreach ($allCourses as $cours): ?>
+                                                <option value="<?= $cours->nom; ?>"><?= $cours->nom; ?></option>
                                             <?php endforeach;
-                                            endif; ?>
+                                        endif; ?>
                                     </datalist>
                                     <div class="row my-2">
                                         <div class="col-12 col-lg-6">
