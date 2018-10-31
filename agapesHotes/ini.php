@@ -17,6 +17,6 @@ const PLUGIN_TABLES = array(
     'appoe_plugin_agapeshotes_secteurs_access',
     'appoe_plugin_agapeshotes_sites_access',
     'appoe_plugin_agapeshotes_pti',
-    'appoe_plugin_agapeshotes_pti_details'
+    'appoe_plugin_agapeshotes_pti_details',
+    'appoe_plugin_agapeshotes_planning'
 );
-

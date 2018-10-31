@@ -45,6 +45,9 @@ $Secteur = new \App\Plugin\AgapesHotes\Secteur();
                                                 </a>&nbsp;
                                                 <a href="<?= AGAPESHOTES_URL; ?>page/mainSupplementaire/<?= $Secteur->getSlug(); ?>/<?= $site->slug; ?>/">
                                                     Main Supplémentaire
+                                                </a>&nbsp;
+                                                <a href="<?= AGAPESHOTES_URL; ?>page/planning/<?= $Secteur->getSlug(); ?>/<?= $site->slug; ?>/">
+                                                    Planning
                                                 </a>
                                             </small>
                                         </td>
