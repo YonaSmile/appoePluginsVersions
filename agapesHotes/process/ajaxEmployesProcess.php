@@ -103,5 +103,23 @@ if (checkAjaxRequest()) {
             }
         }
 
+        // ARCHIVE EMPLOYE CONTRAT
+        if (!empty($_POST['ARCHIVEEMPLOYECONTRAT']) && !empty($_POST['idContrat'])) {
+
+            $EmployeContratProcess = new \App\Plugin\AgapesHotes\EmployeContrat();
+            $EmployeContratProcess->setId($_POST['idContrat']);
+            if ($EmployeContratProcess->show()) {
+
+                if ($EmployeContratProcess->delete()) {
+                    echo json_encode(true);
+                } else {
+                    echo 'Impossible d\'archiver ce contrat !';
+                }
+            } else {
+                echo 'Ce contrat n\'existe pas !';
+            }
+
+        }
+
     }
 }

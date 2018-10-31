@@ -54,22 +54,25 @@ function getEmployeContrats($idEmploye)
 
     //Get Sites
     $Site = new \App\Plugin\AgapesHotes\Site();
-    $allSites = $Site->showAll();
+    $allSites = extractFromObjToSimpleArr($Site->showAll(), 'id', 'nom');
 
     //Get Employe Contrat
     $EmployeContrat = new \App\Plugin\AgapesHotes\EmployeContrat();
     $EmployeContrat->setEmployeId($idEmploye);
 
     if ($allSites) {
-        foreach ($allSites as $site) {
+        foreach ($allSites as $id => $siteName) {
             $EmployeContrat->setDateDebut(date('Y-m-d'));
-            $EmployeContrat->setSiteId($site->id);
+            $EmployeContrat->setSiteId($id);
             if ($EmployeContrat->showReelContrat()) {
                 $allReelContrats[$EmployeContrat->getId()] = array(
                     'id' => $EmployeContrat->getId(),
                     'siteId' => $EmployeContrat->getSiteId(),
+                    'siteName' => $siteName,
                     'employeId' => $idEmploye,
-                    'dateDebut' => $EmployeContrat->getDateDebut()
+                    'dateDebut' => $EmployeContrat->getDateDebut(),
+                    'nbHeuresSemaines' => $EmployeContrat->getNbHeuresSemaines(),
+                    'typeContrat' => $EmployeContrat->getTypeContrat()
                 );
             }
         }

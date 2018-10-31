@@ -254,12 +254,13 @@ class EmployeContrat
     {
 
         $sql = 'SELECT * FROM appoe_plugin_agapeshotes_employes_contrats 
-        WHERE site_id = :siteId AND employe_id = :employeId AND dateDebut <= :dateDebut ORDER BY dateDebut DESC LIMIT 1';
+        WHERE site_id = :siteId AND employe_id = :employeId AND dateDebut <= :dateDebut AND status = :status ORDER BY dateDebut DESC LIMIT 1';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
         $stmt->bindParam(':employeId', $this->employeId);
         $stmt->bindParam(':dateDebut', $this->dateDebut);
+        $stmt->bindParam(':status', $this->status);
         $stmt->execute();
 
         $count = $stmt->rowCount();

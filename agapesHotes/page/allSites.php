@@ -1,7 +1,6 @@
 <?php require('header.php'); ?>
 <?= getTitle($Page->getName(), $Page->getSlug());
 $Site = new \App\Plugin\AgapesHotes\Site();
-$Site->setStatus(1);
 $allSites = $Site->showAll();
 $Secteur = new \App\Plugin\AgapesHotes\Secteur();
 ?>

@@ -29,7 +29,7 @@
                         <tr>
                             <th><?= trans('Site'); ?></th>
                             <th><?= trans('Employé'); ?></th>
-                            <th><?= trans('Semaines/cycle'); ?></th>
+                            <th><?= trans('Cycle'); ?></th>
                             <th><?= trans('Date d\'effet'); ?></th>
                             <th></th>
                         </tr>
@@ -49,7 +49,7 @@
                                             <tr data-idpti="<?= $Pti->getId(); ?>">
                                                 <td><?= $allSites[$Pti->getSiteId()]; ?></td>
                                                 <td><?= $allEmployes[$Pti->getEmployeId()]; ?></td>
-                                                <td><?= $Pti->getNbWeeksInCycle() ?></td>
+                                                <td><?= $Pti->getNbWeeksInCycle() ?> semaines</td>
                                                 <td><?= displayCompleteDate($Pti->getDateDebut()); ?></td>
                                                 <td>
                                                     <button type="button" class="btn btn-sm updatePtiDetails"
