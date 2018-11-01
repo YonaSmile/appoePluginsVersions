@@ -38,12 +38,9 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                             </thead>
                             <tbody>
                             <?php if ($allPrestations):
-                                $User = new \App\Users();
-                                $PrestationPrix = new \App\Plugin\AgapesHotes\PrixPrestation();
 
+                                $PrestationPrix = new \App\Plugin\AgapesHotes\PrixPrestation();
                                 foreach ($allPrestations as $prestation):
-                                    $User->setId($prestation->userId);
-                                    $User->show();
                                     $PrestationPrix->setDateDebut(date('Y-m-d'));
                                     $PrestationPrix->setPrestationId($prestation->id);
                                     ?>
@@ -63,7 +60,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                                                 </small>
                                             </span>
                                         </td>
-                                        <td><?= $User->getNom(); ?> <?= $User->getPrenom(); ?></td>
+                                        <td><?= getUserEntitled($prestation->userId); ?></td>
                                         <td><?= displayTimeStamp($prestation->updated_at) ?></td>
                                         <td>
                                             <button data-idprestation="<?= $prestation->id ?>"

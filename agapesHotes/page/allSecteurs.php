@@ -24,14 +24,10 @@ $allSecteurs = $Secteur->showAll();
                         </thead>
                         <tbody>
                         <?php if ($allSecteurs):
-                            $User = new \App\Users();
-                            foreach ($allSecteurs as $secteur):
-                                $User->setId($secteur->userId);
-                                $User->show();
-                                ?>
+                            foreach ($allSecteurs as $secteur): ?>
                                 <tr data-idsecteur="<?= $secteur->id ?>">
                                     <td data-name="nom"><?= $secteur->nom ?></td>
-                                    <td><?= $User->getNom(); ?> <?= $User->getPrenom(); ?></td>
+                                    <td><?= getUserEntitled($secteur->userId); ?></td>
                                     <td><?= displayTimeStamp($secteur->updated_at) ?></td>
                                     <td>
                                         <button data-idsecteur="<?= $secteur->id ?>"

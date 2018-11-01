@@ -6,10 +6,10 @@ $allSecteurs = extractFromObjToSimpleArr($Secteur->showAll(), 'id', 'nom');
 $allSites = extractFromObjToSimpleArr($Site->showAll(), 'id', 'nom');
 
 $allUsers = array();
-$User = new \App\Users();
-foreach ($User->showAll() as $user) {
+global $ALLUSERS;
+foreach ($ALLUSERS as $userId => $user) {
     if (getRoleId($user->role) < 3) {
-        $allUsers[$user->id] = $user;
+        $allUsers[$userId] = $user;
     }
 }
 $allUsers = extractFromObjToSimpleArr($allUsers, 'id', 'nom', 'prenom');

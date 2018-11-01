@@ -26,10 +26,7 @@ $Secteur = new \App\Plugin\AgapesHotes\Secteur();
                         </thead>
                         <tbody>
                         <?php if ($allSites):
-                            $User = new \App\Users();
                             foreach ($allSites as $site):
-                                $User->setId($site->userId);
-                                $User->show();
                                 $Secteur->setId($site->secteur_id);
                                 if ($Secteur->show() && $Secteur->getStatus()):
                                     ?>
@@ -53,7 +50,7 @@ $Secteur = new \App\Plugin\AgapesHotes\Secteur();
                                         </td>
                                         <td data-name="secteurNom"
                                             data-secteurid="<?= $Secteur->getId() ?>"><?= $Secteur->getNom() ?></td>
-                                        <td><?= $User->getNom(); ?> <?= $User->getPrenom(); ?></td>
+                                        <td><?= getUserEntitled($site->userId); ?></td>
                                         <td><?= displayTimeStamp($site->updated_at) ?></td>
                                         <td>
                                             <button data-idsite="<?= $site->id ?>" data-toggle="modal"

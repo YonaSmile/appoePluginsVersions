@@ -43,18 +43,12 @@ if (!empty($_GET['secteur']) && !empty($_GET['site']) && !empty($_GET['etablisse
                             </thead>
                             <tbody>
                             <?php if ($allCourses):
-                                $User = new \App\Users();
-
-                                foreach ($allCourses as $courses):
-                                    $User->setId($courses->userId);
-                                    $User->show();
-
-                                    ?>
+                                foreach ($allCourses as $courses): ?>
                                     <tr data-idcourses="<?= $courses->id ?>">
                                         <td>
                                             <span data-name="nom"><?= $courses->nom ?></span>
                                         </td>
-                                        <td><?= $User->getNom(); ?> <?= $User->getPrenom(); ?></td>
+                                        <td><?= getUserEntitled($courses->userId); ?></td>
                                         <td><?= displayTimeStamp($courses->updated_at) ?></td>
                                         <td>
                                             <button data-idcourses="<?= $courses->id ?>"
