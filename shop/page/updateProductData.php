@@ -45,7 +45,7 @@ if (!empty($_GET['id'])):
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-12">
-                                <?php if ($Menu->checkUserPermission($USER->getRole(), 'updateProduct')): ?>
+                                <?php if ($Menu->checkUserPermission(getUserRoleId(), 'updateProduct')): ?>
                                     <a id="updateArticleBtn"
                                        href="<?= getPluginUrl('shop/page/updateProduct/', $Product->getId()); ?>"
                                        class="btn btn-warning btn-sm">

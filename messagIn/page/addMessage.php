@@ -19,16 +19,16 @@
             <div class="row">
 
                 <div class="col-12 col-lg-6">
-                    <p class="p-3"><?= trans('De la part de'); ?> <?= $USER->getNom() . ' ' . $USER->getPrenom(); ?></p>
+                    <p class="p-3"><?= trans('De la part de'); ?> <?= getUserEntitled(); ?></p>
                 </div>
 
                 <div class="col-12 col-lg-6">
-                    <?php $allUsers = $USER->showAll(); ?>
+                    <?php global $ALLUSERS ?>
                     <div class="form-group">
                         <label for="toUser"><?= trans('destiné à'); ?></label>
                         <select class="form-control custom-select" id="toUser" name="toUser" required>
-                            <?php foreach ($allUsers as $user): ?>
-                                <?php if ($USER->getId() != $user->id): ?>
+                            <?php foreach ($ALLUSERS as $userId => $user): ?>
+                                <?php if (getUserIdSession() != $user->id): ?>
                                     <option value="<?= $user->id; ?>"><?= $user->nom . ' ' . $user->prenom; ?></option>
                                 <?php endif; ?>
                             <?php endforeach; ?>

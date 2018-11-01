@@ -1,8 +1,7 @@
 <?php
 require('main.php');
 $Menu = new \App\Menu();
-$User = getUserData(getUserIdSession());
-if ($Menu->checkUserPermission($User->getRole(), 'allPeople')) {
+if ($Menu->checkUserPermission(getUserRoleId(), 'allPeople')) {
 
     $People = new \App\Plugin\People\People();
     $peopleCount = $People->showAll(true);

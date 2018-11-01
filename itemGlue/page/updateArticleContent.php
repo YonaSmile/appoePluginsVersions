@@ -53,7 +53,7 @@ if (!empty($_GET['id'])): ?>
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-12">
-                                <?php if ($Menu->checkUserPermission($USER->getRole(), 'updateArticle')): ?>
+                                <?php if ($Menu->checkUserPermission(getUserRoleId(), 'updateArticle')): ?>
                                     <a id="updateArticleBtn"
                                        href="<?= getPluginUrl('itemGlue/page/update/', $Article->getId()); ?>"
                                        class="btn btn-warning btn-sm">
