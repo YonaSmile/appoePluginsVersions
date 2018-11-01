@@ -15,18 +15,13 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
     ):
         echo getTitle($Page->getName(), $Page->getSlug(), ' de <strong>' . $Site->getNom() . '</strong> du mois de <strong>' . strftime("%B", strtotime(date('Y-m-d'))) . '</strong>');
 
-        //Get main courante
-        $MainCourante = new \App\Plugin\AgapesHotes\MainCourante();
-        $MainCourante->setSiteId($Site->getId());
+        //Get Planning
+        $Planning = new \App\Plugin\AgapesHotes\Planning();
+        $Planning->setSiteId($Site->getId());
+        $allPlanning = $Planning->showAllBySite();
 
-        //Get prestations
-        $Prestation = new \App\Plugin\AgapesHotes\Prestation();
-        $Prestation->setSiteId($Site->getId());
-        $allPrestations = $Prestation->showAll();
-
-        //Get price by prestation
-        $PrestationPrix = new \App\Plugin\AgapesHotes\PrixPrestation();
-        $PrestationPrix->setSiteId($Site->getId());
+        //Get Employe
+        $allEmployes = getAllIdsEmployeHasContratInSite($Site->getId());
 
         //Select period
         $start = new \DateTime(date('Y-m-01'));
@@ -44,7 +39,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
             'cycle' => 2
         );
 
-       $dayInCycle = getDayInCycle(new \DateTime($pti['dateDebut']), $pti['cycle'], new \DateTime('2018-10-29'));
+        $dayInCycle = getDayInCycle(new \DateTime($pti['dateDebut']), $pti['cycle'], new \DateTime('2018-10-29'));
         echo 'Jour du cycle : ' . $dayInCycle;
         ?>
         <div class="container-fluid">
@@ -52,46 +47,18 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                 <table id="pagesTable" class="table table-striped">
                     <thead>
                     <tr>
-                        <th><?= trans('Prestation'); ?></th>
+                        <th><?= trans('Employé'); ?></th>
                         <?php foreach ($period as $key => $date): ?>
                             <th style="<?= $date->format('d') == date('d') ? 'background:#ffeeba;color:#4b5b68;' : ''; ?>"><?= $date->format('d'); ?></th>
                         <?php endforeach; ?>
                     </tr>
                     </thead>
                     <tbody>
-                    <?php foreach ($allPrestations as $prestation): ?>
-                        <tr data-idprestation="<?= $prestation->id ?>">
-                            <th><?= $prestation->nom; ?></th>
-                            <?php foreach ($period as $key => $date):
-
-                                //Get main courante
-                                $quantite = 0;
-                                $MainCourante->setPrestationId($prestation->id);
-                                $MainCourante->setDate($date->format('Y-m-d'));
-                                if ($MainCourante->showByDate()) {
-                                    $quantite = $MainCourante->getQuantite();
-                                }
-
-                                //Get prix by prestation
-                                $idPrixReel = 0;
-                                $prixReel = 0;
-                                $PrestationPrix->setDateDebut($date->format('Y-m-d'));
-                                $PrestationPrix->setPrestationId($prestation->id);
-                                if ($PrestationPrix->showReelPrice()) {
-                                    $idPrixReel = $PrestationPrix->getId();
-                                    $prixReel = $PrestationPrix->getPrixHT();
-                                }
-                                ?>
-                                <td style="padding: 4px !important;" data-toggle="tooltip" data-placement="right"
-                                    title="<?= $date->format('d') . ' / ' . $prestation->nom; ?>">
-                                    <input type="tel" data-prestationid="<?= $prestation->id; ?>"
-                                           data-date="<?= $date->format('Y-m-d'); ?>"
-                                           data-prixid="<?= $idPrixReel; ?>"
-                                           class="text-center form-control mainCourantInput"
-                                           name="<?= $MainCourante->getId(); ?>"
-                                           value="<?= $quantite; ?>"
-                                           style="padding: 5px 0 !important;">
-                                </td>
+                    <?php foreach ($allEmployes as $employe): ?>
+                        <tr data-idemploye="<?= $employe->employe_id; ?>">
+                            <th><?= $employe->employe_id; ?></th>
+                            <?php foreach ($period as $key => $date): ?>
+                                <td> <?= $date->format('d'); ?></td>
                             <?php endforeach; ?>
                         </tr>
                     <?php endforeach; ?>

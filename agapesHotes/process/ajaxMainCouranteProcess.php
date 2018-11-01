@@ -16,7 +16,7 @@ if (checkAjaxRequest()) {
 
                 $MainCourantProcess->feed($_POST);
 
-                if ($MainCourantProcess->notExist()) {
+                if (empty($_POST['id'])) {
 
                     if ($MainCourantProcess->save()) {
                         echo $MainCourantProcess->getId();
@@ -26,18 +26,13 @@ if (checkAjaxRequest()) {
 
                 } else {
 
-                    if ($MainCourantProcess->notExist(true)) {
+                    if ($MainCourantProcess->update()) {
 
-                        if ($MainCourantProcess->update()) {
-
-                            echo $MainCourantProcess->getId();
-                        } else {
-                            echo 'Impossible de mettre à jour la main courante';
-                        }
-
+                        echo $MainCourantProcess->getId();
                     } else {
-                        echo 'La quantité de la main courante pour cette date existe déjà !';
+                        echo 'Impossible de mettre à jour la main courante';
                     }
+
                 }
             } else {
                 echo 'Un nom est attendu !';
@@ -46,4 +41,5 @@ if (checkAjaxRequest()) {
 
 
     }
+    unset($_POST);
 }

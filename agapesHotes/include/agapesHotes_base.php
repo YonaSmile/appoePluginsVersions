@@ -44,6 +44,22 @@ function employeHasContrat($idEmploye, $idSite)
 }
 
 /**
+ * @param $idSite
+ * @return array
+ */
+function getAllIdsEmployeHasContratInSite($idSite)
+{
+
+    //Get Employe Contrat
+    $EmployeContrat = new \App\Plugin\AgapesHotes\EmployeContrat();
+    $EmployeContrat->setDateDebut(date('Y-M-d'));
+    $EmployeContrat->setSiteId($idSite);
+    $allContratsDates = $EmployeContrat->showReelDateEmployesContrats();
+
+    return $allContratsDates;
+}
+
+/**
  * @param $idEmploye
  * @return bool|array
  */

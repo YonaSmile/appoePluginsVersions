@@ -284,6 +284,31 @@ class EmployeContrat
 
     /**
      * @param $countContrats
+     * @return bool|array
+     */
+    public function showReelDateEmployesContrats($countContrats = false)
+    {
+
+        $sql = 'SELECT employe_id, MAX(dateDebut) AS dateDebut FROM appoe_plugin_agapeshotes_employes_contrats
+        WHERE site_id = :siteId AND status = :status AND dateDebut <= :dateDebut GROUP BY employe_id';
+
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':dateDebut', $this->dateDebut);
+        $stmt->bindParam(':status', $this->status);
+        $stmt->execute();
+
+        $count = $stmt->rowCount();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            return !$countContrats ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
+        }
+    }
+
+    /**
+     * @param $countContrats
      * @return array|bool
      */
     public function showAll($countContrats = false)

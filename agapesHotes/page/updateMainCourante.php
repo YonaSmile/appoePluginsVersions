@@ -55,6 +55,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
 
                                 //Get main courante
                                 $quantite = 0;
+                                $MainCourante->setId('');
                                 $MainCourante->setPrestationId($prestation->id);
                                 $MainCourante->setDate($date->format('Y-m-d'));
                                 if ($MainCourante->showByDate()) {
