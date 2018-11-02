@@ -197,7 +197,7 @@ class Planning
   				`date` date NOT NULL,
                 `employe_id` int(11) UNSIGNED NOT NULL,
                 `site_id` int(11) UNSIGNED NOT NULL,
-                `reelHours` decimal(2,2) UNSIGNED NOT NULL,
+                `reelHours` decimal(7,2) UNSIGNED NOT NULL,
                 `absenceReason` varchar(255) NULL DEFAULT NULL,
                 UNIQUE (`date`,`employe_id`, `site_id`),
                 `status` tinyint(4) UNSIGNED NOT NULL DEFAULT 1,
@@ -270,6 +270,39 @@ class Planning
     }
 
     /**
+     * @return bool
+     */
+    public function showByDate()
+    {
+
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_planning WHERE site_id = :siteId AND employe_id = :employeId AND date = :date';
+
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':employeId', $this->employeId);
+        $stmt->bindParam(':date', $this->date);
+        $stmt->execute();
+
+        $count = $stmt->rowCount();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            if ($count == 1) {
+
+                $row = $stmt->fetch(\PDO::FETCH_OBJ);
+                $this->feed($row);
+
+                return true;
+
+            } else {
+
+                return false;
+            }
+        }
+    }
+
+    /**
      * @param $countContrats
      * @return array|bool
      */
@@ -337,6 +370,7 @@ class Planning
         if ($error[0] != '00000') {
             return false;
         } else {
+            $this->id = $this->dbh->lastInsertId();
             return true;
         }
     }

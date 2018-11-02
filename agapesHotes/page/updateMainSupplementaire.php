@@ -140,11 +140,9 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                                             <?= App\Form::text('Nom du destinateur', 'client_name', 'text', '', true, 150, 'list="clientsList" autocomplete="off"'); ?>
                                             <?php if ($allClients): ?>
                                                 <datalist id="clientsList">
-                                                    <?php foreach ($allClients
-
-                                                    as $client): ?>
-                                                    <option value="<?= $client->name; ?>">
-                                                        <?php endforeach; ?>
+                                                    <?php foreach ($allClients as $client): ?>
+                                                        <option value="<?= $client->name; ?>"><?= $client->name; ?></option>
+                                                    <?php endforeach; ?>
                                                 </datalist>
                                             <?php endif; ?>
                                         </div>

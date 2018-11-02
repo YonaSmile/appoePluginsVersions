@@ -5,42 +5,44 @@ if (checkAjaxRequest()) {
 
         $_POST = cleanRequest($_POST);
 
-        $MainCourantProcess = new \App\Plugin\AgapesHotes\MainCourante();
+        $PlanningProcess = new \App\Plugin\AgapesHotes\Planning();
 
         // UPDATE | CREATE MAIN COURANTE
-        if (!empty($_POST['UPDATEMAINCOURANTE'])) {
+        if (!empty($_POST['UPDATEPLANNING'])) {
 
-            if (!empty($_POST['siteId']) && !empty($_POST['prestationId'])
-                && !empty($_POST['prixId']) && !empty($_POST['date'])
-                && isset($_POST['quantite']) && isset($_POST['id'])) {
+            if (!empty($_POST['siteId']) && !empty($_POST['employeId'])
+                && !empty($_POST['date'])
+                && isset($_POST['absenceReason']) && isset($_POST['id'])) {
 
-                $MainCourantProcess->feed($_POST);
+                $PlanningProcess->feed($_POST);
 
-                if ($MainCourantProcess->notExist()) {
+                if (is_numeric($PlanningProcess->getAbsenceReason())) {
+                    $PlanningProcess->setReelHours(financial($PlanningProcess->getAbsenceReason(), true));
+                    $PlanningProcess->setAbsenceReason(null);
+                } else {
+                    $PlanningProcess->setReelHours(0);
+                }
 
-                    if ($MainCourantProcess->save()) {
-                        echo $MainCourantProcess->getId();
+                if (empty($_POST['id'])) {
+
+                    if ($PlanningProcess->save()) {
+                        echo $PlanningProcess->getId();
                     } else {
-                        echo 'Impossible d\'enregistrer la main courante';
+                        echo 'Impossible d\'enregistrer le planning';
                     }
 
                 } else {
 
-                    if ($MainCourantProcess->notExist(true)) {
+                    if ($PlanningProcess->update()) {
 
-                        if ($MainCourantProcess->update()) {
-
-                            echo $MainCourantProcess->getId();
-                        } else {
-                            echo 'Impossible de mettre à jour la main courante';
-                        }
-
+                        echo $PlanningProcess->getId();
                     } else {
-                        echo 'La quantité de la main courante pour cette date existe déjà !';
+                        echo 'Impossible de mettre à jour le planning';
                     }
+
                 }
             } else {
-                echo 'Un nom est attendu !';
+                echo 'Un motif d\'absence ou un nombre d\'heures est attendu !';
             }
         }
 

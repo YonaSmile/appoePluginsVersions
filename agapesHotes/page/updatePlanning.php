@@ -17,11 +17,12 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
 
         //Get Planning
         $Planning = new \App\Plugin\AgapesHotes\Planning();
-        $Planning->setSiteId($Site->getId());
-        $allPlanning = $Planning->showAllBySite();
 
         //Get Employe
-        $allEmployes = getAllIdsEmployeHasContratInSite($Site->getId());
+        $Employe = new \App\Plugin\AgapesHotes\Employe();
+        $allEmployes = extractFromObjArr($Employe->showByType(), 'id');
+
+        $allContratEmployes = getAllIdsEmployeHasContratInSite($Site->getId());
 
         //Select period
         $start = new \DateTime(date('Y-m-01'));
@@ -42,7 +43,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
         $dayInCycle = getDayInCycle(new \DateTime($pti['dateDebut']), $pti['cycle'], new \DateTime('2018-10-29'));
         echo 'Jour du cycle : ' . $dayInCycle;
         ?>
-        <div class="container-fluid">
+        <div class="row">
             <div class="table-responsive col-12">
                 <table id="pagesTable" class="table table-striped">
                     <thead>
@@ -54,11 +55,31 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                     </tr>
                     </thead>
                     <tbody>
-                    <?php foreach ($allEmployes as $employe): ?>
+                    <?php foreach ($allContratEmployes as $employe): ?>
                         <tr data-idemploye="<?= $employe->employe_id; ?>">
-                            <th><?= $employe->employe_id; ?></th>
-                            <?php foreach ($period as $key => $date): ?>
-                                <td> <?= $date->format('d'); ?></td>
+                            <th><?= $allEmployes[$employe->employe_id]->entitled; ?></th>
+                            <?php foreach ($period as $key => $date):
+                                $Planning->setId('');
+                                $Planning->setReelHours('');
+                                $Planning->setEmployeId($employe->employe_id);
+                                $Planning->setSiteId($Site->getId());
+                                $Planning->setDate($date->format('Y-m-d'));
+                                $Planning->showByDate();
+                                $inputCase = empty($Planning->getReelHours()) || $Planning->getReelHours() == '0.00' ? $Planning->getAbsenceReason() : $Planning->getReelHours();
+                                ?>
+                                <td style="padding: 4px !important;">
+                                    <input class="text-center form-control updatePlanning"
+                                           name="<?= $Planning->getId(); ?>" type="text"
+                                           maxlength="10" list="absenceReasonList" autocomplete="off"
+                                           style="padding: 5px 0 !important;"
+                                           data-date="<?= $date->format('Y-m-d'); ?>"
+                                           data-employeid="<?= $employe->employe_id; ?>"
+                                           value="<?= $inputCase; ?>">
+                                    <datalist id="absenceReasonList">
+                                        <option value="CP" label="Congés Parental">CP</option>
+                                        <option value="CM" label="Congés Maternité">CM</option>
+                                    </datalist>
+                                </td>
                             <?php endforeach; ?>
                         </tr>
                     <?php endforeach; ?>
@@ -74,11 +95,11 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
             $(document).ready(function () {
 
                 function disabledAllFields(inputExlude) {
-                    $('input.mainCourantInput').not(inputExlude).attr('disabled', 'disabled');
+                    $('input.updatePlanning').not(inputExlude).attr('disabled', 'disabled');
                 }
 
                 function activateAllFields() {
-                    $('input.mainCourantInput').attr('disabled', false);
+                    $('input.updatePlanning').attr('disabled', false);
                 }
 
                 var delay = (function () {
@@ -91,55 +112,50 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
 
                 $('[data-toggle="tooltip"]').tooltip({trigger: 'hover'});
 
-                $('input.mainCourantInput').on('input keyup', function (event) {
+                $('input.updatePlanning').on('input keyup', function (event) {
                     event.preventDefault();
 
                     var $Input = $(this);
-                    $('input.mainCourantInput').removeClass('successInput');
+                    $('input.updatePlanning').removeClass('successInput');
 
                     if ($Input.val().length > 0) {
 
-                        var idMainCourante = $Input.attr('name');
+                        var idPlanning = $Input.attr('name');
                         var siteId = '<?= $Site->getId(); ?>';
-                        var prestationId = $Input.data('prestationid');
+                        var employeId = $Input.data('employeid');
                         var date = $Input.data('date');
-                        var prixId = parseFloat($Input.data('prixid'));
-                        var quantite = $Input.val();
+                        var absenceReason = $Input.val();
 
-                        if (prixId > 0) {
-                            disabledAllFields($Input);
-                            delay(function () {
-                                busyApp();
 
-                                $.post(
-                                    '<?= AGAPESHOTES_URL . 'process/ajaxMainCouranteProcess.php'; ?>',
-                                    {
-                                        UPDATEMAINCOURANTE: 'OK',
-                                        siteId: siteId,
-                                        prestationId: prestationId,
-                                        date: date,
-                                        prixId: prixId,
-                                        quantite: quantite,
-                                        id: idMainCourante
-                                    },
-                                    function (data) {
-                                        if (data && $.isNumeric(data)) {
-                                            $Input.attr('name', data);
-                                            $Input.addClass('successInput');
-                                        } else {
-                                            alert(data);
-                                        }
-                                        availableApp();
-                                        activateAllFields();
+                        disabledAllFields($Input);
+                        delay(function () {
+                            busyApp();
+
+                            $.post(
+                                '<?= AGAPESHOTES_URL . 'process/ajaxPlanningProcess.php'; ?>',
+                                {
+                                    UPDATEPLANNING: 'OK',
+                                    siteId: siteId,
+                                    employeId: employeId,
+                                    date: date,
+                                    absenceReason: absenceReason,
+                                    id: idPlanning
+                                },
+                                function (data) {
+                                    if (data && $.isNumeric(data)) {
+                                        $Input.attr('name', data);
+                                        $Input.addClass('successInput');
+                                    } else {
+                                        alert(data);
                                     }
-                                );
-                            }, 300);
-                        } else {
-                            $Input.val(0);
-                            alert('Aucun prix n\'a été défini pour cette prestation à cette période');
-                        }
+                                    availableApp();
+                                    activateAllFields();
+                                }
+                            );
+                        }, 300);
+
                     }
-                })
+                });
             });
         </script>
     <?php else: ?>
