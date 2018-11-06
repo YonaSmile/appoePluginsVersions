@@ -96,6 +96,32 @@ function getEmployeContrats($idEmploye)
     return $allReelContrats;
 }
 
+function getAllPtiBySite($siteId)
+{
+
+    //Get Pti
+    $Pti = new \App\Plugin\AgapesHotes\Pti();
+    $Pti->setSiteId($siteId);
+    $allPti = groupMultipleKeysObjectsArray($Pti->showAllBySite(), 'employe_id');
+
+    foreach ($allPti as $employeId => $allEmployePti) {
+        $allPti[$employeId] = extractFromObjArr($allEmployePti, 'dateDebut');
+    }
+
+    foreach ($allPti as $employeId => $allEmployePti) {
+        foreach ($allEmployePti as $dateDebut => $pti) {
+
+            $PtiDetails = new \App\Plugin\AgapesHotes\PtiDetails($pti->id);
+            if ($PtiDetails->getData()) {
+                $allPti[$employeId][$dateDebut]->details = $PtiDetails->getData();
+
+            }
+        }
+    }
+
+    return $allPti;
+}
+
 function reelPtiDatesSort($a, $b)
 {
     return strtotime($b) - strtotime($a);

@@ -25,25 +25,8 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
             $allPlanning[$employeId] = extractFromObjArr($planning, 'date');
         }
 
-        //Get Pti
-        $Pti = new \App\Plugin\AgapesHotes\Pti();
-        $Pti->setSiteId($Site->getId());
-        $allPti = groupMultipleKeysObjectsArray($Pti->showAllBySite(), 'employe_id');
-
-        foreach ($allPti as $employeId => $allEmployePti) {
-            $allPti[$employeId] = extractFromObjArr($allEmployePti, 'dateDebut');
-        }
-
-        foreach ($allPti as $employeId => $allEmployePti) {
-            foreach ($allEmployePti as $dateDebut => $pti) {
-
-                $PtiDetails = new \App\Plugin\AgapesHotes\PtiDetails($pti->id);
-                if ($PtiDetails->getData()) {
-                    $allPti[$employeId][$dateDebut]->details = $PtiDetails->getData();
-
-                }
-            }
-        }
+        //Get all Pti
+        $allPti = getAllPtiBySite($Site->getId());
 
         //Get Employe
         $Employe = new \App\Plugin\AgapesHotes\Employe();
