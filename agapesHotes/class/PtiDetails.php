@@ -9,19 +9,23 @@ class PtiDetails
     private $numeroJour;
     private $nbHeures;
     private $horaires = null;
+    private $status = 1;
+    private $userId;
+    private $createdAt;
+    private $updated_at;
 
-
+    private $data = null;
     private $dbh = null;
 
-    public function __construct($id = null)
+    public function __construct($ptiId = null)
     {
         if (is_null($this->dbh)) {
             $this->dbh = \App\DB::connect();
         }
 
-        if (!is_null($id)) {
-            $this->id = $id;
-            $this->show();
+        if (!is_null($ptiId)) {
+            $this->ptiId = $ptiId;
+            $this->data = $this->showAll();
         }
     }
 
@@ -105,6 +109,86 @@ class PtiDetails
         $this->horaires = $horaires;
     }
 
+    /**
+     * @return int
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param int $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUserId()
+    {
+        return $this->userId;
+    }
+
+    /**
+     * @param mixed $userId
+     */
+    public function setUserId($userId)
+    {
+        $this->userId = $userId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param mixed $createdAt
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updated_at;
+    }
+
+    /**
+     * @param mixed $updated_at
+     */
+    public function setUpdatedAt($updated_at)
+    {
+        $this->updated_at = $updated_at;
+    }
+
+    /**
+     * @return array|bool|null
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
+     * @param array|bool|null $data
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
+    }
+
 
     public function createTable()
     {
@@ -113,9 +197,13 @@ class PtiDetails
   				PRIMARY KEY (`id`),
                 `pti_id` int(11) UNSIGNED NOT NULL,
                 `numeroJour` tinyint(1) UNSIGNED NOT NULL,
-                `nbHeures` decimal (2,2) NOT NULL,
-                `horaires` varchar (250) DEFAULT NULL,
-                UNIQUE (`pti_id`,`numeroJour`)
+                `nbHeures` decimal (7,2) NOT NULL,
+                `horaires` varchar (250) NULL DEFAULT NULL,
+                UNIQUE (`pti_id`,`numeroJour`),
+                `status` tinyint(4) UNSIGNED NOT NULL DEFAULT 1,
+                `userId` int(11) UNSIGNED NOT NULL,
+                `created_at` date NOT NULL,
+                `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 				) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;';
 
         $stmt = $this->dbh->prepare($sql);
@@ -134,7 +222,7 @@ class PtiDetails
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_pti_details WHERE pti_id = :ptiId';
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_pti_details WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -160,15 +248,16 @@ class PtiDetails
     }
 
     /**
-     * @param $countContrats
+     * @param $countPti
      * @return array|bool
      */
     public function showAll($countPti = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_pti_details WHERE site_id = :siteId AND status = 1 ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_pti_details WHERE pti_id = :ptiId AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':ptiId', $this->ptiId);
+        $stmt->bindParam(':status', $this->status);
         $stmt->execute();
 
         $count = $stmt->rowCount();
@@ -186,13 +275,15 @@ class PtiDetails
     public function save()
     {
         $this->userId = getUserIdSession();
-        $sql = 'INSERT INTO appoe_plugin_agapeshotes_pti_details (pti_id, numeroJour, nbHeures, horaires) 
-                VALUES (:ptiId, :numeroJour, :nbHeures, :horaires)';
+        $sql = 'INSERT INTO appoe_plugin_agapeshotes_pti_details (pti_id, numeroJour, nbHeures, horaires, status, userId, created_at) 
+                VALUES (:ptiId, :numeroJour, :nbHeures, :horaires, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':ptiId', $this->ptiId);
         $stmt->bindParam(':numeroJour', $this->numeroJour);
         $stmt->bindParam(':nbHeures', $this->nbHeures);
         $stmt->bindParam(':horaires', $this->horaires);
+        $stmt->bindParam(':status', $this->status);
+        $stmt->bindParam(':userId', $this->userId);
         $stmt->execute();
 
         $error = $stmt->errorInfo();
@@ -211,13 +302,15 @@ class PtiDetails
     {
         $this->userId = getUserIdSession();
         $sql = 'UPDATE appoe_plugin_agapeshotes_pti_details 
-        SET pti_id = :ptiId, numeroJour = :numeroJour, nbHeures = :nbHeures, horaires = :horaires WHERE id = :id';
+        SET pti_id = :ptiId, numeroJour = :numeroJour, nbHeures = :nbHeures, horaires = :horaires,  status = :status, userId = :userId WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':ptiId', $this->ptiId);
         $stmt->bindParam(':numeroJour', $this->numeroJour);
         $stmt->bindParam(':nbHeures', $this->nbHeures);
         $stmt->bindParam(':horaires', $this->horaires);
+        $stmt->bindParam(':status', $this->status);
+        $stmt->bindParam(':userId', $this->userId);
 
         $stmt->execute();
 

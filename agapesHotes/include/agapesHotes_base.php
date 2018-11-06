@@ -47,16 +47,16 @@ function employeHasContrat($idEmploye, $idSite)
  * @param $idSite
  * @return array
  */
-function getAllIdsEmployeHasContratInSite($idSite)
+function getAllEmployeHasContratInSite($idSite)
 {
 
     //Get Employe Contrat
     $EmployeContrat = new \App\Plugin\AgapesHotes\EmployeContrat();
     $EmployeContrat->setDateDebut(date('Y-M-d'));
     $EmployeContrat->setSiteId($idSite);
-    $allContratsDates = $EmployeContrat->showReelDateEmployesContrats();
+    $allContratsDates = $EmployeContrat->showAllReelDateEmployesContrats();
 
-    return $allContratsDates;
+    return extractFromObjArr($allContratsDates, 'employe_id');
 }
 
 /**
@@ -94,4 +94,9 @@ function getEmployeContrats($idEmploye)
         }
     }
     return $allReelContrats;
+}
+
+function reelPtiDatesSort($a, $b)
+{
+    return strtotime($b) - strtotime($a);
 }

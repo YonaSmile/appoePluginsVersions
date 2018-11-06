@@ -17,12 +17,39 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
 
         //Get Planning
         $Planning = new \App\Plugin\AgapesHotes\Planning();
+        $Planning->setSiteId($Site->getId());
+        $Planning->setDate(date('m'));
+        $allPlanning = groupMultipleKeysObjectsArray($Planning->showAllByDate(), 'employe_id');
+
+        foreach ($allPlanning as $employeId => $planning) {
+            $allPlanning[$employeId] = extractFromObjArr($planning, 'date');
+        }
+
+        //Get Pti
+        $Pti = new \App\Plugin\AgapesHotes\Pti();
+        $Pti->setSiteId($Site->getId());
+        $allPti = groupMultipleKeysObjectsArray($Pti->showAllBySite(), 'employe_id');
+
+        foreach ($allPti as $employeId => $allEmployePti) {
+            $allPti[$employeId] = extractFromObjArr($allEmployePti, 'dateDebut');
+        }
+
+        foreach ($allPti as $employeId => $allEmployePti) {
+            foreach ($allEmployePti as $dateDebut => $pti) {
+
+                $PtiDetails = new \App\Plugin\AgapesHotes\PtiDetails($pti->id);
+                if ($PtiDetails->getData()) {
+                    $allPti[$employeId][$dateDebut]->details = $PtiDetails->getData();
+
+                }
+            }
+        }
 
         //Get Employe
         $Employe = new \App\Plugin\AgapesHotes\Employe();
         $allEmployes = extractFromObjArr($Employe->showByType(), 'id');
 
-        $allContratEmployes = getAllIdsEmployeHasContratInSite($Site->getId());
+        $allContratEmployes = getAllEmployeHasContratInSite($Site->getId());
 
         //Select period
         $start = new \DateTime(date('Y-m-01'));
@@ -31,53 +58,89 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
         $interval = new \DateInterval('P1D');
 
         $period = new \DatePeriod($start, $interval, $end);
-
-        // date N = Jour de la semaine (1 = lundi, 7 = dimanche)
-        // date W = Numéro de la semaine (Semaine commence le lundi)
-
-        $pti = array(
-            'dateDebut' => '2018-10-01',
-            'cycle' => 2
-        );
-
-        $dayInCycle = getDayInCycle(new \DateTime($pti['dateDebut']), $pti['cycle'], new \DateTime('2018-10-29'));
-        echo 'Jour du cycle : ' . $dayInCycle;
         ?>
         <div class="row">
             <div class="table-responsive col-12">
-                <table id="pagesTable" class="table table-striped">
+                <table id="pagesTable" class="table table-striped tableNonEffect">
                     <thead>
                     <tr>
                         <th><?= trans('Employé'); ?></th>
                         <?php foreach ($period as $key => $date): ?>
-                            <th style="<?= $date->format('d') == date('d') ? 'background:#ffeeba;color:#4b5b68;' : ''; ?>"><?= $date->format('d'); ?></th>
+                            <th style="<?= $date->format('d') == date('d') ? 'background:#4fb99f;color:#fff;' : ''; ?> <?= $date->format('N') == 7 ? 'background:#f2b134;color:#4b5b68;' : ''; ?>"><?= $date->format('d'); ?></th>
                         <?php endforeach; ?>
                     </tr>
                     </thead>
                     <tbody>
-                    <?php foreach ($allContratEmployes as $employe): ?>
-                        <tr data-idemploye="<?= $employe->employe_id; ?>">
-                            <th><?= $allEmployes[$employe->employe_id]->entitled; ?></th>
+                    <?php foreach ($allContratEmployes as $employeId => $contrat):
+                        $allPtiDates = array_keys($allPti[$employeId]);
+                        usort($allPtiDates, 'reelPtiDatesSort');
+                        ?>
+                        <tr data-idemploye="<?= $employeId; ?>">
+                            <th class="positionRelative"><?= $allEmployes[$employeId]->entitled; ?>
+                                <small class="totalContainer"
+                                       style="position: absolute;top: 0; right: 3px;font-size: 0.7em;"></small>
+                            </th>
                             <?php foreach ($period as $key => $date):
-                                $Planning->setId('');
-                                $Planning->setReelHours('');
-                                $Planning->setEmployeId($employe->employe_id);
-                                $Planning->setSiteId($Site->getId());
-                                $Planning->setDate($date->format('Y-m-d'));
-                                $Planning->showByDate();
-                                $inputCase = empty($Planning->getReelHours()) || $Planning->getReelHours() == '0.00' ? $Planning->getAbsenceReason() : $Planning->getReelHours();
+
+                                $inputCase = '';
+                                $Planning = '';
+                                if (array_key_exists($date->format('Y-m-d'), $allPlanning[$employeId])) {
+                                    $Planning = $allPlanning[$employeId][$date->format('Y-m-d')];
+                                    $inputCase = empty($Planning->reelHours) || $Planning->reelHours == '0.00' ? $Planning->absenceReason : $Planning->reelHours;
+                                }
+
+                                $allPtiDetails = array();
+                                $dayInCycle = 0;
+
+                                foreach ($allPtiDates as $ptiDate) {
+                                    if ($ptiDate <= $date->format('Y-m-d')) {
+                                        $dateDebut = $allPti[$employeId][$ptiDate];
+
+                                        if (property_exists($dateDebut, 'details')) {
+
+                                            $allPtiDetails = extractFromObjArr($dateDebut->details, 'numeroJour');
+                                            $dayInCycle = getDayInCycle(new \DateTime($ptiDate), $dateDebut->nbWeeksInCycle, $date);
+                                        }
+                                        break;
+                                    }
+                                }
+
+
                                 ?>
-                                <td style="padding: 4px !important;">
-                                    <input class="text-center form-control updatePlanning"
-                                           name="<?= $Planning->getId(); ?>" type="text"
+                                <td style="padding: 4px 0 !important;">
+                                    <input class="text-center form-control updatePlanning inputUpdatePlanning"
+                                           name="<?= !empty($Planning->id) ? $Planning->id : ''; ?>" type="text"
                                            maxlength="10" list="absenceReasonList" autocomplete="off"
-                                           style="padding: 5px 0 !important;"
+                                           style="padding: 5px 0 !important; <?= $date->format('d') == date('d') ? 'background:#4fb99f;color:#fff;' : ''; ?>"
                                            data-date="<?= $date->format('Y-m-d'); ?>"
-                                           data-employeid="<?= $employe->employe_id; ?>"
+                                           data-employeid="<?= $employeId; ?>"
                                            value="<?= $inputCase; ?>">
+                                    <small class="text-center d-block"><?= $dayInCycle > 0 ? $allPtiDetails[$dayInCycle]->nbHeures : ''; ?></small>
                                     <datalist id="absenceReasonList">
-                                        <option value="CP" label="Congés Parental">CP</option>
-                                        <option value="CM" label="Congés Maternité">CM</option>
+                                        <option value="M" label="Maladie">M</option>
+                                        <option value="AT" label="Accident du Travail">AT</option>
+                                        <option value="MP" label="Maladie Professionnelle">MP</option>
+                                        <option value="Ca" label="Carence maladie">Ca</option>
+                                        <option value="CP" label="Congé Payé">CP</option>
+                                        <option value="ANP" label="Absence Non Payée ">ANP</option>
+                                        <option value="CSS" label="Congés Sans Solde">CSS</option>
+                                        <option value="JFC" label="Jour Férié Chomé payé normalement">JFC
+                                        </option>
+                                        <option value="MàP" label="Mise à Pied">MàP</option>
+                                        <option value="CIF" label="Congé format°">CIF</option>
+                                        <option value="AAP" label="Absence Autorisée Payée">AAP</option>
+                                        <option value="MAT" label="Maternité">MAT</option>
+                                        <option value="PAT" label="Paternité">PAT</option>
+                                        <option value="PAR" label="Parental">PAR</option>
+                                        <option value="EF"
+                                                label="Evènement Familial (mariage, décès…cf. conv. Coll.)">
+                                            EF
+                                        </option>
+                                        <option value="JS" label="Journée Solidarité">JS</option>
+                                        <option value="CFA" label="jour école apprenti(e)s">CFA</option>
+                                        <option value="Peff" label="Préavis effectué">Peff</option>
+                                        <option value="Dél" label="délégation">Dél</option>
+                                        <option value="R°DP" label="réunion DP au siège">R°DP</option>
                                     </datalist>
                                 </td>
                             <?php endforeach; ?>
@@ -93,6 +156,32 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
 
         <script>
             $(document).ready(function () {
+
+                function calculateTotalReelHours() {
+                    var totalArr = [];
+                    $('input.updatePlanning').each(function () {
+                        var input = $(this);
+                        var hours = parseFloat(input.val());
+                        if ($.isNumeric(hours)) {
+                            var idEmploye = input.data('employeid');
+                            if (typeof totalArr[idEmploye] === 'undefined') {
+                                totalArr[idEmploye] = [];
+                            }
+
+                            totalArr[idEmploye].push(hours)
+                        }
+                    });
+
+                    $.each(totalArr, function (key, value) {
+                        var sum = 0;
+                        $.each(value, function (i, val) {
+                            sum += val;
+                        });
+                        $('tr[data-idemploye="' + key + '"] th .totalContainer').html(sum);
+                    });
+                }
+
+                calculateTotalReelHours();
 
                 function disabledAllFields(inputExlude) {
                     $('input.updatePlanning').not(inputExlude).attr('disabled', 'disabled');
@@ -118,15 +207,17 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                     var $Input = $(this);
                     $('input.updatePlanning').removeClass('successInput');
 
-                    if ($Input.val().length > 0) {
+                    if (!$Input.val().length > 0) {
+                        $Input.val('');
+                    }
 
-                        var idPlanning = $Input.attr('name');
-                        var siteId = '<?= $Site->getId(); ?>';
-                        var employeId = $Input.data('employeid');
-                        var date = $Input.data('date');
-                        var absenceReason = $Input.val();
+                    var idPlanning = $Input.attr('name');
+                    var siteId = '<?= $Site->getId(); ?>';
+                    var employeId = $Input.data('employeid');
+                    var date = $Input.data('date');
+                    var absenceReason = $Input.val();
 
-
+                    if (new Date(date).getTime() <= new Date().getTime()) {
                         disabledAllFields($Input);
                         delay(function () {
                             busyApp();
@@ -150,10 +241,13 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                                     }
                                     availableApp();
                                     activateAllFields();
+                                    calculateTotalReelHours();
                                 }
                             );
                         }, 300);
-
+                    } else {
+                        $Input.val('');
+                        alert('Cette date est ultérieur à aujourdh\'hui !')
                     }
                 });
             });

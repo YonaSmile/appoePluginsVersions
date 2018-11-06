@@ -216,6 +216,19 @@ class EmployeContrat
         return true;
     }
 
+    public function createView()
+    {
+        $sql = 'CREATE VIEW reelDatesEmployesContrats AS SELECT employe_id AS reelContratEmployeId, MAX(dateDebut) AS reelContratDate FROM appoe_plugin_agapeshotes_employes_contrats GROUP BY employe_id';
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->execute();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * @return bool
      */
@@ -286,11 +299,14 @@ class EmployeContrat
      * @param $countContrats
      * @return bool|array
      */
-    public function showReelDateEmployesContrats($countContrats = false)
+    public function showAllReelDateEmployesContrats($countContrats = false)
     {
 
-        $sql = 'SELECT employe_id, MAX(dateDebut) AS dateDebut FROM appoe_plugin_agapeshotes_employes_contrats
-        WHERE site_id = :siteId AND status = :status AND dateDebut <= :dateDebut GROUP BY employe_id';
+
+        $sql = 'SELECT ec.* FROM reelDatesEmployesContrats AS rdec
+        INNER JOIN appoe_plugin_agapeshotes_employes_contrats AS ec
+        ON(reelContratEmployeId = ec.employe_id AND reelContratDate = ec.dateDebut)
+        WHERE ec.site_id = :siteId AND ec.status = :status AND ec.dateDebut <= :dateDebut';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);

@@ -198,6 +198,19 @@ class Pti
         return true;
     }
 
+    public function createView()
+    {
+        $sql = 'CREATE VIEW reelEmployesPti AS SELECT employe_id AS reelPtiEmployeId, MAX(dateDebut) AS reelPtiDate FROM appoe_plugin_agapeshotes_pti GROUP BY employe_id';
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->execute();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * @return bool
      */
@@ -251,9 +264,31 @@ class Pti
     }
 
     /**
+     * @param $countPti
+     * @return array|bool
+     */
+    public function showAllBySite($countPti = false)
+    {
+
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_pti WHERE site_id = :siteId AND status = :status ORDER BY updated_at DESC';
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':status', $this->status);
+        $stmt->execute();
+
+        $count = $stmt->rowCount();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            return !$countPti ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
+        }
+    }
+
+    /**
      * @return bool
      */
-    public function showAllReelPti()
+    public function showReelPti()
     {
 
         $sql = 'SELECT * FROM appoe_plugin_agapeshotes_pti 
@@ -281,6 +316,31 @@ class Pti
             } else {
                 return false;
             }
+        }
+    }
+
+    /**
+     * @param $countPti
+     * @return bool|array
+     */
+    public function showAllReelPti($countPti = false)
+    {
+        $sql = 'SELECT pti.* FROM reelEmployesPti AS rep
+        INNER JOIN appoe_plugin_agapeshotes_pti AS pti
+        ON(reelPtiEmployeId = pti.employe_id AND reelPtiDate = pti.dateDebut)
+        WHERE pti.site_id = :siteId AND pti.status = :status';
+
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':status', $this->status);
+        $stmt->execute();
+
+        $count = $stmt->rowCount();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            return !$countPti ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
         }
     }
 

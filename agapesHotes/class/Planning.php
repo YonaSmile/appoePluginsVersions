@@ -248,28 +248,6 @@ class Planning
     }
 
     /**
-     * @param $countContrats
-     * @return array|bool
-     */
-    public function showAll($countContrats = false)
-    {
-
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_planning 
-        WHERE status = :status ORDER BY updated_at DESC';
-        $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':status', $this->status);
-        $stmt->execute();
-
-        $count = $stmt->rowCount();
-        $error = $stmt->errorInfo();
-        if ($error[0] != '00000') {
-            return false;
-        } else {
-            return !$countContrats ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
-        }
-    }
-
-    /**
      * @return bool
      */
     public function showByDate()
@@ -299,6 +277,51 @@ class Planning
 
                 return false;
             }
+        }
+    }
+
+    /**
+     * @param $countContrats
+     * @return array|bool
+     */
+    public function showAll($countContrats = false)
+    {
+
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_planning 
+        WHERE status = :status ORDER BY updated_at DESC';
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':status', $this->status);
+        $stmt->execute();
+
+        $count = $stmt->rowCount();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            return !$countContrats ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
+        }
+    }
+
+    /**
+     * @param $countContrats
+     * @return bool|array
+     */
+    public function showAllByDate($countContrats = false)
+    {
+
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_planning WHERE site_id = :siteId AND MONTH(date) = :date';
+
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':date', $this->date);
+        $stmt->execute();
+
+        $count = $stmt->rowCount();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            return !$countContrats ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
         }
     }
 
@@ -466,6 +489,20 @@ class Planning
 
             if (is_callable(array($this, $method))) {
                 $this->$method($value);
+            }
+        }
+    }
+
+    /**
+     * Clean class attributs
+     */
+    public function clean()
+    {
+        foreach (get_object_vars($this) as $attribut => $value) {
+            $method = 'set' . str_replace(' ', '', ucwords(str_replace('_', ' ', $attribut)));
+
+            if (is_callable(array($this, $method))) {
+                $this->$method(null);
             }
         }
     }

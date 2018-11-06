@@ -1,0 +1,13 @@
+input.inputUpdatePlanning::-webkit-calendar-picker-indicator {
+    display: none;
+}
+
+table.tableNonEffect {
+    border-collapse: separate !important;
+    border-spacing: 3px !important;
+}
+
+table.tableNonEffect tbody tr:focus, table.tableNonEffect tbody tr:hover {
+    transform: scale(1) !important;
+    -webkit-transform: scale(1) !important;
+}
