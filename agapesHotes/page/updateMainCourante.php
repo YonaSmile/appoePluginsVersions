@@ -15,18 +15,17 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
     ):
         echo getTitle($Page->getName(), $Page->getSlug(), ' de <strong>' . $Site->getNom() . '</strong> du mois de <strong>' . strftime("%B", strtotime(date('Y-m-d'))) . '</strong>');
 
+        //Get price by prestation
+        $allPrestationsPrix = getAllPrestationsPriceBySite($Site->getId());
+
         //Get main courante
-        $MainCourante = new \App\Plugin\AgapesHotes\MainCourante();
-        $MainCourante->setSiteId($Site->getId());
+        $allMainCourante = getAllMainCouranteBySiteInMonth($Site->getId());
 
         //Get prestations
         $Prestation = new \App\Plugin\AgapesHotes\Prestation();
         $Prestation->setSiteId($Site->getId());
         $allPrestations = $Prestation->showAll();
 
-        //Get price by prestation
-        $PrestationPrix = new \App\Plugin\AgapesHotes\PrixPrestation();
-        $PrestationPrix->setSiteId($Site->getId());
 
         //Select period
         $start = new \DateTime(date('Y-m-01'));
@@ -43,56 +42,62 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                     <tr>
                         <th><?= trans('Prestation'); ?></th>
                         <?php foreach ($period as $key => $date): ?>
-                            <th style="<?= $date->format('d') == date('d') ? 'background:#ffeeba;color:#4b5b68;' : ''; ?>"><?= $date->format('d'); ?></th>
+                            <th style="<?= $date->format('d') == date('d') ? 'background:#4fb99f;color:#fff;' : ''; ?> <?= $date->format('N') == 7 ? 'background:#f2b134;color:#4b5b68;' : ''; ?>"><?= $date->format('d'); ?></th>
                         <?php endforeach; ?>
                     </tr>
                     </thead>
                     <tbody>
-                    <?php foreach ($allPrestations as $prestation): ?>
-                        <tr data-idprestation="<?= $prestation->id ?>">
-                            <th><?= $prestation->nom; ?></th>
-                            <?php foreach ($period as $key => $date):
+                    <?php foreach ($allPrestations as $prestation):
+                        if (array_key_exists($prestation->id, $allMainCourante)): ?>
+                            <tr data-idprestation="<?= $prestation->id ?>">
+                                <th><?= $prestation->nom; ?></th>
+                                <?php foreach ($period as $key => $date):
 
-                                //Get main courante
-                                $quantite = 0;
-                                $MainCourante->setId('');
-                                $MainCourante->setPrestationId($prestation->id);
-                                $MainCourante->setDate($date->format('Y-m-d'));
-                                if ($MainCourante->showByDate()) {
-                                    $quantite = $MainCourante->getQuantite();
-                                }
+                                    $allPrestationsPrixDates = array_keys($allPrestationsPrix[$prestation->id]);
+                                    usort($allPrestationsPrixDates, 'reelDatesSortDESC');
 
-                                //Get prix by prestation
-                                $idPrixReel = 0;
-                                $prixReel = 0;
-                                $PrestationPrix->setDateDebut($date->format('Y-m-d'));
-                                $PrestationPrix->setPrestationId($prestation->id);
-                                if ($PrestationPrix->showReelPrice()) {
-                                    $idPrixReel = $PrestationPrix->getId();
-                                    $prixReel = $PrestationPrix->getPrixHT();
-                                }
-                                ?>
-                                <td style="padding: 4px !important;" data-toggle="tooltip" data-placement="right"
-                                    title="<?= $date->format('d') . ' / ' . $prestation->nom; ?>">
-                                    <input type="tel" data-prestationid="<?= $prestation->id; ?>"
-                                           data-date="<?= $date->format('Y-m-d'); ?>"
-                                           data-prixid="<?= $idPrixReel; ?>"
-                                           class="text-center form-control mainCourantInput"
-                                           name="<?= $MainCourante->getId(); ?>"
-                                           value="<?= $quantite; ?>"
-                                           style="padding: 5px 0 !important;">
-                                </td>
-                            <?php endforeach; ?>
-                        </tr>
-                    <?php endforeach; ?>
+                                    //Get prix by prestation
+                                    $idPrixReel = 0;
+                                    $prixReel = 0;
+                                    foreach ($allPrestationsPrixDates as $prestationsPrixDate) {
+                                        if ($prestationsPrixDate <= $date->format('Y-m-d')) {
+                                            $dateDebut = $allPrestationsPrix[$prestation->id][$prestationsPrixDate];
 
+                                            $idPrixReel = $dateDebut->id;
+                                            $prixReel = $dateDebut->prixHT;
+
+                                            break;
+                                        }
+                                    }
+
+                                    $mainCourantId = '';
+                                    $mainCourantQuantite = '';
+                                    if (array_key_exists($date->format('Y-m-d'), $allMainCourante[$prestation->id])) {
+                                        $MainCourante = $allMainCourante[$prestation->id][$date->format('Y-m-d')];
+                                        $mainCourantId = $MainCourante->id;
+                                        $mainCourantQuantite = $MainCourante->quantite;
+                                    }
+
+                                    ?>
+                                    <td style="padding: 4px !important;" data-toggle="tooltip" data-placement="right"
+                                        title="<?= $date->format('d') . ' / ' . $prestation->nom; ?>">
+                                        <input type="tel" data-prestationid="<?= $prestation->id; ?>"
+                                               data-date="<?= $date->format('Y-m-d'); ?>"
+                                               data-prixid="<?= $idPrixReel; ?>"
+                                               class="text-center form-control mainCourantInput"
+                                               name="<?= $mainCourantId; ?>"
+                                               value="<?= $mainCourantQuantite; ?>"
+                                               style="padding: 5px 0 !important; <?= $date->format('d') == date('d') ? 'background:#4fb99f;color:#fff;' : ''; ?>">
+                                    </td>
+                                <?php endforeach; ?>
+                            </tr>
+                        <?php endif;
+                    endforeach; ?>
                     </tbody>
                 </table>
             </div>
 
         </div>
-
-
         <script>
             $(document).ready(function () {
 
@@ -120,48 +125,50 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                     var $Input = $(this);
                     $('input.mainCourantInput').removeClass('successInput');
 
-                    if ($Input.val().length > 0) {
-
-                        var idMainCourante = $Input.attr('name');
-                        var siteId = '<?= $Site->getId(); ?>';
-                        var prestationId = $Input.data('prestationid');
-                        var date = $Input.data('date');
-                        var prixId = parseFloat($Input.data('prixid'));
-                        var quantite = $Input.val();
-
-                        if (prixId > 0) {
-                            disabledAllFields($Input);
-                            delay(function () {
-                                busyApp();
-
-                                $.post(
-                                    '<?= AGAPESHOTES_URL . 'process/ajaxMainCouranteProcess.php'; ?>',
-                                    {
-                                        UPDATEMAINCOURANTE: 'OK',
-                                        siteId: siteId,
-                                        prestationId: prestationId,
-                                        date: date,
-                                        prixId: prixId,
-                                        quantite: quantite,
-                                        id: idMainCourante
-                                    },
-                                    function (data) {
-                                        if (data && $.isNumeric(data)) {
-                                            $Input.attr('name', data);
-                                            $Input.addClass('successInput');
-                                        } else {
-                                            alert(data);
-                                        }
-                                        availableApp();
-                                        activateAllFields();
-                                    }
-                                );
-                            }, 300);
-                        } else {
-                            $Input.val(0);
-                            alert('Aucun prix n\'a été défini pour cette prestation à cette période');
-                        }
+                    if (!$Input.val().length > 0) {
+                        $Input.val('');
                     }
+
+                    var idMainCourante = $Input.attr('name');
+                    var siteId = '<?= $Site->getId(); ?>';
+                    var prestationId = $Input.data('prestationid');
+                    var date = $Input.data('date');
+                    var prixId = parseFloat($Input.data('prixid'));
+                    var quantite = $Input.val();
+
+                    if (new Date(date).getTime() <= new Date().getTime()) {
+                        disabledAllFields($Input);
+                        delay(function () {
+                            busyApp();
+
+                            $.post(
+                                '<?= AGAPESHOTES_URL . 'process/ajaxMainCouranteProcess.php'; ?>',
+                                {
+                                    UPDATEMAINCOURANTE: 'OK',
+                                    siteId: siteId,
+                                    prestationId: prestationId,
+                                    date: date,
+                                    prixId: prixId,
+                                    quantite: quantite,
+                                    id: idMainCourante
+                                },
+                                function (data) {
+                                    if (data && $.isNumeric(data)) {
+                                        $Input.attr('name', data);
+                                        $Input.addClass('successInput');
+                                    } else {
+                                        alert(data);
+                                    }
+                                    availableApp();
+                                    activateAllFields();
+                                }
+                            );
+                        }, 300);
+                    } else {
+                        $Input.val('');
+                        alert('Cette date est ultérieur à aujourdh\'hui !')
+                    }
+
                 })
             });
         </script>

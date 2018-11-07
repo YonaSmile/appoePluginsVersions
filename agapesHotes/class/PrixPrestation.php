@@ -181,7 +181,7 @@ class PrixPrestation
                 `site_id` int(11) UNSIGNED NOT NULL,
                 `prestation_id` int(11) UNSIGNED NOT NULL,
                 `prixHT` decimal(7,2) UNSIGNED NOT NULL,
-                `dateDebut` datetime NOT NULL,
+                `dateDebut` date NOT NULL,
                 UNIQUE (`site_id`,`prestation_id`, `dateDebut`),
                 `status` tinyint(4) UNSIGNED NOT NULL DEFAULT 1,
                 `userId` int(11) UNSIGNED NOT NULL,

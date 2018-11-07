@@ -303,6 +303,29 @@ class MainCourante
     }
 
     /**
+     * @param $countMainCourante
+     * @return bool|array
+     */
+    public function showAllByMonth($countMainCourante = false)
+    {
+
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_main_courante WHERE site_id = :siteId AND MONTH(date) = :date';
+
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':date', $this->date);
+        $stmt->execute();
+
+        $count = $stmt->rowCount();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            return !$countMainCourante ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
+        }
+    }
+
+    /**
      * @return bool
      */
     public function save()

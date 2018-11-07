@@ -122,7 +122,38 @@ function getAllPtiBySite($siteId)
     return $allPti;
 }
 
-function reelPtiDatesSort($a, $b)
+function getAllPrestationsPriceBySite($siteId)
+{
+
+    $PrestationPrix = new \App\Plugin\AgapesHotes\PrixPrestation();
+    $PrestationPrix->setSiteId($siteId);
+    $PrestationPrix->setDateDebut(date('Y-m-01'));
+    $allPrestationsPrice = groupMultipleKeysObjectsArray($PrestationPrix->showAll(), 'prestation_id');
+
+    foreach ($allPrestationsPrice as $prestationId => $allPrices) {
+        $allPrestationsPrice[$prestationId] = extractFromObjArr($allPrices, 'dateDebut');
+    }
+
+    return $allPrestationsPrice;
+}
+
+function getAllMainCouranteBySiteInMonth($siteId, $month = '')
+{
+
+    $month = !empty($month) ? $month : date('m');
+    $MainCourante = new \App\Plugin\AgapesHotes\MainCourante();
+    $MainCourante->setSiteId($siteId);
+    $MainCourante->setDate($month);
+    $allMainCourante = groupMultipleKeysObjectsArray($MainCourante->showAllByMonth(), 'prestation_id');
+
+    foreach ($allMainCourante as $prestationId => $allPrestations) {
+        $allMainCourante[$prestationId] = extractFromObjArr($allPrestations, 'date');
+    }
+
+    return $allMainCourante;
+}
+
+function reelDatesSortDESC($a, $b)
 {
     return strtotime($b) - strtotime($a);
 }

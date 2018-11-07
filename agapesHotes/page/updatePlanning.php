@@ -55,80 +55,82 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                     </thead>
                     <tbody>
                     <?php foreach ($allContratEmployes as $employeId => $contrat):
-                        $allPtiDates = array_keys($allPti[$employeId]);
-                        usort($allPtiDates, 'reelPtiDatesSort');
-                        ?>
-                        <tr data-idemploye="<?= $employeId; ?>">
-                            <th class="positionRelative"><?= $allEmployes[$employeId]->entitled; ?>
-                                <small class="totalContainer"
-                                       style="position: absolute;top: 0; right: 3px;font-size: 0.7em;"></small>
-                            </th>
-                            <?php foreach ($period as $key => $date):
+                        if (array_key_exists($employeId, $allPti)):
+                            $allPtiDates = array_keys($allPti[$employeId]);
+                            usort($allPtiDates, 'reelDatesSortDESC');
+                            ?>
+                            <tr data-idemploye="<?= $employeId; ?>">
+                                <th class="positionRelative"><?= $allEmployes[$employeId]->entitled; ?>
+                                    <small class="totalContainer"
+                                           style="position: absolute;top: 0; right: 3px;font-size: 0.7em;"></small>
+                                </th>
+                                <?php foreach ($period as $key => $date):
 
-                                $inputCase = '';
-                                $Planning = '';
-                                if (array_key_exists($date->format('Y-m-d'), $allPlanning[$employeId])) {
-                                    $Planning = $allPlanning[$employeId][$date->format('Y-m-d')];
-                                    $inputCase = empty($Planning->reelHours) || $Planning->reelHours == '0.00' ? $Planning->absenceReason : $Planning->reelHours;
-                                }
-
-                                $allPtiDetails = array();
-                                $dayInCycle = 0;
-
-                                foreach ($allPtiDates as $ptiDate) {
-                                    if ($ptiDate <= $date->format('Y-m-d')) {
-                                        $dateDebut = $allPti[$employeId][$ptiDate];
-
-                                        if (property_exists($dateDebut, 'details')) {
-
-                                            $allPtiDetails = extractFromObjArr($dateDebut->details, 'numeroJour');
-                                            $dayInCycle = getDayInCycle(new \DateTime($ptiDate), $dateDebut->nbWeeksInCycle, $date);
-                                        }
-                                        break;
+                                    $inputCase = '';
+                                    $Planning = '';
+                                    if (array_key_exists($date->format('Y-m-d'), $allPlanning[$employeId])) {
+                                        $Planning = $allPlanning[$employeId][$date->format('Y-m-d')];
+                                        $inputCase = empty($Planning->reelHours) || $Planning->reelHours == '0.00' ? $Planning->absenceReason : $Planning->reelHours;
                                     }
-                                }
+
+                                    $allPtiDetails = array();
+                                    $dayInCycle = 0;
+
+                                    foreach ($allPtiDates as $ptiDate) {
+                                        if ($ptiDate <= $date->format('Y-m-d')) {
+                                            $dateDebut = $allPti[$employeId][$ptiDate];
+
+                                            if (property_exists($dateDebut, 'details')) {
+
+                                                $allPtiDetails = extractFromObjArr($dateDebut->details, 'numeroJour');
+                                                $dayInCycle = getDayInCycle(new \DateTime($ptiDate), $dateDebut->nbWeeksInCycle, $date);
+                                            }
+                                            break;
+                                        }
+                                    }
 
 
-                                ?>
-                                <td style="padding: 4px 0 !important;">
-                                    <input class="text-center form-control updatePlanning inputUpdatePlanning"
-                                           name="<?= !empty($Planning->id) ? $Planning->id : ''; ?>" type="text"
-                                           maxlength="10" list="absenceReasonList" autocomplete="off"
-                                           style="padding: 5px 0 !important; <?= $date->format('d') == date('d') ? 'background:#4fb99f;color:#fff;' : ''; ?>"
-                                           data-date="<?= $date->format('Y-m-d'); ?>"
-                                           data-employeid="<?= $employeId; ?>"
-                                           value="<?= $inputCase; ?>">
-                                    <small class="text-center d-block"><?= $dayInCycle > 0 ? $allPtiDetails[$dayInCycle]->nbHeures : ''; ?></small>
-                                    <datalist id="absenceReasonList">
-                                        <option value="M" label="Maladie">M</option>
-                                        <option value="AT" label="Accident du Travail">AT</option>
-                                        <option value="MP" label="Maladie Professionnelle">MP</option>
-                                        <option value="Ca" label="Carence maladie">Ca</option>
-                                        <option value="CP" label="Congé Payé">CP</option>
-                                        <option value="ANP" label="Absence Non Payée ">ANP</option>
-                                        <option value="CSS" label="Congés Sans Solde">CSS</option>
-                                        <option value="JFC" label="Jour Férié Chomé payé normalement">JFC
-                                        </option>
-                                        <option value="MàP" label="Mise à Pied">MàP</option>
-                                        <option value="CIF" label="Congé format°">CIF</option>
-                                        <option value="AAP" label="Absence Autorisée Payée">AAP</option>
-                                        <option value="MAT" label="Maternité">MAT</option>
-                                        <option value="PAT" label="Paternité">PAT</option>
-                                        <option value="PAR" label="Parental">PAR</option>
-                                        <option value="EF"
-                                                label="Evènement Familial (mariage, décès…cf. conv. Coll.)">
-                                            EF
-                                        </option>
-                                        <option value="JS" label="Journée Solidarité">JS</option>
-                                        <option value="CFA" label="jour école apprenti(e)s">CFA</option>
-                                        <option value="Peff" label="Préavis effectué">Peff</option>
-                                        <option value="Dél" label="délégation">Dél</option>
-                                        <option value="R°DP" label="réunion DP au siège">R°DP</option>
-                                    </datalist>
-                                </td>
-                            <?php endforeach; ?>
-                        </tr>
-                    <?php endforeach; ?>
+                                    ?>
+                                    <td style="padding: 4px 0 !important;">
+                                        <input class="text-center form-control updatePlanning inputUpdatePlanning"
+                                               name="<?= !empty($Planning->id) ? $Planning->id : ''; ?>" type="text"
+                                               maxlength="10" list="absenceReasonList" autocomplete="off"
+                                               style="padding: 5px 0 !important; <?= $date->format('d') == date('d') ? 'background:#4fb99f;color:#fff;' : ''; ?>"
+                                               data-date="<?= $date->format('Y-m-d'); ?>"
+                                               data-employeid="<?= $employeId; ?>"
+                                               value="<?= $inputCase; ?>">
+                                        <small class="text-center d-block"><?= $dayInCycle > 0 ? $allPtiDetails[$dayInCycle]->nbHeures : ''; ?></small>
+                                        <datalist id="absenceReasonList">
+                                            <option value="M" label="Maladie">M</option>
+                                            <option value="AT" label="Accident du Travail">AT</option>
+                                            <option value="MP" label="Maladie Professionnelle">MP</option>
+                                            <option value="Ca" label="Carence maladie">Ca</option>
+                                            <option value="CP" label="Congé Payé">CP</option>
+                                            <option value="ANP" label="Absence Non Payée ">ANP</option>
+                                            <option value="CSS" label="Congés Sans Solde">CSS</option>
+                                            <option value="JFC" label="Jour Férié Chomé payé normalement">JFC
+                                            </option>
+                                            <option value="MàP" label="Mise à Pied">MàP</option>
+                                            <option value="CIF" label="Congé format°">CIF</option>
+                                            <option value="AAP" label="Absence Autorisée Payée">AAP</option>
+                                            <option value="MAT" label="Maternité">MAT</option>
+                                            <option value="PAT" label="Paternité">PAT</option>
+                                            <option value="PAR" label="Parental">PAR</option>
+                                            <option value="EF"
+                                                    label="Evènement Familial (mariage, décès…cf. conv. Coll.)">
+                                                EF
+                                            </option>
+                                            <option value="JS" label="Journée Solidarité">JS</option>
+                                            <option value="CFA" label="jour école apprenti(e)s">CFA</option>
+                                            <option value="Peff" label="Préavis effectué">Peff</option>
+                                            <option value="Dél" label="délégation">Dél</option>
+                                            <option value="R°DP" label="réunion DP au siège">R°DP</option>
+                                        </datalist>
+                                    </td>
+                                <?php endforeach; ?>
+                            </tr>
+                        <?php endif;
+                    endforeach; ?>
 
                     </tbody>
                 </table>
