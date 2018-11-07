@@ -153,6 +153,21 @@ function getAllMainCouranteBySiteInMonth($siteId, $month = '')
     return $allMainCourante;
 }
 
+function getAllPlanningBySite($siteId, $month = '')
+{
+    $month = !empty($month) ? $month : date('m');
+    $Planning = new \App\Plugin\AgapesHotes\Planning();
+    $Planning->setSiteId($siteId);
+    $Planning->setDate($month);
+    $allPlanning = groupMultipleKeysObjectsArray($Planning->showAllByDate(), 'employe_id');
+
+    foreach ($allPlanning as $employeId => $planning) {
+        $allPlanning[$employeId] = extractFromObjArr($planning, 'date');
+    }
+
+    return $allPlanning;
+}
+
 function reelDatesSortDESC($a, $b)
 {
     return strtotime($b) - strtotime($a);

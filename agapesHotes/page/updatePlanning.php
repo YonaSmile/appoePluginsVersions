@@ -15,15 +15,8 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
     ):
         echo getTitle($Page->getName(), $Page->getSlug(), ' de <strong>' . $Site->getNom() . '</strong> du mois de <strong>' . strftime("%B", strtotime(date('Y-m-d'))) . '</strong>');
 
-        //Get Planning
-        $Planning = new \App\Plugin\AgapesHotes\Planning();
-        $Planning->setSiteId($Site->getId());
-        $Planning->setDate(date('m'));
-        $allPlanning = groupMultipleKeysObjectsArray($Planning->showAllByDate(), 'employe_id');
-
-        foreach ($allPlanning as $employeId => $planning) {
-            $allPlanning[$employeId] = extractFromObjArr($planning, 'date');
-        }
+        //Get all Planning
+        $allPlanning = getAllPlanningBySite($Site->getId());
 
         //Get all Pti
         $allPti = getAllPtiBySite($Site->getId());
@@ -55,7 +48,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                     </thead>
                     <tbody>
                     <?php foreach ($allContratEmployes as $employeId => $contrat):
-                        if (array_key_exists($employeId, $allPti)):
+                        if (array_key_exists($employeId, $allPti) && array_key_exists($employeId, $allPlanning)):
                             $allPtiDates = array_keys($allPti[$employeId]);
                             usort($allPtiDates, 'reelDatesSortDESC');
                             ?>
