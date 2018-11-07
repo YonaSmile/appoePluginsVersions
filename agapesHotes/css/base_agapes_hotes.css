@@ -5,9 +5,22 @@ input.inputUpdatePlanning::-webkit-calendar-picker-indicator {
 table.tableNonEffect {
     border-collapse: separate !important;
     border-spacing: 3px !important;
+    transition: none !important;
+    -moz-transition: none !important;
+    -webkit-transition: none !important;
+}
+
+table.tableNonEffect tr {
+    transition: none !important;
+    -moz-transition: none !important;
+    -webkit-transition: none !important;
+    transform: none !important;
+    -moz-transform: none !important;
+    -webkit-transform: none !important;
 }
 
 table.tableNonEffect tbody tr:focus, table.tableNonEffect tbody tr:hover {
-    transform: scale(1) !important;
-    -webkit-transform: scale(1) !important;
+    transform: none !important;
+    -moz-transform: none !important;
+    -webkit-transform: none !important;
 }

@@ -104,17 +104,19 @@ function getAllPtiBySite($siteId)
     $Pti->setSiteId($siteId);
     $allPti = groupMultipleKeysObjectsArray($Pti->showAllBySite(), 'employe_id');
 
-    foreach ($allPti as $employeId => $allEmployePti) {
-        $allPti[$employeId] = extractFromObjArr($allEmployePti, 'dateDebut');
-    }
+    if ($allPti) {
+        foreach ($allPti as $employeId => $allEmployePti) {
+            $allPti[$employeId] = extractFromObjArr($allEmployePti, 'dateDebut');
+        }
 
-    foreach ($allPti as $employeId => $allEmployePti) {
-        foreach ($allEmployePti as $dateDebut => $pti) {
+        foreach ($allPti as $employeId => $allEmployePti) {
+            foreach ($allEmployePti as $dateDebut => $pti) {
 
-            $PtiDetails = new \App\Plugin\AgapesHotes\PtiDetails($pti->id);
-            if ($PtiDetails->getData()) {
-                $allPti[$employeId][$dateDebut]->details = $PtiDetails->getData();
+                $PtiDetails = new \App\Plugin\AgapesHotes\PtiDetails($pti->id);
+                if ($PtiDetails->getData()) {
+                    $allPti[$employeId][$dateDebut]->details = $PtiDetails->getData();
 
+                }
             }
         }
     }
@@ -130,8 +132,10 @@ function getAllPrestationsPriceBySite($siteId)
     $PrestationPrix->setDateDebut(date('Y-m-01'));
     $allPrestationsPrice = groupMultipleKeysObjectsArray($PrestationPrix->showAll(), 'prestation_id');
 
-    foreach ($allPrestationsPrice as $prestationId => $allPrices) {
-        $allPrestationsPrice[$prestationId] = extractFromObjArr($allPrices, 'dateDebut');
+    if ($allPrestationsPrice) {
+        foreach ($allPrestationsPrice as $prestationId => $allPrices) {
+            $allPrestationsPrice[$prestationId] = extractFromObjArr($allPrices, 'dateDebut');
+        }
     }
 
     return $allPrestationsPrice;
@@ -146,8 +150,10 @@ function getAllMainCouranteBySiteInMonth($siteId, $month = '')
     $MainCourante->setDate($month);
     $allMainCourante = groupMultipleKeysObjectsArray($MainCourante->showAllByMonth(), 'prestation_id');
 
-    foreach ($allMainCourante as $prestationId => $allPrestations) {
-        $allMainCourante[$prestationId] = extractFromObjArr($allPrestations, 'date');
+    if ($allMainCourante) {
+        foreach ($allMainCourante as $prestationId => $allPrestations) {
+            $allMainCourante[$prestationId] = extractFromObjArr($allPrestations, 'date');
+        }
     }
 
     return $allMainCourante;
@@ -161,8 +167,10 @@ function getAllPlanningBySite($siteId, $month = '')
     $Planning->setDate($month);
     $allPlanning = groupMultipleKeysObjectsArray($Planning->showAllByDate(), 'employe_id');
 
-    foreach ($allPlanning as $employeId => $planning) {
-        $allPlanning[$employeId] = extractFromObjArr($planning, 'date');
+    if ($allPlanning) {
+        foreach ($allPlanning as $employeId => $planning) {
+            $allPlanning[$employeId] = extractFromObjArr($planning, 'date');
+        }
     }
 
     return $allPlanning;
