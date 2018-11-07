@@ -45,11 +45,11 @@
                                         $Pti->setDateDebut(date('Y-m-d'));
                                         $Pti->setSiteId($employeContrat['siteId']);
                                         $Pti->setEmployeId($employeId);
-                                        if ($Pti->showAllReelPti()): ?>
+                                        if ($Pti->showReelPti()): ?>
                                             <tr data-idpti="<?= $Pti->getId(); ?>">
                                                 <td><?= $allSites[$Pti->getSiteId()]; ?></td>
                                                 <td><?= $allEmployes[$Pti->getEmployeId()]; ?></td>
-                                                <td><?= $Pti->getNbWeeksInCycle() ?> semaines</td>
+                                                <td><?php printf($Pti->getNbWeeksInCycle() . ' semaine%s', $Pti->getNbWeeksInCycle() > 1 ? 's' : ''); ?> </td>
                                                 <td><?= displayCompleteDate($Pti->getDateDebut()); ?></td>
                                                 <td>
                                                     <button type="button" class="btn btn-sm updatePtiDetails"

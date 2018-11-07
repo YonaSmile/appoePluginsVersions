@@ -48,12 +48,12 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                     </thead>
                     <tbody>
                     <?php foreach ($allContratEmployes as $employeId => $contrat):
-                        if (array_key_exists($employeId, $allPti) && array_key_exists($employeId, $allPlanning)):
+                        if (array_key_exists($employeId, $allPti)):
                             $allPtiDates = array_keys($allPti[$employeId]);
                             usort($allPtiDates, 'reelDatesSortDESC');
                             ?>
                             <tr data-idemploye="<?= $employeId; ?>">
-                                <th class="positionRelative"><?= $allEmployes[$employeId]->entitled; ?>
+                                <th class="positionRelative"><?= $allEmployes[$employeId]->name . ' ' . $allEmployes[$employeId]->firstName; ?>
                                     <small class="totalContainer"
                                            style="position: absolute;top: 0; right: 3px;font-size: 0.7em;"></small>
                                 </th>
@@ -61,7 +61,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
 
                                     $inputCase = '';
                                     $Planning = '';
-                                    if (array_key_exists($date->format('Y-m-d'), $allPlanning[$employeId])) {
+                                    if (array_key_exists($employeId, $allPlanning) && array_key_exists($date->format('Y-m-d'), $allPlanning[$employeId])) {
                                         $Planning = $allPlanning[$employeId][$date->format('Y-m-d')];
                                         $inputCase = empty($Planning->reelHours) || $Planning->reelHours == '0.00' ? $Planning->absenceReason : $Planning->reelHours;
                                     }
