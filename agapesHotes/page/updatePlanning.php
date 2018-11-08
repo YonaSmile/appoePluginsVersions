@@ -88,7 +88,8 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                                         <input class="text-center form-control updatePlanning inputUpdatePlanning"
                                                name="<?= !empty($Planning->id) ? $Planning->id : ''; ?>" type="text"
                                                maxlength="10" list="absenceReasonList" autocomplete="off"
-                                               style="padding: 5px 0 !important; <?= $date->format('d') == date('d') ? 'background:#4fb99f;color:#fff;' : ''; ?>"
+                                               style="padding: 5px 0 !important; <?= $date->format('d') == date('d') ? 'background:#4fb99f;color:#fff;' : ''; ?>
+                                               <?= isferie($date->format('Y-m-d'), true) ? 'border: 1px solid #d8886f !important;' : ''; ?>"
                                                data-date="<?= $date->format('Y-m-d'); ?>"
                                                data-employeid="<?= $employeId; ?>"
                                                value="<?= $inputCase; ?>">
