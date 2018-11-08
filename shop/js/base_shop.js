@@ -163,10 +163,6 @@ function authClient(data) {
     return $.post('/app/plugin/shop/process/shipping.php', data);
 }
 
-function financial(x) {
-    return Number.parseFloat(x).toFixed(2);
-}
-
 function addMetaProduct(data) {
     return $.post('/app/plugin/shop/process/ajaxProcess.php', data)
 }
