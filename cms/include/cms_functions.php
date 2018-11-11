@@ -23,8 +23,8 @@ function loadPage($slug = 'home')
     $CmsContent = new \App\Plugin\Cms\CmsContent($Cms->getId(), LANG);
 
     //Get page content in template
-    \App\Template::setSecondary(TEMPLATES_PATH . $Cms->getSlug() . '.php', $CmsContent->getData());
-    return \App\Template::getSecondary();
+    $Template = new \App\Template(TEMPLATES_PATH . $Cms->getSlug() . '.php', $CmsContent->getData(), true);
+    return $Template->get();
 }
 
 /**

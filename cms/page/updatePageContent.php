@@ -20,7 +20,7 @@ if (!empty($_GET['id'])):
         <div class="container">
             <div class="row">
                 <div class="col-12">
-                    <?php if ($Menu->checkUserPermission($USER->getRole(), 'updatePage')): ?>
+                    <?php if ($Menu->checkUserPermission(getUserRoleId(), 'updatePage')): ?>
                         <a id="updatePageBtn"
                            href="<?= getPluginUrl('cms/page/update/', $Cms->getId()); ?>"
                            class="btn btn-warning btn-sm">
@@ -54,8 +54,8 @@ if (!empty($_GET['id'])):
                 <form action="" method="post" id="pageContentManageForm">
                     <div class="row">
                         <?php
-                        \App\Template::set(TEMPLATES_PATH . $Cms->getSlug() . '.php', $CmsContent->getData());
-                        \App\Template::show();
+                        $Template = new \App\Template(TEMPLATES_PATH . $Cms->getSlug() . '.php', $CmsContent->getData());
+                        $Template->show();
                         ?>
                     </div>
                     <div class="my-2"></div>
@@ -182,7 +182,7 @@ if (!empty($_GET['id'])):
                     trigger: 'hover',
                     placement: 'top',
                     content: function () {
-                        return '<img src="'+$(this).val() + '" />';
+                        return '<img src="' + $(this).val() + '" />';
                     }
                 });
 
