@@ -10,6 +10,10 @@ function getEtatChoise(idCommande) {
     $modalInfo.modal('show');
 }
 
+function shop_financial(x) {
+    return Number.parseFloat(x).toFixed(2);
+}
+
 function changeCommandeDeliveryState(id_commande, deliveryState) {
     $.post(
         '/app/plugin/shop/process/ajaxProcess.php',
@@ -91,7 +95,7 @@ function addToShoppingCard(Product) {
             quantity: Product.quantity,
             singlePrice: Product.price,
             totalPoids: Product.quantity * Product.poids,
-            totalPrice: financial(Product.quantity * Product.price)
+            totalPrice: shop_financial(Product.quantity * Product.price)
         });
 }
 
