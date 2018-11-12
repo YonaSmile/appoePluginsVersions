@@ -260,7 +260,14 @@ class Article
         }
     }
 
-    public function showByCategory($idCategory, $parentId = false, $countArticles = false)
+    /**
+     * @param $idCategory
+     * @param bool $parentId
+     * @param bool $countArticles
+     * @param string $orderBy
+     * @return bool
+     */
+    public function showByCategory($idCategory, $parentId = false, $countArticles = false, $orderBy = 'updated_at')
     {
         $categorySQL = ' AND C.id = :idCategory ';
         if (true === $parentId) {
@@ -277,7 +284,7 @@ class Article
         INNER JOIN appoe_plugin_itemGlue_articles_content AS AC
         ON(AC.idArticle = ART.id)
         WHERE CR.type = "ITEMGLUE" AND ART.statut > 0 AND C.status > 0 AND AC.lang = :lang' . $categorySQL . '
-        GROUP BY ART.id ORDER BY ART.statut DESC, AC.updated_at DESC';
+        GROUP BY ART.id ORDER BY ART.statut DESC, AC.' . $orderBy . ' DESC';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':idCategory', $idCategory);
