@@ -10,10 +10,10 @@ if (checkAjaxRequest()) {
         // ADD PRESTATION
         if (!empty($_POST['ADDPRESTATION'])) {
 
-            if (!empty($_POST['nom']) && !empty($_POST['siteId'])) {
+            if (!empty($_POST['nom']) && !empty($_POST['etablissementId'])) {
 
                 $PrestationProcess->setNom($_POST['nom']);
-                $PrestationProcess->setSiteId($_POST['siteId']);
+                $PrestationProcess->setEtablissementId($_POST['etablissementId']);
 
                 if ($PrestationProcess->notExist()) {
 
@@ -77,7 +77,7 @@ if (checkAjaxRequest()) {
         // UPDATE | CREATE PRESTATION PRICE
         if (!empty($_POST['UPDATEPRESTATIONPRICE'])) {
 
-            if (!empty($_POST['siteId']) && !empty($_POST['prestationId'])
+            if (!empty($_POST['etablissementId']) && !empty($_POST['prestationId'])
                 && !empty($_POST['prixHT']) && !empty($_POST['dateDebut'])) {
 
                 $PrestationProcess->setId($_POST['prestationId']);

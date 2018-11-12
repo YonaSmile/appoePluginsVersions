@@ -250,7 +250,7 @@ class Etablissement
     public function showAllBySite($countEtablissements = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_etablissements WHERE site_id = :siteId AND status = :status ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_etablissements WHERE site_id = :siteId AND status = :status ORDER BY created_at ASC';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
@@ -307,6 +307,8 @@ class Etablissement
         if ($error[0] != '00000') {
             return false;
         } else {
+
+            $this->id = $this->dbh->lastInsertId();
             return true;
         }
     }

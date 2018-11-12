@@ -124,11 +124,11 @@ function getAllPtiBySite($siteId)
     return $allPti;
 }
 
-function getAllPrestationsPriceBySite($siteId)
+function getAllPrestationsPriceByEtablissement($etablissementId)
 {
 
     $PrestationPrix = new \App\Plugin\AgapesHotes\PrixPrestation();
-    $PrestationPrix->setSiteId($siteId);
+    $PrestationPrix->setEtablissementId($etablissementId);
     $PrestationPrix->setDateDebut(date('Y-m-01'));
     $allPrestationsPrice = groupMultipleKeysObjectsArray($PrestationPrix->showAll(), 'prestation_id');
 
@@ -141,12 +141,12 @@ function getAllPrestationsPriceBySite($siteId)
     return $allPrestationsPrice;
 }
 
-function getAllMainCouranteBySiteInMonth($siteId, $month = '')
+function getAllMainCouranteByEtablissementInMonth($etablissementId, $month = '')
 {
 
     $month = !empty($month) ? $month : date('m');
     $MainCourante = new \App\Plugin\AgapesHotes\MainCourante();
-    $MainCourante->setSiteId($siteId);
+    $MainCourante->setEtablissementId($etablissementId);
     $MainCourante->setDate($month);
     $allMainCourante = groupMultipleKeysObjectsArray($MainCourante->showAllByMonth(), 'prestation_id');
 

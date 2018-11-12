@@ -10,7 +10,7 @@ if (checkAjaxRequest()) {
         // UPDATE | CREATE MAIN COURANTE
         if (!empty($_POST['UPDATEMAINCOURANTE'])) {
 
-            if (!empty($_POST['siteId']) && !empty($_POST['prestationId'])
+            if (!empty($_POST['etablissementId']) && !empty($_POST['prestationId'])
                 && !empty($_POST['prixId']) && !empty($_POST['date'])
                 && isset($_POST['quantite']) && isset($_POST['id'])) {
 
@@ -35,7 +35,7 @@ if (checkAjaxRequest()) {
 
                 }
             } else {
-                echo 'Un nom est attendu !';
+                echo 'Tous les paramètres sont attendus !';
             }
         }
 

@@ -21,12 +21,18 @@ if (checkAjaxRequest()) {
 
                     if ($SiteProcess->save()) {
                         echo json_encode(true);
+
+                        $Etablissement = new \App\Plugin\AgapesHotes\Etablissement();
+                        $Etablissement->setSiteId($SiteProcess->getId());
+                        $Etablissement->setNom($SiteProcess->getNom());
+                        $Etablissement->setSlug(slugify($SiteProcess->getNom()));
+                        $Etablissement->save();
                     }
                 } else {
                     echo 'Ce nom de site exist déjà !';
                 }
             } else {
-                echo 'Un nom est attendu !';
+                echo 'Un nom et un secteur sont attendus !';
             }
         }
 

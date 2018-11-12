@@ -6,7 +6,7 @@ class Prestation
 
     private $id;
     private $nom;
-    private $siteId;
+    private $etablissementId;
     private $status = 1;
     private $userId;
     private $createdAt;
@@ -61,17 +61,17 @@ class Prestation
     /**
      * @return mixed
      */
-    public function getSiteId()
+    public function getEtablissementId()
     {
-        return $this->siteId;
+        return $this->etablissementId;
     }
 
     /**
-     * @param mixed $siteId
+     * @param mixed $etablissementId
      */
-    public function setSiteId($siteId)
+    public function setEtablissementId($etablissementId)
     {
-        $this->siteId = $siteId;
+        $this->etablissementId = $etablissementId;
     }
 
     /**
@@ -144,8 +144,8 @@ class Prestation
   				`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   				PRIMARY KEY (`id`),
                 `nom` varchar(255) NOT NULL,
-                `site_id` int(11) UNSIGNED NOT NULL,
-                UNIQUE (`site_id`,`nom`),
+                `etablissement_id` int(11) UNSIGNED NOT NULL,
+                UNIQUE (`etablissement_id`,`nom`),
                 `status` tinyint(4) UNSIGNED NOT NULL DEFAULT 1,
                 `userId` int(11) UNSIGNED NOT NULL,
                 `created_at` date NOT NULL,
@@ -201,9 +201,9 @@ class Prestation
     public function showAll($minimumStatus = true, $countPrestations = false)
     {
         $sqlStatus = $minimumStatus ? 'status >= :status' : 'status = :status';
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_prestations WHERE site_id = :siteId AND ' . $sqlStatus . ' ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_prestations WHERE etablissement_id = :etablissementId AND ' . $sqlStatus . ' ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':etablissementId', $this->etablissementId);
         $stmt->bindParam(':status', $this->status);
         $stmt->execute();
 
@@ -222,11 +222,11 @@ class Prestation
     public function save()
     {
         $this->userId = getUserIdSession();
-        $sql = 'INSERT INTO appoe_plugin_agapeshotes_prestations (nom, site_id, status, userId, created_at) 
-                VALUES (:nom, :siteId, :status, :userId, CURDATE())';
+        $sql = 'INSERT INTO appoe_plugin_agapeshotes_prestations (nom, etablissement_id, status, userId, created_at) 
+                VALUES (:nom, :etablissementId, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':nom', $this->nom);
-        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':etablissementId', $this->etablissementId);
         $stmt->bindParam(':status', $this->status);
         $stmt->bindParam(':userId', $this->userId);
         $stmt->execute();
@@ -235,6 +235,8 @@ class Prestation
         if ($error[0] != '00000') {
             return false;
         } else {
+
+            $this->id = $this->dbh->lastInsertId();
             return true;
         }
     }
@@ -245,11 +247,11 @@ class Prestation
     public function update()
     {
         $this->userId = getUserIdSession();
-        $sql = 'UPDATE appoe_plugin_agapeshotes_prestations SET nom = :nom, site_id = :siteId, status = :status, userId = :userId WHERE id = :id';
+        $sql = 'UPDATE appoe_plugin_agapeshotes_prestations SET nom = :nom, etablissement_id = :etablissementId, status = :status, userId = :userId WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':nom', $this->nom);
-        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':etablissementId', $this->etablissementId);
         $stmt->bindParam(':status', $this->status);
         $stmt->bindParam(':userId', $this->userId);
         $stmt->bindParam(':id', $this->id);
@@ -286,10 +288,10 @@ class Prestation
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id, nom FROM appoe_plugin_agapeshotes_prestations WHERE nom = :nom AND site_id = :siteId';
+        $sql = 'SELECT id, nom FROM appoe_plugin_agapeshotes_prestations WHERE nom = :nom AND etablissement_id = :etablissementId';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':nom', $this->nom);
-        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':etablissementId', $this->etablissementId);
         $stmt->execute();
 
         $count = $stmt->rowCount();

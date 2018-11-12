@@ -5,7 +5,7 @@ class MainCourante
 {
 
     private $id;
-    private $siteId;
+    private $etablissementId;
     private $prestationId;
     private $prixId;
     private $quantite = 0;
@@ -48,17 +48,17 @@ class MainCourante
     /**
      * @return mixed
      */
-    public function getSiteId()
+    public function getEtablissementId()
     {
-        return $this->siteId;
+        return $this->etablissementId;
     }
 
     /**
-     * @param mixed $siteId
+     * @param mixed $etablissementId
      */
-    public function setSiteId($siteId)
+    public function setEtablissementId($etablissementId)
     {
-        $this->siteId = $siteId;
+        $this->etablissementId = $etablissementId;
     }
 
     /**
@@ -194,12 +194,12 @@ class MainCourante
         $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapeshotes_main_courante` (
   				`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   				PRIMARY KEY (`id`),
-                `site_id` int(11) NOT NULL,
+                `etablissement_id` int(11) NOT NULL,
                 `prestation_id` int(11) UNSIGNED NOT NULL,
                 `prix_id` int(11) UNSIGNED NOT NULL,
                 `quantite` int(11) UNSIGNED NOT NULL,
                 `date` date NOT NULL,
-                UNIQUE (`site_id`,`prestation_id`, `date`),
+                UNIQUE (`etablissement_id`,`prestation_id`, `date`),
                 `status` tinyint(4) UNSIGNED NOT NULL DEFAULT 1,
                 `userId` int(11) UNSIGNED NOT NULL,
                 `created_at` date NOT NULL,
@@ -253,10 +253,10 @@ class MainCourante
     public function showByDate()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_main_courante WHERE site_id = :siteId AND prestation_id = :prestationId AND date = :date';
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_main_courante WHERE etablissement_id = :etablissementId AND prestation_id = :prestationId AND date = :date';
 
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':etablissementId', $this->etablissementId);
         $stmt->bindParam(':prestationId', $this->prestationId);
         $stmt->bindParam(':date', $this->date);
         $stmt->execute();
@@ -287,9 +287,9 @@ class MainCourante
     public function showAll($countMainCourante = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_main_courante WHERE site_id = :siteId AND status = :status ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_main_courante WHERE etablissement_id = :etablissementId AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':etablissementId', $this->etablissementId);
         $stmt->bindParam(':status', $this->status);
         $stmt->execute();
 
@@ -309,10 +309,10 @@ class MainCourante
     public function showAllByMonth($countMainCourante = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_main_courante WHERE site_id = :siteId AND MONTH(date) = :date';
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_main_courante WHERE etablissement_id = :etablissementId AND MONTH(date) = :date';
 
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':etablissementId', $this->etablissementId);
         $stmt->bindParam(':date', $this->date);
         $stmt->execute();
 
@@ -331,10 +331,10 @@ class MainCourante
     public function save()
     {
         $this->userId = getUserIdSession();
-        $sql = 'INSERT INTO appoe_plugin_agapeshotes_main_courante (site_id, prestation_id, prix_id, quantite, date, status, userId, created_at) 
-                VALUES (:siteId, :prestationId, :prixId, :quantite, :date, :status, :userId, CURDATE())';
+        $sql = 'INSERT INTO appoe_plugin_agapeshotes_main_courante (etablissement_id, prestation_id, prix_id, quantite, date, status, userId, created_at) 
+                VALUES (:etablissementId, :prestationId, :prixId, :quantite, :date, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':etablissementId', $this->etablissementId);
         $stmt->bindParam(':prestationId', $this->prestationId);
         $stmt->bindParam(':prixId', $this->prixId);
         $stmt->bindParam(':quantite', $this->quantite);
@@ -359,10 +359,10 @@ class MainCourante
     {
         $this->userId = getUserIdSession();
         $sql = 'UPDATE appoe_plugin_agapeshotes_main_courante 
-        SET site_id = :siteId, prestation_id = :prestationId, prix_id = :prixId, quantite = :quantite, date = :date, status = :status, userId = :userId WHERE id = :id';
+        SET etablissement_id = :etablissementId, prestation_id = :prestationId, prix_id = :prixId, quantite = :quantite, date = :date, status = :status, userId = :userId WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':etablissementId', $this->etablissementId);
         $stmt->bindParam(':prestationId', $this->prestationId);
         $stmt->bindParam(':prixId', $this->prixId);
         $stmt->bindParam(':quantite', $this->quantite);
@@ -404,9 +404,9 @@ class MainCourante
     {
 
         $sql = 'SELECT id FROM appoe_plugin_agapeshotes_main_courante 
-        WHERE site_id = :siteId AND prestation_id = :prestationId AND date = :date';
+        WHERE etablissement_id = :etablissementId AND prestation_id = :prestationId AND date = :date';
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':etablissementId', $this->etablissementId);
         $stmt->bindParam(':prestationId', $this->prestationId);
         $stmt->bindParam(':date', $this->date);
         $stmt->execute();

@@ -304,6 +304,8 @@ class Site
         if ($error[0] != '00000') {
             return false;
         } else {
+
+            $this->id = $this->dbh->lastInsertId();
             return true;
         }
     }

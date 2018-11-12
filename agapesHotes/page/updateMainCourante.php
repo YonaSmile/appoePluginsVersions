@@ -15,17 +15,13 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
     ):
         echo getTitle($Page->getName(), $Page->getSlug(), ' de <strong>' . $Site->getNom() . '</strong> du mois de <strong>' . strftime("%B", strtotime(date('Y-m-d'))) . '</strong>');
 
-        //Get price by prestation
-        $allPrestationsPrix = getAllPrestationsPriceBySite($Site->getId());
-
-        //Get main courante
-        $allMainCourante = getAllMainCouranteBySiteInMonth($Site->getId());
+        //Get etablissements
+        $Etablissement = new \App\Plugin\AgapesHotes\Etablissement();
+        $Etablissement->setSiteId($Site->getId());
+        $allEtablissements = $Etablissement->showAllBySite();
 
         //Get prestations
         $Prestation = new \App\Plugin\AgapesHotes\Prestation();
-        $Prestation->setSiteId($Site->getId());
-        $allPrestations = $Prestation->showAll();
-
 
         //Select period
         $start = new \DateTime(date('Y-m-01'));
@@ -46,73 +42,93 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                         <?php endforeach; ?>
                     </tr>
                     </thead>
-                    <tbody>
-                    <?php foreach ($allPrestations as $prestation):
-                        if (array_key_exists($prestation->id, $allMainCourante)): ?>
-                            <tr data-idprestation="<?= $prestation->id ?>">
-                                <th class="positionRelative" style="vertical-align: middle;"><?= $prestation->nom; ?>
-                                    <small class="prestationReelPrice"
-                                           style="position: absolute;top: 0; right: 3px;font-size: 0.7em;"></small>
-                                </th>
-                                <?php foreach ($period as $key => $date):
+                    <?php foreach ($allEtablissements as $etablissement):
 
-                                    $allPrestationsPrixDates = array_keys($allPrestationsPrix[$prestation->id]);
-                                    usort($allPrestationsPrixDates, 'reelDatesSortDESC');
+                        //Get price by prestation
+                        $allPrestationsPrix = getAllPrestationsPriceByEtablissement($etablissement->id);
 
-                                    //Get prix by prestation
-                                    $idPrixReel = 0;
-                                    $prixReel = 0;
-                                    foreach ($allPrestationsPrixDates as $prestationsPrixDate) {
-                                        if ($prestationsPrixDate <= $date->format('Y-m-d')) {
-                                            $dateDebut = $allPrestationsPrix[$prestation->id][$prestationsPrixDate];
+                        //Get main courante
+                        $allMainCourante = getAllMainCouranteByEtablissementInMonth($etablissement->id);
 
-                                            $idPrixReel = $dateDebut->id;
-                                            $prixReel = $dateDebut->prixHT;
+                        $Prestation->setEtablissementId($etablissement->id);
+                        $allPrestations = $Prestation->showAll();
 
-                                            break;
-                                        }
-                                    }
-
-                                    $mainCourantId = '';
-                                    $mainCourantQuantite = '';
-                                    if (array_key_exists($date->format('Y-m-d'), $allMainCourante[$prestation->id])) {
-                                        $MainCourante = $allMainCourante[$prestation->id][$date->format('Y-m-d')];
-                                        $mainCourantId = $MainCourante->id;
-                                        $mainCourantQuantite = $MainCourante->quantite;
-                                    }
-
-                                    ?>
-
-                                    <td style="padding: 4px !important;" data-toggle="tooltip" data-placement="right"
-                                        data-prixprestation="<?= $prixReel; ?>"
-                                        title="<?= $date->format('d') . ' / ' . $prestation->nom; ?>">
-                                        <input type="tel" data-prestationid="<?= $prestation->id; ?>"
-                                               data-date="<?= $date->format('Y-m-d'); ?>"
-                                               data-prixid="<?= $idPrixReel; ?>"
-                                               data-day="<?= $date->format('d'); ?>"
-                                               class="text-center form-control mainCourantInput"
-                                               name="<?= $mainCourantId; ?>"
-                                               value="<?= $mainCourantQuantite; ?>"
-                                               style="padding: 5px 0 !important; <?= $date->format('d') == date('d') ? 'background:#4fb99f;color:#fff;' : ''; ?>">
-                                        <small class="d-block text-center prestationPrice"
-                                               data-day="<?= $date->format('j'); ?>"
-                                               data-prixprestation="<?= $prixReel; ?>"><?= financial($prixReel * $mainCourantQuantite); ?>
-                                        </small>
-                                    </td>
-                                <?php endforeach; ?>
+                        if ($allPrestations): ?>
+                            <tbody data-etablissement="<?= $etablissement->id; ?>">
+                            <tr>
+                                <th colspan="<?= $end->format('t'); ?>"><?= $etablissement->nom; ?></th>
                             </tr>
-                        <?php endif;
-                    endforeach; ?>
-                    <tr>
-                        <th><?= trans('Total'); ?></th>
-                        <?php foreach ($period as $key => $date): ?>
-                            <td style="<?= $date->format('d') == date('d') ? 'background:#4fb99f;color:#fff !important;' : ''; ?> <?= $date->format('N') == 7 ? 'background:#f2b134;color:#4b5b68;' : ''; ?> font-size: 0.7em !important;"
-                                class="totalDayPrestationPrice" data-day="<?= $date->format('j'); ?>"></td>
-                        <?php endforeach; ?>
-                    </tr>
-                    </tbody>
+                            <?php foreach ($allPrestations as $prestation): ?>
+                                <tr data-idprestation="<?= $prestation->id ?>">
+                                    <th class="positionRelative"
+                                        style="vertical-align: middle;"><?= $prestation->nom; ?>
+                                        <small class="prestationReelPrice"
+                                               style="position: absolute;top: 0; right: 3px;font-size: 0.7em;"></small>
+                                    </th>
+                                    <?php foreach ($period as $key => $date):
+
+                                        //Get prix by prestation
+                                        $idPrixReel = 0;
+                                        $prixReel = 0;
+
+                                        if (array_key_exists($prestation->id, $allPrestationsPrix)) {
+                                            $allPrestationsPrixDates = array_keys($allPrestationsPrix[$prestation->id]);
+                                            usort($allPrestationsPrixDates, 'reelDatesSortDESC');
+
+                                            foreach ($allPrestationsPrixDates as $prestationsPrixDate) {
+                                                if ($prestationsPrixDate <= $date->format('Y-m-d')) {
+                                                    $dateDebut = $allPrestationsPrix[$prestation->id][$prestationsPrixDate];
+
+                                                    $idPrixReel = $dateDebut->id;
+                                                    $prixReel = $dateDebut->prixHT;
+
+                                                    break;
+                                                }
+                                            }
+                                        }
+
+                                        $mainCourantId = '';
+                                        $mainCourantQuantite = '';
+                                        if (array_key_exists($prestation->id, $allMainCourante) && array_key_exists($date->format('Y-m-d'), $allMainCourante[$prestation->id])) {
+                                            $MainCourante = $allMainCourante[$prestation->id][$date->format('Y-m-d')];
+                                            $mainCourantId = $MainCourante->id;
+                                            $mainCourantQuantite = $MainCourante->quantite;
+                                        }
+
+                                        ?>
+
+                                        <td style="padding: 4px !important;"
+                                            data-prixprestation="<?= $prixReel; ?>"
+                                            title="<?= $date->format('d') . ' / ' . $prestation->nom; ?>">
+                                            <input type="tel" data-prestationid="<?= $prestation->id; ?>"
+                                                   data-date="<?= $date->format('Y-m-d'); ?>"
+                                                   data-prixid="<?= $idPrixReel; ?>"
+                                                   data-day="<?= $date->format('d'); ?>"
+                                                   class="text-center form-control mainCourantInput"
+                                                   name="<?= $mainCourantId; ?>"
+                                                   value="<?= $mainCourantQuantite; ?>"
+                                                   style="padding: 5px 0 !important; <?= $date->format('d') == date('d') ? 'background:#4fb99f;color:#fff;' : ''; ?>">
+                                            <small class="d-block text-center prestationPrice"
+                                                   data-day="<?= $date->format('j'); ?>"
+                                                   data-prixprestation="<?= $prixReel; ?>"
+                                                   data-etablissement="<?= $etablissement->id; ?>"><?= financial($prixReel * $mainCourantQuantite); ?>
+                                            </small>
+                                        </td>
+                                    <?php endforeach; ?>
+                                </tr>
+                            <?php endforeach; endif; ?>
+                        <tr>
+                            <th><?= trans('Total'); ?></th>
+                            <?php foreach ($period as $key => $date): ?>
+                                <td style="<?= $date->format('d') == date('d') ? 'background:#4fb99f;color:#fff !important;' : ''; ?> <?= $date->format('N') == 7 ? 'background:#f2b134;color:#4b5b68;' : ''; ?> font-size: 0.7em !important;"
+                                    class="totalDayPrestationPrice" data-day="<?= $date->format('j'); ?>"
+                                    data-etablissement="<?= $etablissement->id; ?>"></td>
+                            <?php endforeach; ?>
+                        </tr>
+                        </tbody>
+                    <?php endforeach; ?>
                 </table>
-                <table class="table table-striped tableNonEffect" style="width: 200px;">
+                <table class="table table-striped tableNonEffect" style="width: 250px;">
                     <tbody>
                     <tr>
                         <th>CA Mois</th>
@@ -146,20 +162,27 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                     $('.prestationPrice').each(function () {
                         var $info = $(this);
                         var day = $info.data('day');
+                        var etablissement = $info.data('etablissement');
                         var totalDay = parseFloat($info.text());
 
-                        if (typeof totalPriceByDay[day] === 'undefined') {
-                            totalPriceByDay[day] = [];
+                        if (typeof totalPriceByDay[etablissement] === 'undefined') {
+                            totalPriceByDay[etablissement] = [];
                         }
-                        totalPriceByDay[day].push(totalDay);
+                        if (typeof totalPriceByDay[etablissement][day] === 'undefined') {
+                            totalPriceByDay[etablissement][day] = [];
+                        }
+                        totalPriceByDay[etablissement][day].push(totalDay);
                     });
 
-                    $.each(totalPriceByDay, function (key, value) {
-                        var sum = 0;
-                        $.each(value, function (i, val) {
-                            sum += val;
+                    $.each(totalPriceByDay, function (etablissement, day) {
+                        $.each(day, function (key, value) {
+                            console.log(value);
+                            var sum = 0;
+                            $.each(value, function (i, val) {
+                                sum += val;
+                            });
+                            $('.totalDayPrestationPrice[data-day="' + key + '"][data-etablissement="' + etablissement + '"]').html(financial(sum));
                         });
-                        $('.totalDayPrestationPrice[data-day="' + key + '"]').html(financial(sum));
                     });
                     calculateAveragePrestationPricePerMonth();
                 }
@@ -176,7 +199,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                     $.each(totalPriceByDay, function (key, value) {
                         sum += value;
                     });
-                    $('.caPrestationMonth').html(financial(sum)+'€');
+                    $('.caPrestationMonth').html(financial(sum) + '€');
 
                     calculateAveragePrestationPricePerDay();
                 }
@@ -186,7 +209,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                     var totalMonth = parseFloat($('.caPrestationMonth').text());
                     var averageDay = (totalMonth / parseFloat(<?= date('t'); ?>));
 
-                    $('.caPrestationDay').html(financial(averageDay)+'€');
+                    $('.caPrestationDay').html(financial(averageDay) + '€');
 
                     calculateAveragePrestationPricePerWeek();
                 }
@@ -196,7 +219,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                     var totalDays = parseFloat($('.caPrestationDay').text());
                     var averageWeek = (totalDays * 7);
 
-                    $('.caPrestationWeek').html(financial(averageWeek)+'€');
+                    $('.caPrestationWeek').html(financial(averageWeek) + '€');
                 }
 
 
@@ -216,8 +239,6 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                     };
                 })();
 
-                $('[data-toggle="tooltip"]').tooltip({trigger: 'hover'});
-
                 $('input.mainCourantInput').on('input keyup', function (event) {
                     event.preventDefault();
 
@@ -231,7 +252,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                     }
 
                     var idMainCourante = $Input.attr('name');
-                    var siteId = '<?= $Site->getId(); ?>';
+                    var etablissementId = $Input.closest('tbody').data('etablissement');
                     var prestationId = $Input.data('prestationid');
                     var date = $Input.data('date');
                     var prixId = parseFloat($Input.data('prixid'));
@@ -246,7 +267,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                                 '<?= AGAPESHOTES_URL . 'process/ajaxMainCouranteProcess.php'; ?>',
                                 {
                                     UPDATEMAINCOURANTE: 'OK',
-                                    siteId: siteId,
+                                    etablissementId: etablissementId,
                                     prestationId: prestationId,
                                     date: date,
                                     prixId: prixId,
@@ -264,6 +285,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                                     var prestationPrice = parseFloat($InputInfo.data('prixprestation'));
                                     $InputInfo.html(financial(quantite * prestationPrice));
                                     activateAllFields();
+                                    calculateTotalPrestationPricePerDay();
                                 }
                             );
                         }, 300);

@@ -1,5 +1,5 @@
 <?php require('header.php');
-if (!empty($_GET['secteur']) && !empty($_GET['site'])):
+if (!empty($_GET['secteur']) && !empty($_GET['site']) && !empty($_GET['etablissement'])):
 
     //Get Secteur
     $Secteur = new \App\Plugin\AgapesHotes\Secteur();
@@ -9,13 +9,18 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
     $Site = new \App\Plugin\AgapesHotes\Site();
     $Site->setSlug($_GET['site']);
 
-    //Check Secteur and Site
+    //Get Etablissement
+    $Etablissement = new \App\Plugin\AgapesHotes\Etablissement();
+    $Etablissement->setSlug($_GET['etablissement']);
+
+    //Check Secteur, Site and Etablissement
     if (
-        $Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $Secteur->getId()
+        $Secteur->showBySlug() && $Site->showBySlug() && $Etablissement->showBySlug()
+        && $Site->getSecteurId() == $Secteur->getId() && $Site->getId() == $Etablissement->getSiteId()
     ):
-        echo getTitle($Page->getName(), $Page->getSlug(), ' de ' . $Site->getNom());
+        echo getTitle($Page->getName(), $Page->getSlug(), ' de ' . $Etablissement->getNom());
         $Prestation = new \App\Plugin\AgapesHotes\Prestation();
-        $Prestation->setSiteId($Site->getId());
+        $Prestation->setEtablissementId($Etablissement->getId());
         $allPrestations = $Prestation->showAll();
         ?>
         <div class="container-fluid">
@@ -102,7 +107,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                         <div class="modal-body" id="modalPrestationBody">
                             <div class="row">
                                 <div class="col-12 my-2">
-                                    <input type="hidden" name="siteId" value="<?= $Site->getId(); ?>">
+                                    <input type="hidden" name="etablissementId" value="<?= $Etablissement->getId(); ?>">
                                     <?= \App\Form::text('Nom', 'nom', 'text', !empty($_POST['nom']) ? $_POST['nom'] : '', true, 255); ?>
                                 </div>
                             </div>
@@ -133,7 +138,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                         <div class="modal-body" id="modalPriceBody">
                             <div class="row">
                                 <div class="col-12 my-2">
-                                    <input type="hidden" id="siteIdInput" name="siteId" value="<?= $Site->getId(); ?>">
+                                    <input type="hidden" id="etablissementIdInput" name="etablissementId" value="<?= $Etablissement->getId(); ?>">
                                     <input type="hidden" id="prestationIdInput" name="prestationId" value="">
                                     <input type="hidden" id="idPrestationPrixInput" name="id" value="">
                                     <?= \App\Form::text('Nouveau prix HT', 'prixHT', 'text', '', true, 255); ?>

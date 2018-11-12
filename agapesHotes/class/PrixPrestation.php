@@ -5,7 +5,7 @@ class PrixPrestation
 {
 
     private $id;
-    private $siteId;
+    private $etablissementId;
     private $prestationId;
     private $prixHT;
     private $dateDebut;
@@ -48,17 +48,17 @@ class PrixPrestation
     /**
      * @return mixed
      */
-    public function getSiteId()
+    public function getEtablissementId()
     {
-        return $this->siteId;
+        return $this->etablissementId;
     }
 
     /**
-     * @param mixed $siteId
+     * @param mixed $etablissementId
      */
-    public function setSiteId($siteId)
+    public function setEtablissementId($etablissementId)
     {
-        $this->siteId = $siteId;
+        $this->etablissementId = $etablissementId;
     }
 
     /**
@@ -178,11 +178,11 @@ class PrixPrestation
         $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapeshotes_prix_prestations` (
   				`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   				PRIMARY KEY (`id`),
-                `site_id` int(11) UNSIGNED NOT NULL,
+                `etablissement_id` int(11) UNSIGNED NOT NULL,
                 `prestation_id` int(11) UNSIGNED NOT NULL,
                 `prixHT` decimal(7,2) UNSIGNED NOT NULL,
                 `dateDebut` date NOT NULL,
-                UNIQUE (`site_id`,`prestation_id`, `dateDebut`),
+                UNIQUE (`etablissement_id`,`prestation_id`, `dateDebut`),
                 `status` tinyint(4) UNSIGNED NOT NULL DEFAULT 1,
                 `userId` int(11) UNSIGNED NOT NULL,
                 `created_at` date NOT NULL,
@@ -269,9 +269,9 @@ class PrixPrestation
     public function showAll($countPrixPrestations = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_prix_prestations WHERE site_id = :siteId AND dateDebut <= :dateDebut AND status = :status ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_prix_prestations WHERE etablissement_id = :etablissementId AND dateDebut <= :dateDebut AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':etablissementId', $this->etablissementId);
         $stmt->bindParam(':status', $this->status);
         $stmt->bindParam(':dateDebut', $this->dateDebut);
         $stmt->execute();
@@ -291,10 +291,10 @@ class PrixPrestation
     public function save()
     {
         $this->userId = getUserIdSession();
-        $sql = 'INSERT INTO appoe_plugin_agapeshotes_prix_prestations (site_id, prestation_id, prixHT, dateDebut, status, userId, created_at) 
-                VALUES (:siteId, :prestationId, :prixHT, :dateDebut, :status, :userId, CURDATE())';
+        $sql = 'INSERT INTO appoe_plugin_agapeshotes_prix_prestations (etablissement_id, prestation_id, prixHT, dateDebut, status, userId, created_at) 
+                VALUES (:etablissementId, :prestationId, :prixHT, :dateDebut, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':etablissementId', $this->etablissementId);
         $stmt->bindParam(':prestationId', $this->prestationId);
         $stmt->bindParam(':prixHT', $this->prixHT);
         $stmt->bindParam(':dateDebut', $this->dateDebut);
@@ -317,10 +317,10 @@ class PrixPrestation
     {
         $this->userId = getUserIdSession();
         $sql = 'UPDATE appoe_plugin_agapeshotes_prix_prestations 
-        SET site_id = :siteId, prestation_id = :prestationId, prixHT = :prixHT, dateDebut = :dateDebut, status = :status, userId = :userId WHERE id = :id';
+        SET etablissement_id = :etablissementId, prestation_id = :prestationId, prixHT = :prixHT, dateDebut = :dateDebut, status = :status, userId = :userId WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':etablissementId', $this->etablissementId);
         $stmt->bindParam(':prestationId', $this->prestationId);
         $stmt->bindParam(':prixHT', $this->prixHT);
         $stmt->bindParam(':dateDebut', $this->dateDebut);
@@ -361,9 +361,9 @@ class PrixPrestation
     {
 
         $sql = 'SELECT id FROM appoe_plugin_agapeshotes_prix_prestations 
-        WHERE site_id = :siteId AND prestation_id = :prestationId AND dateDebut = :dateDebut';
+        WHERE etablissement_id = :etablissementId AND prestation_id = :prestationId AND dateDebut = :dateDebut';
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':etablissementId', $this->etablissementId);
         $stmt->bindParam(':prestationId', $this->prestationId);
         $stmt->bindParam(':dateDebut', $this->dateDebut);
         $stmt->execute();
