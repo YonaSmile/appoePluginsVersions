@@ -7,72 +7,38 @@ if (checkAjaxRequest()) {
 
         $VivreCrueProcess = new \App\Plugin\AgapesHotes\VivreCrue();
 
-        // ADD COURSES
-        if (!empty($_POST['ADDVIVRECRUE'])) {
+        // UPDATE | CREATE VIVRE CRUE
+        if (!empty($_POST['UPDATEVIVRECRUE'])) {
 
-            if (!empty($_POST['nom']) && !empty($_POST['etablissementId']) && !empty($_POST['date'])
-                && !empty($_POST['prixHTunite']) && !empty($_POST['quantite'])
-                && !empty($_POST['tauxTVA']) && !empty($_POST['total'])) {
+            if (!empty($_POST['etablissementId']) && !empty($_POST['date']) && !empty($_POST['idCourse'])
+                && !empty($_POST['prixHTunite']) && !empty($_POST['tauxTva'])
+                && isset($_POST['quantite']) && isset($_POST['id'])) {
 
                 $VivreCrueProcess->feed($_POST);
 
-                if ($VivreCrueProcess->notExist()) {
+                if (empty($_POST['id'])) {
 
                     if ($VivreCrueProcess->save()) {
-                        echo json_encode(true);
+                        echo $VivreCrueProcess->getId();
+                    } else {
+                        echo 'Impossible d\'enregistrer le vivre crue';
                     }
+
                 } else {
-                    echo 'Cette course existe déjà !';
+
+                    if ($VivreCrueProcess->update()) {
+
+                        echo $VivreCrueProcess->getId();
+                    } else {
+                        echo 'Impossible de mettre à jour le vivre crue';
+                    }
+
                 }
             } else {
-                echo 'Tous les champs sont obligatoires !';
-            }
-        }
-
-        // UPDATE COURSES
-        if (!empty($_POST['UPDATECOURSES'])) {
-
-            if (!empty($_POST['idCoursesUpdate']) && !empty($_POST['newName'])) {
-
-                $VivreCrueProcess->setId($_POST['idCoursesUpdate']);
-                if ($VivreCrueProcess->show()) {
-
-                    $VivreCrueProcess->setNom($_POST['newName']);
-
-                    if ($VivreCrueProcess->notExist(true)) {
-
-                        if ($VivreCrueProcess->update()) {
-                            echo json_encode(true);
-                        } else {
-                            echo 'Impossible de mettre à jour cet article !';
-                        }
-                    } else {
-                        echo 'Cet article existe déjà !';
-                    }
-                } else {
-                    echo 'Cet article n\'existe pas !';
-                }
-            }
-        }
-
-        // ARCHIVE COURSES
-        if (!empty($_POST['ARCHIVECOURSES'])) {
-
-            if (!empty($_POST['idCoursesArchive'])) {
-
-                $VivreCrueProcess->setId($_POST['idCoursesArchive']);
-                if ($VivreCrueProcess->show()) {
-
-                    if ($VivreCrueProcess->delete()) {
-                        echo json_encode(true);
-                    } else {
-                        echo 'Impossible d\'archiver cet article !';
-                    }
-                } else {
-                    echo 'Cet article n\'existe pas !';
-                }
+                echo 'Tous les paramètres sont attendus !';
             }
         }
 
     }
+    unset($_POST);
 }

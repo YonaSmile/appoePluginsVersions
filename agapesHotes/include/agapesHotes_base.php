@@ -159,6 +159,24 @@ function getAllMainCouranteByEtablissementInMonth($etablissementId, $month = '')
     return $allMainCourante;
 }
 
+function getAllVivreCrueByEtablissementInMonth($etablissementId, $month = '')
+{
+
+    $month = !empty($month) ? $month : date('m');
+    $VivreCrue = new \App\Plugin\AgapesHotes\VivreCrue();
+    $VivreCrue->setEtablissementId($etablissementId);
+    $VivreCrue->setDate($month);
+    $allVivresCrue = groupMultipleKeysObjectsArray($VivreCrue->showAllByMonth(), 'idCourse');
+
+    if ($allVivresCrue) {
+        foreach ($allVivresCrue as $idCourse => $allCourses) {
+            $allMainCourante[$idCourse] = extractFromObjArr($allCourses, 'date');
+        }
+    }
+
+    return $allVivresCrue;
+}
+
 function getAllPlanningBySite($siteId, $month = '')
 {
     $month = !empty($month) ? $month : date('m');

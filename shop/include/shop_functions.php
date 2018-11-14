@@ -38,7 +38,6 @@ function shop_getProductDetailsFromSlug($slug)
 
 /**
  * @param null $idProduct
- * @param Product|null $Product
  * @return \App\Plugin\Shop\Product|array|Product
  */
 function shop_getProductDetails($idProduct = null)
@@ -63,7 +62,9 @@ function shop_getProductDetails($idProduct = null)
 
             $ProductMeta->setProductId($Product->getId());
             $ProductMeta->show();
-            $Product->meta = extractFromObjToSimpleArr($ProductMeta->getData(), 'meta_key', 'meta_value');
+            if(!isArrayEmpty($ProductMeta->getData())) {
+                $Product->meta = extractFromObjToSimpleArr($ProductMeta->getData(), 'meta_key', 'meta_value');
+            }
 
             $ProductMedia->setTypeId($idProduct);
             $Product->media = $ProductMedia->showFiles();

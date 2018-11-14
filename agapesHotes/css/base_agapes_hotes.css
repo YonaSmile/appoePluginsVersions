@@ -24,3 +24,7 @@ table.tableNonEffect tbody tr:focus, table.tableNonEffect tbody tr:hover {
     -moz-transform: none !important;
     -webkit-transform: none !important;
 }
+
+.tableNonEffect th, .tableNonEffect td {
+    vertical-align: middle !important;
+}

@@ -112,10 +112,13 @@ if (!empty($_GET['id'])):
                                                         <img src="<?= getThumb($file->name, 370); ?>"
                                                              alt="<?= $file->description; ?>"
                                                              data-originsrc="<?= WEB_DIR_INCLUDE . $file->name; ?>"
+                                                             data-filename="<?= $file->name; ?>"
                                                              class="img-fluid seeOnOverlay seeDataOnHover">
                                                     <?php else: ?>
                                                         <a href="<?= WEB_DIR_INCLUDE . $file->name; ?>" target="_blank">
-                                                            <img src="<?= getImgAccordingExtension(getFileExtension($file->name)); ?>">
+                                                            <img src="<?= getImgAccordingExtension(getFileExtension($file->name)); ?>"
+                                                                 class="seeDataOnHover"
+                                                                 data-filename="<?= $file->name; ?>">
                                                         </a>
                                                     <?php endif; ?>
                                                     <div class="form-group mt-1 mb-0">

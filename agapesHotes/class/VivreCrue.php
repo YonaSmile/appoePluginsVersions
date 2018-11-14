@@ -5,7 +5,7 @@ class VivreCrue
 {
 
     private $id;
-    private $nom;
+    private $idCourse;
     private $etablissementId;
     private $prixHTunite;
     private $quantite;
@@ -50,17 +50,17 @@ class VivreCrue
     /**
      * @return mixed
      */
-    public function getNom()
+    public function getIdCourse()
     {
-        return $this->nom;
+        return $this->idCourse;
     }
 
     /**
-     * @param mixed $nom
+     * @param mixed $idCourse
      */
-    public function setNom($nom)
+    public function setIdCourse($idCourse)
     {
-        $this->nom = $nom;
+        $this->idCourse = $idCourse;
     }
 
     /**
@@ -229,13 +229,13 @@ class VivreCrue
   				`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   				PRIMARY KEY (`id`),
   				`etablissement_id` int(11) UNSIGNED NOT NULL,
-  				`nom` varchar(255) NOT NULL,
+  				`idCourse` int(11) UNSIGNED NOT NULL,
                 `prixHTunite` decimal(7,2) UNSIGNED NOT NULL,
                 `quantite` int(11) UNSIGNED NOT NULL,
                 `tauxTVA` decimal(7,2) UNSIGNED NOT NULL,
                 `total` decimal(7,2) UNSIGNED NOT NULL,
                 `date` date NOT NULL,
-                UNIQUE (`etablissement_id`,`nom`, `date`),
+                UNIQUE (`etablissement_id`,`idCourse`, `date`),
                 `status` tinyint(4) UNSIGNED NOT NULL DEFAULT 1,
                 `userId` int(11) UNSIGNED NOT NULL,
                 `created_at` date NOT NULL,
@@ -306,20 +306,17 @@ class VivreCrue
     }
 
     /**
-     * @param $dateDebut
-     * @param $dateFin
      * @param $countVivreCrueByDate
-     * @return array|bool
+     * @return bool|array
      */
-    public function showByDate($dateDebut, $dateFin, $countVivreCrueByDate = false)
+    public function showAllByMonth($countVivreCrueByDate = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_vivre_crue WHERE etablissement_id = :etablissementId AND (date BETWEEN :dateDebut AND :dateFin) AND status = :status ORDER BY date ASC';
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_vivre_crue WHERE etablissement_id = :etablissementId AND MONTH(date) = :date';
+
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':etablissementId', $this->etablissementId);
-        $stmt->bindParam(':dateDebut', $dateDebut);
-        $stmt->bindParam(':dateFin', $dateFin);
-        $stmt->bindParam(':status', $this->status);
+        $stmt->bindParam(':date', $this->date);
         $stmt->execute();
 
         $count = $stmt->rowCount();
@@ -337,11 +334,11 @@ class VivreCrue
     public function save()
     {
         $this->userId = getUserIdSession();
-        $sql = 'INSERT INTO appoe_plugin_agapeshotes_vivre_crue (etablissement_id, nom, prixHTunite, quantite, tauxTVA, total, date, status, userId, created_at) 
-                VALUES (:etablissementId, :nom, :prixHTunite, :quantite, :tauxTVA, :total, :date, :status, :userId, CURDATE())';
+        $sql = 'INSERT INTO appoe_plugin_agapeshotes_vivre_crue (etablissement_id, idCourse, prixHTunite, quantite, tauxTVA, total, date, status, userId, created_at) 
+                VALUES (:etablissementId, :idCourse, :prixHTunite, :quantite, :tauxTVA, :total, :date, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':etablissementId', $this->etablissementId);
-        $stmt->bindParam(':nom', $this->nom);
+        $stmt->bindParam(':idCourse', $this->idCourse);
         $stmt->bindParam(':prixHTunite', $this->prixHTunite);
         $stmt->bindParam(':quantite', $this->quantite);
         $stmt->bindParam(':tauxTVA', $this->tauxTVA);
@@ -353,8 +350,9 @@ class VivreCrue
 
         $error = $stmt->errorInfo();
         if ($error[0] != '00000') {
-            return false;
+            showDebugData($error); //return false;
         } else {
+            $this->id = $this->dbh->lastInsertId();
             return true;
         }
     }
@@ -366,11 +364,11 @@ class VivreCrue
     {
         $this->userId = getUserIdSession();
         $sql = 'UPDATE appoe_plugin_agapeshotes_vivre_crue 
-        SET etablissement_id = :etablissementId, nom = :nom, prixHTunite = :prixHTunite, quantite = :quantite, tauxTVA = :tauxTVA, total = :total, date = :date, status = :status, userId = :userId WHERE id = :id';
+        SET etablissement_id = :etablissementId, idCourse = :idCourse, prixHTunite = :prixHTunite, quantite = :quantite, tauxTVA = :tauxTVA, total = :total, date = :date, status = :status, userId = :userId WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':etablissementId', $this->etablissementId);
-        $stmt->bindParam(':nom', $this->nom);
+        $stmt->bindParam(':idCourse', $this->idCourse);
         $stmt->bindParam(':prixHTunite', $this->prixHTunite);
         $stmt->bindParam(':quantite', $this->quantite);
         $stmt->bindParam(':tauxTVA', $this->tauxTVA);
@@ -412,11 +410,10 @@ class VivreCrue
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id, nom FROM appoe_plugin_agapeshotes_vivre_crue 
-        WHERE etablissement_id = :etablissementId AND nom = :nom AND date = :date';
+        $sql = 'SELECT idFROM appoe_plugin_agapeshotes_vivre_crue 
+        WHERE etablissement_id = :etablissementId AND idCourse = :idCourse AND date = :date';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':etablissementId', $this->etablissementId);
-        $stmt->bindParam(':nom', $this->nom);
         $stmt->bindParam(':date', $this->date);
         $stmt->execute();
 

@@ -196,38 +196,33 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                     var date = $Input.data('date');
                     var absenceReason = $Input.val();
 
-                    if (new Date(date).getTime() <= new Date().getTime()) {
-                        disabledAllFields($Input);
-                        delay(function () {
-                            busyApp();
+                    disabledAllFields($Input);
+                    delay(function () {
+                        busyApp();
 
-                            $.post(
-                                '<?= AGAPESHOTES_URL . 'process/ajaxPlanningProcess.php'; ?>',
-                                {
-                                    UPDATEPLANNING: 'OK',
-                                    siteId: siteId,
-                                    employeId: employeId,
-                                    date: date,
-                                    absenceReason: absenceReason,
-                                    id: idPlanning
-                                },
-                                function (data) {
-                                    if (data && $.isNumeric(data)) {
-                                        $Input.attr('name', data);
-                                        $Input.addClass('successInput');
-                                    } else {
-                                        alert(data);
-                                    }
-                                    availableApp();
-                                    activateAllFields();
-                                    calculateTotalReelHours();
+                        $.post(
+                            '<?= AGAPESHOTES_URL . 'process/ajaxPlanningProcess.php'; ?>',
+                            {
+                                UPDATEPLANNING: 'OK',
+                                siteId: siteId,
+                                employeId: employeId,
+                                date: date,
+                                absenceReason: absenceReason,
+                                id: idPlanning
+                            },
+                            function (data) {
+                                if (data && $.isNumeric(data)) {
+                                    $Input.attr('name', data);
+                                    $Input.addClass('successInput');
+                                } else {
+                                    alert(data);
                                 }
-                            );
-                        }, 300);
-                    } else {
-                        $Input.val('');
-                        alert('Cette date est ultérieur à aujourdh\'hui !')
-                    }
+                                availableApp();
+                                activateAllFields();
+                                calculateTotalReelHours();
+                            }
+                        );
+                    }, 300);
                 });
             });
         </script>

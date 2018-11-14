@@ -12,7 +12,7 @@ RewriteRule ^mainCourante/([a-zA-Z0-9-]+)/([a-zA-Z0-9-]+)/$  updateMainCourante.
 RewriteRule ^planning/([a-zA-Z0-9-]+)/([a-zA-Z0-9-]+)/$  updatePlanning.php?secteur=$1&site=$2 [NC,L]
 RewriteRule ^mainSupplementaire/([a-zA-Z0-9-]+)/([a-zA-Z0-9-]+)/$  updateMainSupplementaire.php?secteur=$1&site=$2 [NC,L]
 RewriteRule ^allCourses/([a-zA-Z0-9-]+)/([a-zA-Z0-9-]+)/([a-zA-Z0-9-]+)/$  allCourses.php?secteur=$1&site=$2&etablissement=$3 [NC,L]
-RewriteRule ^vivreCrue/([a-zA-Z0-9-]+)/([a-zA-Z0-9-]+)/([a-zA-Z0-9-]+)/$  updateVivreCrue.php?secteur=$1&site=$2&etablissement=$3 [NC,L]
+RewriteRule ^vivreCrue/([a-zA-Z0-9-]+)/([a-zA-Z0-9-]+)/$  updateVivreCrue.php?secteur=$1&site=$2 [NC,L]
 
 RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} !-d
