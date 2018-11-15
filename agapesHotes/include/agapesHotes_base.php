@@ -170,7 +170,7 @@ function getAllVivreCrueByEtablissementInMonth($etablissementId, $month = '')
 
     if ($allVivresCrue) {
         foreach ($allVivresCrue as $idCourse => $allCourses) {
-            $allMainCourante[$idCourse] = extractFromObjArr($allCourses, 'date');
+            $allVivresCrue[$idCourse] = extractFromObjArr($allCourses, 'date');
         }
     }
 

@@ -108,7 +108,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                                                data-date="<?= $date->format('Y-m-d'); ?>"
                                                data-prixid="<?= $idPrixReel; ?>"
                                                data-day="<?= $date->format('d'); ?>"
-                                               class="text-center form-control mainCourantInput"
+                                               class="text-center form-control mainCourantInput sensibleField"
                                                name="<?= $mainCourantId; ?>"
                                                value="<?= $mainCourantQuantite; ?>"
                                                style="padding: 5px 0 !important; <?= $date->format('d') == date('d') ? 'background:#4fb99f;color:#fff;' : ''; ?>">

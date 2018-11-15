@@ -53,7 +53,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
 
                     //Get main courante
                     $allVivresCrue = getAllVivreCrueByEtablissementInMonth($etablissement->id);
-showDebugData($allVivresCrue);
+
                     $Course->setEtablissementId($etablissement->id);
                     $allCourses = $Course->showAll();
 
@@ -80,31 +80,36 @@ showDebugData($allVivresCrue);
                                 <td class="text-center">
                                     <input type="tel" name="prixUntitHT" value="<?= $vivreCruePrixHtUnit; ?>"
                                            class="text-center" data-idcourse="<?= $course->id ?>"
+                                        <?= !empty($vivreCruePrixHtUnit) ? 'readonly' : ''; ?>
                                            style="width: 50px;margin-right: 5px;">€
                                 </td>
                                 <td class="text-center">
                                     <input type="tel" name="tauxTva" value="<?= $vivreCrueTauxTva; ?>"
                                            class="text-center" data-idcourse="<?= $course->id ?>"
+                                        <?= !empty($vivreCrueTauxTva) ? 'readonly' : ''; ?>
                                            style="width: 50px;margin-right: 5px;">%
                                 </td>
-                                <td class="text-center" data-quantitecourseid="<?= $course->id ?>"></td>
-                                <td class="text-center" data-totalcourseid="<?= $course->id ?>"></td>
+                                <td class="text-center" class="tdQuantity"
+                                    data-quantitecourseid="<?= $course->id ?>"></td>
+                                <td class="text-center" class="tdTotal" data-totalcourseid="<?= $course->id ?>"></td>
                                 <?php foreach ($period as $key => $date):
                                     $vivreCrueId = '';
                                     $vivreCrueQuantite = '';
+                                    $vivreCrueTotalPrice = 0;
                                     if (array_key_exists($course->id, $allVivresCrue) && array_key_exists($date->format('Y-m-d'), $allVivresCrue[$course->id])) {
                                         $VivreCrue = $allVivresCrue[$course->id][$date->format('Y-m-d')];
-                                        $mainCourantId = $VivreCrue->id;
-                                        $vivreCrueQuantite = $VivreCrue->quantite;
+                                        $vivreCrueId = $VivreCrue->id;
+                                        $vivreCrueQuantite = $VivreCrue->quantite == 0 ? '' : $VivreCrue->quantite;
+                                        $vivreCrueTotalPrice = $VivreCrue->total;
                                     }
                                     $vivreCrueQuantiteTotalDay += $vivreCrueQuantite;
                                     ?>
-
                                     <td style="padding: 4px !important;">
                                         <input type="tel" data-idcourse="<?= $course->id; ?>"
                                                data-date="<?= $date->format('Y-m-d'); ?>"
-                                               data-day="<?= $date->format('d'); ?>"
-                                               class="text-center form-control vivreCrueInput"
+                                               data-day="<?= $date->format('j'); ?>"
+                                               data-totalprice="<?= $vivreCrueTotalPrice; ?>"
+                                               class="text-center form-control vivreCrueInput sensibleField"
                                                name="<?= $vivreCrueId; ?>"
                                                value="<?= $vivreCrueQuantite; ?>"
                                                style="padding: 5px 0 !important; <?= $date->format('d') == date('d') ? 'background:#4fb99f;color:#fff;' : ''; ?>">
@@ -118,19 +123,6 @@ showDebugData($allVivresCrue);
                             </tr>
 
                         <?php endforeach; ?>
-                        <tr>
-                            <th><?= trans('Total'); ?></th>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <?php foreach ($period as $key => $date): ?>
-                                <td style="<?= $date->format('d') == date('d') ? 'background:#4fb99f;color:#fff !important;' : ''; ?> <?= $date->format('N') == 7 ? 'background:#f2b134;color:#4b5b68;' : ''; ?> font-size: 0.7em !important;"
-                                    class="totalDayPrestationPrice text-center"
-                                    data-day="<?= $date->format('j'); ?>"
-                                    data-etablissement="<?= $etablissement->id; ?>"></td>
-                            <?php endforeach; ?>
-                        </tr>
                         </tbody>
                     <?php endif;
                 endforeach; ?>
@@ -138,6 +130,36 @@ showDebugData($allVivresCrue);
         </div>
         <script>
             $(document).ready(function () {
+
+                function calculateTotalQuantityByCourse(courseId) {
+
+                    var totalQuantityByDay = [];
+                    $('input.vivreCrueInput[data-idcourse="' + courseId + '"]').each(function () {
+
+                        var quantity = parseFloat($(this).val());
+                        if ($.isNumeric(quantity) && quantity > 0) {
+                            totalQuantityByDay.push(quantity);
+                        }
+                    });
+
+                    var sum = 0;
+                    $.each(totalQuantityByDay, function (key, value) {
+                        sum += value;
+                    });
+                    $('td[data-quantitecourseid="' + courseId + '"]').html(sum);
+                    calculateTotalPriceByCourse(courseId);
+                }
+
+                function calculateTotalPriceByCourse(courseId) {
+
+                    var totalQuantity = parseFloat($('td[data-quantitecourseid="' + courseId + '"]').text());
+                    var unitPriceHT = $('input[name="prixUntitHT"][data-idcourse="' + courseId + '"]').val();
+                    $('td[data-totalcourseid="' + courseId + '"]').html(financial(totalQuantity * unitPriceHT) + '€');
+                }
+
+                $('input.vivreCrueInput').each(function () {
+                    calculateTotalQuantityByCourse($(this).data('idcourse'));
+                });
 
                 var delay = (function () {
                     var timer = 0;
@@ -152,7 +174,7 @@ showDebugData($allVivresCrue);
 
                     var $Input = $(this);
 
-                    $('input.mainCourantInput').removeClass('successInput');
+                    $('input.vivreCrueInput').removeClass('successInput');
 
                     if (!$Input.val().length > 0) {
                         $Input.val('');
@@ -189,13 +211,16 @@ showDebugData($allVivresCrue);
                                         quantite: quantite,
                                         prixHTunite: prixUniteHT,
                                         tauxTva: tauxTva,
-                                        total: (quantite*prixUniteHT),
+                                        total: (quantite * prixUniteHT),
                                         id: idVivreCrue
                                     },
                                     function (data) {
                                         if (data && $.isNumeric(data)) {
                                             $Input.attr('name', data);
                                             $Input.addClass('successInput');
+                                            calculateTotalQuantityByCourse(idCourse);
+                                            $('input[name="prixUntitHT"][data-idcourse="' + idCourse + '"]').attr('readonly', 'readonly');
+                                            $('input[name="tauxTva"][data-idcourse="' + idCourse + '"]').attr('readonly', 'readonly');
                                         } else {
                                             alert(data);
                                         }

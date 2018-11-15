@@ -350,7 +350,7 @@ class VivreCrue
 
         $error = $stmt->errorInfo();
         if ($error[0] != '00000') {
-            showDebugData($error); //return false;
+            return false;
         } else {
             $this->id = $this->dbh->lastInsertId();
             return true;

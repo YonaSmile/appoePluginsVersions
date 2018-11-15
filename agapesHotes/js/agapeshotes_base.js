@@ -1,7 +1,7 @@
 function disabledAllFields(inputExlude) {
-    $('input.mainCourantInput').not(inputExlude).attr('disabled', 'disabled');
+    $('input.sensibleField').not(inputExlude).attr('disabled', 'disabled');
 }
 
 function activateAllFields() {
-    $('input.mainCourantInput').attr('disabled', false);
+    $('input.sensibleField').attr('disabled', false);
 }
