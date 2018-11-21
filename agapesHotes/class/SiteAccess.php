@@ -237,6 +237,34 @@ class SiteAccess
     }
 
     /**
+     * @param $countSitesAccess
+     * @return array|bool
+     */
+    public function showAllByUser($countSitesAccess = false)
+    {
+
+        $sql = 'SELECT SITEACCESS.*, SECTEUR.id AS secteurId, SECTEUR.nom AS secteurNom 
+        FROM appoe_plugin_agapeshotes_sites_access AS SITEACCESS
+        INNER JOIN appoe_plugin_agapeshotes_sites AS SITE
+        ON(SITE.id = SITEACCESS.id)
+        INNER JOIN appoe_plugin_agapeshotes_secteurs AS SECTEUR
+        ON(SITE.secteur_id = SECTEUR.id)
+        WHERE SITEACCESS.siteUserId = :siteUserId AND SITEACCESS.status = :status ORDER BY SITEACCESS.updated_at DESC';
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':siteUserId', $this->siteUserId);
+        $stmt->bindParam(':status', $this->status);
+        $stmt->execute();
+
+        $count = $stmt->rowCount();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            return !$countSitesAccess ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
+        }
+    }
+
+    /**
      * @return bool
      */
     public function save()

@@ -10,32 +10,20 @@ if (checkAjaxRequest()) {
         // ADD MAIN SUPPLEMENTAIRE
         if (!empty($_POST['ADDMAINSUPPLEMENTAIRE']) && valideAjaxToken()) {
 
-            if (!empty($_POST['siteId']) && !empty($_POST['date']) && !empty($_POST['client_nature']) && !empty($_POST['client_name'])) {
+            if (!empty($_POST['siteId']) && !empty($_POST['date']) && !empty($_POST['client_name'])) {
 
                 $MainSuppProcess->setSiteId($_POST['siteId']);
                 $MainSuppProcess->setDate($_POST['date']);
+                $MainSuppProcess->setClientName($_POST['client_name']);
 
                 $successArray = array();
-
-                $Client = new \App\Plugin\AgapesHotes\Client();
-                $Client->setNature($_POST['client_nature']);
-                $Client->setName($_POST['client_name']);
-                $Client->setFirstName($_POST['client_firstName']);
-
-                if ($Client->notExist()) {
-                    $Client->save();
-                } else {
-                    $Client->showByTypeAndNatureAndName();
-                }
-
-                $MainSuppProcess->setClientId($Client->getId());
 
                 //Prepare products
                 $allProductFields = array();
                 $acceptedFields = array('nom', 'quantite', 'prixHTunite', 'tauxTVA', 'total');
                 foreach ($_POST as $key => $value) {
 
-                    if (false !== strpos($key, '_')) {
+                    if (!empty($value) && false !== strpos($key, '_')) {
 
                         list($fieldName, $fieldNb) = explode('_', $key);
                         if (in_array($fieldName, $acceptedFields)) {
@@ -72,47 +60,75 @@ if (checkAjaxRequest()) {
         }
 
         // UPDATE MAIN SUPPLEMENTAIRE
-        if (!empty($_POST['UPDATECOURSES'])) {
+        if (!empty($_POST['UPDATEMAINSUPPLEMENTAIRE']) && valideAjaxToken()) {
 
-            if (!empty($_POST['idCoursesUpdate']) && !empty($_POST['newName'])) {
+            if (!empty($_POST['siteId']) && !empty($_POST['date']) && !empty($_POST['client_name'])) {
 
-                $MainSuppProcess->setId($_POST['idCoursesUpdate']);
-                if ($MainSuppProcess->show()) {
+                $MainSuppProcess->setSiteId($_POST['siteId']);
+                $MainSuppProcess->setDate($_POST['date']);
+                $MainSuppProcess->setClientName($_POST['client_name']);
 
-                    $MainSuppProcess->setNom($_POST['newName']);
+                $successArray = array();
 
-                    if ($MainSuppProcess->notExist(true)) {
+                //Prepare products
+                $allProductFields = array();
+                $acceptedFields = array('id', 'nom', 'quantite', 'prixHTunite', 'tauxTVA', 'total');
+                foreach ($_POST as $key => $value) {
 
-                        if ($MainSuppProcess->update()) {
-                            echo json_encode(true);
+                    if (!empty($value) && false !== strpos($key, '_')) {
+
+                        list($fieldName, $fieldNb) = explode('_', $key);
+                        if (in_array($fieldName, $acceptedFields)) {
+
+                            $allProductFields[$fieldNb][$fieldName] = $_POST[$key];
+                        }
+                    }
+                }
+
+                foreach ($allProductFields as $nbProduct => $facture) {
+                    $MainSuppProcess->setId('');
+                    $MainSuppProcess->feed($facture);
+                    if (!empty($MainSuppProcess->getId())) {
+                        if ($MainSuppProcess->notExist(true)) {
+
+                            if (!$MainSuppProcess->update()) {
+                                $successArray[] = 'Impossible d\'enregistrer <strong>' . $MainSuppProcess->getNom() . '</strong> dans la facture !';
+                            }
                         } else {
-                            echo 'Impossible de mettre à jour cet article !';
+                            $successArray[] = '<strong>' . $MainSuppProcess->getNom() . '</strong> a déjà été saisi !';
                         }
                     } else {
-                        echo 'Cet article existe déjà !';
+                        if ($MainSuppProcess->notExist()) {
+
+                            if (!$MainSuppProcess->save()) {
+                                $successArray[] = 'Impossible d\'enregistrer <strong>' . $MainSuppProcess->getNom() . '</strong> dans la facture !';
+                            }
+                        } else {
+                            $successArray[] = '<strong>' . $MainSuppProcess->getNom() . '</strong> a déjà été saisi !';
+                        }
                     }
-                } else {
-                    echo 'Cet article n\'existe pas !';
                 }
+
+
+                if (isArrayEmpty($successArray)) {
+                    echo json_encode(true);
+
+                } else {
+                    echo implode('<br>', $successArray);
+                }
+
+            } else {
+                echo 'Tous les champs sont obligatoires !';
             }
         }
 
-        // ARCHIVE MAIN SUPPLEMENTAIRE
-        if (!empty($_POST['ARCHIVECOURSES'])) {
+        if (!empty($_POST['DELETEACHAT']) && !empty($_POST['idAchat'])) {
 
-            if (!empty($_POST['idCoursesArchive'])) {
-
-                $MainSuppProcess->setId($_POST['idCoursesArchive']);
-                if ($MainSuppProcess->show()) {
-
-                    if ($MainSuppProcess->delete()) {
-                        echo json_encode(true);
-                    } else {
-                        echo 'Impossible d\'archiver cet article !';
-                    }
-                } else {
-                    echo 'Cet article n\'existe pas !';
-                }
+            $MainSuppProcess->setId($_POST['idAchat']);
+            if ($MainSuppProcess->delete()) {
+                echo json_encode(true);
+            } else {
+                echo 'Un problème est survenue lors de la suppression du produit !';
             }
         }
 

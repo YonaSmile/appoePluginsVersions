@@ -1,0 +1,12 @@
+@page {
+    size: auto;
+    margin: 0 4mm;
+}
+
+@media only print {
+    div.productFields [class^="col-"],
+    div.infoTable [class^="col-"] {
+        padding-left: 5px !important;
+        padding-right: 5px !important;
+    }
+}

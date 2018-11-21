@@ -6,7 +6,7 @@ class MainSupplementaire
 
     private $id;
     private $siteId;
-    private $clientId;
+    private $clientName;
     private $nom;
     private $prixHTunite;
     private $quantite;
@@ -67,17 +67,17 @@ class MainSupplementaire
     /**
      * @return mixed
      */
-    public function getClientId()
+    public function getClientName()
     {
-        return $this->clientId;
+        return $this->clientName;
     }
 
     /**
-     * @param mixed $clientId
+     * @param mixed $clientName
      */
-    public function setClientId($clientId)
+    public function setClientName($clientName)
     {
-        $this->clientId = $clientId;
+        $this->clientName = $clientName;
     }
 
     /**
@@ -246,14 +246,14 @@ class MainSupplementaire
   				`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   				PRIMARY KEY (`id`),
                 `site_id` int(11) NOT NULL,
-                `client_id` int(11) NOT NULL,
+                `clientName` varchar(255) NOT NULL,
                 `nom` varchar(255) NOT NULL,
                 `prixHTunite` decimal(7,2) UNSIGNED NOT NULL,
                 `quantite` int(11) UNSIGNED NOT NULL,
                 `tauxTVA` decimal(7,2) UNSIGNED NOT NULL,
                 `total` decimal(7,2) UNSIGNED NOT NULL,
                 `date` date NOT NULL,
-                UNIQUE (`site_id`, `client_id`, `nom`, `date`),
+                UNIQUE (`site_id`, `clientName`, `nom`, `date`),
                 `status` tinyint(4) UNSIGNED NOT NULL DEFAULT 1,
                 `userId` int(11) UNSIGNED NOT NULL,
                 `created_at` date NOT NULL,
@@ -355,11 +355,11 @@ class MainSupplementaire
     public function save()
     {
         $this->userId = getUserIdSession();
-        $sql = 'INSERT INTO appoe_plugin_agapeshotes_main_supplementaire (site_id, client_id, nom, prixHTunite, quantite, tauxTVA, total, date, status, userId, created_at) 
-                VALUES (:siteId, :clientId, :nom, :prixHTunite, :quantite, :tauxTVA, :total, :date, :status, :userId, CURDATE())';
+        $sql = 'INSERT INTO appoe_plugin_agapeshotes_main_supplementaire (site_id, clientName, nom, prixHTunite, quantite, tauxTVA, total, date, status, userId, created_at) 
+                VALUES (:siteId, :clientName, :nom, :prixHTunite, :quantite, :tauxTVA, :total, :date, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
-        $stmt->bindParam(':clientId', $this->clientId);
+        $stmt->bindParam(':clientName', $this->clientName);
         $stmt->bindParam(':nom', $this->nom);
         $stmt->bindParam(':prixHTunite', $this->prixHTunite);
         $stmt->bindParam(':quantite', $this->quantite);
@@ -385,12 +385,12 @@ class MainSupplementaire
     {
         $this->userId = getUserIdSession();
         $sql = 'UPDATE appoe_plugin_agapeshotes_main_supplementaire 
-        SET site_id = :siteId, client_id = :clientId, nom = :nom, prixHTunite = :prixHTunite, quantite = :quantite, tauxTVA = :tauxTVA, total = :total, date = :date, status = :status, userId = :userId 
+        SET site_id = :siteId, clientName = :clientName, nom = :nom, prixHTunite = :prixHTunite, quantite = :quantite, tauxTVA = :tauxTVA, total = :total, date = :date, status = :status, userId = :userId 
         WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
-        $stmt->bindParam(':clientId', $this->clientId);
+        $stmt->bindParam(':clientName', $this->clientName);
         $stmt->bindParam(':nom', $this->nom);
         $stmt->bindParam(':prixHTunite', $this->prixHTunite);
         $stmt->bindParam(':quantite', $this->quantite);
@@ -417,11 +417,17 @@ class MainSupplementaire
     public function delete()
     {
 
-        $this->status = 0;
-        if ($this->update()) {
-            return true;
-        } else {
+        $sql = 'DELETE FROM appoe_plugin_agapeshotes_main_supplementaire WHERE id = :id';
+
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':id', $this->id);
+        $stmt->execute();
+
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
             return false;
+        } else {
+            return true;
         }
     }
 
@@ -434,10 +440,10 @@ class MainSupplementaire
     {
 
         $sql = 'SELECT id, nom FROM appoe_plugin_agapeshotes_main_supplementaire 
-        WHERE site_id = :siteId AND client_id = :clientId AND nom = :nom AND date = :date';
+        WHERE site_id = :siteId AND clientName = :clientName AND nom = :nom AND date = :date';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
-        $stmt->bindParam(':clientId', $this->clientId);
+        $stmt->bindParam(':clientName', $this->clientName);
         $stmt->bindParam(':nom', $this->nom);
         $stmt->bindParam(':date', $this->date);
         $stmt->execute();

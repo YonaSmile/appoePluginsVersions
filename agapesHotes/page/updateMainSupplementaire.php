@@ -33,15 +33,6 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
             $allCourses = array_merge_recursive($allCourses, $Course->showAll());
         }
 
-        //Get Prestations
-        $Prestation = new \App\Plugin\AgapesHotes\Prestation();
-        $Prestation->setSiteId($Site->getId());
-        $allCourses = array_merge_recursive($allCourses, $Prestation->showAll());
-
-        //Get Client
-        $Client = new App\Plugin\AgapesHotes\Client();
-        $allClients = $Client->showByType();
-
         //Select period
         $dateDebut = new \DateTime(date('Y-m-01'));
         $dateFin = new \DateTime(date('Y-m-t'));
@@ -53,64 +44,193 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                 <?= trans('Ajouter une facture'); ?>
             </button>
             <div class="row">
-                <div class="col-12 col-lg-8">
-                    <?php if ($allMainsSupp):
-                        $allClientsMainSupp = groupMultipleKeysObjectsArray($allMainsSupp, 'client_id');
+                <div class="col-12">
+                    <div class="row">
+                        <?php if ($allMainsSupp):
+                            $allClientsMainSupp = groupMultipleKeysObjectsArray($allMainsSupp, 'clientName');
 
-                        $totalListPrice = 0;
-                        foreach ($allClientsMainSupp as $clientId => $data):
-                            $allTvaTotal = groupMultipleKeysObjectsArray($data, 'tauxTVA');
-                            $totalCoursePrice = 0;
-                            $Client->setId($clientId);
-                            $Client->show();
-                            ?>
-                            <h6>
-                                <span class="text-info addMainSuppSpan" data-toggle="modal"
-                                      data-target="#modalAddMainSupp"
-                                      data-clientnature="<?= $Client->getNature(); ?>"
-                                      data-clientname="<?= $Client->getName(); ?>"
-                                      data-clientfirstname="<?= $Client->getFirstName(); ?>"
-                                      style="cursor: pointer;"><i class="fas fa-plus"></i></span>
-                                <?= $Client->getEntitled(); ?>
-                            </h6>
-                            <ol class="courseListOl">
-                                <?php foreach ($data as $achat):
-                                    $totalCoursePrice += $achat->total;
-                                    ?>
-                                    <li>
-                                        <strong>Produit</strong> <span
-                                                data-name="product"><?= $achat->nom; ?></span>&nbsp;
-                                        <strong>Date</strong> <span
-                                                data-name="date"><?= displayFrDate($achat->date); ?></span>&nbsp;
-                                        <strong>Quantité</strong> <span
-                                                data-name="quantite"><?= $achat->quantite; ?></span>&nbsp;
-                                        <strong>Prix HT/unité</strong> <span
-                                                data-name="prixHTunite"><?= $achat->prixHTunite; ?></span>€&nbsp;
-                                        <strong>Taux TVA</strong> <span
-                                                data-name="tauxTVA"><?= $achat->tauxTVA; ?></span>%&nbsp;
-                                        <strong>Total</strong> <span data-name="total"><?= $achat->total; ?></span>€&nbsp;
-                                    </li>
-                                <?php endforeach; ?>
-                                <div class="my-3">
-                                    <small class="float-right mt-1">
-                                        <?php
-                                        foreach ($allTvaTotal as $tva => $tvaData):
-                                            $totalTva = 0;
-                                            foreach ($tvaData as $achat) {
-                                                $totalTva += $achat->total;
-                                            }; ?>
-                                            <strong>TOTAL HT TVA <?= $tva; ?>
-                                                %</strong> <?= financial($totalTva); ?>€&nbsp;
-                                        <?php endforeach; ?>
-                                        <strong>TOTAL HT</strong> <?= financial($totalCoursePrice); ?>€
-                                    </small>
+                            $totalListPrice = 0;
+                            foreach ($allClientsMainSupp as $clientName => $data):
+                                $allTvaTotal = groupMultipleKeysObjectsArray($data, 'tauxTVA');
+                                $totalCoursePrice = 0;
+                                ?>
+                                <div class="col-12 col-lg-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title"><?= $clientName; ?></h5>
+                                            <p class="card-text">Facture rédigé le
+                                                <strong><?= displayFrDate(current($data)->date); ?></strong>
+                                                <br>
+                                                <strong>Total TTC : </strong>
+                                                <?php
+                                                $clientNameSlug = slugify($clientName);
+                                                $allTtcTvaTotal = array();
+                                                foreach ($allTvaTotal as $tva => $tvaData) {
+                                                    $totalTva = 0;
+                                                    foreach ($tvaData as $achatData) {
+                                                        $totalTva += $achatData->total;
+                                                    };
+                                                    $taxe = ($totalTva * ($tva / 100));
+                                                    $allTtcTvaTotal[] = $totalTva + $taxe;
+                                                } ?><?= financial(array_sum($allTtcTvaTotal)); ?>€
+                                            </p>
+                                            <button data-clientname="<?= $clientNameSlug; ?>" data-toggle="modal"
+                                                    data-target="#modalUpdateMainSupp-<?= $clientNameSlug; ?>"
+                                                    class="btn btn-info text-white float-right updateMainSupp"
+                                                    title="<?= trans('Éditer'); ?>">Éditer
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="modal fade" id="modalUpdateMainSupp-<?= $clientNameSlug; ?>"
+                                         tabindex="-1" role="dialog"
+                                         aria-labelledby="modalUpdateMainSuppTitle-<?= $clientNameSlug; ?>"
+                                         aria-hidden="true">
+                                        <div class="modal-dialog modal-lg" role="document">
+                                            <div class="modal-content">
+                                                <form action="" method="post"
+                                                      id="updateMainSuppForm-<?= $clientNameSlug; ?>">
+                                                    <?= getTokenField(); ?>
+                                                    <input type="hidden" name="siteId"
+                                                           value="<?= $Site->getId(); ?>">
+                                                    <?= \App\Form::target('UPDATEMAINSUPPLEMENTAIRE'); ?>
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title"
+                                                            id="modalUpdateMainSuppTitle-<?= $clientNameSlug; ?>">
+                                                            <?= trans('Commande de facturation'); ?></h5>
+                                                        <small>HORS CONTRAT</small>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="row">
+                                                            <div class="col-12 my-2">
+                                                                <div class="row my-2">
+                                                                    <div class="col-12 col-md-4 my-2">
+                                                                        <?= \App\Form::text('Émetteur', 'emetteur', 'texte', 'Les Agapes Hôtes, ' . $Site->getNom(), true, 255, 'disabled="disabled" readonly', '', 'basePrint'); ?>
+                                                                    </div>
+                                                                    <div class="col-12 col-md-4 my-2">
+                                                                        <?= \App\Form::text('Date de la Facture', 'date', 'date', current($data)->date, true, 255, 'min="' . $dateDebut->format('Y-m-d') . '" max="' . $dateFin->format('Y-m-d') . '"', '', 'basePrint'); ?>
+                                                                    </div>
+                                                                    <div class="col-12 col-md-4 my-2">
+                                                                        <?= App\Form::text('Destinataire', 'client_name', 'text', $clientName, true, 150, 'list="etablissementList" autocomplete="off"', '', 'basePrint'); ?>
+                                                                        <?php if ($allEtablissements): ?>
+                                                                            <datalist id="etablissementList">
+                                                                                <?php foreach ($allEtablissements as $etablissement): ?>
+                                                                                    <option value="<?= $etablissement->nom; ?>"><?= $etablissement->nom; ?></option>
+                                                                                <?php endforeach; ?>
+                                                                            </datalist>
+                                                                        <?php endif; ?>
+                                                                    </div>
+                                                                </div>
+                                                                <hr class="mx-5">
+                                                                <div class="d-sm-none d-md-block">
+                                                                    <div class="row my-1 infoTable">
+                                                                        <div class="col-md-3"><strong>Produit</strong>
+                                                                        </div>
+                                                                        <div class="col-md-1"><strong>Qté</strong></div>
+                                                                        <div class="col-md-2"><strong>Prix/unité
+                                                                                HT</strong></div>
+                                                                        <div class="col-md-2"><strong>Total HT</strong>
+                                                                        </div>
+                                                                        <div class="col-md-2"><strong>TVA</strong></div>
+                                                                        <div class="col-md-2"><strong>Total TTC</strong>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="allFactureProducts">
+                                                                    <?php $c = 1;
+                                                                    foreach ($data as $achat):
+                                                                        $totalCoursePrice += $achat->total;
+                                                                        $taxe = ($achat->total * ($achat->tauxTVA / 100)); ?>
+                                                                        <input type="hidden" name="id_<?= $c; ?>"
+                                                                               value="<?= $achat->id; ?>"
+                                                                               class="mainSuppIdInput">
+                                                                        <div class="row my-1 productFields positionRelative">
+                                                                            <span style="position: absolute; top: 25%;left: 5px;z-index: 999;cursor: pointer;"
+                                                                                  class="text-danger deleteAchat"
+                                                                                  data-idachat="<?= $achat->id; ?>"
+                                                                                  data-clientname="<?= $clientNameSlug; ?>">
+                                                                                <i class="fas fa-ban"></i></span>
+                                                                            <div class="col-12 col-md-3 my-1">
+                                                                                <?= \App\Form::text('Nom de l\'article', 'nom_' . $c, 'text', $achat->nom, true, 255, 'list="coursesList" autocomplete="off"', '', 'form-control-sm', 'Nom de l\'article'); ?>
+                                                                                <?php if ($allCourses): ?>
+                                                                                    <datalist id="coursesList">
+                                                                                        <?php foreach ($allCourses as $cours): ?>
+                                                                                            <option value="<?= $cours->nom; ?>"><?= $cours->nom; ?></option>
+                                                                                        <?php endforeach; ?>
+                                                                                    </datalist>
+                                                                                <?php endif; ?>
+                                                                            </div>
+                                                                            <div class="col-12 col-md-1 my-1">
+                                                                                <?= \App\Form::text('Qté', 'quantite_' . $c, 'number', $achat->quantite, true, 255, '', '', 'form-control-sm quantiteField', 'Quantité'); ?>
+                                                                            </div>
+                                                                            <div class="col-12 col-md-2 my-1">
+                                                                                <?= \App\Form::text('Prix/unité HT', 'prixHTunite_' . $c, 'text', $achat->prixHTunite, true, 255, '', '', 'form-control-sm prixUnitaireField', 'Prix unitaire HT'); ?>
+                                                                            </div>
+                                                                            <div class="col-12 col-md-2 my-1">
+                                                                                <?= \App\Form::text('Total HT', 'total_' . $c, 'text', $achat->total, true, 255, 'readonly', '', 'form-control-sm totalField', 'Total HT'); ?>
+                                                                            </div>
+                                                                            <div class="col-12 col-md-2 my-1">
+                                                                                <?= \App\Form::text('TVA', 'tauxTVA_' . $c, 'text', $achat->tauxTVA, true, 255, '', '', 'form-control-sm tvaField', 'TVA (%)'); ?>
+                                                                            </div>
+                                                                            <div class="col-12 col-md-2 my-1">
+                                                                                <?= \App\Form::text('Total TTC', 'totalTtc_' . $c, 'text', financial($achat->total + $taxe), true, 255, 'readonly', '', 'form-control-sm totalTtcField', 'Total TTC'); ?>
+                                                                            </div>
+                                                                            <hr class="mx-auto my-1 w-25 d-md-block d-lg-none">
+                                                                        </div>
+                                                                        <?php $c++;
+                                                                    endforeach; ?>
+                                                                </div>
+                                                                <button type="button"
+                                                                        data-clientname="<?= $clientNameSlug; ?>"
+                                                                        class="btn btn-sm btn-info addProductFields">
+                                                                    <i class="fas fa-plus"></i> <?= trans('Ajouter un produit'); ?>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-12 my-2 formUpdateMainSuppInfos"
+                                                                 data-clientname="<?= $clientNameSlug; ?>"></div>
+                                                        </div>
+                                                        <div class="text-right totalContainer-<?= $clientNameSlug; ?>">
+                                                            <?php
+                                                            $allTtcTvaTotal = array();
+                                                            foreach ($allTvaTotal as $tva => $tvaData):
+                                                                $totalTva = 0;
+                                                                foreach ($tvaData as $achatData) {
+                                                                    $totalTva += $achatData->total;
+                                                                };
+                                                                $taxe = ($totalTva * ($tva / 100));
+                                                                $allTtcTvaTotal[] = $totalTva + $taxe; ?>
+                                                                <strong>TOTAL HT TVA <?= $tva; ?>
+                                                                    %</strong> <?= financial($totalTva); ?>€
+                                                                <br>
+                                                            <?php endforeach; ?>
+                                                            <strong>
+                                                                TOTAL HT</strong> <?= financial($totalCoursePrice); ?>€
+                                                            <br>
+                                                            <strong>TOTAL
+                                                                TTC</strong> <?= financial(array_sum($allTtcTvaTotal)); ?>
+                                                            €
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="submit"
+                                                                class="updateMainSupplementaireBtn btn btn-primary"
+                                                                data-clientname="<?= $clientNameSlug; ?>"><?= trans('Enregistrer'); ?></button>
+                                                        <button type="button"
+                                                                class="printFacture btn btn-warning"
+                                                                data-clientname="<?= $clientNameSlug; ?>"><?= trans('Imprimer'); ?></button>
+                                                        <button type="button" class="btn btn-secondary"
+                                                                data-dismiss="modal"><?= trans('Fermer'); ?></button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <hr class="ml-5 mt-5">
-                            </ol>
-                        <?php endforeach;
-                    endif; ?>
+                            <?php endforeach;
+                        endif; ?>
+                    </div>
                 </div>
-                <div class="col-12 col-lg-4"></div>
             </div>
         </div>
         <div class="modal fade" id="modalAddMainSupp" tabindex="-1" role="dialog"
@@ -130,60 +250,68 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                                     <input type="hidden" name="siteId" value="<?= $Site->getId(); ?>">
                                     <?= \App\Form::target('ADDMAINSUPPLEMENTAIRE'); ?>
                                     <div class="row my-2">
-                                        <div class="col-12 col-lg-3 my-2">
+                                        <div class="col-12 col-lg-2 my-2">
                                             <?= \App\Form::text('Date de la Facture', 'date', 'date', '', true, 255, 'min="' . $dateDebut->format('Y-m-d') . '" max="' . $dateFin->format('Y-m-d') . '"'); ?>
                                         </div>
                                         <div class="col-12 col-lg-3 my-2">
-                                            <?= App\Form::select('Nature', 'client_nature', PEOPLE_NATURE, '', true); ?>
-                                        </div>
-                                        <div class="col-12 col-lg-3 my-2">
-                                            <?= App\Form::text('Nom du destinateur', 'client_name', 'text', '', true, 150, 'list="clientsList" autocomplete="off"'); ?>
-                                            <?php if ($allClients): ?>
-                                                <datalist id="clientsList">
-                                                    <?php foreach ($allClients as $client): ?>
-                                                        <option value="<?= $client->name; ?>"><?= $client->name; ?></option>
+                                            <?= App\Form::text('Destinataire', 'client_name', 'text', '', true, 150, 'list="etablissementList" autocomplete="off"'); ?>
+                                            <?php if ($allEtablissements): ?>
+                                                <datalist id="etablissementList">
+                                                    <?php foreach ($allEtablissements as $etablissement): ?>
+                                                        <option value="<?= $etablissement->nom; ?>"><?= $etablissement->nom; ?></option>
                                                     <?php endforeach; ?>
                                                 </datalist>
                                             <?php endif; ?>
                                         </div>
-                                        <div class="col-12 col-lg-3 my-2">
-                                            <?= App\Form::text('Prénom du destinateur', 'client_firstName', 'text', '', false, 150); ?>
-                                        </div>
                                     </div>
                                     <hr class="mx-5">
-                                    <div id="allFactureProducts">
-                                        <div class="row my-2 productFields">
-                                            <div class="col-12 col-lg-4 my-2">
-                                                <?= \App\Form::text('Nom de l\'article', 'nom_1', 'text', '', true, 255, 'list="coursesList" autocomplete="off"', '', 'form-control-sm'); ?>
-                                                <?php if ($allCourses): ?>
-                                                    <datalist id="coursesList">
-                                                        <?php foreach ($allCourses
-
-                                                        as $cours): ?>
-                                                        <option value="<?= $cours->nom; ?>">
-                                                            <?php endforeach; ?>
-                                                    </datalist>
-                                                <?php endif; ?>
-                                            </div>
-                                            <div class="col-12 col-lg-2 my-2">
-                                                <?= \App\Form::text('Quantité', 'quantite_1', 'number', '', true, 255, '', '', 'form-control-sm quantiteField'); ?>
-                                            </div>
-                                            <div class="col-12 col-lg-2 my-2">
-                                                <?= \App\Form::text('Prix unitaire HT', 'prixHTunite_1', 'text', '', true, 255, '', '', 'form-control-sm prixUnitaireField'); ?>
-                                            </div>
-                                            <div class="col-12 col-lg-2 my-2">
-                                                <?= \App\Form::text('Taux de TVA', 'tauxTVA_1', 'text', '', true, 255, '', '', 'form-control-sm'); ?>
-                                            </div>
-                                            <div class="col-12 col-lg-2 my-2">
-                                                <?= \App\Form::text('Total', 'total_1', 'text', '', true, 255, '', '', 'form-control-sm totalField'); ?>
-                                            </div>
+                                    <div class="d-md-none d-lg-block">
+                                        <div class="row my-1 infoTable">
+                                            <div class="col-lg-3"><strong>Nom de l'article</strong></div>
+                                            <div class="col-lg-1"><strong>Quantité</strong></div>
+                                            <div class="col-lg-2"><strong>Prix unitaire HT</strong></div>
+                                            <div class="col-lg-2"><strong>Total HT</strong></div>
+                                            <div class="col-lg-2"><strong>TVA(%)</strong></div>
+                                            <div class="col-lg-2"><strong>Total TTC</strong></div>
                                         </div>
                                     </div>
+                                    <div class="allFactureProducts">
+                                        <?php for ($c = 1; $c <= 5; $c++): ?>
+                                            <div class="row my-1 productFields">
+                                                <div class="col-12 col-lg-3 my-1">
+                                                    <?= \App\Form::text('Nom de l\'article', 'nom_' . $c, 'text', '', true, 255, 'list="coursesList" autocomplete="off"', '', 'form-control-sm', 'Nom de l\'article'); ?>
+                                                    <?php if ($allCourses): ?>
+                                                        <datalist id="coursesList">
+                                                            <?php foreach ($allCourses as $cours): ?>
+                                                                <option value="<?= $cours->nom; ?>"><?= $cours->nom; ?></option>
+                                                            <?php endforeach; ?>
+                                                        </datalist>
+                                                    <?php endif; ?>
+                                                </div>
+                                                <div class="col-12 col-lg-1 my-1">
+                                                    <?= \App\Form::text('Quantité', 'quantite_' . $c, 'number', '', true, 255, '', '', 'form-control-sm quantiteField', 'Quantité'); ?>
+                                                </div>
+                                                <div class="col-12 col-lg-2 my-1">
+                                                    <?= \App\Form::text('Prix unitaire HT', 'prixHTunite_' . $c, 'text', '', true, 255, '', '', 'form-control-sm prixUnitaireField', 'Prix unitaire HT'); ?>
+                                                </div>
+                                                <div class="col-12 col-lg-2 my-1">
+                                                    <?= \App\Form::text('Total HT', 'total_' . $c, 'text', '', true, 255, 'readonly', '', 'form-control-sm totalField', 'Total HT'); ?>
+                                                </div>
+                                                <div class="col-12 col-lg-2 my-1">
+                                                    <?= \App\Form::text('TVA (%)', 'tauxTVA_' . $c, 'text', '', true, 255, '', '', 'form-control-sm tvaField', 'TVA (%)'); ?>
+                                                </div>
+                                                <div class="col-12 col-lg-2 my-1">
+                                                    <?= \App\Form::text('Total TTC', 'totalTtc_' . $c, 'text', '', true, 255, 'readonly', '', 'form-control-sm totalTtcField', 'Total TTC'); ?>
+                                                </div>
+                                                <hr class="mx-auto my-1 w-25 d-md-block d-lg-none">
+                                            </div>
+                                        <?php endfor; ?>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-info addProductFields">
+                                        <i class="fas fa-plus"></i> <?= trans('Ajouter un produit'); ?>
+                                    </button>
                                 </div>
                             </div>
-                            <button type="button" class="btn btn-sm btn-info addProductFields">
-                                <i class="fas fa-plus"></i> <?= trans('Ajouter un produit'); ?>
-                            </button>
                             <div class="row">
                                 <div class="col-12 my-2" id="FormAddMainSuppInfos"></div>
                             </div>
@@ -198,27 +326,115 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                 </div>
             </div>
         </div>
+        <script type="text/javascript" src="/app/js/printThis.js"></script>
         <script>
             $(document).ready(function () {
 
                 function updateFormAddProductTotal() {
 
-                    $('#allFactureProducts').find('.productFields').each(function (i) {
-                        var quantite = parseFloat($(this).find('input.quantiteField').val());
-                        var prixUnitaire = parseFloat($(this).find('input.prixUnitaireField').val());
+                    $('.allFactureProducts').find('.productFields').each(function (i) {
+                        var $parent = $(this);
+                        var quantite = parseFloat($parent.find('input.quantiteField').val());
+                        var prixUnitaire = parseFloat($parent.find('input.prixUnitaireField').val());
 
                         if (quantite > 0 && prixUnitaire > 0) {
-                            $(this).find('input.totalField').val(financial(quantite * prixUnitaire));
+                            var totalHT = parseFloat(quantite * prixUnitaire);
+                            $parent.find('input.totalField').val(financial(totalHT));
+
+                            var tauxTva = parseFloat($parent.find('input.tvaField').val());
+
+                            if (tauxTva > 0) {
+                                if (tauxTva == 5.5 || tauxTva == 10 || tauxTva == 20) {
+                                    var taxe = (totalHT * (tauxTva / 100));
+                                    var totalTtc = parseFloat(totalHT + taxe);
+                                    $parent.find('input.totalTtcField').val(financial(totalTtc));
+                                } else {
+                                    $parent.find('input.tvaField').val('');
+                                    alert('Le taux de tva ne peut être que : 5.50 / 10.00 / 20.00');
+                                }
+                            }
                         }
+
+
                     });
                 }
 
-                var incrementFieldNumber = 2;
+                function removeTotalContainer($btn) {
+                    if (typeof $btn.data('clientname') !== undefined) {
+                        var clientName = $btn.data('clientname');
+                        var $form = $btn.closest('form');
+                        $form.find('.totalContainer-' + clientName).remove();
+                    }
+                }
+
+                function removeAddProductFieldsBtn($btn) {
+                    if (typeof $btn.data('clientname') !== undefined) {
+                        var clientName = $btn.data('clientname');
+                        var $form = $btn.closest('form');
+                        $form.find('button.addProductFields[data-clientname="' + clientName + '"]').remove();
+                    }
+                }
+
+                $('button.printFacture').on('click', function (event) {
+                    event.preventDefault();
+
+                    var $btn = $(this);
+                    var clientName = $btn.data('clientname');
+
+                    var $parent = $btn.closest('div#modalUpdateMainSupp-' + clientName);
+                    var $newParent = $parent.clone();
+
+                    var $form = $newParent.find('form');
+
+                    $('input[type="hidden"]', $form).remove();
+
+                    $('input', $form).each(function () {
+
+                        var $input = $(this);
+                        var inputType = $input.attr('name');
+                        var inputVal = $input.val();
+                        var $parent = $input.parent();
+
+                        $input.remove();
+
+                        if ($input.hasClass('basePrint')) {
+                            $parent.append('<br>' + inputVal);
+                        } else {
+
+                            if (
+                                inputType.match("^prixHTunite_")
+                                || inputType.match("^total_")
+                                || inputType.match("^totalTtc_")) {
+                                $parent.html(inputVal + '€');
+                            } else if (inputType.match("^tauxTVA_")) {
+                                $parent.html(inputVal + '%');
+                            } else {
+                                $parent.html(inputVal);
+                            }
+                        }
+                    });
+
+                    $('.productFields hr, datalist, .deleteAchat, button, .modal-footer', $form).remove();
+
+                    $newParent.printThis({
+                        loadCSS: "<?= AGAPESHOTES_URL; ?>css/print.css",
+                    });
+                });
+
+                var lastModifiedModalId = '';
+
                 $('button.addProductFields').on('click', function (event) {
                     event.preventDefault();
 
-                    var $clone = $('.productFields').first().clone();
+                    var $btn = $(this);
+                    removeTotalContainer($btn);
 
+                    var $formContainer = $btn.prev('.allFactureProducts');
+
+
+                    var incrementFieldNumber = $formContainer.find('.productFields').length + 1;
+                    var $clone = $('.productFields').first().clone();
+                    $clone.find('span.deleteAchat').remove();
                     $clone.find('input').each(function (i) {
 
                         //initialize value
@@ -235,37 +451,16 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                         //label change
                         $(this).prev('label').attr('for', newName);
                     });
-                    $('#allFactureProducts').append($clone);
+                    $formContainer.append($clone);
                     incrementFieldNumber += 1;
                 });
 
-                $('body').on('focus', '#addMainSuppForm input.totalField', function () {
-
-                    var $parent = $(this).closest('.productFields');
-                    var quantite = parseFloat($parent.find('input.quantiteField').val());
-                    var prixUnitaire = parseFloat($parent.find('input.prixUnitaireField').val());
-
-                    if (quantite > 0 && prixUnitaire > 0) {
-                        $parent.find('input.totalField').val(financial(quantite * prixUnitaire));
-                    }
-
-                });
-
-                $('.addMainSuppSpan').on('click', function () {
-
-                    $('#addMainSuppForm').find('[name="client_nature"]').val($(this).data('clientnature'));
-                    $('#addMainSuppForm').find('[name="client_name"]').val($(this).data('clientname'));
-                    $('#addMainSuppForm').find('[name="client_firstName"]').val($(this).data('clientfirstname'));
+                $('body').on('focus', 'input.totalField, input.totalTtcField', function () {
+                    updateFormAddProductTotal();
                 });
 
                 $('#modalAddMainSupp').on('shown.bs.modal', function () {
                     $('#addMainSuppForm input[name="date"]').focus();
-                });
-
-                $('#addMainSupp').on('click', function () {
-                    $('#addMainSuppForm').find('[name="client_nature"]').val('');
-                    $('#addMainSuppForm').find('[name="client_name"]').val('');
-                    $('#addMainSuppForm').find('[name="client_firstName"]').val('');
                 });
 
                 $('#saveMainSupplementaireBtn').on('click', function (event) {
@@ -289,9 +484,72 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                             }
                             availableApp();
                         }
-                    )
+                    );
                 });
 
+                $('.updateMainSupplementaireBtn').on('click', function (event) {
+                    event.preventDefault();
+                    var $btn = $(this);
+                    var clientName = $btn.data('clientname');
+                    var $form = $btn.closest('form#updateMainSuppForm-' + clientName);
+                    updateFormAddProductTotal();
+
+                    $('.formUpdateMainSuppInfos[data-clientname="' + clientName + '"]').hide().html('');
+                    busyApp();
+
+                    $.post(
+                        '<?= AGAPESHOTES_URL . 'process/ajaxMainSupplementaireProcess.php'; ?>',
+                        $form.serialize(),
+                        function (data) {
+                            if (data === true || data == 'true') {
+                                $('#loader').fadeIn(400);
+                                location.reload();
+                            } else {
+                                $('.formUpdateMainSuppInfos[data-clientname="' + clientName + '"]')
+                                    .html('<p class="">' + data + '</p>').show();
+                            }
+                            availableApp();
+                        }
+                    );
+                });
+
+                $('.deleteAchat').on('click', function (event) {
+                    event.preventDefault();
+                    var $btn = $(this);
+                    var idAchat = $btn.data('idachat');
+                    var clientName = $btn.data('clientname');
+
+                    busyApp();
+                    removeTotalContainer($btn);
+                    removeAddProductFieldsBtn($btn);
+
+                    $.post(
+                        '<?= AGAPESHOTES_URL . 'process/ajaxMainSupplementaireProcess.php'; ?>',
+                        {
+                            DELETEACHAT: 'OK',
+                            idAchat: idAchat
+                        },
+                        function (data) {
+                            if (data === true || data == 'true') {
+                                $btn.parent('div.productFields').prev('input.mainSuppIdInput').remove();
+                                $btn.parent('div.productFields').slideUp(200).remove();
+                                lastModifiedModalId = 'modalUpdateMainSupp-' + clientName;
+                            } else {
+                                $('.formUpdateMainSuppInfos[data-clientname="' + clientName + '"]')
+                                    .html('<p class="">' + data + '</p>').show();
+                            }
+                            availableApp();
+                        }
+                    );
+                });
+
+                $('.modal').on('hide.bs.modal', function (e) {
+
+                    if ($(this).attr('id') == lastModifiedModalId) {
+                        $('#loader').fadeIn(400);
+                        location.reload();
+                    }
+                });
             });
         </script>
 

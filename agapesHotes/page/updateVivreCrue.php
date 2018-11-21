@@ -176,6 +176,10 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
 
                     $('input.vivreCrueInput').removeClass('successInput');
 
+                    if (!$Input.val().match(/^\d+$/)) {
+                        $Input.val('');
+                    }
+
                     if (!$Input.val().length > 0) {
                         $Input.val('');
                     }
@@ -192,46 +196,51 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                     if (typeof prixUniteHT !== 'undefined' && typeof tauxTva !== 'undefined'
                         && prixUniteHT.length > 0 && tauxTva.length > 0) {
 
+                        if (tauxTva == 5.5 || tauxTva == 10 || tauxTva == 20) {
 
-                        var dateEnd = new Date();
-                        dateEnd.setDate(dateEnd.getDate() + 7);
+                            var dateEnd = new Date();
+                            dateEnd.setDate(dateEnd.getDate() + 7);
 
-                        if (new Date(date).getTime() <= dateEnd.getTime()) {
-                            disabledAllFields($Input);
-                            delay(function () {
-                                busyApp();
+                            if (new Date(date).getTime() <= dateEnd.getTime()) {
+                                disabledAllFields($Input);
+                                delay(function () {
+                                    busyApp();
 
-                                $.post(
-                                    '<?= AGAPESHOTES_URL . 'process/ajaxVivreCrueProcess.php'; ?>',
-                                    {
-                                        UPDATEVIVRECRUE: 'OK',
-                                        etablissementId: etablissementId,
-                                        idCourse: idCourse,
-                                        date: date,
-                                        quantite: quantite,
-                                        prixHTunite: prixUniteHT,
-                                        tauxTva: tauxTva,
-                                        total: (quantite * prixUniteHT),
-                                        id: idVivreCrue
-                                    },
-                                    function (data) {
-                                        if (data && $.isNumeric(data)) {
-                                            $Input.attr('name', data);
-                                            $Input.addClass('successInput');
-                                            calculateTotalQuantityByCourse(idCourse);
-                                            $('input[name="prixUntitHT"][data-idcourse="' + idCourse + '"]').attr('readonly', 'readonly');
-                                            $('input[name="tauxTva"][data-idcourse="' + idCourse + '"]').attr('readonly', 'readonly');
-                                        } else {
-                                            alert(data);
+                                    $.post(
+                                        '<?= AGAPESHOTES_URL . 'process/ajaxVivreCrueProcess.php'; ?>',
+                                        {
+                                            UPDATEVIVRECRUE: 'OK',
+                                            etablissementId: etablissementId,
+                                            idCourse: idCourse,
+                                            date: date,
+                                            quantite: quantite,
+                                            prixHTunite: prixUniteHT,
+                                            tauxTva: tauxTva,
+                                            total: (quantite * prixUniteHT),
+                                            id: idVivreCrue
+                                        },
+                                        function (data) {
+                                            if (data && $.isNumeric(data)) {
+                                                $Input.attr('name', data);
+                                                $Input.addClass('successInput');
+                                                calculateTotalQuantityByCourse(idCourse);
+                                                $('input[name="prixUntitHT"][data-idcourse="' + idCourse + '"]').attr('readonly', 'readonly');
+                                                $('input[name="tauxTva"][data-idcourse="' + idCourse + '"]').attr('readonly', 'readonly');
+                                            } else {
+                                                alert(data);
+                                            }
+                                            availableApp();
+                                            activateAllFields();
                                         }
-                                        availableApp();
-                                        activateAllFields();
-                                    }
-                                );
-                            }, 300);
+                                    );
+                                }, 300);
+                            } else {
+                                $Input.val('');
+                                alert('Il est interdit de saisir une quantité pour une date supérieure à une semaine depuis aujourd\'hui !');
+                            }
                         } else {
                             $Input.val('');
-                            alert('Il est interdit de saisir une quantité pour une date supérieure à une semaine depuis aujourd\'hui !');
+                            alert('Le taux de tva ne peut être que : 5.50 / 10.00 / 20.00');
                         }
                     } else {
                         $Input.val('');
