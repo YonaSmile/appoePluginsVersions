@@ -68,7 +68,7 @@
                                                    title="<?= trans('Configurer'); ?>">
                                                     <span class="btnEdit"><i class="fas fa-wrench"></i></span>
                                                 </a>
-                                                <?php if (getUserRoleId() > 3): ?>
+                                                <?php if (isTechnicien(getUserRoleId())): ?>
                                                     <button type="button" class="btn btn-sm deleteProduct"
                                                             title="<?= trans('Supprimer définitivement'); ?>"
                                                             data-idproduct="<?= $product->id ?>">
@@ -182,7 +182,7 @@
                 }
             });
 
-            <?php if (getUserRoleId() > 3): ?>
+            <?php if (isTechnicien(getUserRoleId())): ?>
             $('.deleteProduct').on('click', function () {
 
                 var idProduct = $(this).data('idproduct');

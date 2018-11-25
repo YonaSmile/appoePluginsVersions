@@ -33,7 +33,7 @@
                                            class="btn btn-sm" title="<?= trans('Consulter'); ?>">
                                             <span class="btnUpdate"><i class="fas fa-cog"></i></span>
                                         </a>
-                                        <?php if (getUserRoleId() > 3): ?>
+                                        <?php if (isTechnicien(getUserRoleId())): ?>
                                             <a href="<?= getPluginUrl('cms/page/update/', $cmsPage->id) ?>"
                                                class="btn btn-sm" title="<?= trans('Modifier'); ?>">
                                                 <span class="btnEdit"><i class="fas fa-wrench"></i></span>

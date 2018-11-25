@@ -37,7 +37,7 @@ $allCartes = extractFromObjArr($InteractiveMap->showAll(), 'id');
                                        class="btn btn-sm" title="<?= trans('Modifier'); ?>">
                                         <span class="btnEdit"><i class="fas fa-wrench"></i></span>
                                     </a>
-                                    <?php if (getUserRoleId() > 3): ?>
+                                    <?php if (isTechnicien(getUserRoleId())): ?>
                                         <button type="button" class="btn btn-sm deleteMap"
                                                 title="<?= trans('Archiver'); ?>" data-idcarte="<?= $carte->id ?>">
                                             <span class="btnArchive"><i class="fas fa-archive"></i></span>
@@ -53,7 +53,7 @@ $allCartes = extractFromObjArr($InteractiveMap->showAll(), 'id');
         </div>
     </div>
 </div>
-<?php if (getUserRoleId() > 3): ?>
+<?php if (isTechnicien(getUserRoleId())): ?>
     <script>
         $(document).ready(function () {
             $('.deleteMap').on('click', function () {

@@ -32,7 +32,7 @@
                                            class="btn btn-sm" title="<?= trans('Consulter'); ?>">
                                             <span class="btnUpdate"><i class="fas fa-cog"></i></span>
                                         </a>
-                                        <?php if (getUserRoleId() > 3): ?>
+                                        <?php if (isTechnicien(getUserRoleId())): ?>
                                             <a href="<?= getPluginUrl('itemGlue/page/update/', $article->id) ?>"
                                                class="btn btn-sm" title="<?= trans('Modifier'); ?>">
                                                 <span class="btnEdit"><i class="fas fa-wrench"></i></span>
@@ -81,7 +81,7 @@
                 }
             });
 
-            <?php if (getUserRoleId() > 3): ?>
+            <?php if (isTechnicien(getUserRoleId())): ?>
             $('.deleteArticle').on('click', function () {
 
                 var idArticle = $(this).data('idarticle');

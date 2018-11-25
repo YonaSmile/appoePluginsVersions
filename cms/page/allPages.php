@@ -32,7 +32,7 @@
                                            class="btn btn-sm" title="<?= trans('Consulter'); ?>">
                                             <span class="btnUpdate"><i class="fas fa-cog"></i></span>
                                         </a>
-                                        <?php if ($USER->getRole() > 3): ?>
+                                        <?php if (isTechnicien($USER->getRole())): ?>
                                             <a href="<?= getPluginUrl('cms/page/update/', $cmsPage->id) ?>"
                                                class="btn btn-sm" title="<?= trans('Modifier'); ?>">
                                                 <span class="btnEdit"><i class="fas fa-wrench"></i></span>
@@ -52,7 +52,7 @@
             </div>
         </div>
     </div>
-<?php if ($USER->getRole() > 3): ?>
+<?php if (isTechnicien($USER->getRole())): ?>
     <script>
         $(document).ready(function () {
             $('.deleteCms').on('click', function () {
