@@ -51,6 +51,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
 
                             $totalListPrice = 0;
                             foreach ($allClientsMainSupp as $clientName => $data):
+                                $clientNameSlug = slugify($clientName);
                                 $allTvaTotal = groupMultipleKeysObjectsArray($data, 'tauxTVA');
                                 $totalCoursePrice = 0;
                                 ?>
@@ -63,7 +64,6 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                                                 <br>
                                                 <strong>Total TTC : </strong>
                                                 <?php
-                                                $clientNameSlug = slugify($clientName);
                                                 $allTtcTvaTotal = array();
                                                 foreach ($allTvaTotal as $tva => $tvaData) {
                                                     $totalTva = 0;
@@ -96,7 +96,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                                                     <div class="modal-header">
                                                         <h5 class="modal-title"
                                                             id="modalUpdateMainSuppTitle-<?= $clientNameSlug; ?>">
-                                                            <?= trans('Commande de facturation'); ?></h5>
+                                                            <?= trans('Demande de facturation'); ?></h5>
                                                         <small>HORS CONTRAT</small>
                                                     </div>
                                                     <div class="modal-body">
@@ -375,15 +375,9 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                     }
                 }
 
-                $('button.printFacture').on('click', function (event) {
-                    event.preventDefault();
+                function prepareFacture($element) {
 
-                    var $btn = $(this);
-                    var clientName = $btn.data('clientname');
-
-                    var $parent = $btn.closest('div#modalUpdateMainSupp-' + clientName);
-                    var $newParent = $parent.clone();
-
+                    var $newParent = $element.clone();
                     var $form = $newParent.find('form');
 
                     $('input[type="hidden"]', $form).remove();
@@ -416,6 +410,17 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
 
                     $('.productFields hr, datalist, .deleteAchat, button, .modal-footer', $form).remove();
 
+                    return $newParent;
+
+                }
+
+                $('button.printFacture').on('click', function () {
+
+                    var $btn = $(this);
+                    var clientName = $btn.data('clientname');
+                    var $parent = $btn.closest('div#modalUpdateMainSupp-' + clientName);
+
+                    var $newParent = prepareFacture($parent);
                     $newParent.printThis({
                         loadCSS: "<?= AGAPESHOTES_URL; ?>css/print.css",
                     });

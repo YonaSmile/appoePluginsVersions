@@ -1,16 +1,15 @@
 <?php
 
 namespace App\Plugin\AgapesHotes;
-class MainCourante
+class SiteMeta
 {
 
     private $id;
-    private $etablissementId;
-    private $prestationId;
-    private $prixId;
-    private $quantite = 0;
-    private $total;
-    private $date;
+    private $siteId;
+    private $year;
+    private $month;
+    private $dataName;
+    private $data;
     private $status = 1;
     private $userId;
     private $createdAt;
@@ -49,101 +48,85 @@ class MainCourante
     /**
      * @return mixed
      */
-    public function getEtablissementId()
+    public function getSiteId()
     {
-        return $this->etablissementId;
+        return $this->siteId;
     }
 
     /**
-     * @param mixed $etablissementId
+     * @param mixed $siteId
      */
-    public function setEtablissementId($etablissementId)
+    public function setSiteId($siteId)
     {
-        $this->etablissementId = $etablissementId;
+        $this->siteId = $siteId;
     }
 
     /**
      * @return mixed
      */
-    public function getPrestationId()
+    public function getYear()
     {
-        return $this->prestationId;
+        return $this->year;
     }
 
     /**
-     * @param mixed $prestationId
+     * @param mixed $year
      */
-    public function setPrestationId($prestationId)
+    public function setYear($year)
     {
-        $this->prestationId = $prestationId;
+        $this->year = $year;
     }
 
     /**
      * @return mixed
      */
-    public function getPrixId()
+    public function getMonth()
     {
-        return $this->prixId;
+        return $this->month;
     }
 
     /**
-     * @param mixed $prixId
+     * @param mixed $month
      */
-    public function setPrixId($prixId)
+    public function setMonth($month)
     {
-        $this->prixId = $prixId;
+        $this->month = $month;
     }
 
     /**
      * @return mixed
      */
-    public function getQuantite()
+    public function getDataName()
     {
-        return $this->quantite;
+        return $this->dataName;
     }
 
     /**
-     * @param mixed $quantite
+     * @param mixed $dataName
      */
-    public function setQuantite($quantite)
+    public function setDataName($dataName)
     {
-        $this->quantite = $quantite;
+        $this->dataName = $dataName;
     }
 
     /**
      * @return mixed
      */
-    public function getTotal()
+    public function getData()
     {
-        return $this->total;
+        return $this->data;
     }
 
     /**
-     * @param mixed $total
+     * @param mixed $data
      */
-    public function setTotal($total)
+    public function setData($data)
     {
-        $this->total = $total;
+        $this->data = $data;
     }
 
     /**
-     * @return mixed
-     */
-    public function getDate()
-    {
-        return $this->date;
-    }
-
-    /**
-     * @param mixed $date
-     */
-    public function setDate($date)
-    {
-        $this->date = $date;
-    }
-
-    /**
-     * @return mixed
+     * @return int
      */
     public function getStatus()
     {
@@ -151,7 +134,7 @@ class MainCourante
     }
 
     /**
-     * @param mixed $status
+     * @param int $status
      */
     public function setStatus($status)
     {
@@ -208,39 +191,21 @@ class MainCourante
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapeshotes_main_courante` (
+
+        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapeshotes_site_meta` (
   				`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   				PRIMARY KEY (`id`),
-                `etablissement_id` int(11) NOT NULL,
-                `prestation_id` int(11) UNSIGNED NOT NULL,
-                `prix_id` int(11) UNSIGNED NOT NULL,
-                `quantite` int(11) UNSIGNED NOT NULL,
-                `total` decimal(7,2) UNSIGNED NOT NULL,
-                `date` date NOT NULL,
-                UNIQUE (`etablissement_id`,`prestation_id`, `date`),
+                `site_id` int(11) UNSIGNED NOT NULL,
+                `year` year NOT NULL,
+                `month` tinyint(4) NOT NULL,
+                `dataName` varchar(255) NOT NULL,
+                `data` DECIMAL(7,2) UNSIGNED NOT NULL,
+                UNIQUE (`site_id`,`year`, `month`, `dataName`),
                 `status` tinyint(4) UNSIGNED NOT NULL DEFAULT 1,
                 `userId` int(11) UNSIGNED NOT NULL,
                 `created_at` date NOT NULL,
                 `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 				) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;';
-
-        $stmt = $this->dbh->prepare($sql);
-        $stmt->execute();
-        $error = $stmt->errorInfo();
-        if ($error[0] != '00000') {
-            return false;
-        }
-
-        return true;
-    }
-
-    public function createView()
-    {
-        $sql = 'CREATE VIEW totalFacturationMainCourante AS SELECT ETB.site_id AS site_id, YEAR(MC.date) AS annee, MONTH(MC.date) AS mois, SUM(MC.total) AS totalHT
-        FROM appoe_plugin_agapeshotes_main_courante AS MC
-        INNER JOIN appoe_plugin_agapeshotes_etablissements AS ETB
-        ON(ETB.id = MC.etablissement_id)
-        GROUP BY site_id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();
@@ -258,7 +223,7 @@ class MainCourante
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_main_courante WHERE id = :id';
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_site_meta WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -284,48 +249,60 @@ class MainCourante
     }
 
     /**
-     * @return bool
+     * @return array|bool
      */
-    public function showByDate()
+    public function showBySite()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_main_courante WHERE etablissement_id = :etablissementId AND prestation_id = :prestationId AND date = :date';
-
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_site_meta WHERE site_id = :siteId AND year = :year AND month = :month AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':etablissementId', $this->etablissementId);
-        $stmt->bindParam(':prestationId', $this->prestationId);
-        $stmt->bindParam(':date', $this->date);
+        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':year', $this->year);
+        $stmt->bindParam(':month', $this->month);
+        $stmt->bindParam(':status', $this->status);
         $stmt->execute();
 
-        $count = $stmt->rowCount();
         $error = $stmt->errorInfo();
         if ($error[0] != '00000') {
             return false;
         } else {
-            if ($count == 1) {
-
-                $row = $stmt->fetch(\PDO::FETCH_OBJ);
-                $this->feed($row);
-
-                return true;
-
-            } else {
-
-                return false;
-            }
+            return $stmt->fetchAll(\PDO::FETCH_OBJ);
         }
     }
 
     /**
-     * @param $countMainCourante
      * @return array|bool
      */
-    public function showAll($countMainCourante = false)
+    public function showByYear()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_main_courante WHERE etablissement_id = :etablissementId AND status = :status ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_site_meta WHERE site_id = :siteId AND year = :year AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':etablissementId', $this->etablissementId);
+        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':year', $this->year);
+        $stmt->bindParam(':status', $this->status);
+        $stmt->execute();
+
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            return $stmt->fetchAll(\PDO::FETCH_OBJ);
+        }
+    }
+
+    /**
+     * @param $countPrixPrestations
+     * @return array|bool
+     */
+    public function showAll($countPrixPrestations = false)
+    {
+
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_site_meta WHERE site_id = :siteId AND year = :year AND month = :month AND status = :status ORDER BY updated_at DESC';
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':year', $this->year);
+        $stmt->bindParam(':month', $this->month);
         $stmt->bindParam(':status', $this->status);
         $stmt->execute();
 
@@ -334,30 +311,7 @@ class MainCourante
         if ($error[0] != '00000') {
             return false;
         } else {
-            return !$countMainCourante ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
-        }
-    }
-
-    /**
-     * @param $countMainCourante
-     * @return bool|array
-     */
-    public function showAllByMonth($countMainCourante = false)
-    {
-
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_main_courante WHERE etablissement_id = :etablissementId AND MONTH(date) = :date';
-
-        $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':etablissementId', $this->etablissementId);
-        $stmt->bindParam(':date', $this->date);
-        $stmt->execute();
-
-        $count = $stmt->rowCount();
-        $error = $stmt->errorInfo();
-        if ($error[0] != '00000') {
-            return false;
-        } else {
-            return !$countMainCourante ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
+            return !$countPrixPrestations ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
         }
     }
 
@@ -367,15 +321,14 @@ class MainCourante
     public function save()
     {
         $this->userId = getUserIdSession();
-        $sql = 'INSERT INTO appoe_plugin_agapeshotes_main_courante (etablissement_id, prestation_id, prix_id, quantite, total, date, status, userId, created_at) 
-                VALUES (:etablissementId, :prestationId, :prixId, :quantite, :total, :date, :status, :userId, CURDATE())';
+        $sql = 'INSERT INTO appoe_plugin_agapeshotes_site_meta (site_id, year, month, dataName, data, status, userId, created_at) 
+                VALUES (:siteId, :year, :month, :dataName, :data, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':etablissementId', $this->etablissementId);
-        $stmt->bindParam(':prestationId', $this->prestationId);
-        $stmt->bindParam(':prixId', $this->prixId);
-        $stmt->bindParam(':quantite', $this->quantite);
-        $stmt->bindParam(':total', $this->total);
-        $stmt->bindParam(':date', $this->date);
+        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':year', $this->year);
+        $stmt->bindParam(':month', $this->month);
+        $stmt->bindParam(':dataName', $this->dataName);
+        $stmt->bindParam(':data', $this->data);
         $stmt->bindParam(':status', $this->status);
         $stmt->bindParam(':userId', $this->userId);
         $stmt->execute();
@@ -395,16 +348,15 @@ class MainCourante
     public function update()
     {
         $this->userId = getUserIdSession();
-        $sql = 'UPDATE appoe_plugin_agapeshotes_main_courante 
-        SET etablissement_id = :etablissementId, prestation_id = :prestationId, prix_id = :prixId, quantite = :quantite, total = :total, date = :date, status = :status, userId = :userId WHERE id = :id';
+        $sql = 'UPDATE appoe_plugin_agapeshotes_site_meta 
+        SET site_id = :siteId, year = :year, month = :month, dataName = :dataName, data = :data, status = :status, userId = :userId WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':etablissementId', $this->etablissementId);
-        $stmt->bindParam(':prestationId', $this->prestationId);
-        $stmt->bindParam(':prixId', $this->prixId);
-        $stmt->bindParam(':quantite', $this->quantite);
-        $stmt->bindParam(':total', $this->total);
-        $stmt->bindParam(':date', $this->date);
+        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':year', $this->year);
+        $stmt->bindParam(':month', $this->month);
+        $stmt->bindParam(':dataName', $this->dataName);
+        $stmt->bindParam(':data', $this->data);
         $stmt->bindParam(':status', $this->status);
         $stmt->bindParam(':userId', $this->userId);
         $stmt->bindParam(':id', $this->id);
@@ -427,9 +379,9 @@ class MainCourante
 
         $this->status = 0;
         if ($this->update()) {
-            return true;
-        } else {
             return false;
+        } else {
+            return true;
         }
     }
 
@@ -441,12 +393,13 @@ class MainCourante
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id FROM appoe_plugin_agapeshotes_main_courante 
-        WHERE etablissement_id = :etablissementId AND prestation_id = :prestationId AND date = :date';
+        $sql = 'SELECT id FROM appoe_plugin_agapeshotes_site_meta 
+        WHERE site_id = :siteId AND year = :year AND month = :month AND dataName = :dataName';
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':etablissementId', $this->etablissementId);
-        $stmt->bindParam(':prestationId', $this->prestationId);
-        $stmt->bindParam(':date', $this->date);
+        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':year', $this->year);
+        $stmt->bindParam(':month', $this->month);
+        $stmt->bindParam(':dataName', $this->dataName);
         $stmt->execute();
 
         $count = $stmt->rowCount();
@@ -454,7 +407,7 @@ class MainCourante
         if ($error[0] != '00000') {
             return false;
         } else {
-            if ($count == 1) {
+            if ($count >= 1) {
                 if ($forUpdate) {
                     $data = $stmt->fetch(\PDO::FETCH_OBJ);
                     if ($data->id == $this->id) {

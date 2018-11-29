@@ -8,6 +8,7 @@ class Site
     private $nom;
     private $secteurId;
     private $slug;
+    private $alsaceMoselle = 1;
     private $ref;
     private $status = 1;
     private $userId;
@@ -90,6 +91,22 @@ class Site
     public function setSlug($slug)
     {
         $this->slug = $slug;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAlsaceMoselle()
+    {
+        return $this->alsaceMoselle;
+    }
+
+    /**
+     * @param int $alsaceMoselle
+     */
+    public function setAlsaceMoselle($alsaceMoselle)
+    {
+        $this->alsaceMoselle = $alsaceMoselle;
     }
 
     /**
@@ -182,6 +199,7 @@ class Site
                 UNIQUE (`secteur_id`,`nom`),
                 `slug` varchar(255) NOT NULL,
                 UNIQUE (`slug`),
+                `alsaceMoselle` BOOLEAN NOT NULL DEFAULT TRUE,
                 `ref` VARCHAR(50) NOT NULL,
                 UNIQUE (`ref`),
                 `status` tinyint(4) UNSIGNED NOT NULL DEFAULT 1,
@@ -289,12 +307,13 @@ class Site
     public function save()
     {
         $this->userId = getUserIdSession();
-        $sql = 'INSERT INTO appoe_plugin_agapeshotes_sites (nom, secteur_id, slug, ref, status, userId, created_at) 
-                VALUES (:nom, :secteurId, :slug, :ref, :status, :userId, CURDATE())';
+        $sql = 'INSERT INTO appoe_plugin_agapeshotes_sites (nom, secteur_id, slug, alsaceMoselle, ref, status, userId, created_at) 
+                VALUES (:nom, :secteurId, :slug, :alsaceMoselle, :ref, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':nom', $this->nom);
         $stmt->bindParam(':secteurId', $this->secteurId);
         $stmt->bindParam(':slug', $this->slug);
+        $stmt->bindParam(':alsaceMoselle', $this->alsaceMoselle);
         $stmt->bindParam(':ref', $this->ref);
         $stmt->bindParam(':status', $this->status);
         $stmt->bindParam(':userId', $this->userId);
@@ -316,12 +335,13 @@ class Site
     public function update()
     {
         $this->userId = getUserIdSession();
-        $sql = 'UPDATE appoe_plugin_agapeshotes_sites SET nom = :nom, secteur_id = :secteurId, slug = :slug, ref = :ref, status = :status, userId = :userId WHERE id = :id';
+        $sql = 'UPDATE appoe_plugin_agapeshotes_sites SET nom = :nom, secteur_id = :secteurId, slug = :slug, alsaceMoselle = :alsaceMoselle, ref = :ref, status = :status, userId = :userId WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':nom', $this->nom);
         $stmt->bindParam(':secteurId', $this->secteurId);
         $stmt->bindParam(':slug', $this->slug);
+        $stmt->bindParam(':alsaceMoselle', $this->alsaceMoselle);
         $stmt->bindParam(':ref', $this->ref);
         $stmt->bindParam(':status', $this->status);
         $stmt->bindParam(':userId', $this->userId);

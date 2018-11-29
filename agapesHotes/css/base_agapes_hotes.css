@@ -28,3 +28,21 @@ table.tableNonEffect tbody tr:focus, table.tableNonEffect tbody tr:hover {
 .tableNonEffect th, .tableNonEffect td {
     vertical-align: middle !important;
 }
+
+.littleContainer {
+    padding: 10px 25px;
+}
+
+.littleTitle {
+    font-weight: 900;
+    font-size: 0.9em;
+    display: block;
+    padding: 5px 5px 0;
+}
+
+.littleText {
+    font-weight: 500;
+    font-size: 1em;
+    display: block;
+    padding: 4px 10px;
+}

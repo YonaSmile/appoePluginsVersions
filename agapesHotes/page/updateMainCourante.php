@@ -35,12 +35,15 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
         <div class="table-responsive col-12">
             <table class="table table-striped tableNonEffect">
                 <thead>
-                <tr>
+                <tr style="text-align: center;">
                     <th><?= trans('Prestation'); ?></th>
                     <?php foreach ($period as $key => $date): ?>
-                        <th class="text-center" style="<?= $date->format('d') == date('d') ? 'background:#4fb99f;color:#fff;' : ''; ?>
+                        <th style="
+                        <?= $date->format('d') == date('d') ? 'background:#4fb99f;color:#fff;' : ''; ?>
                         <?= $date->format('N') == 7 ? 'background:#f2b134;color:#4b5b68;' : ''; ?>
-                        <?= isferie($date->format('Y-m-d'), true) ? 'background:#d8886f;color:#fff;' : ''; ?>"><?= $date->format('d'); ?></th>
+                        <?= isferie($date->format('Y-m-d'), $Site->getAlsaceMoselle()) ? 'background:#d8886f;color:#fff;' : ''; ?>
+                        <?= isferie($date->format('Y-m-d'), $Site->getAlsaceMoselle()) && $date->format('N') == 7 ? 'background: linear-gradient(135deg, #f2b134 0%,#f2b134 50%,#d8886f 51%,#d8886f 100%);color:#fff;' : ''; ?>">
+                            <?= $date->format('d'); ?></th>
                     <?php endforeach; ?>
                     <th><i class="fas fa-balance-scale"></i></th>
                 </tr>
@@ -107,6 +110,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                                         <input type="tel" data-prestationid="<?= $prestation->id; ?>"
                                                data-date="<?= $date->format('Y-m-d'); ?>"
                                                data-prixid="<?= $idPrixReel; ?>"
+                                               data-prixreelprestation="<?= $prixReel; ?>"
                                                data-day="<?= $date->format('d'); ?>"
                                                class="text-center form-control mainCourantInput sensibleField"
                                                name="<?= $mainCourantId; ?>"
@@ -270,6 +274,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                     var etablissementId = $Input.closest('tbody').data('etablissement');
                     var prestationId = $Input.data('prestationid');
                     var date = $Input.data('date');
+                    var reelPrestationPrice = $Input.data('prixreelprestation');
                     var prixId = parseFloat($Input.data('prixid'));
                     var quantite = $Input.val();
 
@@ -290,6 +295,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                                     date: date,
                                     prixId: prixId,
                                     quantite: quantite,
+                                    reelPrestationPrice: reelPrestationPrice,
                                     id: idMainCourante
                                 },
                                 function (data) {

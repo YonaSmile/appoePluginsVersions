@@ -132,5 +132,23 @@ if (checkAjaxRequest()) {
             }
         }
 
+        if (!empty($_POST['SENDFACTUREBYEMAIL']) && !empty($_POST['data'])) {
+
+            $data = array(
+                'fromEmail' => 'facturation@lesagapeshotes.com',
+                'fromName' => 'Les Agapes Hôtes',
+                'toName' => 'Smilevitch Yona',
+                'toEmail' => 'yonasmilevitch@gmail.com',
+                'object' => 'Demande de facturation',
+                'message' => $_POST['data']
+            );
+
+            if (sendMail($data)) {
+                echo json_encode(true);
+            } else {
+                echo 'Un problème est survenue lors de l\'envoi de la facture !';
+            }
+        }
+
     }
 }

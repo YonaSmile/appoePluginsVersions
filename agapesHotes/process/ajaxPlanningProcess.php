@@ -5,15 +5,14 @@ if (checkAjaxRequest()) {
 
         $_POST = cleanRequest($_POST);
 
-        $PlanningProcess = new \App\Plugin\AgapesHotes\Planning();
-
-        // UPDATE | CREATE MAIN COURANTE
+        // UPDATE | CREATE PLANNING
         if (!empty($_POST['UPDATEPLANNING'])) {
 
             if (!empty($_POST['siteId']) && !empty($_POST['employeId'])
                 && !empty($_POST['date'])
                 && isset($_POST['absenceReason']) && isset($_POST['id'])) {
 
+                $PlanningProcess = new \App\Plugin\AgapesHotes\Planning();
                 $PlanningProcess->feed($_POST);
 
                 if (is_numeric($PlanningProcess->getAbsenceReason())) {
@@ -43,6 +42,45 @@ if (checkAjaxRequest()) {
                 }
             } else {
                 echo 'Un motif d\'absence ou un nombre d\'heures est attendu !';
+            }
+        }
+
+        // UPDATE | CREATE PLANNING PLUS
+        if (!empty($_POST['UPDATEPLANNINGPLUS'])) {
+
+            if (!empty($_POST['siteId']) && !empty($_POST['employeId'])
+                && !empty($_POST['year']) && !empty($_POST['month'])
+                && isset($_POST['nbRepas']) && isset($_POST['primeObjectif'])
+                && isset($_POST['primeExept']) && isset($_POST['accompte'])
+                && isset($_POST['nbHeurePlus']) && isset($_POST['nbJoursFeries'])
+                && isset($_POST['commentaires']) && isset($_POST['id'])) {
+
+                $PlanningPlusProcess = new \App\Plugin\AgapesHotes\PlanningPlus();
+
+                if (!empty($_POST['id'])) {
+
+                    $PlanningPlusProcess->setId($_POST['id']);
+                    if ($PlanningPlusProcess->show()) {
+
+                        $PlanningPlusProcess->feed($_POST);
+                        if ($PlanningPlusProcess->update()) {
+
+                            echo $PlanningPlusProcess->getId();
+                        } else {
+                            echo 'Impossible de mettre à jour le planning';
+                        }
+                    }
+                } else {
+                    $PlanningPlusProcess->feed($_POST);
+
+                    if ($PlanningPlusProcess->save()) {
+                        echo $PlanningPlusProcess->getId();
+                    } else {
+                        echo 'Impossible d\'enregistrer le planning';
+                    }
+                }
+            } else {
+                echo 'Certains éléments manquent !';
             }
         }
 

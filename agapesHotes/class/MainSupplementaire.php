@@ -270,6 +270,21 @@ class MainSupplementaire
         return true;
     }
 
+    public function createView()
+    {
+        $sql = 'CREATE VIEW totalFacturationMainSupplementaire AS SELECT site_id, YEAR(date) AS annee, MONTH(date) AS mois, SUM(total) AS totalHT 
+        FROM appoe_plugin_agapeshotes_main_supplementaire GROUP BY site_id';
+
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->execute();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * @return bool
      */

@@ -1,15 +1,21 @@
 <?php
 
 namespace App\Plugin\AgapesHotes;
-class Planning
+class PlanningPlus
 {
 
     private $id;
-    private $date;
     private $siteId;
     private $employeId;
-    private $reelHours;
-    private $absenceReason = null;
+    private $year;
+    private $month;
+    private $nbRepas = null;
+    private $primeObjectif = null;
+    private $primeExept = null;
+    private $accompte = null;
+    private $nbHeurePlus = null;
+    private $nbJoursFeries = null;
+    private $commentaires = null;
     private $status = 1;
     private $userId;
     private $createdAt;
@@ -48,22 +54,6 @@ class Planning
     /**
      * @return mixed
      */
-    public function getDate()
-    {
-        return $this->date;
-    }
-
-    /**
-     * @param mixed $date
-     */
-    public function setDate($date)
-    {
-        $this->date = $date;
-    }
-
-    /**
-     * @return mixed
-     */
     public function getSiteId()
     {
         return $this->siteId;
@@ -96,33 +86,145 @@ class Planning
     /**
      * @return mixed
      */
-    public function getReelHours()
+    public function getYear()
     {
-        return $this->reelHours;
+        return $this->year;
     }
 
     /**
-     * @param mixed $reelHours
+     * @param mixed $year
      */
-    public function setReelHours($reelHours)
+    public function setYear($year)
     {
-        $this->reelHours = $reelHours;
+        $this->year = $year;
     }
 
     /**
      * @return mixed
      */
-    public function getAbsenceReason()
+    public function getMonth()
     {
-        return $this->absenceReason;
+        return $this->month;
     }
 
     /**
-     * @param mixed $absenceReason
+     * @param mixed $month
      */
-    public function setAbsenceReason($absenceReason)
+    public function setMonth($month)
     {
-        $this->absenceReason = $absenceReason;
+        $this->month = $month;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNbRepas()
+    {
+        return $this->nbRepas;
+    }
+
+    /**
+     * @param mixed $nbRepas
+     */
+    public function setNbRepas($nbRepas)
+    {
+        $this->nbRepas = $nbRepas;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPrimeObjectif()
+    {
+        return $this->primeObjectif;
+    }
+
+    /**
+     * @param mixed $primeObjectif
+     */
+    public function setPrimeObjectif($primeObjectif)
+    {
+        $this->primeObjectif = $primeObjectif;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPrimeExept()
+    {
+        return $this->primeExept;
+    }
+
+    /**
+     * @param mixed $primeExept
+     */
+    public function setPrimeExept($primeExept)
+    {
+        $this->primeExept = $primeExept;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAccompte()
+    {
+        return $this->accompte;
+    }
+
+    /**
+     * @param mixed $accompte
+     */
+    public function setAccompte($accompte)
+    {
+        $this->accompte = $accompte;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNbHeurePlus()
+    {
+        return $this->nbHeurePlus;
+    }
+
+    /**
+     * @param mixed $nbHeurePlus
+     */
+    public function setNbHeurePlus($nbHeurePlus)
+    {
+        $this->nbHeurePlus = $nbHeurePlus;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNbJoursFeries()
+    {
+        return $this->nbJoursFeries;
+    }
+
+    /**
+     * @param mixed $nbJoursFeries
+     */
+    public function setNbJoursFeries($nbJoursFeries)
+    {
+        $this->nbJoursFeries = $nbJoursFeries;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCommentaires()
+    {
+        return $this->commentaires;
+    }
+
+    /**
+     * @param mixed $commentaires
+     */
+    public function setCommentaires($commentaires)
+    {
+        $this->commentaires = $commentaires;
     }
 
     /**
@@ -191,15 +293,21 @@ class Planning
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapeshotes_planning` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapeshotes_planning_plus` (
   				`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   				PRIMARY KEY (`id`),
-  				`date` date NOT NULL,
+  				`site_id` int(11) UNSIGNED NOT NULL,
                 `employe_id` int(11) UNSIGNED NOT NULL,
-                `site_id` int(11) UNSIGNED NOT NULL,
-                `reelHours` decimal(7,2) UNSIGNED NOT NULL,
-                `absenceReason` varchar(255) NULL DEFAULT NULL,
-                UNIQUE (`date`,`employe_id`, `site_id`),
+                `year` year NOT NULL,
+                `month` tinyint(4) NOT NULL,
+                `nbRepas` int(11) NULL DEFAULT NULL,
+                `primeObjectif` decimal(7,2) NULL DEFAULT NULL,
+                `primeExept` decimal(7,2) NULL DEFAULT NULL,
+                `accompte` decimal(7,2) NULL DEFAULT NULL,
+                `nbHeurePlus`  decimal(7,2) NULL DEFAULT NULL,
+                `nbJoursFeries`  decimal(7,2) NULL DEFAULT NULL,
+                `commentaires` text NULL DEFAULT NULL,
+                UNIQUE (`year`, `month`, `employe_id`, `site_id`),
                 `status` tinyint(4) UNSIGNED NOT NULL DEFAULT 1,
                 `userId` int(11) UNSIGNED NOT NULL,
                 `created_at` date NOT NULL,
@@ -222,7 +330,7 @@ class Planning
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_planning WHERE id = :id';
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_planning_plus WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -253,12 +361,13 @@ class Planning
     public function showByDate()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_planning WHERE site_id = :siteId AND employe_id = :employeId AND date = :date';
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_planning_plus WHERE site_id = :siteId AND employe_id = :employeId AND year = :year  AND month = :month';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
         $stmt->bindParam(':employeId', $this->employeId);
-        $stmt->bindParam(':date', $this->date);
+        $stmt->bindParam(':year', $this->year);
+        $stmt->bindParam(':month', $this->month);
         $stmt->execute();
 
         $count = $stmt->rowCount();
@@ -281,13 +390,13 @@ class Planning
     }
 
     /**
-     * @param $countContrats
+     * @param $countPlanningPlus
      * @return array|bool
      */
-    public function showAll($countContrats = false)
+    public function showAll($countPlanningPlus = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_planning 
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_planning_plus 
         WHERE status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':status', $this->status);
@@ -298,22 +407,23 @@ class Planning
         if ($error[0] != '00000') {
             return false;
         } else {
-            return !$countContrats ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
+            return !$countPlanningPlus ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
         }
     }
 
     /**
-     * @param $countContrats
+     * @param $countPlanningPlus
      * @return bool|array
      */
-    public function showAllByDate($countContrats = false)
+    public function showAllByDate($countPlanningPlus = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_planning WHERE site_id = :siteId AND MONTH(date) = :date';
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_planning_plus WHERE site_id = :siteId AND year = :year  AND month = :month';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
-        $stmt->bindParam(':date', $this->date);
+        $stmt->bindParam(':year', $this->year);
+        $stmt->bindParam(':month', $this->month);
         $stmt->execute();
 
         $count = $stmt->rowCount();
@@ -321,18 +431,18 @@ class Planning
         if ($error[0] != '00000') {
             return false;
         } else {
-            return !$countContrats ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
+            return !$countPlanningPlus ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
         }
     }
 
     /**
-     * @param $countContrats
+     * @param $countPlanningPlus
      * @return array|bool
      */
-    public function showAllBySite($countContrats = false)
+    public function showAllBySite($countPlanningPlus = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_planning 
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_planning_plus 
         WHERE site_id = :siteId AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
@@ -344,18 +454,18 @@ class Planning
         if ($error[0] != '00000') {
             return false;
         } else {
-            return !$countContrats ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
+            return !$countPlanningPlus ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
         }
     }
 
     /**
-     * @param $countContrats
+     * @param $countPlanningPlus
      * @return array|bool
      */
-    public function showAllByEmploye($countContrats = false)
+    public function showAllByEmploye($countPlanningPlus = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_planning 
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_planning_plus 
         WHERE employe_id = :employeId AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':employeId', $this->employeId);
@@ -367,7 +477,7 @@ class Planning
         if ($error[0] != '00000') {
             return false;
         } else {
-            return !$countContrats ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
+            return !$countPlanningPlus ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
         }
     }
 
@@ -377,14 +487,20 @@ class Planning
     public function save()
     {
         $this->userId = getUserIdSession();
-        $sql = 'INSERT INTO appoe_plugin_agapeshotes_planning (date, site_id, employe_id, reelHours, absenceReason, status, userId, created_at) 
-                VALUES (:date, :siteId, :employeId, :reelHours, :absenceReason, :status, :userId, CURDATE())';
+        $sql = 'INSERT INTO appoe_plugin_agapeshotes_planning_plus (site_id, employe_id, year, month, nbRepas, primeObjectif, primeExept, accompte, nbHeurePlus, nbJoursFeries, commentaires, status, userId, created_at) 
+                VALUES (:siteId, :employeId, :year, :month, :nbRepas, :primeObjectif, :primeExept, :accompte, :nbHeurePlus, :nbJoursFeries, :commentaires, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':date', $this->date);
         $stmt->bindParam(':siteId', $this->siteId);
         $stmt->bindParam(':employeId', $this->employeId);
-        $stmt->bindParam(':reelHours', $this->reelHours);
-        $stmt->bindParam(':absenceReason', $this->absenceReason);
+        $stmt->bindParam(':year', $this->year);
+        $stmt->bindParam(':month', $this->month);
+        $stmt->bindParam(':nbRepas', $this->nbRepas);
+        $stmt->bindParam(':primeObjectif', $this->primeObjectif);
+        $stmt->bindParam(':primeExept', $this->primeExept);
+        $stmt->bindParam(':accompte', $this->accompte);
+        $stmt->bindParam(':nbHeurePlus', $this->nbHeurePlus);
+        $stmt->bindParam(':nbJoursFeries', $this->nbJoursFeries);
+        $stmt->bindParam(':commentaires', $this->commentaires);
         $stmt->bindParam(':status', $this->status);
         $stmt->bindParam(':userId', $this->userId);
         $stmt->execute();
@@ -404,15 +520,24 @@ class Planning
     public function update()
     {
         $this->userId = getUserIdSession();
-        $sql = 'UPDATE appoe_plugin_agapeshotes_planning 
-        SET date = :date, site_id = :siteId, employe_id = :employeId, reelHours = :reelHours, absenceReason = :absenceReason, status = :status, userId = :userId WHERE id = :id';
+        $sql = 'UPDATE appoe_plugin_agapeshotes_planning_plus 
+        SET site_id = :siteId, employe_id = :employeId, year = :year, month = :month, 
+        nbRepas = :nbRepas, primeObjectif = :primeObjectif, primeExept = :primeExept, 
+        accompte = :accompte, nbHeurePlus = :nbHeurePlus, nbJoursFeries = :nbJoursFeries, 
+        commentaires = :commentaires, status = :status, userId = :userId WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':date', $this->date);
         $stmt->bindParam(':siteId', $this->siteId);
         $stmt->bindParam(':employeId', $this->employeId);
-        $stmt->bindParam(':reelHours', $this->reelHours);
-        $stmt->bindParam(':absenceReason', $this->absenceReason);
+        $stmt->bindParam(':year', $this->year);
+        $stmt->bindParam(':month', $this->month);
+        $stmt->bindParam(':nbRepas', $this->nbRepas);
+        $stmt->bindParam(':primeObjectif', $this->primeObjectif);
+        $stmt->bindParam(':primeExept', $this->primeExept);
+        $stmt->bindParam(':accompte', $this->accompte);
+        $stmt->bindParam(':nbHeurePlus', $this->nbHeurePlus);
+        $stmt->bindParam(':nbJoursFeries', $this->nbJoursFeries);
+        $stmt->bindParam(':commentaires', $this->commentaires);
         $stmt->bindParam(':status', $this->status);
         $stmt->bindParam(':userId', $this->userId);
         $stmt->bindParam(':id', $this->id);
@@ -449,10 +574,11 @@ class Planning
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id FROM appoe_plugin_agapeshotes_planning 
-        WHERE date = :date AND site_id = :siteId AND employe_id = :employeId';
+        $sql = 'SELECT id FROM appoe_plugin_agapeshotes_planning_plus 
+        WHERE year = :year AND month = :month AND site_id = :siteId AND employe_id = :employeId';
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':date', $this->date);
+        $stmt->bindParam(':year', $this->year);
+        $stmt->bindParam(':month', $this->month);
         $stmt->bindParam(':siteId', $this->siteId);
         $stmt->bindParam(':employeId', $this->employeId);
         $stmt->execute();

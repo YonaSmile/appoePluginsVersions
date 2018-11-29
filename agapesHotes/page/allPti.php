@@ -52,13 +52,6 @@
                                                 <td><?php printf($Pti->getNbWeeksInCycle() . ' semaine%s', $Pti->getNbWeeksInCycle() > 1 ? 's' : ''); ?> </td>
                                                 <td><?= displayCompleteDate($Pti->getDateDebut()); ?></td>
                                                 <td>
-                                                    <button type="button" class="btn btn-sm updatePtiDetails"
-                                                            data-toggle="modal" data-target="#modalUpdatePti"
-                                                            title="<?= trans('Détails'); ?>"
-                                                            data-idpti="<?= $Pti->getId() ?>">
-                                                        <span class="btnPrice">
-                                                            <i class="fas fa-calendar-alt"></i></span>
-                                                    </button>
                                                     <button type="button" class="btn btn-sm updatePti"
                                                             data-toggle="modal" data-target="#modalUpdatePti"
                                                             title="<?= trans('Modifier'); ?>"

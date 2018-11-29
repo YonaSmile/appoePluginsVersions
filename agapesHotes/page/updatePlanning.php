@@ -37,12 +37,17 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
         ?>
         <div class="row">
             <div class="table-responsive col-12">
-                <table id="pagesTable" class="table table-striped tableNonEffect">
+                <table class="table table-striped tableNonEffect">
                     <thead>
                     <tr>
                         <th><?= trans('Employé'); ?></th>
                         <?php foreach ($period as $key => $date): ?>
-                            <th style="<?= $date->format('d') == date('d') ? 'background:#4fb99f;color:#fff;' : ''; ?> <?= $date->format('N') == 7 ? 'background:#f2b134;color:#4b5b68;' : ''; ?>"><?= $date->format('d'); ?></th>
+                            <th style="
+                            <?= $date->format('d') == date('d') ? 'background:#4fb99f;color:#fff;' : ''; ?>
+                            <?= $date->format('N') == 7 ? 'background:#f2b134;color:#4b5b68;' : ''; ?>
+                            <?= isferie($date->format('Y-m-d'), $Site->getAlsaceMoselle()) ? 'background:#d8886f;color:#fff;' : ''; ?>
+                            <?= isferie($date->format('Y-m-d'), $Site->getAlsaceMoselle()) && $date->format('N') == 7 ? 'background: linear-gradient(135deg, #f2b134 0%,#f2b134 50%,#d8886f 51%,#d8886f 100%);color:#fff;' : ''; ?>">
+                                <?= $date->format('d'); ?></th>
                         <?php endforeach; ?>
                     </tr>
                     </thead>
@@ -81,15 +86,12 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                                             break;
                                         }
                                     }
-
-
                                     ?>
                                     <td style="padding: 4px 0 !important;">
                                         <input class="text-center form-control updatePlanning inputUpdatePlanning"
                                                name="<?= !empty($Planning->id) ? $Planning->id : ''; ?>" type="text"
                                                maxlength="10" list="absenceReasonList" autocomplete="off"
-                                               style="padding: 5px 0 !important; <?= $date->format('d') == date('d') ? 'background:#4fb99f;color:#fff;' : ''; ?>
-                                               <?= isferie($date->format('Y-m-d'), true) ? 'border: 1px solid #d8886f !important;' : ''; ?>"
+                                               style="padding: 5px 0 !important; <?= $date->format('d') == date('d') ? 'background:#4fb99f;color:#fff;' : ''; ?>"
                                                data-date="<?= $date->format('Y-m-d'); ?>"
                                                data-employeid="<?= $employeId; ?>"
                                                value="<?= $inputCase; ?>">
@@ -129,13 +131,98 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                     </tbody>
                 </table>
             </div>
+            <hr class="w-100 d-block mx-5 my-4">
+            <div class="table-responsive col-12">
+                <table class="table table-striped tableNonEffect">
+                    <thead>
+                    <tr>
+                        <th><?= trans('Employé'); ?></th>
+                        <th style="width: 130px;">Nb de repas</th>
+                        <th>Prime d'objectifs d'heures</th>
+                        <th>Prime exceptionnelle</th>
+                        <th style="width: 100px;">Acompte</th>
+                        <th>Heures supp. à reporter</th>
+                        <th>Jours fériés à reporter</th>
+                        <th>Commentaires</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php
+                    $PlanningPlus = new \App\Plugin\AgapesHotes\PlanningPlus();
+                    $PlanningPlus->setSiteId($Site->getId());
+                    $PlanningPlus->setYear($start->format('Y'));
+                    $PlanningPlus->setMonth($start->format('m'));
+                    $allPlanningPlus = extractFromObjArr($PlanningPlus->showAllByDate(), 'employe_id');
 
+                    foreach ($allContratEmployes as $employeId => $contrat):
+
+                        $idPlanningPlus = !empty($allPlanningPlus[$employeId]->id) ? $allPlanningPlus[$employeId]->id : '';
+                        $nbRepas = !empty($allPlanningPlus[$employeId]->nbRepas) ? $allPlanningPlus[$employeId]->nbRepas : '';
+                        $primeObjectif = !empty($allPlanningPlus[$employeId]->primeObjectif) ? $allPlanningPlus[$employeId]->primeObjectif : '';
+                        $primeExept = !empty($allPlanningPlus[$employeId]->primeExept) ? $allPlanningPlus[$employeId]->primeExept : '';
+                        $accompte = !empty($allPlanningPlus[$employeId]->accompte) ? $allPlanningPlus[$employeId]->accompte : '';
+                        $nbHeurePlus = !empty($allPlanningPlus[$employeId]->nbHeurePlus) ? $allPlanningPlus[$employeId]->nbHeurePlus : '';
+                        $nbJoursFeries = !empty($allPlanningPlus[$employeId]->nbJoursFeries) ? $allPlanningPlus[$employeId]->nbJoursFeries : '';
+                        $commentaires = !empty($allPlanningPlus[$employeId]->commentaires) ? $allPlanningPlus[$employeId]->commentaires : '';
+                        ?>
+                        <tr data-year="<?= $start->format('Y'); ?>"
+                            data-month="<?= $start->format('m'); ?>"
+                            data-idplanningplus="<?= $idPlanningPlus; ?>"
+                            data-employeid="<?= $employeId; ?>"
+                            data-siteid="<?= $Site->getId(); ?>">
+                            <td><?= $allEmployes[$employeId]->name . ' ' . $allEmployes[$employeId]->firstName; ?></td>
+                            <td>
+                                <input class="text-center form-control inputPlanningPlus"
+                                       name="nbRepas" type="tel" autocomplete="off"
+                                       style="padding: 5px 0 !important;"
+                                       value="<?= $nbRepas; ?>">
+                            </td>
+                            <td>
+                                <input class="text-center form-control inputPlanningPlus"
+                                       name="primeObjectif" type="text" autocomplete="off"
+                                       style="padding: 5px 0 !important;"
+                                       value="<?= $primeObjectif; ?>">
+                            </td>
+                            <td>
+                                <input class="text-center form-control inputPlanningPlus"
+                                       name="primeExept" type="text" autocomplete="off"
+                                       style="padding: 5px 0 !important;"
+                                       value="<?= $primeExept; ?>">
+                            </td>
+                            <td>
+                                <input class="text-center form-control inputPlanningPlus"
+                                       name="accompte" type="text" autocomplete="off"
+                                       style="padding: 5px 0 !important;"
+                                       value="<?= $accompte; ?>">
+                            </td>
+                            <td>
+                                <input class="text-center form-control inputPlanningPlus"
+                                       name="nbHeurePlus" type="text" autocomplete="off"
+                                       style="padding: 5px 0 !important;"
+                                       value="<?= $nbHeurePlus; ?>">
+                            </td>
+                            <td>
+                                <input class="text-center form-control inputPlanningPlus"
+                                       name="nbJoursFeries" type="text" autocomplete="off"
+                                       style="padding: 5px 0 !important;"
+                                       value="<?= $nbJoursFeries; ?>">
+                            </td>
+                            <td>
+                                <input class="text-center form-control inputPlanningPlus"
+                                       name="commentaires" type="text" autocomplete="off"
+                                       style="padding: 5px 0 !important;"
+                                       value="<?= $commentaires; ?>">
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
 
         <script>
             $(document).ready(function () {
-
                 function calculateTotalReelHours() {
                     var totalArr = [];
                     $('input.updatePlanning').each(function () {
@@ -178,8 +265,6 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                     };
                 })();
 
-                $('[data-toggle="tooltip"]').tooltip({trigger: 'hover'});
-
                 $('input.updatePlanning').on('input keyup', function (event) {
                     event.preventDefault();
 
@@ -220,6 +305,62 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                                 availableApp();
                                 activateAllFields();
                                 calculateTotalReelHours();
+                            }
+                        );
+                    }, 300);
+                });
+
+                $('.inputPlanningPlus').on('input keyup', function (event) {
+                    event.preventDefault();
+
+                    var $Input = $(this);
+                    var $Parent = $Input.closest('tr');
+
+                    $('input.inputPlanningPlus').removeClass('successInput');
+
+                    var idPlanningPlus = $Parent.data('idplanningplus');
+                    var siteId = $Parent.data('siteid');
+                    var employeId = $Parent.data('employeid');
+                    var year = $Parent.data('year');
+                    var month = $Parent.data('month');
+                    var nbRepas = $Parent.find('input[name="nbRepas"]').val();
+                    var primeObjectif = $Parent.find('input[name="primeObjectif"]').val();
+                    var primeExept = $Parent.find('input[name="primeExept"]').val();
+                    var accompte = $Parent.find('input[name="accompte"]').val();
+                    var nbHeurePlus = $Parent.find('input[name="nbHeurePlus"]').val();
+                    var nbJoursFeries = $Parent.find('input[name="nbJoursFeries"]').val();
+                    var commentaires = $Parent.find('input[name="commentaires"]').val();
+
+                    disabledAllFields($Input);
+                    delay(function () {
+                        busyApp();
+
+                        $.post(
+                            '<?= AGAPESHOTES_URL . 'process/ajaxPlanningProcess.php'; ?>',
+                            {
+                                UPDATEPLANNINGPLUS: 'OK',
+                                siteId: siteId,
+                                employeId: employeId,
+                                year: year,
+                                month: month,
+                                nbRepas: nbRepas,
+                                primeObjectif: primeObjectif,
+                                primeExept: primeExept,
+                                accompte: accompte,
+                                nbHeurePlus: nbHeurePlus,
+                                nbJoursFeries: nbJoursFeries,
+                                commentaires: commentaires,
+                                id: idPlanningPlus
+                            },
+                            function (data) {
+                                if (data && $.isNumeric(data)) {
+                                    $Parent.attr('idplanningplus', data);
+                                    $Input.addClass('successInput');
+                                } else {
+                                    alert(data);
+                                }
+                                availableApp();
+                                activateAllFields();
                             }
                         );
                     }, 300);

@@ -18,5 +18,9 @@ const PLUGIN_TABLES = array(
     'appoe_plugin_agapeshotes_sites_access',
     'appoe_plugin_agapeshotes_pti',
     'appoe_plugin_agapeshotes_pti_details',
-    'appoe_plugin_agapeshotes_planning'
+    'appoe_plugin_agapeshotes_planning',
+    'appoe_plugin_agapeshotes_planning_plus',
+    'appoe_plugin_agapeshotes_note_frais',
+    'appoe_plugin_agapeshotes_budget',
+    'appoe_plugin_agapeshotes_site_meta'
 );

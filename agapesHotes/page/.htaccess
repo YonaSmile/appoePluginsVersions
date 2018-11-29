@@ -11,6 +11,8 @@ RewriteRule ^allPrestations/([a-zA-Z0-9-]+)/([a-zA-Z0-9-]+)/([a-zA-Z0-9-]+)/$  a
 RewriteRule ^mainCourante/([a-zA-Z0-9-]+)/([a-zA-Z0-9-]+)/$  updateMainCourante.php?secteur=$1&site=$2 [NC,L]
 RewriteRule ^planning/([a-zA-Z0-9-]+)/([a-zA-Z0-9-]+)/$  updatePlanning.php?secteur=$1&site=$2 [NC,L]
 RewriteRule ^mainSupplementaire/([a-zA-Z0-9-]+)/([a-zA-Z0-9-]+)/$  updateMainSupplementaire.php?secteur=$1&site=$2 [NC,L]
+RewriteRule ^noteDeFrais/([a-zA-Z0-9-]+)/([a-zA-Z0-9-]+)/$  updateNoteDeFrais.php?secteur=$1&site=$2 [NC,L]
+RewriteRule ^additionalData/([a-zA-Z0-9-]+)/([a-zA-Z0-9-]+)/$  updateAdditionalData.php?secteur=$1&site=$2 [NC,L]
 RewriteRule ^allCourses/([a-zA-Z0-9-]+)/([a-zA-Z0-9-]+)/([a-zA-Z0-9-]+)/$  allCourses.php?secteur=$1&site=$2&etablissement=$3 [NC,L]
 RewriteRule ^vivreCrue/([a-zA-Z0-9-]+)/([a-zA-Z0-9-]+)/$  updateVivreCrue.php?secteur=$1&site=$2 [NC,L]
 

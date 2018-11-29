@@ -1,16 +1,19 @@
 <?php
 
 namespace App\Plugin\AgapesHotes;
-class MainCourante
+class Budget
 {
 
     private $id;
-    private $etablissementId;
-    private $prestationId;
-    private $prixId;
-    private $quantite = 0;
-    private $total;
-    private $date;
+    private $siteId;
+    private $year;
+    private $month;
+    private $ca;
+    private $conso;
+    private $personnel;
+    private $fraisGeneraux;
+    private $retourAchat;
+    private $retourFraisSiege;
     private $status = 1;
     private $userId;
     private $createdAt;
@@ -49,101 +52,149 @@ class MainCourante
     /**
      * @return mixed
      */
-    public function getEtablissementId()
+    public function getSiteId()
     {
-        return $this->etablissementId;
+        return $this->siteId;
     }
 
     /**
-     * @param mixed $etablissementId
+     * @param mixed $siteId
      */
-    public function setEtablissementId($etablissementId)
+    public function setSiteId($siteId)
     {
-        $this->etablissementId = $etablissementId;
+        $this->siteId = $siteId;
     }
 
     /**
      * @return mixed
      */
-    public function getPrestationId()
+    public function getYear()
     {
-        return $this->prestationId;
+        return $this->year;
     }
 
     /**
-     * @param mixed $prestationId
+     * @param mixed $year
      */
-    public function setPrestationId($prestationId)
+    public function setYear($year)
     {
-        $this->prestationId = $prestationId;
+        $this->year = $year;
     }
 
     /**
      * @return mixed
      */
-    public function getPrixId()
+    public function getMonth()
     {
-        return $this->prixId;
+        return $this->month;
     }
 
     /**
-     * @param mixed $prixId
+     * @param mixed $month
      */
-    public function setPrixId($prixId)
+    public function setMonth($month)
     {
-        $this->prixId = $prixId;
+        $this->month = $month;
     }
 
     /**
      * @return mixed
      */
-    public function getQuantite()
+    public function getCa()
     {
-        return $this->quantite;
+        return $this->ca;
     }
 
     /**
-     * @param mixed $quantite
+     * @param mixed $ca
      */
-    public function setQuantite($quantite)
+    public function setCa($ca)
     {
-        $this->quantite = $quantite;
+        $this->ca = $ca;
     }
 
     /**
      * @return mixed
      */
-    public function getTotal()
+    public function getConso()
     {
-        return $this->total;
+        return $this->conso;
     }
 
     /**
-     * @param mixed $total
+     * @param mixed $conso
      */
-    public function setTotal($total)
+    public function setConso($conso)
     {
-        $this->total = $total;
+        $this->conso = $conso;
     }
 
     /**
      * @return mixed
      */
-    public function getDate()
+    public function getPersonnel()
     {
-        return $this->date;
+        return $this->personnel;
     }
 
     /**
-     * @param mixed $date
+     * @param mixed $personnel
      */
-    public function setDate($date)
+    public function setPersonnel($personnel)
     {
-        $this->date = $date;
+        $this->personnel = $personnel;
     }
 
     /**
      * @return mixed
+     */
+    public function getFraisGeneraux()
+    {
+        return $this->fraisGeneraux;
+    }
+
+    /**
+     * @param mixed $fraisGeneraux
+     */
+    public function setFraisGeneraux($fraisGeneraux)
+    {
+        $this->fraisGeneraux = $fraisGeneraux;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRetourAchat()
+    {
+        return $this->retourAchat;
+    }
+
+    /**
+     * @param mixed $retourAchat
+     */
+    public function setRetourAchat($retourAchat)
+    {
+        $this->retourAchat = $retourAchat;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRetourFraisSiege()
+    {
+        return $this->retourFraisSiege;
+    }
+
+    /**
+     * @param mixed $retourFraisSiege
+     */
+    public function setRetourFraisSiege($retourFraisSiege)
+    {
+        $this->retourFraisSiege = $retourFraisSiege;
+    }
+
+    /**
+     * @return int
      */
     public function getStatus()
     {
@@ -151,7 +202,7 @@ class MainCourante
     }
 
     /**
-     * @param mixed $status
+     * @param int $status
      */
     public function setStatus($status)
     {
@@ -206,41 +257,28 @@ class MainCourante
         $this->updated_at = $updated_at;
     }
 
+
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapeshotes_main_courante` (
+
+        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapeshotes_budget` (
   				`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   				PRIMARY KEY (`id`),
-                `etablissement_id` int(11) NOT NULL,
-                `prestation_id` int(11) UNSIGNED NOT NULL,
-                `prix_id` int(11) UNSIGNED NOT NULL,
-                `quantite` int(11) UNSIGNED NOT NULL,
-                `total` decimal(7,2) UNSIGNED NOT NULL,
-                `date` date NOT NULL,
-                UNIQUE (`etablissement_id`,`prestation_id`, `date`),
+                `site_id` int(11) UNSIGNED NOT NULL,
+                `year` year NOT NULL,
+                `month` tinyint(4) NOT NULL,
+                `ca` decimal(8,3) UNSIGNED NOT NULL,
+                `conso` decimal(8,3) UNSIGNED NOT NULL,
+                `personnel` decimal(8,3) UNSIGNED NOT NULL,
+                `frais_generaux` decimal(8,3) UNSIGNED NOT NULL,
+                `retourAchat` decimal(8,3) UNSIGNED NOT NULL,
+                `retourFraisSiege` decimal(8,3) UNSIGNED NOT NULL,
+                UNIQUE (`site_id`,`year`, `month`),
                 `status` tinyint(4) UNSIGNED NOT NULL DEFAULT 1,
                 `userId` int(11) UNSIGNED NOT NULL,
                 `created_at` date NOT NULL,
                 `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 				) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;';
-
-        $stmt = $this->dbh->prepare($sql);
-        $stmt->execute();
-        $error = $stmt->errorInfo();
-        if ($error[0] != '00000') {
-            return false;
-        }
-
-        return true;
-    }
-
-    public function createView()
-    {
-        $sql = 'CREATE VIEW totalFacturationMainCourante AS SELECT ETB.site_id AS site_id, YEAR(MC.date) AS annee, MONTH(MC.date) AS mois, SUM(MC.total) AS totalHT
-        FROM appoe_plugin_agapeshotes_main_courante AS MC
-        INNER JOIN appoe_plugin_agapeshotes_etablissements AS ETB
-        ON(ETB.id = MC.etablissement_id)
-        GROUP BY site_id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();
@@ -258,7 +296,7 @@ class MainCourante
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_main_courante WHERE id = :id';
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_budget WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -284,17 +322,17 @@ class MainCourante
     }
 
     /**
-     * @return bool
+     * @return array|bool
      */
-    public function showByDate()
+    public function showBySite()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_main_courante WHERE etablissement_id = :etablissementId AND prestation_id = :prestationId AND date = :date';
-
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_budget WHERE site_id = :siteId AND year = :year AND month = :month AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':etablissementId', $this->etablissementId);
-        $stmt->bindParam(':prestationId', $this->prestationId);
-        $stmt->bindParam(':date', $this->date);
+        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':year', $this->year);
+        $stmt->bindParam(':month', $this->month);
+        $stmt->bindParam(':status', $this->status);
         $stmt->execute();
 
         $count = $stmt->rowCount();
@@ -317,15 +355,17 @@ class MainCourante
     }
 
     /**
-     * @param $countMainCourante
+     * @param $countPrixPrestations
      * @return array|bool
      */
-    public function showAll($countMainCourante = false)
+    public function showAll($countPrixPrestations = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_main_courante WHERE etablissement_id = :etablissementId AND status = :status ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_budget WHERE site_id = :siteId AND year = :year AND month = :month AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':etablissementId', $this->etablissementId);
+        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':year', $this->year);
+        $stmt->bindParam(':month', $this->month);
         $stmt->bindParam(':status', $this->status);
         $stmt->execute();
 
@@ -334,30 +374,7 @@ class MainCourante
         if ($error[0] != '00000') {
             return false;
         } else {
-            return !$countMainCourante ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
-        }
-    }
-
-    /**
-     * @param $countMainCourante
-     * @return bool|array
-     */
-    public function showAllByMonth($countMainCourante = false)
-    {
-
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_main_courante WHERE etablissement_id = :etablissementId AND MONTH(date) = :date';
-
-        $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':etablissementId', $this->etablissementId);
-        $stmt->bindParam(':date', $this->date);
-        $stmt->execute();
-
-        $count = $stmt->rowCount();
-        $error = $stmt->errorInfo();
-        if ($error[0] != '00000') {
-            return false;
-        } else {
-            return !$countMainCourante ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
+            return !$countPrixPrestations ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
         }
     }
 
@@ -367,15 +384,16 @@ class MainCourante
     public function save()
     {
         $this->userId = getUserIdSession();
-        $sql = 'INSERT INTO appoe_plugin_agapeshotes_main_courante (etablissement_id, prestation_id, prix_id, quantite, total, date, status, userId, created_at) 
-                VALUES (:etablissementId, :prestationId, :prixId, :quantite, :total, :date, :status, :userId, CURDATE())';
+        $sql = 'INSERT INTO appoe_plugin_agapeshotes_budget (site_id, year, month, ca, conso, personnel, fraisGeneraux, status, userId, created_at) 
+                VALUES (:siteId, :year, :month, :ca, :conso, :personnel, :fraisGeneraux, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':etablissementId', $this->etablissementId);
-        $stmt->bindParam(':prestationId', $this->prestationId);
-        $stmt->bindParam(':prixId', $this->prixId);
-        $stmt->bindParam(':quantite', $this->quantite);
-        $stmt->bindParam(':total', $this->total);
-        $stmt->bindParam(':date', $this->date);
+        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':year', $this->year);
+        $stmt->bindParam(':month', $this->month);
+        $stmt->bindParam(':ca', $this->ca);
+        $stmt->bindParam(':conso', $this->conso);
+        $stmt->bindParam(':personnel', $this->personnel);
+        $stmt->bindParam(':fraisGeneraux', $this->fraisGeneraux);
         $stmt->bindParam(':status', $this->status);
         $stmt->bindParam(':userId', $this->userId);
         $stmt->execute();
@@ -384,7 +402,6 @@ class MainCourante
         if ($error[0] != '00000') {
             return false;
         } else {
-            $this->id = $this->dbh->lastInsertId();
             return true;
         }
     }
@@ -395,16 +412,17 @@ class MainCourante
     public function update()
     {
         $this->userId = getUserIdSession();
-        $sql = 'UPDATE appoe_plugin_agapeshotes_main_courante 
-        SET etablissement_id = :etablissementId, prestation_id = :prestationId, prix_id = :prixId, quantite = :quantite, total = :total, date = :date, status = :status, userId = :userId WHERE id = :id';
+        $sql = 'UPDATE appoe_plugin_agapeshotes_budget 
+        SET site_id = :siteId, year = :year, month = :month, ca = :ca, conso = :conso, personnel = :personnel, fraisGeneraux = :fraisGeneraux, status = :status, userId = :userId WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':etablissementId', $this->etablissementId);
-        $stmt->bindParam(':prestationId', $this->prestationId);
-        $stmt->bindParam(':prixId', $this->prixId);
-        $stmt->bindParam(':quantite', $this->quantite);
-        $stmt->bindParam(':total', $this->total);
-        $stmt->bindParam(':date', $this->date);
+        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':year', $this->year);
+        $stmt->bindParam(':month', $this->month);
+        $stmt->bindParam(':ca', $this->ca);
+        $stmt->bindParam(':conso', $this->conso);
+        $stmt->bindParam(':personnel', $this->personnel);
+        $stmt->bindParam(':fraisGeneraux', $this->fraisGeneraux);
         $stmt->bindParam(':status', $this->status);
         $stmt->bindParam(':userId', $this->userId);
         $stmt->bindParam(':id', $this->id);
@@ -427,9 +445,9 @@ class MainCourante
 
         $this->status = 0;
         if ($this->update()) {
-            return true;
-        } else {
             return false;
+        } else {
+            return true;
         }
     }
 
@@ -441,12 +459,12 @@ class MainCourante
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id FROM appoe_plugin_agapeshotes_main_courante 
-        WHERE etablissement_id = :etablissementId AND prestation_id = :prestationId AND date = :date';
+        $sql = 'SELECT id FROM appoe_plugin_agapeshotes_budget 
+        WHERE site_id = :siteId AND  year = :year AND month = :month';
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':etablissementId', $this->etablissementId);
-        $stmt->bindParam(':prestationId', $this->prestationId);
-        $stmt->bindParam(':date', $this->date);
+        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':year', $this->year);
+        $stmt->bindParam(':month', $this->month);
         $stmt->execute();
 
         $count = $stmt->rowCount();
@@ -454,7 +472,7 @@ class MainCourante
         if ($error[0] != '00000') {
             return false;
         } else {
-            if ($count == 1) {
+            if ($count >= 1) {
                 if ($forUpdate) {
                     $data = $stmt->fetch(\PDO::FETCH_OBJ);
                     if ($data->id == $this->id) {

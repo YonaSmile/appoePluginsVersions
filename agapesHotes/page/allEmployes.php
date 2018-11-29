@@ -64,7 +64,7 @@
                                                 data-toggle="modal" data-target="#modalUpdateContratEmploye"
                                                 title="<?= trans('Contrat'); ?>"
                                                 data-idemploye="<?= $employe->id ?>"
-                                                data-name="<?= trans(PEOPLE_NATURE[$employe->nature]) . ' ' . $employe->name ?>">
+                                                data-name="<?= (!empty($employe->nature) ? trans(PEOPLE_NATURE[$employe->nature]) . ' ' : ' ') . $employe->name ?>">
                                             <span class="btnPrice"><i class="fas fa-file-alt"></i></span>
                                         </button>
                                         <button type="button" class="btn btn-sm updateEmploye"

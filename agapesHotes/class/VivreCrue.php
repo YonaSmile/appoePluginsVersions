@@ -252,6 +252,24 @@ class VivreCrue
         return true;
     }
 
+    public function createView()
+    {
+        $sql = 'CREATE VIEW totalFacturationVivreCrue AS SELECT ETB.site_id AS site_id, YEAR(VC.date) AS annee, MONTH(VC.date) AS mois, SUM(VC.total) AS totalHT 
+        FROM appoe_plugin_agapeshotes_vivre_crue AS VC
+        INNER JOIN appoe_plugin_agapeshotes_etablissements AS ETB
+        ON(ETB.id = VC.etablissement_id)
+        GROUP BY site_id';
+
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->execute();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * @return bool
      */

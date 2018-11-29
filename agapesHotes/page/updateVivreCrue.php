@@ -44,7 +44,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                         <th class="text-center"
                             style="<?= $date->format('d') == date('d') ? 'background:#4fb99f;color:#fff;' : ''; ?>
                             <?= $date->format('N') == 7 ? 'background:#f2b134;color:#4b5b68;' : ''; ?>
-                            <?= isferie($date->format('Y-m-d'), true) ? 'background:#d8886f;color:#fff;' : ''; ?>"><?= $date->format('d'); ?></th>
+                            <?= isferie($date->format('Y-m-d'), $Site->getAlsaceMoselle()) ? 'background:#d8886f;color:#fff;' : ''; ?>"><?= $date->format('d'); ?></th>
                     <?php endforeach; ?>
                     <th><i class="fas fa-balance-scale"></i></th>
                 </tr>
