@@ -282,6 +282,28 @@ class Site
 
     /**
      * @param $countSites
+     * @return bool|array
+     */
+    public function showBySecteur($countSites = false)
+    {
+
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_sites WHERE secteur_id = :secteurId';
+
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':secteurId', $this->secteurId);
+        $stmt->execute();
+
+        $count = $stmt->rowCount();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            return !$countSites ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
+        }
+    }
+
+    /**
+     * @param $countSites
      * @return array|bool
      */
     public function showAll($countSites = false)

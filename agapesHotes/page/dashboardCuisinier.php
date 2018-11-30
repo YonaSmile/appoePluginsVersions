@@ -51,7 +51,7 @@ $View = new \App\Plugin\AgapesHotes\View();
                            class="btn btn-block btn-info py-4">Facturation</a>
 
                         <?php foreach ($allEtablissements as $etablissement): ?>
-                            <small class="littleTitle colorPrimary"><?= $etablissement->nom; ?></small>
+                            <small class="littleTitle colorPrimary mt-3"><?= $etablissement->nom; ?></small>
                             <div class="row">
                                 <div class="col-12 col-md-6">
                                     <a href="<?= AGAPESHOTES_URL; ?>page/allPrestations/<?= $Site->secteurSlug; ?>/<?= $Site->slug; ?>/<?= $etablissement->slug; ?>/"
@@ -189,7 +189,7 @@ $View = new \App\Plugin\AgapesHotes\View();
                         <div id="collapseSyntheseConso" class="collapse" aria-labelledby="headingThree"
                              data-parent="#infosAgapes">
                             <div class="table-responsive">
-                                <table class="table table-striped table-hover tableNonEffect ">
+                                <table class="table table-striped table-hover tableNonEffect">
                                     <thead>
                                     <tr>
                                         <th></th>
@@ -363,7 +363,7 @@ $View = new \App\Plugin\AgapesHotes\View();
 
                         $ParticipationTournante = 0;
                         $FraisDePersonnels = 0;
-                        if(!isArrayEmpty($siteMetas)){
+                        if (!isArrayEmpty($siteMetas)) {
                             $ParticipationTournante = $siteMetas['Participation tournant']->data;
                             $FraisDePersonnels = $siteMetas['Frais de personnels']->data;
                         }
@@ -408,7 +408,8 @@ $View = new \App\Plugin\AgapesHotes\View();
                             <div class="littleContainer"><span class="littleTitle colorPrimary">Frais généraux</span>
                                 <span class="littleText"><?= $fraisGenerauxTotal; ?>€</span></div>
                             <div class="littleContainer"><span class="littleTitle colorPrimary">Résultats bruts d'éxploitation</span>
-                                <!-- TODO (CA - (CONSO + FRAIS PERSO + FRAIS GÉNÉRAUX)) --></div>
+                                <span class="littleText"><?= $totalFacturation->totalHT - ($consoReelDenrees + $FraisDePersonnels + $fraisGenerauxTotal); ?>€</span>
+                            </div>
                         </div>
                     </div>
                 </div>

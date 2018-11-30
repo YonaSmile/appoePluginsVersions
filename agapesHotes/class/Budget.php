@@ -8,17 +8,19 @@ class Budget
     private $siteId;
     private $year;
     private $month;
-    private $ca;
-    private $conso;
-    private $personnel;
-    private $fraisGeneraux;
-    private $retourAchat;
-    private $retourFraisSiege;
+    public $ca;
+    public $conso;
+    public $personnel;
+    public $fraisGeneraux;
+    public $retourAchat;
+    public $retourFraisSiege;
     private $status = 1;
     private $userId;
     private $createdAt;
     private $updated_at;
 
+    public $resultatExploitation;
+    public $resultats;
     private $dbh = null;
 
     public function __construct($id = null)
@@ -257,6 +259,37 @@ class Budget
         $this->updated_at = $updated_at;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getResultatExploitation()
+    {
+        return $this->resultatExploitation;
+    }
+
+    /**
+     * @param mixed $resultatExploitation
+     */
+    public function setResultatExploitation($resultatExploitation)
+    {
+        $this->resultatExploitation = $resultatExploitation;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getResultats()
+    {
+        return $this->resultats;
+    }
+
+    /**
+     * @param mixed $resultats
+     */
+    public function setResultats($resultats)
+    {
+        $this->resultats = $resultats;
+    }
 
     public function createTable()
     {
@@ -344,6 +377,8 @@ class Budget
 
                 $row = $stmt->fetch(\PDO::FETCH_OBJ);
                 $this->feed($row);
+                $this->resultatExploitation = $this->ca - ($this->conso + $this->personnel + $this->fraisGeneraux);
+                $this->resultats = $this->resultatExploitation + $this->retourAchat + $this->retourFraisSiege;
 
                 return true;
 

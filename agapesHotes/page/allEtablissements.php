@@ -5,6 +5,10 @@ $Etablissement->setStatus(1);
 $allEtablissement = $Etablissement->showAll();
 $Site = new \App\Plugin\AgapesHotes\Site();
 $Secteur = new \App\Plugin\AgapesHotes\Secteur();
+
+$SiteAccess = new \App\Plugin\AgapesHotes\SiteAccess();
+$SiteAccess->setSiteUserId(getUserIdSession());
+$siteAccess = $SiteAccess->showSiteByUser();
 ?>
     <div class="container-fluid">
         <button id="addEtablissement" type="button" class="btn btn-info btn-sm mb-4" data-toggle="modal"
@@ -28,47 +32,49 @@ $Secteur = new \App\Plugin\AgapesHotes\Secteur();
                         <tbody>
                         <?php if ($allEtablissement):
                             foreach ($allEtablissement as $etablissement):
-                                $Site->setId($etablissement->site_id);
-                                if ($Site->show() && $Site->getStatus()):
-                                    $Secteur->setId($Site->getSecteurId());
-                                    if ($Secteur->show() && $Secteur->getStatus()):
-                                        ?>
-                                        <tr data-idetablissement="<?= $etablissement->id ?>"
-                                            class="displayHiddenListOnHover">
-                                            <td>
-                                                <span data-name="nom"><?= $etablissement->nom ?></span>
-                                                <small class="hiddenList">
-                                                    <a href="<?= AGAPESHOTES_URL; ?>page/allCourses/<?= $Secteur->getSlug(); ?>/<?= $Site->getSlug(); ?>/<?= $etablissement->slug; ?>/">
-                                                        Liste de courses</a>&nbsp;
-                                                    <a href="<?= AGAPESHOTES_URL; ?>page/vivreCrue/<?= $Secteur->getSlug(); ?>/<?= $Site->getSlug(); ?>/">
-                                                        Vivre crue</a>&nbsp;
-                                                    <a href="<?= AGAPESHOTES_URL; ?>page/allPrestations/<?= $Secteur->getSlug(); ?>/<?= $Site->getSlug(); ?>/<?= $etablissement->slug; ?>/">Liste
-                                                        des prestations</a>&nbsp;
-                                                    <a href="<?= AGAPESHOTES_URL; ?>page/mainCourante/<?= $Secteur->getSlug(); ?>/<?= $Site->getSlug(); ?>/">
-                                                        Main courante
-                                                    </a>
-                                                </small>
-                                            </td>
-                                            <td data-name="siteNom"
-                                                data-siteid="<?= $Site->getId() ?>"><?= $Site->getNom() ?></td>
-                                            <td><?= getUserEntitled($etablissement->userId); ?></td>
-                                            <td><?= displayTimeStamp($etablissement->updated_at) ?></td>
-                                            <td>
-                                                <button data-idetablissement="<?= $etablissement->id ?>"
-                                                        data-toggle="modal"
-                                                        data-target="#modalUpdateEtablissement"
-                                                        class="btn btn-sm updateEtablissement"
-                                                        title="<?= trans('Modifier'); ?>">
-                                                    <span class="btnEdit"><i class="fas fa-wrench"></i></span>
-                                                </button>
-                                                <button type="button" class="btn btn-sm archiveEtablissement"
-                                                        title="<?= trans('Archiver'); ?>"
-                                                        data-idetablissement="<?= $etablissement->id ?>">
-                                                    <span class="btnArchive"><i class="fas fa-archive"></i></span>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    <?php endif;
+                                if ($etablissement->site_id == $siteAccess->id):
+                                    $Site->setId($etablissement->site_id);
+                                    if ($Site->show() && $Site->getStatus()):
+                                        $Secteur->setId($Site->getSecteurId());
+                                        if ($Secteur->show() && $Secteur->getStatus()):
+                                            ?>
+                                            <tr data-idetablissement="<?= $etablissement->id ?>"
+                                                class="displayHiddenListOnHover">
+                                                <td>
+                                                    <span data-name="nom"><?= $etablissement->nom ?></span>
+                                                    <small class="hiddenList">
+                                                        <a href="<?= AGAPESHOTES_URL; ?>page/allCourses/<?= $Secteur->getSlug(); ?>/<?= $Site->getSlug(); ?>/<?= $etablissement->slug; ?>/">
+                                                            Liste de courses</a>&nbsp;
+                                                        <a href="<?= AGAPESHOTES_URL; ?>page/vivreCrue/<?= $Secteur->getSlug(); ?>/<?= $Site->getSlug(); ?>/">
+                                                            Vivre crue</a>&nbsp;
+                                                        <a href="<?= AGAPESHOTES_URL; ?>page/allPrestations/<?= $Secteur->getSlug(); ?>/<?= $Site->getSlug(); ?>/<?= $etablissement->slug; ?>/">Liste
+                                                            des prestations</a>&nbsp;
+                                                        <a href="<?= AGAPESHOTES_URL; ?>page/mainCourante/<?= $Secteur->getSlug(); ?>/<?= $Site->getSlug(); ?>/">
+                                                            Main courante
+                                                        </a>
+                                                    </small>
+                                                </td>
+                                                <td data-name="siteNom"
+                                                    data-siteid="<?= $Site->getId() ?>"><?= $Site->getNom() ?></td>
+                                                <td><?= getUserEntitled($etablissement->userId); ?></td>
+                                                <td><?= displayTimeStamp($etablissement->updated_at) ?></td>
+                                                <td>
+                                                    <button data-idetablissement="<?= $etablissement->id ?>"
+                                                            data-toggle="modal"
+                                                            data-target="#modalUpdateEtablissement"
+                                                            class="btn btn-sm updateEtablissement"
+                                                            title="<?= trans('Modifier'); ?>">
+                                                        <span class="btnEdit"><i class="fas fa-wrench"></i></span>
+                                                    </button>
+                                                    <button type="button" class="btn btn-sm archiveEtablissement"
+                                                            title="<?= trans('Archiver'); ?>"
+                                                            data-idetablissement="<?= $etablissement->id ?>">
+                                                        <span class="btnArchive"><i class="fas fa-archive"></i></span>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        <?php endif;
+                                    endif;
                                 endif;
                             endforeach; ?>
                         <?php endif; ?>

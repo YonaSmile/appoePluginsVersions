@@ -198,3 +198,126 @@ function reelDatesSortDESC($a, $b)
 {
     return strtotime($b) - strtotime($a);
 }
+
+function getCommandesServentest($allCommandes)
+{
+
+    $commandServentest = array(
+        'denree' => array('total' => 0),
+        'nonAlimentaire' => array('total' => 0)
+    );
+
+    if (!isArrayEmpty($allCommandes)) {
+        foreach ($allCommandes as $key => $allDenree) {
+            if (trim($allDenree['fournisseur']) != 'C2M') {
+                $commandServentest['denree']['total'] += $allDenree['total'];
+                $commandServentest['denree'][] = $allDenree;
+            } else {
+                $commandServentest['nonAlimentaire']['total'] += $allDenree['total'];
+                $commandServentest['nonAlimentaire'][] = $allDenree;
+            }
+
+        }
+    }
+    return $commandServentest;
+
+}
+
+function getInventaireServentest($allInventaire)
+{
+
+    $inventaireServentest = array(
+        'denree' => array('total' => 0),
+        'nonAlimentaire' => array('total' => 0)
+    );
+
+    if (!isArrayEmpty($allInventaire)) {
+        foreach ($allInventaire as $key => $allDenree) {
+            if (trim($allDenree['fournisseur']) != 'C2M') {
+                $inventaireServentest['denree']['total'] += $allDenree['total'];
+                //$inventaireServentest['denree'][] = $allDenree;
+            } else {
+                $inventaireServentest['nonAlimentaire']['total'] += $allDenree['total'];
+                //$inventaireServentest['nonAlimentaire'][] = $allDenree;
+            }
+
+        }
+    }
+    return $inventaireServentest;
+
+}
+
+function getSiteMeta($siteId, $month, $year)
+{
+
+    $siteMeta = array(
+        'participationTournante' => 0,
+        'fraisDePersonnels' => 0
+    );
+
+    $SiteMeta = new \App\Plugin\AgapesHotes\SiteMeta();
+    $SiteMeta->setSiteId($siteId);
+    $SiteMeta->setMonth($month);
+    $SiteMeta->setYear($year);
+
+    $allSiteMetas = extractFromObjArr($SiteMeta->showBySite(), 'dataName');
+
+    if (!isArrayEmpty($allSiteMetas)) {
+        $siteMeta['participationTournante'] = $allSiteMetas['Participation tournant']->data;
+        $siteMeta['fraisDePersonnels'] = $allSiteMetas['Frais de personnels']->data;
+    }
+
+    return $siteMeta;
+
+}
+
+function getNoteDeFrais($siteId, $month, $year)
+{
+    $noteDeFrais = array(
+        'denree' => 0,
+        'nonAlimentaire' => 0
+    );
+
+    $View = new \App\Plugin\AgapesHotes\View();
+
+    $View->setViewName('totalNoteDeFraisDenree');
+    $View->setDataColumns(array('site_id', 'mois', 'annee'));
+    $View->setDataValues(array($siteId, $month, $year));
+    $View->prepareSql();
+    $totalDenrees = $View->get();
+    $noteDeFrais['denree'] = $totalDenrees ? $totalDenrees->totalHT : 0;
+
+    $View->setViewName('totalNoteDeFraisNonAlimentaire');
+    $View->prepareSql();
+    $totalNonAlimentaire = $View->get();
+    $noteDeFrais['nonAlimentaire'] = $totalNonAlimentaire ? $totalNonAlimentaire->totalHT : 0;
+
+    return $noteDeFrais;
+}
+
+function getFacturation($siteId, $month, $year)
+{
+
+    $View = new \App\Plugin\AgapesHotes\View();
+
+    $View->setViewName('totalFacturation');
+    $View->setDataColumns(array('site_id', 'mois', 'annee'));
+    $View->setDataValues(array($siteId, $month, $year));
+    $View->prepareSql();
+    $totalFacturation = $View->get();
+
+    return $totalFacturation ? $totalFacturation->totalHT : 0;
+}
+
+function getBudget($siteId, $month, $year)
+{
+
+    $Budget = new \App\Plugin\AgapesHotes\Budget();
+
+    $Budget->setSiteId($siteId);
+    $Budget->setYear($year);
+    $Budget->setMonth($month);
+    $Budget->showBySite();
+
+    return $Budget ? $Budget : 0;
+}

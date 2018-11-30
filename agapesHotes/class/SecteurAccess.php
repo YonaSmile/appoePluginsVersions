@@ -235,6 +235,35 @@ class SecteurAccess
     }
 
     /**
+     * @return array|bool
+     */
+    public function showSecteurByUser()
+    {
+
+        $sql = 'SELECT SECTEURACCESS.id AS idSecteurAccess, SECTEUR.* 
+        FROM appoe_plugin_agapeshotes_secteurs_access AS SECTEURACCESS
+        INNER JOIN appoe_plugin_agapeshotes_secteurs AS SECTEUR
+        ON(SECTEUR.id = SECTEURACCESS.secteur_id)
+        WHERE SECTEURACCESS.secteurUserId = :secteurUserId AND SECTEURACCESS.status = :status ORDER BY SECTEURACCESS.updated_at DESC';
+
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':secteurUserId', $this->secteurUserId);
+        $stmt->bindParam(':status', $this->status);
+        $stmt->execute();
+
+        $count = $stmt->rowCount();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            if ($count == 1) {
+                return $stmt->fetch(\PDO::FETCH_OBJ);
+            }
+            return false;
+        }
+    }
+
+    /**
      * @return bool
      */
     public function save()
