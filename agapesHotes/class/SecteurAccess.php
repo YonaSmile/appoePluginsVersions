@@ -145,7 +145,7 @@ class SecteurAccess
   				PRIMARY KEY (`id`),
                 `secteurUserId` int(11) UNSIGNED NOT NULL,
                 `secteur_id` int(11) UNSIGNED NOT NULL,
-                UNIQUE (`secteurUserId`,`secteur_id`),
+                UNIQUE (`secteurUserId`),
                 `status` tinyint(4) UNSIGNED NOT NULL DEFAULT 1,
                 `userId` int(11) UNSIGNED NOT NULL,
                 `created_at` date NOT NULL,
@@ -339,10 +339,9 @@ class SecteurAccess
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id FROM appoe_plugin_agapeshotes_secteurs_access WHERE secteurUserId = :secteurUserId AND secteur_id = :secteurId';
+        $sql = 'SELECT id FROM appoe_plugin_agapeshotes_secteurs_access WHERE secteurUserId = :secteurUserId';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':secteurUserId', $this->secteurUserId);
-        $stmt->bindParam(':secteurId', $this->secteurId);
         $stmt->execute();
 
         $count = $stmt->rowCount();

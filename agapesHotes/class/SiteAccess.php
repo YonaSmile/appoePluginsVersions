@@ -145,7 +145,7 @@ class SiteAccess
   				PRIMARY KEY (`id`),
                 `siteUserId` int(11) UNSIGNED NOT NULL,
                 `site_id` int(11) UNSIGNED NOT NULL,
-                UNIQUE (`siteUserId`,`site_id`),
+                UNIQUE (`siteUserId`),
                 `status` tinyint(4) UNSIGNED NOT NULL DEFAULT 1,
                 `userId` int(11) UNSIGNED NOT NULL,
                 `created_at` date NOT NULL,
@@ -242,10 +242,10 @@ class SiteAccess
     public function showSiteByUser()
     {
 
-        $sql = 'SELECT SITEACCESS.id AS idSiteAccess, SITE.*, SECTEUR.id AS secteurId, SECTEUR.nom AS secteurNom, SECTEUR.slug AS secteurSlug 
+        $sql = 'SELECT SITEACCESS.id AS idSiteAccess, SITE.*, SECTEUR.nom AS secteurNom, SECTEUR.slug AS secteurSlug 
         FROM appoe_plugin_agapeshotes_sites_access AS SITEACCESS
         INNER JOIN appoe_plugin_agapeshotes_sites AS SITE
-        ON(SITE.id = SITEACCESS.id)
+        ON(SITE.id = SITEACCESS.site_id)
         INNER JOIN appoe_plugin_agapeshotes_secteurs AS SECTEUR
         ON(SITE.secteur_id = SECTEUR.id)
         WHERE SITEACCESS.siteUserId = :siteUserId AND SITEACCESS.status = :status ORDER BY SITEACCESS.updated_at DESC';
@@ -343,10 +343,9 @@ class SiteAccess
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id FROM appoe_plugin_agapeshotes_sites_access WHERE siteUserId = :siteUserId AND site_id = :siteId';
+        $sql = 'SELECT id FROM appoe_plugin_agapeshotes_sites_access WHERE siteUserId = :siteUserId';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteUserId', $this->siteUserId);
-        $stmt->bindParam(':siteId', $this->siteId);
         $stmt->execute();
 
         $count = $stmt->rowCount();

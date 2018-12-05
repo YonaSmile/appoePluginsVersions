@@ -31,9 +31,8 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
 
         $period = new \DatePeriod($start, $interval, $end);
         ?>
-
         <div class="table-responsive col-12">
-            <table class="table table-striped tableNonEffect">
+            <table id="mainCouranteTable" class="table table-striped tableNonEffect">
                 <thead>
                 <tr style="text-align: center;">
                     <th><?= trans('Prestation'); ?></th>
@@ -62,7 +61,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                     if ($allPrestations): ?>
                         <tbody data-etablissement="<?= $etablissement->id; ?>">
                         <tr>
-                            <th colspan="<?= $end->format('t') + 1; ?>"><?= $etablissement->nom; ?></th>
+                            <th colspan="<?= $end->format('t') + 2; ?>"><?= $etablissement->nom; ?></th>
                         </tr>
                         <?php foreach ($allPrestations as $prestation):
                             $mainCouranteQuantiteTotalDay = 0; ?>
@@ -121,21 +120,32 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                                                data-prixprestation="<?= $prixReel; ?>"
                                                data-etablissement="<?= $etablissement->id; ?>"><?= financial($prixReel * $mainCourantQuantite); ?>
                                         </small>
+                                        <small class="d-block text-center prestationPriceCumule"
+                                               data-day="<?= $date->format('j'); ?>"
+                                               data-prixprestation="<?= $prixReel; ?>"
+                                               data-etablissement="<?= $etablissement->id; ?>"><?= financial($prixReel * $mainCouranteQuantiteTotalDay); ?>
+                                        </small>
                                     </td>
                                 <?php endforeach; ?>
-                                <td class="quantityTotalDay" data-idprestation="<?= $prestation->id ?>">
-                                    <?= $mainCouranteQuantiteTotalDay; ?>
+                                <td class="quantityTotalDay text-center" data-idprestation="<?= $prestation->id ?>">
+                                    <span><?= $mainCouranteQuantiteTotalDay; ?></span>
+                                    <small class="d-block text-center prestationTotalPrice"
+                                           data-prixprestation="<?= $prixReel; ?>"
+                                           data-etablissement="<?= $etablissement->id; ?>">
+                                        <?= financial($prixReel * $mainCouranteQuantiteTotalDay); ?>
+                                    </small>
                                 </td>
                             </tr>
-                        <?php endforeach; endif; ?>
-                    <tr>
-                        <th><?= trans('Total'); ?></th>
-                        <?php foreach ($period as $key => $date): ?>
-                            <td style="<?= $date->format('d') == date('d') ? 'background:#4fb99f;color:#fff !important;' : ''; ?> <?= $date->format('N') == 7 ? 'background:#f2b134;color:#4b5b68;' : ''; ?> font-size: 0.7em !important;"
-                                class="totalDayPrestationPrice text-center" data-day="<?= $date->format('j'); ?>"
-                                data-etablissement="<?= $etablissement->id; ?>"></td>
                         <?php endforeach; ?>
-                    </tr>
+                        <tr>
+                            <th><?= trans('Total'); ?></th>
+                            <?php foreach ($period as $key => $date): ?>
+                                <td style="<?= $date->format('d') == date('d') ? 'background:#4fb99f;color:#fff !important;' : ''; ?> <?= $date->format('N') == 7 ? 'background:#f2b134;color:#4b5b68;' : ''; ?> font-size: 0.7em !important;"
+                                    class="totalDayPrestationPrice text-center" data-day="<?= $date->format('j'); ?>"
+                                    data-etablissement="<?= $etablissement->id; ?>"></td>
+                            <?php endforeach; ?>
+                        </tr>
+                    <?php endif; ?>
                     </tbody>
                 <?php endforeach; ?>
             </table>
@@ -164,17 +174,30 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                     var totalQuantityByDay = [];
                     $('.mainCourantInput[data-prestationid="' + idPrestation + '"]').each(function () {
                         var $input = $(this);
+                        var $small = $input.next().next('.prestationPriceCumule');
+                        var prixprestation = $small.data('prixprestation');
                         var quantity = parseFloat($input.val());
+
                         if ($.isNumeric(quantity) && quantity > 0) {
                             totalQuantityByDay.push(quantity);
                         }
+
+                        var cumule = 0;
+                        $.each(totalQuantityByDay, function (key, value) {
+                            cumule += value;
+                        });
+
+                        $small.html(financial(cumule * prixprestation));
                     });
 
                     var sum = 0;
                     $.each(totalQuantityByDay, function (key, value) {
                         sum += value;
                     });
-                    $('.quantityTotalDay[data-idprestation="' + idPrestation + '"]').html(sum);
+                    var totalQuantityDayContainer = $('.quantityTotalDay[data-idprestation="' + idPrestation + '"]');
+                    totalQuantityDayContainer.find('span').html(sum);
+                    var prixreelprestation = totalQuantityDayContainer.find('small.prestationTotalPrice').data('prixprestation');
+                    totalQuantityDayContainer.find('small.prestationTotalPrice').html(financial(sum * prixreelprestation) + '€');
                 }
 
                 function calculateTotalPrestationPricePerDay() {

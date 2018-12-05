@@ -253,12 +253,18 @@ class SiteMeta
      */
     public function showBySite()
     {
-
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_site_meta WHERE site_id = :siteId AND year = :year AND month = :month AND status = :status ORDER BY updated_at DESC';
+        if (empty($this->month)) {
+            $sqlAdd = '';
+        } else {
+            $sqlAdd = ' AND month = :month ';
+        }
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_site_meta WHERE site_id = :siteId AND year = :year ' . $sqlAdd . ' AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
         $stmt->bindParam(':year', $this->year);
-        $stmt->bindParam(':month', $this->month);
+        if (!empty($this->month)) {
+            $stmt->bindParam(':month', $this->month);
+        }
         $stmt->bindParam(':status', $this->status);
         $stmt->execute();
 

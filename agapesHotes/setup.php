@@ -143,6 +143,46 @@ $data = array(
         'parent_id' => 4001,
         'pluginName' => 'agapesHotes',
         'order_menu' => '4013'
+    ),
+    15 => array(
+        'id' => 4014,
+        'slug' => 'ca',
+        'name' => 'Chiffre d\'affaire',
+        'min_role_id' => 2,
+        'statut' => 1,
+        'parent_id' => 10,
+        'pluginName' => 'agapesHotes',
+        'order_menu' => '4014'
+    ),
+    16 => array(
+        'id' => 4015,
+        'slug' => 'conso',
+        'name' => 'Consommation',
+        'min_role_id' => 2,
+        'statut' => 1,
+        'parent_id' => 10,
+        'pluginName' => 'agapesHotes',
+        'order_menu' => '4015'
+    ),
+    17 => array(
+        'id' => 4016,
+        'slug' => 'fraisDePersonnel',
+        'name' => 'Frais de personnel',
+        'min_role_id' => 2,
+        'statut' => 1,
+        'parent_id' => 10,
+        'pluginName' => 'agapesHotes',
+        'order_menu' => '4016'
+    ),
+    18 => array(
+        'id' => 4017,
+        'slug' => 'fraisGeneraux',
+        'name' => 'Frais généraux',
+        'min_role_id' => 2,
+        'statut' => 1,
+        'parent_id' => 10,
+        'pluginName' => 'agapesHotes',
+        'order_menu' => '4017'
     )
 );
 

@@ -37,7 +37,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
         ?>
         <div class="row">
             <div class="table-responsive col-12">
-                <table class="table table-striped tableNonEffect">
+                <table id="planningTable" class="table table-striped tableNonEffect">
                     <thead>
                     <tr>
                         <th><?= trans('Employé'); ?></th>
@@ -87,7 +87,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                                         }
                                     }
                                     ?>
-                                    <td style="padding: 4px 0 !important;">
+                                    <td style="padding: 4px 0 !important; vertical-align: top !important;">
                                         <input class="text-center form-control updatePlanning inputUpdatePlanning"
                                                name="<?= !empty($Planning->id) ? $Planning->id : ''; ?>" type="text"
                                                maxlength="10" list="absenceReasonList" autocomplete="off"
@@ -95,7 +95,9 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                                                data-date="<?= $date->format('Y-m-d'); ?>"
                                                data-employeid="<?= $employeId; ?>"
                                                value="<?= $inputCase; ?>">
-                                        <small class="text-center d-block"><?= $dayInCycle > 0 ? $allPtiDetails[$dayInCycle]->nbHeures : ''; ?></small>
+                                        <small class="text-center d-block">
+                                            <?= $dayInCycle > 0 ? $allPtiDetails[$dayInCycle]->nbHeures : ''; ?></small>
+                                        <small class="text-center d-none horairesPlanning"><?= $dayInCycle > 0 ? $allPtiDetails[$dayInCycle]->horaires : ''; ?></small>
                                         <datalist id="absenceReasonList">
                                             <option value="M" label="Maladie">M</option>
                                             <option value="AT" label="Accident du Travail">AT</option>
@@ -132,7 +134,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                 </table>
             </div>
             <hr class="w-100 d-block mx-5 my-4">
-            <div class="table-responsive col-12">
+            <div class="table-responsive col-12" id="noteFraisTable">
                 <table class="table table-striped tableNonEffect">
                     <thead>
                     <tr>
@@ -220,9 +222,15 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
             </div>
         </div>
 
-
+        <script type="text/javascript" src="/app/js/printThis.js"></script>
         <script>
             $(document).ready(function () {
+
+                $('[data-toggle="tooltip"]').tooltip({
+                    trigger: 'focus',
+                    placement: 'right'
+                });
+
                 function calculateTotalReelHours() {
                     var totalArr = [];
                     $('input.updatePlanning').each(function () {
@@ -364,6 +372,30 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                             }
                         );
                     }, 300);
+                });
+
+                function prepareFacture($element) {
+
+                    var $newParent = $element.clone();
+                    var $form = $newParent.find('form');
+
+                    $('input[type="hidden"]', $form).remove();
+
+                    $('#noteFraisTable, datalist, hr', $form).remove();
+
+                    return $newParent;
+
+                }
+
+                $('button.printFacture').on('click', function () {
+
+                    var $btn = $(this);
+                    var $parent = $('table#planningTable');
+
+                    var $newParent = prepareFacture($parent);
+                    $newParent.printThis({
+                        loadCSS: "<?= AGAPESHOTES_URL; ?>css/print.css",
+                    });
                 });
             });
         </script>

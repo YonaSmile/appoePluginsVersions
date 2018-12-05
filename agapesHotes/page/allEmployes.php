@@ -20,6 +20,10 @@
                 data-target="#modalAddEmploye">
             <?= trans('Ajouter un employé'); ?>
         </button>
+        <button id="importeEmploye" type="button" class="btn btn-info btn-sm mb-4" data-toggle="modal"
+                data-target="#modalImportCsv">
+            <?= trans('importer un employé'); ?>
+        </button>
         <div class="row">
             <div class="col-12">
                 <div class="table-responsive">
@@ -88,6 +92,39 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalImportCsv" tabindex="-1" role="dialog"
+         aria-labelledby="modalImportCsvTitle"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="<?= WEB_DIR_URL; ?>upload/uplodaPti.php" method="post" id="importCsvForm"
+                      enctype="multipart/form-data">
+                    <div class="modal-header">
+                        <h5 class="modal-title"
+                            id="modalImportCsvTitle"><?= trans('Importer des employés'); ?></h5>
+                    </div>
+                    <div class="modal-body" id="modalImportCsvBody">
+                        <div class="row">
+                            <div class="col-12 my-2">
+                                <?= \App\Form::target('importSubmit'); ?>
+                                <?= \App\Form::text('Fichier CSV', 'images[]', 'file', '', true, 800); ?>
+                            </div>
+                            <p></p>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 my-2" id="FormImportCsvInfos"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer" id="modalImportCsvFooter">
+                        <button type="submit" id="importCsvBtn"
+                                class="btn btn-primary"><?= trans('Enregistrer'); ?></button>
+                        <button type="button" class="btn btn-secondary"
+                                data-dismiss="modal"><?= trans('Fermer'); ?></button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

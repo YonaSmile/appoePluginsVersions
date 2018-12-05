@@ -8,12 +8,12 @@ class Budget
     private $siteId;
     private $year;
     private $month;
-    public $ca;
-    public $conso;
-    public $personnel;
-    public $fraisGeneraux;
-    public $retourAchat;
-    public $retourFraisSiege;
+    public $ca = 0;
+    public $conso = 0;
+    public $personnel = 0;
+    public $fraisGeneraux = 0;
+    public $retourAchat = 0;
+    public $retourFraisSiege = 0;
     private $status = 1;
     private $userId;
     private $createdAt;
@@ -359,32 +359,52 @@ class Budget
      */
     public function showBySite()
     {
+        $sqlAdd = '';
+        if (!empty($this->month)) {
+            $sqlAdd = ' AND month = :month ';
+        }
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_budget WHERE site_id = :siteId AND year = :year AND month = :month AND status = :status ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_budget WHERE site_id = :siteId AND year = :year ' . $sqlAdd . ' AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
         $stmt->bindParam(':year', $this->year);
-        $stmt->bindParam(':month', $this->month);
+        if (!empty($this->month)) {
+            $stmt->bindParam(':month', $this->month);
+        }
         $stmt->bindParam(':status', $this->status);
         $stmt->execute();
-
         $count = $stmt->rowCount();
         $error = $stmt->errorInfo();
         if ($error[0] != '00000') {
             return false;
         } else {
-            if ($count == 1) {
+            if (!empty($this->month)) {
+                if ($count == 1) {
 
-                $row = $stmt->fetch(\PDO::FETCH_OBJ);
-                $this->feed($row);
-                $this->resultatExploitation = $this->ca - ($this->conso + $this->personnel + $this->fraisGeneraux);
-                $this->resultats = $this->resultatExploitation + $this->retourAchat + $this->retourFraisSiege;
+                    $row = $stmt->fetch(\PDO::FETCH_OBJ);
+                    $this->feed($row);
+                    $this->resultatExploitation = $this->ca - ($this->conso + $this->personnel + $this->fraisGeneraux);
+                    $this->resultats = $this->resultatExploitation + $this->retourAchat + $this->retourFraisSiege;
 
-                return true;
+                    return true;
 
+                } else {
+
+                    return false;
+                }
             } else {
+                while ($row = $stmt->fetch(\PDO::FETCH_OBJ)) {
+                    $this->ca += $row->ca;
+                    $this->conso += $row->conso;
+                    $this->personnel += $row->personnel;
+                    $this->fraisGeneraux += $row->frais_generaux;
+                    $this->retourAchat += $row->retourAchat;
+                    $this->retourFraisSiege += $row->retourFraisSiege;
 
-                return false;
+                    $this->resultatExploitation = $this->ca - ($this->conso + $this->personnel + $this->fraisGeneraux);
+                    $this->resultats = $this->resultatExploitation + $this->retourAchat + $this->retourFraisSiege;
+                }
+                return true;
             }
         }
     }
@@ -534,6 +554,20 @@ class Budget
 
             if (is_callable(array($this, $method))) {
                 $this->$method($value);
+            }
+        }
+    }
+
+    /**
+     * Clean class attributs
+     */
+    public function clean()
+    {
+        foreach (get_object_vars($this) as $attribut => $value) {
+            $method = 'set' . str_replace(' ', '', ucwords(str_replace('_', ' ', $attribut)));
+
+            if (is_callable(array($this, $method))) {
+                $this->$method(null);
             }
         }
     }

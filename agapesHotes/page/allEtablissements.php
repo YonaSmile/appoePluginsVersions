@@ -30,9 +30,9 @@ $siteAccess = $SiteAccess->showSiteByUser();
                         </tr>
                         </thead>
                         <tbody>
-                        <?php if ($allEtablissement):
+                        <?php if (($allEtablissement && $siteAccess) || ($allEtablissement && getUserRoleId() > 2)):
                             foreach ($allEtablissement as $etablissement):
-                                if ($etablissement->site_id == $siteAccess->id):
+                                if (($siteAccess && $etablissement->site_id == $siteAccess->id) || getUserRoleId() > 2):
                                     $Site->setId($etablissement->site_id);
                                     if ($Site->show() && $Site->getStatus()):
                                         $Secteur->setId($Site->getSecteurId());

@@ -67,6 +67,7 @@ $allSecteursAccess = $SecteurAccess->showAll();
                     </div>
                 </div>
             <?php endif; ?>
+            <hr class="mx-5 my-4 d-md-block d-lg-none">
             <?php if ($allSitesAccess): ?>
                 <div class="col-12 col-lg-6">
                     <div class="table-responsive">

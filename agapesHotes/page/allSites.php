@@ -12,8 +12,7 @@ $Secteur = new \App\Plugin\AgapesHotes\Secteur();
         <div class="row">
             <div class="col-12">
                 <div class="table-responsive">
-                    <table id="pagesTable"
-                           class="sortableTable table table-striped">
+                    <table class="sortableTable table table-striped tableNonEffect">
                         <thead>
                         <tr>
                             <th>#</th>

@@ -129,7 +129,7 @@ function getAllPrestationsPriceByEtablissement($etablissementId)
 
     $PrestationPrix = new \App\Plugin\AgapesHotes\PrixPrestation();
     $PrestationPrix->setEtablissementId($etablissementId);
-    $PrestationPrix->setDateDebut(date('Y-m-01'));
+    $PrestationPrix->setDateDebut(date('Y-m-d'));
     $allPrestationsPrice = groupMultipleKeysObjectsArray($PrestationPrix->showAll(), 'prestation_id');
 
     if ($allPrestationsPrice) {
@@ -247,7 +247,7 @@ function getInventaireServentest($allInventaire)
 
 }
 
-function getSiteMeta($siteId, $month, $year)
+function getSiteMeta($siteId, $year, $month = '')
 {
 
     $siteMeta = array(
@@ -257,21 +257,23 @@ function getSiteMeta($siteId, $month, $year)
 
     $SiteMeta = new \App\Plugin\AgapesHotes\SiteMeta();
     $SiteMeta->setSiteId($siteId);
-    $SiteMeta->setMonth($month);
+    if (!empty($month)) {
+        $SiteMeta->setMonth($month);
+    }
     $SiteMeta->setYear($year);
 
     $allSiteMetas = extractFromObjArr($SiteMeta->showBySite(), 'dataName');
 
     if (!isArrayEmpty($allSiteMetas)) {
-        $siteMeta['participationTournante'] = $allSiteMetas['Participation tournant']->data;
-        $siteMeta['fraisDePersonnels'] = $allSiteMetas['Frais de personnels']->data;
+        $siteMeta['participationTournante'] = array_key_exists('Participation tournant', $allSiteMetas) ? $allSiteMetas['Participation tournant']->data : 0;
+        $siteMeta['fraisDePersonnels'] = array_key_exists('Frais de personnels', $allSiteMetas) ? $allSiteMetas['Frais de personnels']->data : 0;
     }
 
     return $siteMeta;
 
 }
 
-function getNoteDeFrais($siteId, $month, $year)
+function getNoteDeFrais($siteId, $year, $month = '')
 {
     $noteDeFrais = array(
         'denree' => 0,
@@ -281,8 +283,13 @@ function getNoteDeFrais($siteId, $month, $year)
     $View = new \App\Plugin\AgapesHotes\View();
 
     $View->setViewName('totalNoteDeFraisDenree');
-    $View->setDataColumns(array('site_id', 'mois', 'annee'));
-    $View->setDataValues(array($siteId, $month, $year));
+    if (!empty($month)) {
+        $View->setDataColumns(array('site_id', 'mois', 'annee'));
+        $View->setDataValues(array($siteId, $month, $year));
+    } else {
+        $View->setDataColumns(array('site_id', 'annee'));
+        $View->setDataValues(array($siteId, $year));
+    }
     $View->prepareSql();
     $totalDenrees = $View->get();
     $noteDeFrais['denree'] = $totalDenrees ? $totalDenrees->totalHT : 0;
@@ -295,28 +302,35 @@ function getNoteDeFrais($siteId, $month, $year)
     return $noteDeFrais;
 }
 
-function getFacturation($siteId, $month, $year)
+function getFacturation($siteId, $year, $month = '')
 {
 
     $View = new \App\Plugin\AgapesHotes\View();
 
     $View->setViewName('totalFacturation');
-    $View->setDataColumns(array('site_id', 'mois', 'annee'));
-    $View->setDataValues(array($siteId, $month, $year));
+    if (!empty($month)) {
+        $View->setDataColumns(array('site_id', 'mois', 'annee'));
+        $View->setDataValues(array($siteId, $month, $year));
+    } else {
+        $View->setDataColumns(array('site_id', 'annee'));
+        $View->setDataValues(array($siteId, $year));
+    }
     $View->prepareSql();
     $totalFacturation = $View->get();
 
     return $totalFacturation ? $totalFacturation->totalHT : 0;
 }
 
-function getBudget($siteId, $month, $year)
+function getBudget($siteId, $year, $month = '')
 {
 
     $Budget = new \App\Plugin\AgapesHotes\Budget();
 
     $Budget->setSiteId($siteId);
     $Budget->setYear($year);
-    $Budget->setMonth($month);
+    if (!empty($month)) {
+        $Budget->setMonth($month);
+    }
     $Budget->showBySite();
 
     return $Budget ? $Budget : 0;

@@ -103,13 +103,13 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                                                         <div class="row">
                                                             <div class="col-12 my-2">
                                                                 <div class="row my-2">
-                                                                    <div class="col-12 col-md-4 my-2">
+                                                                    <div class="col-4 my-2">
                                                                         <?= \App\Form::text('Émetteur', 'emetteur', 'texte', 'Les Agapes Hôtes, ' . $Site->getNom(), true, 255, 'disabled="disabled" readonly', '', 'basePrint'); ?>
                                                                     </div>
-                                                                    <div class="col-12 col-md-4 my-2">
+                                                                    <div class="col-4 my-2">
                                                                         <?= \App\Form::text('Date de la Facture', 'date', 'date', current($data)->date, true, 255, 'min="' . $dateDebut->format('Y-m-d') . '" max="' . $dateFin->format('Y-m-d') . '"', '', 'basePrint'); ?>
                                                                     </div>
-                                                                    <div class="col-12 col-md-4 my-2">
+                                                                    <div class="col-4 my-2">
                                                                         <?= App\Form::text('Destinataire', 'client_name', 'text', $clientName, true, 150, 'list="etablissementList" autocomplete="off"', '', 'basePrint'); ?>
                                                                         <?php if ($allEtablissements): ?>
                                                                             <datalist id="etablissementList">
@@ -121,17 +121,17 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                                                                     </div>
                                                                 </div>
                                                                 <hr class="mx-5">
-                                                                <div class="d-sm-none d-md-block">
+                                                                <div class="d-xs-none d-sm-block">
                                                                     <div class="row my-1 infoTable">
-                                                                        <div class="col-md-3"><strong>Produit</strong>
+                                                                        <div class="col-3"><strong>Produit</strong>
                                                                         </div>
-                                                                        <div class="col-md-1"><strong>Qté</strong></div>
-                                                                        <div class="col-md-2"><strong>Prix/unité
+                                                                        <div class="col-1"><strong>Qté</strong></div>
+                                                                        <div class="col-2"><strong>Prix/unité
                                                                                 HT</strong></div>
-                                                                        <div class="col-md-2"><strong>Total HT</strong>
+                                                                        <div class="col-2"><strong>Total HT</strong>
                                                                         </div>
-                                                                        <div class="col-md-2"><strong>TVA</strong></div>
-                                                                        <div class="col-md-2"><strong>Total TTC</strong>
+                                                                        <div class="col-2"><strong>TVA</strong></div>
+                                                                        <div class="col-2"><strong>Total TTC</strong>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -149,7 +149,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                                                                                   data-idachat="<?= $achat->id; ?>"
                                                                                   data-clientname="<?= $clientNameSlug; ?>">
                                                                                 <i class="fas fa-ban"></i></span>
-                                                                            <div class="col-12 col-md-3 my-1">
+                                                                            <div class="col-3 my-1">
                                                                                 <?= \App\Form::text('Nom de l\'article', 'nom_' . $c, 'text', $achat->nom, true, 255, 'list="coursesList" autocomplete="off"', '', 'form-control-sm', 'Nom de l\'article'); ?>
                                                                                 <?php if ($allCourses): ?>
                                                                                     <datalist id="coursesList">
@@ -159,19 +159,19 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                                                                                     </datalist>
                                                                                 <?php endif; ?>
                                                                             </div>
-                                                                            <div class="col-12 col-md-1 my-1">
+                                                                            <div class="col-1 my-1">
                                                                                 <?= \App\Form::text('Qté', 'quantite_' . $c, 'number', $achat->quantite, true, 255, '', '', 'form-control-sm quantiteField', 'Quantité'); ?>
                                                                             </div>
-                                                                            <div class="col-12 col-md-2 my-1">
+                                                                            <div class="col-2 my-1">
                                                                                 <?= \App\Form::text('Prix/unité HT', 'prixHTunite_' . $c, 'text', $achat->prixHTunite, true, 255, '', '', 'form-control-sm prixUnitaireField', 'Prix unitaire HT'); ?>
                                                                             </div>
-                                                                            <div class="col-12 col-md-2 my-1">
+                                                                            <div class="col-2 my-1">
                                                                                 <?= \App\Form::text('Total HT', 'total_' . $c, 'text', $achat->total, true, 255, 'readonly', '', 'form-control-sm totalField', 'Total HT'); ?>
                                                                             </div>
-                                                                            <div class="col-12 col-md-2 my-1">
+                                                                            <div class="col-2 my-1">
                                                                                 <?= \App\Form::text('TVA', 'tauxTVA_' . $c, 'text', $achat->tauxTVA, true, 255, '', '', 'form-control-sm tvaField', 'TVA (%)'); ?>
                                                                             </div>
-                                                                            <div class="col-12 col-md-2 my-1">
+                                                                            <div class="col-2 my-1">
                                                                                 <?= \App\Form::text('Total TTC', 'totalTtc_' . $c, 'text', financial($achat->total + $taxe), true, 255, 'readonly', '', 'form-control-sm totalTtcField', 'Total TTC'); ?>
                                                                             </div>
                                                                             <hr class="mx-auto my-1 w-25 d-md-block d-lg-none">

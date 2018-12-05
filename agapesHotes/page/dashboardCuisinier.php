@@ -48,7 +48,7 @@ $View = new \App\Plugin\AgapesHotes\View();
                         <a href="<?= AGAPESHOTES_URL; ?>page/vivreCrue/<?= $Site->secteurSlug; ?>/<?= $Site->slug; ?>/"
                            class="btn btn-block btn-info py-4">Vivre crue</a>
                         <a href="<?= AGAPESHOTES_URL; ?>page/mainSupplementaire/<?= $Site->secteurSlug; ?>/<?= $Site->slug; ?>/"
-                           class="btn btn-block btn-info py-4">Facturation</a>
+                           class="btn btn-block btn-info py-4">Facturation HC</a>
 
                         <?php foreach ($allEtablissements as $etablissement): ?>
                             <small class="littleTitle colorPrimary mt-3"><?= $etablissement->nom; ?></small>
@@ -245,16 +245,19 @@ $View = new \App\Plugin\AgapesHotes\View();
 
                                         $View->setViewName('totalNoteDeFraisNonAlimentaire');
                                         $totalNotesDeFraisNonAlimentaire = $View->get();
+
+                                        $totalDenreeNotes = !empty($totalNotesDeFraisDenrees->totalHT) ? $totalNotesDeFraisDenrees->totalHT : 0;
+                                        $totalNonAlimentaireNotes = !empty($totalNotesDeFraisNonAlimentaire->totalHT) ? $totalNotesDeFraisNonAlimentaire->totalHT : 0;
                                         ?>
                                         <th style="width: 200px;">Notes de frais</th>
-                                        <td style="text-align: center !important;"><?= $totalNotesDeFraisDenrees->totalHT; ?>
+                                        <td style="text-align: center !important;"><?= $totalDenreeNotes; ?>
                                             €
                                         </td>
-                                        <td style="text-align: center !important;"><?= $totalNotesDeFraisNonAlimentaire->totalHT; ?>
+                                        <td style="text-align: center !important;"><?= $totalNonAlimentaireNotes; ?>
                                             €
                                         </td>
                                         <td style="text-align: center !important;">
-                                            <?= $totalNotesDeFraisDenrees->totalHT + $totalNotesDeFraisNonAlimentaire->totalHT; ?>
+                                            <?= $totalDenreeNotes + $totalNonAlimentaireNotes; ?>
                                             €
                                         </td>
                                     </tr>
@@ -285,8 +288,8 @@ $View = new \App\Plugin\AgapesHotes\View();
                                     <tr>
                                         <th style="width: 200px;">Consommation réelle</th>
                                         <?php
-                                        $consoReelDenrees = ($totalCommandDenree + $totalInventaireDenreeMonthAgo + $totalNotesDeFraisDenrees->totalHT) - $totalInventaireDenree;;
-                                        $consoReelNonAlimentaires = ($totalCommandUniqueEntretien + $totalInventaireUniqueEntretienMonthAgo + $totalNotesDeFraisNonAlimentaire->totalHT) - $totalInventaireUniqueEntretien;
+                                        $consoReelDenrees = ($totalCommandDenree + $totalInventaireDenreeMonthAgo + $totalDenreeNotes) - $totalInventaireDenree;;
+                                        $consoReelNonAlimentaires = ($totalCommandUniqueEntretien + $totalInventaireUniqueEntretienMonthAgo + $totalNonAlimentaireNotes) - $totalInventaireUniqueEntretien;
                                         ?>
                                         <td style="text-align: center !important;"><?= $consoReelDenrees; ?>
                                             €
@@ -305,9 +308,11 @@ $View = new \App\Plugin\AgapesHotes\View();
                                         $View->setDataColumns(array('site_id', 'mois', 'annee'));
                                         $View->setDataValues(array($Site->id, date('m'), date('Y')));
                                         $totalFacturation = $View->get();
+
+                                        $facturation = !empty($totalFacturation->totalHT) ? $totalFacturation->totalHT : 0;
                                         ?>
                                         <th style="width: 200px;">CA variable</th>
-                                        <td style="text-align: center !important;"><?= $totalFacturation->totalHT; ?>€
+                                        <td style="text-align: center !important;"><?= $facturation; ?>€
                                         </td>
                                         <td class="table-secondary"></td>
                                         <td class="table-secondary"></td>
@@ -315,7 +320,7 @@ $View = new \App\Plugin\AgapesHotes\View();
                                     <tr>
                                         <th style="width: 200px;">Marge réalisée</th>
                                         <td style="text-align: center !important;">
-                                            <?= $totalFacturation->totalHT - $consoReelDenrees; ?>
+                                            <?= $facturation - $consoReelDenrees; ?>
                                             €
                                         </td>
                                         <td class="table-secondary"></td>
@@ -368,7 +373,7 @@ $View = new \App\Plugin\AgapesHotes\View();
                             $FraisDePersonnels = $siteMetas['Frais de personnels']->data;
                         }
 
-                        $fraisDeSiege = financial($totalFacturation->totalHT * 0.04);
+                        $fraisDeSiege = financial($facturation * 0.04);
                         $fraisGenerauxTotal = financial($ParticipationTournante + $fraisDeSiege + $consoReelNonAlimentaires);
                         ?>
                         <div id="collapseFraisGener" class="collapse" aria-labelledby="headingFour"
@@ -399,7 +404,7 @@ $View = new \App\Plugin\AgapesHotes\View();
                         <div id="collapseResultats" class="collapse" aria-labelledby="headingFive"
                              data-parent="#infosAgapes">
                             <div class="littleContainer"><span class="littleTitle colorPrimary">CA</span>
-                                <span class="littleText"><?= $totalFacturation->totalHT; ?>€</span></div>
+                                <span class="littleText"><?= $facturation; ?>€</span></div>
                             <div class="littleContainer"><span class="littleTitle colorPrimary">Consommation</span>
                                 <span class="littleText"><?= $consoReelDenrees; ?>€</span></div>
                             <div class="littleContainer"><span
@@ -408,7 +413,7 @@ $View = new \App\Plugin\AgapesHotes\View();
                             <div class="littleContainer"><span class="littleTitle colorPrimary">Frais généraux</span>
                                 <span class="littleText"><?= $fraisGenerauxTotal; ?>€</span></div>
                             <div class="littleContainer"><span class="littleTitle colorPrimary">Résultats bruts d'éxploitation</span>
-                                <span class="littleText"><?= $totalFacturation->totalHT - ($consoReelDenrees + $FraisDePersonnels + $fraisGenerauxTotal); ?>€</span>
+                                <span class="littleText"><?= $facturation - ($consoReelDenrees + $FraisDePersonnels + $fraisGenerauxTotal); ?>€</span>
                             </div>
                         </div>
                     </div>
