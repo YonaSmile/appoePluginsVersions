@@ -387,6 +387,18 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                         var $input = $(this);
                         var inputType = $input.attr('name');
                         var inputVal = $input.val();
+                        if ($input.attr('id') == 'date') {
+                            var formattedDate = new Date(inputVal);
+                            var day = formattedDate.getDate();
+                            if (day < 10) {
+                                day = '0' + day;
+                            }
+                            var month = formattedDate.getMonth();
+                            month += 1;
+                            var year = formattedDate.getFullYear();
+
+                            inputVal = day + "/" + month + "/" + year
+                        }
                         var $parent = $input.parent();
 
                         $input.remove();

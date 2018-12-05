@@ -9,6 +9,7 @@ $allEtablissements = $Etablissement->showAllBySite();
 
 $inventaireUrl = 'https://serventest.fr/pro/liaison_appoe/getInventaireServentest.php';
 $commandesUrl = 'https://serventest.fr/pro/liaison_appoe/getCommandServentest.php';
+$refacturationUrl = 'https://serventest.fr/pro/liaison_appoe/getRefacturationServentest.php';
 
 $paramsMonthNow = array(
     'key' => '123',
@@ -27,6 +28,7 @@ $paramsMonthAgo = array(
 $inventaireRequest = json_decode(postHttpRequest($inventaireUrl, $paramsMonthNow), true);
 $inventaireRequestMonthAgo = json_decode(postHttpRequest($inventaireUrl, $paramsMonthAgo), true);
 $commandesRequest = json_decode(postHttpRequest($commandesUrl, $paramsMonthNow), true);
+$refacturationRequest = json_decode(postHttpRequest($refacturationUrl, $paramsMonthNow), true);
 $View = new \App\Plugin\AgapesHotes\View();
 ?>
 <div class="row mb-3">
@@ -105,9 +107,10 @@ $View = new \App\Plugin\AgapesHotes\View();
                                                 Denrées
                                             </th>
                                         </tr>
-                                        <?php if ($commandesRequest):
-                                            $totalCommandDenree = 0;
-                                            $totalCommandUniqueEntretien = 0;
+                                        <?php
+                                        $totalCommandDenree = 0;
+                                        $totalCommandUniqueEntretien = 0;
+                                        if ($commandesRequest):
                                             foreach ($commandesRequest as $key => $allDenree):
                                                 if (trim($allDenree['fournisseur']) != 'C2M'):
                                                     $totalCommandDenree += $allDenree['total']; ?>
@@ -171,7 +174,74 @@ $View = new \App\Plugin\AgapesHotes\View();
 
                         <div id="collapseRefactServ" class="collapse" aria-labelledby="headingTwo"
                              data-parent="#infosAgapes">
-
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover tableNonEffect">
+                                        <thead>
+                                        <tr>
+                                            <th><?= trans('Fournisseur'); ?></th>
+                                            <th><?= trans('Date livraison'); ?></th>
+                                            <th><?= trans('Total'); ?></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <th colspan="3"
+                                                style="text-align:center !important; background:#4fb99f;color:#fff;">
+                                                Denrées
+                                            </th>
+                                        </tr>
+                                        <?php
+                                        $totalRefraCommandDenree = 0;
+                                        $totalRefraCommandUniqueEntretien = 0;
+                                        if ($refacturationRequest):
+                                            foreach ($refacturationRequest as $key => $allDenree):
+                                                if (trim($allDenree['fournisseur']) != 'C2M'):
+                                                    $totalRefraCommandDenree += $allDenree['total']; ?>
+                                                    <tr>
+                                                        <td><?= $allDenree['fournisseur']; ?></td>
+                                                        <td><?= $allDenree['date_facturation']; ?></td>
+                                                        <td><?= $allDenree['total']; ?>€</td>
+                                                    </tr>
+                                                <?php endif; ?>
+                                            <?php endforeach; ?>
+                                            <tr>
+                                                <td colspan="2">Total denrées</td>
+                                                <th><?= $totalRefraCommandDenree; ?>€</th>
+                                            </tr>
+                                            <tr>
+                                                <th colspan="3"
+                                                    style="text-align:center !important; background:#4fb99f;color:#fff;">
+                                                    Produits unique
+                                                    entretien
+                                                </th>
+                                            </tr>
+                                            <?php foreach ($refacturationRequest as $key => $allUniqueEntretien):
+                                            if (trim($allUniqueEntretien['fournisseur']) == 'C2M'):
+                                                $totalRefraCommandUniqueEntretien += $allUniqueEntretien['total']; ?>
+                                                <tr>
+                                                    <td><?= $allUniqueEntretien['fournisseur']; ?></td>
+                                                    <td><?= $allUniqueEntretien['date_facturation']; ?></td>
+                                                    <td><?= $allUniqueEntretien['total']; ?>€</td>
+                                                </tr>
+                                            <?php endif; ?>
+                                        <?php endforeach; ?>
+                                            <tr>
+                                                <td colspan="2">Total produits unique entretien</td>
+                                                <th><?= $totalRefraCommandUniqueEntretien; ?>€</th>
+                                            </tr>
+                                            <tr>
+                                                <th colspan="3"
+                                                    style="text-align:center !important; background:#b96d36;color:#fff;">
+                                                    Total <?= financial($totalRefraCommandUniqueEntretien + $totalRefraCommandDenree); ?>
+                                                    €
+                                                </th>
+                                            </tr>
+                                        <?php endif; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -227,11 +297,12 @@ $View = new \App\Plugin\AgapesHotes\View();
                                     </tr>
                                     <tr>
                                         <th style="width: 200px;">Refacturation Serventest</th>
-                                        <td style="text-align: center !important;">€</td>
-                                        <td style="text-align: center !important;">
+                                        <td style="text-align: center !important;"><?= $totalRefraCommandDenree; ?></td>
+                                        <td style="text-align: center !important;"><?= $totalRefraCommandUniqueEntretien; ?>
                                             €
                                         </td>
                                         <td style="text-align: center !important;">
+                                            <?= financial($totalRefraCommandUniqueEntretien + $totalRefraCommandDenree); ?>
                                             €
                                         </td>
                                     </tr>
@@ -241,9 +312,11 @@ $View = new \App\Plugin\AgapesHotes\View();
                                         $View->setViewName('totalNoteDeFraisDenree');
                                         $View->setDataColumns(array('site_id', 'mois', 'annee'));
                                         $View->setDataValues(array($Site->id, date('m'), date('Y')));
+                                        $View->prepareSql();
                                         $totalNotesDeFraisDenrees = $View->get();
 
                                         $View->setViewName('totalNoteDeFraisNonAlimentaire');
+                                        $View->prepareSql();
                                         $totalNotesDeFraisNonAlimentaire = $View->get();
 
                                         $totalDenreeNotes = !empty($totalNotesDeFraisDenrees->totalHT) ? $totalNotesDeFraisDenrees->totalHT : 0;
@@ -288,8 +361,8 @@ $View = new \App\Plugin\AgapesHotes\View();
                                     <tr>
                                         <th style="width: 200px;">Consommation réelle</th>
                                         <?php
-                                        $consoReelDenrees = ($totalCommandDenree + $totalInventaireDenreeMonthAgo + $totalDenreeNotes) - $totalInventaireDenree;;
-                                        $consoReelNonAlimentaires = ($totalCommandUniqueEntretien + $totalInventaireUniqueEntretienMonthAgo + $totalNonAlimentaireNotes) - $totalInventaireUniqueEntretien;
+                                        $consoReelDenrees = ($totalRefraCommandDenree + $totalInventaireDenreeMonthAgo + $totalDenreeNotes) - $totalInventaireDenree;;
+                                        $consoReelNonAlimentaires = ($totalRefraCommandUniqueEntretien + $totalInventaireUniqueEntretienMonthAgo + $totalNonAlimentaireNotes) - $totalInventaireUniqueEntretien;
                                         ?>
                                         <td style="text-align: center !important;"><?= $consoReelDenrees; ?>
                                             €
@@ -307,9 +380,12 @@ $View = new \App\Plugin\AgapesHotes\View();
                                         $View->setViewName('totalFacturation');
                                         $View->setDataColumns(array('site_id', 'mois', 'annee'));
                                         $View->setDataValues(array($Site->id, date('m'), date('Y')));
+                                        $View->prepareSql();
                                         $totalFacturation = $View->get();
 
                                         $facturation = !empty($totalFacturation->totalHT) ? $totalFacturation->totalHT : 0;
+                                        $siteMeta = getSiteMeta($Site->id, date('Y'), date('m'));
+                                        $facturation += $siteMeta['fraisFixes'];
                                         ?>
                                         <th style="width: 200px;">CA variable</th>
                                         <td style="text-align: center !important;"><?= $facturation; ?>€
@@ -359,19 +435,10 @@ $View = new \App\Plugin\AgapesHotes\View();
                         </div>
 
                         <?php
-                        $SiteMeta = new \App\Plugin\AgapesHotes\SiteMeta();
-                        $SiteMeta->setSiteId($Site->id);
-                        $SiteMeta->setMonth(date('m'));
-                        $SiteMeta->setYear(date('Y'));
 
-                        $siteMetas = extractFromObjArr($SiteMeta->showBySite(), 'dataName');
-
-                        $ParticipationTournante = 0;
-                        $FraisDePersonnels = 0;
-                        if (!isArrayEmpty($siteMetas)) {
-                            $ParticipationTournante = $siteMetas['Participation tournant']->data;
-                            $FraisDePersonnels = $siteMetas['Frais de personnels']->data;
-                        }
+                        $siteMeta = getSiteMeta($Site->id, date('Y'), date('m'));
+                        $ParticipationTournante = $siteMeta['participationTournante'];
+                        $FraisDePersonnels = $siteMeta['fraisDePersonnels'];
 
                         $fraisDeSiege = financial($facturation * 0.04);
                         $fraisGenerauxTotal = financial($ParticipationTournante + $fraisDeSiege + $consoReelNonAlimentaires);

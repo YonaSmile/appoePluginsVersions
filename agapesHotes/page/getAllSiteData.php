@@ -13,7 +13,7 @@ if (!empty($_POST['siteId']) && !empty($_POST['year'])) {
         $allSitesData = array();
 
         $inventaireUrl = 'https://serventest.fr/pro/liaison_appoe/getInventaireServentest.php';
-        $commandesUrl = 'https://serventest.fr/pro/liaison_appoe/getCommandServentest.php';
+        $commandesUrl = 'https://serventest.fr/pro/liaison_appoe/getRefacturationServentest.php';
 
         if (empty($month)) {
             $paramsNow = array(

@@ -10,7 +10,7 @@ if ($Secteur):
     $allSitesData = array();
 
     $inventaireUrl = 'https://serventest.fr/pro/liaison_appoe/getInventaireServentest.php';
-    $commandesUrl = 'https://serventest.fr/pro/liaison_appoe/getCommandServentest.php';
+    $commandesUrl = 'https://serventest.fr/pro/liaison_appoe/getRefacturationServentest.php';
 
     foreach ($allSites as $site) {
 

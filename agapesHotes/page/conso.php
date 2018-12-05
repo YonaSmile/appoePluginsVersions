@@ -7,7 +7,7 @@ $Secteur = new \App\Plugin\AgapesHotes\Secteur();
 $Budget = new \App\Plugin\AgapesHotes\Budget();
 
 $inventaireUrl = 'https://serventest.fr/pro/liaison_appoe/getInventaireServentest.php';
-$commandesUrl = 'https://serventest.fr/pro/liaison_appoe/getCommandServentest.php';
+$commandesUrl = 'https://serventest.fr/pro/liaison_appoe/getRefacturationServentest.php';
 
 $start = new \DateTime(date('Y-01-01'));
 $end = new \DateTime(date('Y-12-t'));

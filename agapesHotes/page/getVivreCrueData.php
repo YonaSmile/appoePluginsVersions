@@ -29,8 +29,10 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
     $Etablissement->setSiteId($Site->getId());
     $allEtablissements = $Etablissement->showAllBySite();
     ?>
-    <h2>Année <?= $start->format('Y'); ?>, Mois de <?= strftime("%B", strtotime($start->format('Y-m-d'))); ?></h2>
-    <p>Commence le <?= $start->format('d/m/Y'); ?> et se termine le <?= $end->format('d/m/Y'); ?></p>
+    <div class="col-12 py-4">
+        <h5 class="mb-0"><?= ucfirst(strftime("%B", strtotime($start->format('Y-m-d')))); ?> <?= $start->format('Y'); ?></h5>
+        <small class="d-block">Commence le <?= $start->format('d/m/Y'); ?> et se termine le <?= $end->format('d/m/Y'); ?></small>
+    </div>
     <div class="table-responsive col-12">
         <table class="table table-striped tableNonEffect">
             <thead>
@@ -294,4 +296,6 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
 
         });
     </script>
+<?php else: ?>
+    <?= getContainerErrorMsg(trans('Ce site n\'est pas accessible')); ?>
 <?php endif; ?>

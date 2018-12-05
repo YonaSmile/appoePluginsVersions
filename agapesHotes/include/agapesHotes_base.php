@@ -252,7 +252,8 @@ function getSiteMeta($siteId, $year, $month = '')
 
     $siteMeta = array(
         'participationTournante' => 0,
-        'fraisDePersonnels' => 0
+        'fraisDePersonnels' => 0,
+        'fraisFixes' => 0
     );
 
     $SiteMeta = new \App\Plugin\AgapesHotes\SiteMeta();
@@ -267,6 +268,7 @@ function getSiteMeta($siteId, $year, $month = '')
     if (!isArrayEmpty($allSiteMetas)) {
         $siteMeta['participationTournante'] = array_key_exists('Participation tournant', $allSiteMetas) ? $allSiteMetas['Participation tournant']->data : 0;
         $siteMeta['fraisDePersonnels'] = array_key_exists('Frais de personnels', $allSiteMetas) ? $allSiteMetas['Frais de personnels']->data : 0;
+        $siteMeta['fraisFixes'] = array_key_exists('Frais fixes', $allSiteMetas) ? $allSiteMetas['Frais fixes']->data : 0;
     }
 
     return $siteMeta;

@@ -273,7 +273,7 @@ class MainSupplementaire
     public function createView()
     {
         $sql = 'CREATE VIEW totalFacturationMainSupplementaire AS SELECT site_id, YEAR(date) AS annee, MONTH(date) AS mois, SUM(total) AS totalHT 
-        FROM appoe_plugin_agapeshotes_main_supplementaire GROUP BY site_id';
+        FROM appoe_plugin_agapeshotes_main_supplementaire GROUP BY MONTH(date)';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();

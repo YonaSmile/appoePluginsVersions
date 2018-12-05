@@ -14,9 +14,13 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
     if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $Secteur->getId()):
         echo getTitle($Page->getName(), $Page->getSlug(), ' de <strong>' . $Site->getNom() . '</strong>');
         ?>
-        <button type="button" class="btn btn-sm btn-info seeMonthBefore">Mois précédent</button>
-        <button type="button" class="btn btn-sm btn-info seeMonthAfter">Mois Prochain</button>
-        <div id="vivreCrueContainer"></div>
+        <div class="row">
+            <div class="col-12">
+                <button type="button" class="btn btn-sm btn-info seeMonthBefore">Mois précédent</button>
+                <button type="button" class="btn btn-sm btn-info seeMonthAfter">Mois Prochain</button>
+            </div>
+        </div>
+        <div id="vivreCrueContainer" class="row"></div>
         <script>
             $(document).ready(function () {
 
@@ -72,8 +76,8 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
             });
         </script>
 
-    <?php else: ?>
-        <?= getContainerErrorMsg(trans('Cet établissement n\'est pas accessible')); ?>
-    <?php endif; ?>
-<?php endif; ?>
-<?php require('footer.php'); ?>
+    <?php else:
+        echo getContainerErrorMsg(trans('Cet établissement n\'est pas accessible'));
+    endif;
+endif;
+require('footer.php'); ?>

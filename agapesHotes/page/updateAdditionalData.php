@@ -11,7 +11,8 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
 
     $enablesMetasSite = array(
         1 => 'Participation tournant',
-        'Frais de personnels'
+        'Frais de personnels',
+        'Frais fixes'
     );
 
     //Check Secteur and Site

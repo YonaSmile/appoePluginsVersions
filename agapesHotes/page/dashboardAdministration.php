@@ -5,7 +5,7 @@ $allOrdSites = extractFromObjToSimpleArr($allSites, 'id', 'secteur_id');
 $allSitesBySecteur = groupMultipleKeysObjectsArray($allSites, 'secteur_id');
 $Secteur = new \App\Plugin\AgapesHotes\Secteur();
 ?>
-<h2>Synthèse Secteur</h2>
+<h4>Synthèse Secteur</h4>
 <div class="row mb-3">
     <div class="col-12 positionRelative">
         <div class="table-responsive">
@@ -73,7 +73,7 @@ $Secteur = new \App\Plugin\AgapesHotes\Secteur();
                 </tbody>
             </table>
         </div>
-        <hr class="my-5">
+        <hr class="my-4">
         <div class="table-responsive">
             <table id="syntheseSecteurTable" class="table table-striped tableNonEffect text-center">
                 <thead>

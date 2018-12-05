@@ -258,7 +258,7 @@ class VivreCrue
         FROM appoe_plugin_agapeshotes_vivre_crue AS VC
         INNER JOIN appoe_plugin_agapeshotes_etablissements AS ETB
         ON(ETB.id = VC.etablissement_id)
-        GROUP BY site_id';
+        GROUP BY MONTH(VC.date)';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();

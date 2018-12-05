@@ -240,7 +240,7 @@ class MainCourante
         FROM appoe_plugin_agapeshotes_main_courante AS MC
         INNER JOIN appoe_plugin_agapeshotes_etablissements AS ETB
         ON(ETB.id = MC.etablissement_id)
-        GROUP BY site_id';
+        GROUP BY MONTH(MC.date)';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();
