@@ -40,7 +40,7 @@ $Secteur = new \App\Plugin\AgapesHotes\Secteur();
                                                     Main courante
                                                 </a>&nbsp;
                                                 <a href="<?= AGAPESHOTES_URL; ?>page/mainSupplementaire/<?= $Secteur->getSlug(); ?>/<?= $site->slug; ?>/">
-                                                    Main Supplémentaire
+                                                    Facturation HC
                                                 </a>&nbsp;
                                                 <a href="<?= AGAPESHOTES_URL; ?>page/planning/<?= $Secteur->getSlug(); ?>/<?= $site->slug; ?>/">
                                                     Planning
