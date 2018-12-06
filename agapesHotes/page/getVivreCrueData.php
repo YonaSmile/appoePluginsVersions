@@ -31,7 +31,9 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
     ?>
     <div class="col-12 py-4">
         <h5 class="mb-0"><?= ucfirst(strftime("%B", strtotime($start->format('Y-m-d')))); ?> <?= $start->format('Y'); ?></h5>
-        <small class="d-block">Commence le <?= $start->format('d/m/Y'); ?> et se termine le <?= $end->format('d/m/Y'); ?></small>
+        <small class="d-block">Commence le <?= $start->format('d/m/Y'); ?> et se termine
+            le <?= $end->format('d/m/Y'); ?></small>
+        <button type="button" class="btn btn-sm btn-info printVivreCrueBtn my-2">Imprimer la facture</button>
     </div>
     <div class="table-responsive col-12">
         <table class="table table-striped tableNonEffect">
@@ -65,8 +67,8 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                     </tr>
                     <?php foreach ($allCourses as $course):
                         $vivreCrueQuantiteTotalDay = 0; ?>
-                        <tr data-idcourse="<?= $course->id ?>">
-                            <th class="positionRelative" style="vertical-align: middle;">
+                        <tr data-idcourse="<?= $course->id ?>" class="vivreCrueTr">
+                            <th class="positionRelative courseName" style="vertical-align: middle;">
                                 <?= $course->nom; ?>
                             </th>
                             <?php
@@ -116,7 +118,6 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                                            style="padding: 5px 0 !important; <?= $date->format('Y-m-d') == date('Y-m-d') ? 'background:#4fb99f;color:#fff;' : ''; ?>">
                                 </td>
 
-
                             <?php endforeach; ?>
                         </tr>
 
@@ -136,8 +137,144 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
             </tbody>
         </table>
     </div>
+    <div class="modal fade" id="modalFactureMainCourante"
+         tabindex="-1" role="dialog"
+         aria-labelledby="modalFactureMainCouranteTitle"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"
+                        id="modalFactureMainCouranteTitle">
+                        <?= trans('Demande de facturation'); ?></h5>
+                    <small>Vivre Crue</small>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 my-2">
+                            <div class="row my-2">
+                                <div class="col-4 my-2">
+                                    <?= \App\Form::text('Émetteur', 'emetteur', 'texte', 'Les Agapes Hôtes, ' . $Site->getNom(), true, 255, 'disabled="disabled" readonly', '', 'basePrint'); ?>
+                                </div>
+                                <div class="col-4 my-2">
+                                    <?= \App\Form::text('Date de la Facture', 'date', 'date', date('Y-m-d'), true, 255, 'min="" max=""', '', 'basePrint'); ?>
+                                </div>
+                                <div class="col-4 my-2">
+                                    <?= App\Form::text('Destinataire', 'client_name', 'text', '', true, 150, 'list="etablissementList" autocomplete="off"', '', 'basePrint'); ?>
+                                    <?php if ($allEtablissements): ?>
+                                        <datalist id="etablissementList">
+                                            <?php foreach ($allEtablissements as $etablissement): ?>
+                                                <option value="<?= $etablissement->nom; ?>"><?= $etablissement->nom; ?></option>
+                                            <?php endforeach; ?>
+                                        </datalist>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                            <hr class="mx-5">
+                            <div class="d-xs-none d-sm-block">
+                                <div class="row my-1 infoTable">
+                                    <div class="col-3"><strong>Produit</strong>
+                                    </div>
+                                    <div class="col-3"><strong>Quantité</strong></div>
+                                    <div class="col-4"><strong>Prix/unité HT (TVA)</strong></div>
+                                    <div class="col-2"><strong>Total HT</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 allFactureProducts"></div>
+                    </div>
+                    <div class="col-5 text-right float-right totalContainer py-3 px-5"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="printFacture btn btn-warning"><?= trans('Imprimer'); ?></button>
+                    <button type="button" class="btn btn-secondary"
+                            data-dismiss="modal"><?= trans('Fermer'); ?></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="/app/js/printThis.js"></script>
     <script>
         $(document).ready(function () {
+
+            function prepareTotalFacture() {
+                $('.allFactureProducts').html('');
+                var totalVariable = 0;
+
+                $('tr.vivreCrueTr').each(function () {
+                    var $tr = $(this);
+                    var prestationName = $tr.find('th.courseName').text();
+                    var prestationPrice = parseFloat($tr.find('input[name="prixUntitHT"]').val());
+                    var tva = parseFloat($tr.find('input[name="tauxTva"]').val());
+                    var quantityTotal = parseFloat($tr.find('td.tdQuantity').text());
+                    if ($.isNumeric(quantityTotal) && quantityTotal > 0) {
+                        var total = financial(prestationPrice * quantityTotal);
+
+                        var html = '<div class="row my-1 productFields positionRelative"><div class="col-3 mb-1">' +
+                            prestationName + '</div><div class="col-3 mb-1">' +
+                            quantityTotal + '</div><div class="col-4 mb-1">' +
+                            prestationPrice + '€ (' + financial(tva) + '%)</div><div class="col-2 mb-1">' +
+                            total + '€</div></div>';
+                        $('.allFactureProducts').append(html);
+
+                        totalVariable += parseFloat(total);
+                    }
+                });
+
+                var $totalTable = $('#totalHtTable').clone();
+                $totalTable.removeClass().addClass('float-right');
+                $('tbody', $totalTable).append('<tr><hr><td></td><td>'+financial(totalVariable) + '€'+'</td></tr>');
+                $('.totalContainer').append($totalTable);
+            }
+
+
+            $('.printVivreCrueBtn').on('click', function () {
+                prepareTotalFacture();
+                $('input#client_name').removeClass('is-invalid');
+                $('#modalFactureMainCourante').modal('show');
+            });
+
+
+            $('button.printFacture').on('click', function () {
+
+                if ($('input#client_name').val() == '') {
+                    $('input#client_name').addClass('is-invalid');
+                } else {
+                    var $factureMainCourante = $('#modalFactureMainCourante').clone();
+
+                    $('input', $factureMainCourante).each(function () {
+
+                        var $input = $(this);
+                        var inputVal = $input.val();
+                        if ($input.attr('id') == 'date') {
+                            var formattedDate = new Date(inputVal);
+                            var day = formattedDate.getDate();
+                            if (day < 10) {
+                                day = '0' + day;
+                            }
+                            var month = formattedDate.getMonth();
+                            month += 1;
+                            var year = formattedDate.getFullYear();
+
+                            inputVal = day + "/" + month + "/" + year
+                        }
+                        var $parent = $input.parent();
+                        $parent.wrap('<strong></strong>');
+                        $input.remove();
+
+                        if ($input.hasClass('basePrint')) {
+                            $parent.append('<br>' + inputVal);
+                        }
+                    });
+
+                    $('button, .modal-footer', $factureMainCourante).remove();
+                    $factureMainCourante.printThis({
+                        loadCSS: "<?= AGAPESHOTES_URL; ?>css/print.css",
+                    });
+                }
+            });
 
             $('input[name="prixUntitHT"], input[name="tauxTva"]').on('blur', function () {
                 $(this).val(financial($(this).val()));
