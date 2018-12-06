@@ -34,10 +34,10 @@ if ($Secteur):
         $allSitesData[$site->id]['commandes'] = getCommandesServentest($allSitesData[$site->id]['commandesRequest']);
         $allSitesData[$site->id]['inventaire'] = getInventaireServentest($allSitesData[$site->id]['inventaireRequest']);
         $allSitesData[$site->id]['inventaireMonthAgo'] = getInventaireServentest($allSitesData[$site->id]['inventaireRequestMonthAgo']);
-        $allSitesData[$site->id]['noteDeFrais'] = getNoteDeFrais($site->id, date('m'), date('Y'));
-        $allSitesData[$site->id]['facturation'] = getFacturation($site->id, date('m'), date('Y'));
-        $allSitesData[$site->id]['siteMeta'] = getSiteMeta($site->id, date('m'), date('Y'));
-        $allSitesData[$site->id]['budget'] = getBudget($site->id, date('m'), date('Y'));
+        $allSitesData[$site->id]['noteDeFrais'] = getNoteDeFrais($site->id, date('Y'), date('m'));
+        $allSitesData[$site->id]['siteMeta'] = getSiteMeta($site->id, date('Y'), date('m'));
+        $allSitesData[$site->id]['facturation'] = getFacturation($site->id, date('Y'), date('m')) + $allSitesData[$site->id]['siteMeta']['fraisFixes'];
+        $allSitesData[$site->id]['budget'] = getBudget($site->id, date('Y'), date('m'));
 
         $allSitesData[$site->id]['consoReel']['denree'] = (
                 $allSitesData[$site->id]['commandes']['denree']['total']
@@ -134,19 +134,21 @@ if ($Secteur):
                     </div>
                     <div class="card-body pt-0">
                         <div class="accordion" id="infosAgapes-<?= $site->id; ?>">
+
                             <div class="card">
-                                <div class="card-header" id="headingOne-<?= $site->id; ?>">
+                                <div class="card-header" id="headingTwo-<?= $site->id; ?>">
                                     <h5 class="mb-0">
                                         <button class="btn btn-link" type="button" data-toggle="collapse"
-                                                data-target="#collapseAchat-<?= $site->id; ?>" aria-expanded="true"
-                                                aria-controls="collapseAchat-<?= $site->id; ?>">
-                                            Achats
+                                                data-target="#collapseRefactServ-<?= $site->id; ?>"
+                                                aria-expanded="true"
+                                                aria-controls="collapseRefactServ-<?= $site->id; ?>">
+                                            Refacturation ServenTest
                                         </button>
                                     </h5>
                                 </div>
 
-                                <div id="collapseAchat-<?= $site->id; ?>" class="collapse"
-                                     aria-labelledby="headingOne-<?= $site->id; ?>"
+                                <div id="collapseRefactServ-<?= $site->id; ?>" class="collapse"
+                                     aria-labelledby="headingTwo-<?= $site->id; ?>"
                                      data-parent="#infosAgapes-<?= $site->id; ?>">
                                     <div class="card-body">
                                         <div class="table-responsive">
@@ -154,7 +156,7 @@ if ($Secteur):
                                                 <thead>
                                                 <tr>
                                                     <th><?= trans('Fournisseur'); ?></th>
-                                                    <th><?= trans('Date livraison'); ?></th>
+                                                    <th><?= trans('Date facturation'); ?></th>
                                                     <th><?= trans('Total'); ?></th>
                                                 </tr>
                                                 </thead>
@@ -169,7 +171,7 @@ if ($Secteur):
                                                     foreach ($allSitesData[$site->id]['commandes']['denree'] as $key => $allDenree): ?>
                                                         <tr>
                                                             <td><?= $allDenree['fournisseur']; ?></td>
-                                                            <td><?= $allDenree['date_livraison']; ?></td>
+                                                            <td><?= $allDenree['date_facturation']; ?></td>
                                                             <td><?= $allDenree['total']; ?>€</td>
                                                         </tr>
                                                     <?php endforeach; ?>
@@ -189,7 +191,7 @@ if ($Secteur):
                                                     <?php foreach ($allSitesData[$site->id]['commandes']['nonAlimentaire'] as $key => $allUniqueEntretien): ?>
                                                     <tr>
                                                         <td><?= $allUniqueEntretien['fournisseur']; ?></td>
-                                                        <td><?= $allUniqueEntretien['date_livraison']; ?></td>
+                                                        <td><?= $allUniqueEntretien['date_facturation']; ?></td>
                                                         <td><?= $allUniqueEntretien['total']; ?>€</td>
                                                     </tr>
                                                 <?php endforeach; ?>
@@ -207,30 +209,10 @@ if ($Secteur):
                                                         </th>
                                                     </tr>
                                                 <?php endif; ?>
-
                                                 </tbody>
                                             </table>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-header" id="headingTwo-<?= $site->id; ?>">
-                                    <h5 class="mb-0">
-                                        <button class="btn btn-link" type="button" data-toggle="collapse"
-                                                data-target="#collapseRefactServ-<?= $site->id; ?>"
-                                                aria-expanded="true"
-                                                aria-controls="collapseRefactServ-<?= $site->id; ?>">
-                                            Refacturation ServenTest
-                                        </button>
-                                    </h5>
-                                </div>
-
-                                <div id="collapseRefactServ-<?= $site->id; ?>" class="collapse"
-                                     aria-labelledby="headingTwo-<?= $site->id; ?>"
-                                     data-parent="#infosAgapes-<?= $site->id; ?>">
-
                                 </div>
                             </div>
 
@@ -276,11 +258,12 @@ if ($Secteur):
                                             </tr>
                                             <tr>
                                                 <th style="width: 200px;">Refacturation Serventest</th>
-                                                <td style="text-align: center !important;">€</td>
+                                                <td style="text-align: center !important;"> <?= $allSitesData[$site->id]['commandes']['denree']['total']; ?>€</td>
                                                 <td style="text-align: center !important;">
-                                                    €
+                                                    <?= $allSitesData[$site->id]['commandes']['nonAlimentaire']['total']; ?>€
                                                 </td>
                                                 <td style="text-align: center !important;">
+                                                    <?= financial($allSitesData[$site->id]['commandes']['denree']['total'] + $allSitesData[$site->id]['commandes']['nonAlimentaire']['total']); ?>
                                                     €
                                                 </td>
                                             </tr>
@@ -353,7 +336,6 @@ if ($Secteur):
                                     </div>
                                 </div>
                             </div>
-
                             <div class="card">
                                 <div class="card-header" id="headingFour-<?= $site->id; ?>">
                                     <h5 class="mb-0">
@@ -365,10 +347,6 @@ if ($Secteur):
                                         </button>
                                     </h5>
                                 </div>
-
-                                <?php
-
-                                ?>
                                 <div id="collapseFraisGener-<?= $site->id; ?>" class="collapse"
                                      aria-labelledby="headingFour-<?= $site->id; ?>"
                                      data-parent="#infosAgapes-<?= $site->id; ?>">
