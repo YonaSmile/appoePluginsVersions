@@ -222,9 +222,9 @@ class NoteDeFrais
     public function createView()
     {
         $sql = 'CREATE VIEW totalNoteDeFraisDenree AS SELECT site_id, YEAR(date) AS annee, MONTH(date) AS mois, SUM(montantHt) AS totalHT 
-        FROM appoe_plugin_agapeshotes_note_frais WHERE type = "Denrée Alimentaire" GROUP BY site_id;
+        FROM appoe_plugin_agapeshotes_note_frais WHERE type = "Denrée Alimentaire" GROUP BY MONTH(date);
         CREATE VIEW totalNoteDeFraisNonAlimentaire AS SELECT site_id, YEAR(date) AS annee, MONTH(date) AS mois, SUM(montantHt) AS totalHT 
-        FROM appoe_plugin_agapeshotes_note_frais WHERE type = "Unique Entretien" GROUP BY site_id;';
+        FROM appoe_plugin_agapeshotes_note_frais WHERE type = "Unique Entretien" GROUP BY MONTH(date);';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();

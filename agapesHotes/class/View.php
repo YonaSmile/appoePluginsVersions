@@ -17,7 +17,7 @@ class View extends \App\DbView
         ON(MC.annee = MS.annee AND MC.mois = MS.mois)
         INNER JOIN totalFacturationVivreCrue AS VC
         ON(MC.annee = VC.annee AND MC.mois = VC.mois)
-        GROUP BY mois;';
+        GROUP BY MC.mois;';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();

@@ -20,9 +20,9 @@
                 data-target="#modalAddEmploye">
             <?= trans('Ajouter un employé'); ?>
         </button>
-        <button id="importeEmploye" type="button" class="btn btn-info btn-sm mb-4" data-toggle="modal"
+        <!--<button id="importeEmploye" type="button" class="btn btn-info btn-sm mb-4" data-toggle="modal"
                 data-target="#modalImportCsv">
-            <?= trans('importer des employés'); ?>
+            <?= trans('importer des employés'); ?>-->
         </button>
         <div class="row">
             <div class="col-12">

@@ -36,7 +36,14 @@ if (
         <h5 class="mb-0"><?= ucfirst(strftime("%B", strtotime($start->format('Y-m-d')))); ?> <?= $start->format('Y'); ?></h5>
         <small class="d-block">Commence le <?= $start->format('d/m/Y'); ?> et se termine
             le <?= $end->format('d/m/Y'); ?></small>
-        <button type="button" class="btn btn-sm btn-info printMainCouranteBtn">Imprimer</button>
+        <button type="button" class="btn btn-sm btn-info printFirstHalfMonthMainCouranteBtn my-2"
+                title="Du 1 au 15 <?= ucfirst(strftime("%B", strtotime($start->format('Y-m-d')))); ?> <?= $start->format('Y'); ?>">
+            Édition du 1 - 15
+        </button>
+        <button type="button" class="btn btn-sm btn-info printLastHalfMonthMainCouranteBtn my-2"
+                title="Du 16 au <?= $start->format('t'); ?> <?= ucfirst(strftime("%B", strtotime($start->format('Y-m-d')))); ?> <?= $start->format('Y'); ?>">
+            Édition du 16 - <?= $start->format('t'); ?></button>
+        <button type="button" class="btn btn-sm btn-info printMainCouranteBtn my-2">Imprimer la facture</button>
     </div>
     <div class="table-responsive col-12">
         <table id="mainCouranteTable" class="table table-striped tableNonEffect">
@@ -110,8 +117,8 @@ if (
                                 $mainCouranteQuantiteTotalDay += $mainCourantQuantite;
                                 ?>
 
-                                <td style="padding: 4px !important;"
-                                    data-prixprestation="<?= $prixReel; ?>"
+                                <td style="padding: 4px !important;" data-day="<?= $date->format('j'); ?>"
+                                    data-prixprestation="<?= $prixReel; ?>" class="mainCouranteTd"
                                     title="<?= $date->format('d') . ' / ' . $prestation->nom; ?>">
                                     <input type="tel" data-prestationid="<?= $prestation->id; ?>"
                                            data-date="<?= $date->format('Y-m-d'); ?>"
@@ -192,7 +199,10 @@ if (
                                 <div class="col-4 my-2">
                                     <?= \App\Form::text('Émetteur', 'emetteur', 'texte', 'Les Agapes Hôtes, ' . $Site->getNom(), true, 255, 'disabled="disabled" readonly', '', 'basePrint'); ?>
                                 </div>
-                                <div class="col-4 my-2">
+                                <div class="col-4 my-2 facturePeriod">
+                                    <?= \App\Form::text('Période', 'period', 'text', '', true, 255, 'disabled="disabled" readonly', '', 'basePrint'); ?>
+                                </div>
+                                <div class="col-4 my-2 factureDate">
                                     <?= \App\Form::text('Date de la Facture', 'date', 'date', date('Y-m-d'), true, 255, 'min="" max=""', '', 'basePrint'); ?>
                                 </div>
                                 <div class="col-4 my-2">
@@ -209,7 +219,7 @@ if (
                             <hr class="mx-5">
                             <div class="d-xs-none d-sm-block">
                                 <div class="row my-1 infoTable">
-                                    <div class="col-4"><strong>Produit</strong>
+                                    <div class="col-4"><strong>Prestation</strong>
                                     </div>
                                     <div class="col-3"><strong>Quantité</strong></div>
                                     <div class="col-3"><strong>Prix/unité
@@ -224,11 +234,24 @@ if (
                 </div>
                 <?php $siteMeta = getSiteMeta($Site->getId(), $start->format('Y'), $start->format('m')); ?>
                 <div class="text-right totalContainer py-3 px-5">
-                    <strong>Total variable </strong><span class="totalVariable"></span>
-                    <br>
-                    <strong>Frais fixes </strong><span class="totalFraisFixes"><?= $siteMeta['fraisFixes']; ?>€</span>
-                    <br>
-                    <strong>TOTAL CA € HT </strong><span class="totalCaHt"></span>
+                    <div id="totalVariableContainer" class="my-1">
+                        <strong>Total variable </strong><span class="totalVariable"></span>
+                    </div>
+                    <div id="totalFraisFixesContainer" class="my-1">
+                        <strong>Frais fixes </strong><span
+                                class="totalFraisFixes"><?= $siteMeta['fraisFixes']; ?>€</span>
+                    </div>
+                    <div id="totalCaHtContainer" class="my-1">
+                        <strong>TOTAL CA € HT </strong><span class="totalCaHt"></span>
+                    </div>
+                </div>
+                <div id="signatureFacture" class="m-3">
+                    <div class="my-2">
+                        <strong>Date de la signature :</strong>
+                    </div>
+                    <div class="my-2">
+                        <strong>Signature :</strong>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button"
@@ -243,8 +266,106 @@ if (
     <script>
         $(document).ready(function () {
 
-            function prepareFacture() {
+            function prepareFirstMonthHalfFacture() {
+                $('.allFactureProducts').html('');
                 var totalVariable = 0;
+                var totalQuantite = 0;
+                var totalPrestation = 0;
+                var facture = {};
+
+                $('tr.mainCourantTr td.mainCouranteTd').each(function () {
+                    var $td = $(this);
+                    var $tr = $td.closest('tr');
+                    var prestationName = $tr.find('th[data-name="prestationName"] span').text();
+                    var prestationPrice = parseFloat($tr.find('small.prestationReelPrice').text());
+
+                    if (!(prestationName in facture)) {
+                        facture[prestationName] = {price: prestationPrice, quantite: 0};
+                        totalQuantite = 0;
+                    }
+
+                    if ($td.data('day') < 16) {
+                        var $input = $td.find('input.mainCourantInput');
+                        var quantite = parseFloat($input.val());
+
+                        if ($.isNumeric(quantite) && quantite > 0) {
+
+                            totalQuantite += parseFloat(quantite);
+                            facture[prestationName].quantite = totalQuantite;
+                        }
+                    }
+                });
+
+                if (facture.length !== 0) {
+                    $.each(facture, function (prestation, data) {
+
+                        totalVariable += parseFloat(data.price * data.quantite);
+
+                        var html = '<div class="row my-1 productFields positionRelative"><div class="col-4 mb-1">' +
+                            prestation + '</div><div class="col-3 mb-1">' +
+                            data.quantite + '</div><div class="col-3 mb-1">' +
+                            data.price + '€</div><div class="col-2 mb-1">' +
+                            financial(data.price * data.quantite) + '€</div></div>';
+                        $('.allFactureProducts').append(html);
+                    });
+                }
+                $('#totalVariableContainer').hide();
+                $('#totalFraisFixesContainer').hide();
+                $('.totalContainer .totalCaHt').html(financial(totalVariable) + '€');
+            }
+
+            function prepareLastMonthHalfFacture() {
+                $('.allFactureProducts').html('');
+                var totalVariable = 0;
+                var totalQuantite = 0;
+                var totalPrestation = 0;
+                var facture = {};
+
+                $('tr.mainCourantTr td.mainCouranteTd').each(function () {
+                    var $td = $(this);
+                    var $tr = $td.closest('tr');
+                    var prestationName = $tr.find('th[data-name="prestationName"] span').text();
+                    var prestationPrice = parseFloat($tr.find('small.prestationReelPrice').text());
+
+                    if (!(prestationName in facture)) {
+                        facture[prestationName] = {price: prestationPrice, quantite: 0};
+                        totalQuantite = 0;
+                    }
+
+                    if ($td.data('day') > 15) {
+                        var $input = $td.find('input.mainCourantInput');
+                        var quantite = parseFloat($input.val());
+
+                        if ($.isNumeric(quantite) && quantite > 0) {
+
+                            totalQuantite += parseFloat(quantite);
+                            facture[prestationName].quantite = totalQuantite;
+                        }
+                    }
+                });
+
+                if (facture.length !== 0) {
+                    $.each(facture, function (prestation, data) {
+
+                        totalVariable += parseFloat(data.price * data.quantite);
+
+                        var html = '<div class="row my-1 productFields positionRelative"><div class="col-4 mb-1">' +
+                            prestation + '</div><div class="col-3 mb-1">' +
+                            data.quantite + '</div><div class="col-3 mb-1">' +
+                            data.price + '€</div><div class="col-2 mb-1">' +
+                            financial(data.price * data.quantite) + '€</div></div>';
+                        $('.allFactureProducts').append(html);
+                    });
+                }
+                $('#totalVariableContainer').hide();
+                $('#totalFraisFixesContainer').hide();
+                $('.totalContainer .totalCaHt').html(financial(totalVariable) + '€');
+            }
+
+            function prepareTotalFacture() {
+                $('.allFactureProducts').html('');
+                var totalVariable = 0;
+
                 $('tr.mainCourantTr').each(function () {
                     var $tr = $(this);
                     var prestationName = $tr.find('th[data-name="prestationName"] span').text();
@@ -252,59 +373,92 @@ if (
                     var quantityTotalDay = parseFloat($tr.find('td.quantityTotalDay span').text());
                     var total = financial(prestationPrice * quantityTotalDay);
 
-                    var html = '<div class="row my-1 productFields positionRelative"><div class="col-4 my-1">' +
-                        prestationName + '</div><div class="col-3 my-1">' +
-                        quantityTotalDay + '</div><div class="col-3 my-1">' +
-                        prestationPrice + '€</div><div class="col-2 my-1">' +
+                    var html = '<div class="row my-1 productFields positionRelative"><div class="col-4 mb-1">' +
+                        prestationName + '</div><div class="col-3 mb-1">' +
+                        quantityTotalDay + '</div><div class="col-3 mb-1">' +
+                        prestationPrice + '€</div><div class="col-2 mb-1">' +
                         total + '€</div></div>';
                     $('.allFactureProducts').append(html);
 
                     totalVariable += parseFloat(total);
                 });
+                $('#totalVariableContainer').show();
+                $('#totalFraisFixesContainer').show();
                 $('.totalContainer .totalVariable').html(financial(totalVariable) + '€');
                 var totalFraisFixes = parseFloat($('.totalContainer .totalFraisFixes').text());
                 $('.totalContainer .totalCaHt').html(financial(totalVariable + totalFraisFixes) + '€');
             }
 
+            $('.printFirstHalfMonthMainCouranteBtn').on('click', function () {
+                prepareFirstMonthHalfFacture();
+                $('.factureDate').hide();
+                $('.facturePeriod').show();
+                $('#signatureFacture').show();
+                $('#modalFactureMainCouranteTitle').html('Edition Main Courante');
+                $('input#client_name').removeClass('is-invalid');
+                $('input#period').val($(this).attr('title'));
+                $('#modalFactureMainCourante').modal('show');
+            });
+
+            $('.printLastHalfMonthMainCouranteBtn').on('click', function () {
+                prepareLastMonthHalfFacture();
+                $('.factureDate').hide();
+                $('.facturePeriod').show();
+                $('#signatureFacture').show();
+                $('#modalFactureMainCouranteTitle').html('Edition Main Courante');
+                $('input#client_name').removeClass('is-invalid');
+                $('input#period').val($(this).attr('title'));
+                $('#modalFactureMainCourante').modal('show');
+            });
+
             $('.printMainCouranteBtn').on('click', function () {
-                prepareFacture();
+                $('.facturePeriod').hide();
+                $('.factureDate').show();
+                $('#signatureFacture').hide();
+                $('#modalFactureMainCouranteTitle').html('Demande de Facturation');
+                prepareTotalFacture();
+                $('input#client_name').removeClass('is-invalid');
                 $('#modalFactureMainCourante').modal('show');
             });
 
 
             $('button.printFacture').on('click', function () {
 
-                var $factureMainCourante = $('#modalFactureMainCourante').clone();
+                if ($('input#client_name').val() == '') {
+                    $('input#client_name').addClass('is-invalid');
+                } else {
+                    var $factureMainCourante = $('#modalFactureMainCourante').clone();
 
-                $('input', $factureMainCourante).each(function () {
+                    $('input', $factureMainCourante).each(function () {
 
-                    var $input = $(this);
-                    var inputVal = $input.val();
-                    if ($input.attr('id') == 'date') {
-                        var formattedDate = new Date(inputVal);
-                        var day = formattedDate.getDate();
-                        if (day < 10) {
-                            day = '0' + day;
+                        var $input = $(this);
+                        var inputVal = $input.val();
+                        if ($input.attr('id') == 'date') {
+                            var formattedDate = new Date(inputVal);
+                            var day = formattedDate.getDate();
+                            if (day < 10) {
+                                day = '0' + day;
+                            }
+                            var month = formattedDate.getMonth();
+                            month += 1;
+                            var year = formattedDate.getFullYear();
+
+                            inputVal = day + "/" + month + "/" + year
                         }
-                        var month = formattedDate.getMonth();
-                        month += 1;
-                        var year = formattedDate.getFullYear();
+                        var $parent = $input.parent();
+                        $parent.wrap('<strong></strong>');
+                        $input.remove();
 
-                        inputVal = day + "/" + month + "/" + year
-                    }
-                    var $parent = $input.parent();
+                        if ($input.hasClass('basePrint')) {
+                            $parent.append('<br>' + inputVal);
+                        }
+                    });
 
-                    $input.remove();
-
-                    if ($input.hasClass('basePrint')) {
-                        $parent.append('<br>' + inputVal);
-                    }
-                });
-
-                $('button, .modal-footer', $factureMainCourante).remove();
-                $factureMainCourante.printThis({
-                    loadCSS: "<?= AGAPESHOTES_URL; ?>css/print.css",
-                });
+                    $('button, .modal-footer', $factureMainCourante).remove();
+                    $factureMainCourante.printThis({
+                        loadCSS: "<?= AGAPESHOTES_URL; ?>css/print.css",
+                    });
+                }
             });
 
             function calculateTotalPrestationQuantityPerDay(idPrestation) {
