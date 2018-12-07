@@ -1,7 +1,7 @@
 <?php
 require_once('header.php');
-$mehoubarim_UserStat = new \App\Users();
-$UserManager = new \App\Users(getUserIdSession());
+$User = new \App\Users();
+$ALLUSERS = extractFromObjArr($User->showAll(true), 'id');
 
 //Connected User
 mehoubarim_connectedUserStatus();
@@ -10,20 +10,19 @@ if ($mehoubarim && is_array($mehoubarim)): ?>
     <li class="pt-3 pl-2 pb-0 pr-2" style="font-size: 0.8em;"><strong><?= trans('Utilisateurs actifs'); ?></strong></li>
     <?php foreach ($mehoubarim as $connectedUserId => $connectedUserData): ?>
         <?php
-        $mehoubarim_UserStat->setId($connectedUserId);
-        if ($mehoubarim_UserStat->show() && $mehoubarim_UserStat->getStatut() && $mehoubarim_UserStat->getRole() < 5): ?>
+        if (!isTechnicien(getUserRoleId($connectedUserId))): ?>
             <li class="list-inline-item p-0 pr-2 mr-0" style="font-size: 0.7em;">
-                <?php if ($UserManager->getRole() == 5 && $connectedUserData['status'] != 'Déconnecté'): ?>
-                    <span class="logoutUser float-left linkBtn" data-userid="<?= $mehoubarim_UserStat->getId(); ?>">
+                <?php if (isTechnicien(getUserRoleId()) && $connectedUserData['status'] != 'Déconnecté'): ?>
+                    <span class="logoutUser float-left linkBtn" data-userid="<?= $connectedUserId; ?>">
                         <i class="fas fa-times"></i></span>
                 <?php endif; ?>
-                <?php if (($UserManager->getRole() < 5 && $connectedUserData['status'] != 'Déconnecté') || $UserManager->getRole() == 5): ?>
+                <?php if ((!isTechnicien(getUserRoleId()) && $connectedUserData['status'] != 'Déconnecté') || isTechnicien(getUserRoleId())): ?>
                     <span class="text-<?= STATUS_CONNECTED_USER[$connectedUserData['status']]; ?>"
-                        <?php if ($UserManager->getRole() == 5): ?>
+                        <?php if (isTechnicien(getUserRoleId())): ?>
                             title="Location: <?= $connectedUserData['pageConsulting']; ?>"
                         <?php endif; ?>
                     ><i class="fas fa-user"></i></span>
-                    <?= $mehoubarim_UserStat->getPrenom() . ucfirst(substr($mehoubarim_UserStat->getNom(), 0, 1)); ?>
+                    <?= getUserFirstName($connectedUserId) . ucfirst(substr(getUserName($connectedUserId), 0, 1)); ?>
                 <?php endif; ?>
             </li>
         <?php endif; ?>
