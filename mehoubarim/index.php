@@ -16,12 +16,13 @@ if ($mehoubarim && is_array($mehoubarim)): ?>
                     <span class="logoutUser float-left linkBtn" data-userid="<?= $connectedUserId; ?>">
                         <i class="fas fa-times"></i></span>
                 <?php endif; ?>
-                <?php if ((!isTechnicien(getUserRoleId()) && $connectedUserData['status'] != 'Déconnecté') || isTechnicien(getUserRoleId())): ?>
+                <?php if (
+                    !empty(getUserFirstName($connectedUserId)) &&
+                    ((!isTechnicien(getUserRoleId()) && $connectedUserData['status'] != 'Déconnecté')
+                        || isTechnicien(getUserRoleId()))): ?>
                     <span class="text-<?= STATUS_CONNECTED_USER[$connectedUserData['status']]; ?>"
-                        <?php if (isTechnicien(getUserRoleId())): ?>
-                            title="Location: <?= $connectedUserData['pageConsulting']; ?>"
-                        <?php endif; ?>
-                    ><i class="fas fa-user"></i></span>
+                    <?= isTechnicien(getUserRoleId()) ? 'title="Location: ' . $connectedUserData['pageConsulting'] . '"' : ''; ?>>
+                    <i class="fas fa-user"></i></span>
                     <?= getUserFirstName($connectedUserId) . ucfirst(substr(getUserName($connectedUserId), 0, 1)); ?>
                 <?php endif; ?>
             </li>
