@@ -35,7 +35,7 @@ $Secteur = new \App\Plugin\AgapesHotes\Secteur();
                                             <span data-name="nom"><?= $site->nom ?></span>
                                             <small class="hiddenList">
                                                 <a href="<?= AGAPESHOTES_URL; ?>page/vivreCrue/<?= $Secteur->getSlug(); ?>/<?= $site->slug; ?>/">
-                                                    Vivre crue</a>&nbsp;
+                                                    Vivre cru</a>&nbsp;
                                                 <a href="<?= AGAPESHOTES_URL; ?>page/mainCourante/<?= $Secteur->getSlug(); ?>/<?= $site->slug; ?>/">
                                                     Main courante
                                                 </a>&nbsp;

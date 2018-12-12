@@ -71,7 +71,7 @@ $Budget = new \App\Plugin\AgapesHotes\Budget();
                                     <small><em>Budget cumul</em></small>
                                 </td>
                                 <?php foreach ($period as $key => $date): ?>
-                                    <td><?= $budgetCumul[$date->format('n')]; ?>€</td>
+                                    <td><?= financial($budgetCumul[$date->format('n')]); ?>€</td>
                                 <?php endforeach; ?>
                             </tr>
                             <tr data-siteid="<?= $site->id; ?>" data-name="siterowYearAgo">
@@ -79,11 +79,12 @@ $Budget = new \App\Plugin\AgapesHotes\Budget();
                                     <small><em><?= date('Y') - 1; ?></em></small>
                                 </td>
                                 <?php foreach ($period as $key => $date):
+                                    $facturation = 0;
                                     $facturation = getFacturation($site->id, date('Y') - 1, $date->format('m'));
                                     $anneeAgoCurrent += $facturation;
                                     $anneeAgoCumul[$date->format('m')] = $anneeAgoCurrent;
                                     ?>
-                                    <td><?= $facturation; ?>€</td>
+                                    <td><?= financial($facturation); ?>€</td>
                                 <?php endforeach; ?>
                             </tr>
                             <tr data-siteid="<?= $site->id; ?>" data-name="siterowYearAgo">
@@ -91,7 +92,7 @@ $Budget = new \App\Plugin\AgapesHotes\Budget();
                                     <small><em><?= date('Y') - 1; ?> cumul</em></small>
                                 </td>
                                 <?php foreach ($period as $key => $date): ?>
-                                    <td><?= $anneeAgoCumul[$date->format('m')]; ?>€</td>
+                                    <td><?= financial($anneeAgoCumul[$date->format('m')]); ?>€</td>
                                 <?php endforeach; ?>
                             </tr>
                             <tr data-siteid="<?= $site->id; ?>" data-name="siterow">
@@ -99,11 +100,12 @@ $Budget = new \App\Plugin\AgapesHotes\Budget();
                                     <small><em><?= date('Y'); ?></em></small>
                                 </td>
                                 <?php foreach ($period as $key => $date):
+                                    $facturation = 0;
                                     $facturation = getFacturation($site->id, date('Y'), $date->format('m'));
                                     $anneeCurrent += $facturation;
                                     $anneeCumul[$date->format('m')] = $anneeCurrent;
                                     ?>
-                                    <td><?= $facturation; ?>€</td>
+                                    <td><?= number_format($facturation, 2, '.', ' '); ?>€</td>
                                 <?php endforeach; ?>
                             </tr>
                             <tr data-siteid="<?= $site->id; ?>" data-name="siterow">
@@ -111,7 +113,7 @@ $Budget = new \App\Plugin\AgapesHotes\Budget();
                                     <small><em><?= date('Y'); ?> cumul</em></small>
                                 </td>
                                 <?php foreach ($period as $key => $date): ?>
-                                    <td><?= $anneeCumul[$date->format('m')]; ?>€</td>
+                                    <td><?= financial($anneeCumul[$date->format('m')]); ?>€</td>
                                 <?php endforeach; ?>
                             </tr>
                         <?php endforeach;

@@ -220,14 +220,14 @@ $Secteur = new \App\Plugin\AgapesHotes\Secteur();
                              * Current year
                              * @type {number}
                              */
-                            $trSite.find('td[data-name="site-facturation"]').text($siteData['facturation'] + '€');
-                            $trSite.find('td[data-name="site-consoreel-denree"]').text($siteData['consoReel'].denree + '€');
-                            $trSite.find('td[data-name="site-meta-fraisperso"]').text($siteData['siteMeta'].fraisDePersonnels + '€');
-                            $trSite.find('td[data-name="site-fraisgeneraux"]').text($siteData['fraisGeneraux'] + '€');
-                            $trSite.find('td[data-name="site-resultatexploitation"]').text($siteData['resultatExploitation'] + '€');
-                            $trSite.find('td[data-name="site-retourachat"]').text($siteData['retourAchat'] + '€');
-                            $trSite.find('td[data-name="site-fraissiege"]').text($siteData['fraisDeSiege'] + '€');
-                            $trSite.find('td[data-name="site-resultats"]').text($siteData['resultats'] + '€');
+                            $trSite.find('td[data-name="site-facturation"]').text(financial($siteData['facturation']) + '€');
+                            $trSite.find('td[data-name="site-consoreel-denree"]').text(financial($siteData['consoReel'].denree) + '€');
+                            $trSite.find('td[data-name="site-meta-fraisperso"]').text(financial($siteData['siteMeta'].fraisDePersonnels) + '€');
+                            $trSite.find('td[data-name="site-fraisgeneraux"]').text(financial($siteData['fraisGeneraux']) + '€');
+                            $trSite.find('td[data-name="site-resultatexploitation"]').text(financial($siteData['resultatExploitation']) + '€');
+                            $trSite.find('td[data-name="site-retourachat"]').text(financial($siteData['retourAchat']) + '€');
+                            $trSite.find('td[data-name="site-fraissiege"]').text(financial($siteData['fraisDeSiege']) + '€');
+                            $trSite.find('td[data-name="site-resultats"]').text(financial($siteData['resultats']) + '€');
                             $trSite.find('td[data-name="site-pourcentagesrentabilite"]').text(financial($siteData['pourcentagesDeRentabilite']) + '%');
 
                             facturation += $.isNumeric($siteData['facturation']) ? parseFloat(financial($siteData['facturation'])) : 0;

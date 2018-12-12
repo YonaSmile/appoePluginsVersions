@@ -64,7 +64,7 @@ $anneeCurrent = 0;
 
                                     $budgetCumul[$date->format('n')] = $budgetCumulCurrent;
                                     ?>
-                                    <td><?= !empty($Budget->getConso()) ? $Budget->getConso() : 0; ?>€</td>
+                                    <td><?= !empty($Budget->getConso()) ? financial($Budget->getConso()) : 0; ?>€</td>
                                     <?php
                                     $Budget->clean();
                                 endforeach; ?>
@@ -74,7 +74,7 @@ $anneeCurrent = 0;
                                     <small><em>Budget cumul</em></small>
                                 </td>
                                 <?php foreach ($period as $key => $date): ?>
-                                    <td><?= $budgetCumul[$date->format('n')]; ?>€</td>
+                                    <td><?= financial($budgetCumul[$date->format('n')]); ?>€</td>
                                 <?php endforeach; ?>
                             </tr>
                             <tr data-siteid="<?= $site->id; ?>" data-name="siterowYearAgo">
@@ -122,7 +122,7 @@ $anneeCurrent = 0;
                                     $anneeAgoCurrent += $fraisGeneraux;
                                     $anneeAgoCumul[$date->format('m')] = $anneeAgoCurrent;
                                     ?>
-                                    <td><?= $fraisGeneraux; ?>€</td>
+                                    <td><?= financial($fraisGeneraux); ?>€</td>
                                 <?php endforeach; ?>
                             </tr>
                             <tr data-siteid="<?= $site->id; ?>" data-name="siterowYearAgo">
@@ -130,7 +130,7 @@ $anneeCurrent = 0;
                                     <small><em><?= date('Y') - 1; ?> cumul</em></small>
                                 </td>
                                 <?php foreach ($period as $key => $date): ?>
-                                    <td><?= $anneeAgoCumul[$date->format('m')]; ?>€</td>
+                                    <td><?= financial($anneeAgoCumul[$date->format('m')]); ?>€</td>
                                 <?php endforeach; ?>
                             </tr>
                             <tr data-siteid="<?= $site->id; ?>" data-name="siterow">
@@ -177,7 +177,7 @@ $anneeCurrent = 0;
                                     $anneeCurrent += $fraisGeneraux;
                                     $anneeCumul[$date->format('m')] = $anneeCurrent;
                                     ?>
-                                    <td><?= $fraisGeneraux; ?>€</td>
+                                    <td><?= financial($fraisGeneraux); ?>€</td>
                                 <?php endforeach; ?>
                             </tr>
                             <tr data-siteid="<?= $site->id; ?>" data-name="siterow">
@@ -185,7 +185,7 @@ $anneeCurrent = 0;
                                     <small><em><?= date('Y'); ?> cumul</em></small>
                                 </td>
                                 <?php foreach ($period as $key => $date): ?>
-                                    <td><?= $anneeCumul[$date->format('m')]; ?>€</td>
+                                    <td><?= financial($anneeCumul[$date->format('m')]); ?>€</td>
                                 <?php endforeach; ?>
                             </tr>
                         <?php endforeach;

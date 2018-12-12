@@ -78,6 +78,7 @@ if (
                         <th colspan="<?= $start->format('t') + 2; ?>"><?= $etablissement->nom; ?></th>
                     </tr>
                     <?php foreach ($allPrestations as $prestation):
+                        $count = 1;
                         $mainCouranteQuantiteTotalDay = 0; ?>
                         <tr data-idprestation="<?= $prestation->id ?>" class="mainCourantTr">
                             <th class="positionRelative" data-name="prestationName"
@@ -118,6 +119,7 @@ if (
                                 ?>
 
                                 <td style="padding: 4px !important;" data-day="<?= $date->format('j'); ?>"
+                                    data-tdposition="<?= $count; ?>"
                                     data-prixprestation="<?= $prixReel; ?>" class="mainCouranteTd"
                                     title="<?= $date->format('d') . ' / ' . $prestation->nom; ?>">
                                     <input type="tel" data-prestationid="<?= $prestation->id; ?>"
@@ -140,7 +142,8 @@ if (
                                            data-etablissement="<?= $etablissement->id; ?>"><?= financial($prixReel * $mainCouranteQuantiteTotalDay); ?>
                                     </small>
                                 </td>
-                            <?php endforeach; ?>
+                                <?php $count++;
+                            endforeach; ?>
                             <td class="quantityTotalDay text-center" data-idprestation="<?= $prestation->id ?>">
                                 <span><?= $mainCouranteQuantiteTotalDay; ?></span>
                                 <small class="d-block text-center prestationTotalPrice"
@@ -154,7 +157,7 @@ if (
                     <tr>
                         <th><?= trans('Total'); ?></th>
                         <?php foreach ($period as $key => $date): ?>
-                            <td style="<?= $date->format('d') == date('d') ? 'background:#4fb99f;color:#fff !important;' : ''; ?> <?= $date->format('N') == 7 ? 'background:#f2b134;color:#4b5b68;' : ''; ?> font-size: 0.7em !important;"
+                            <td style="font-size:0.65em !important; padding-left: 0.5px !important; padding-right: 0.5px !important; <?= $date->format('d') == date('d') ? 'background:#4fb99f;color:#fff !important;' : ''; ?> <?= $date->format('N') == 7 ? 'background:#f2b134;color:#4b5b68;' : ''; ?>"
                                 class="totalDayPrestationPrice text-center" data-day="<?= $date->format('j'); ?>"
                                 data-etablissement="<?= $etablissement->id; ?>"></td>
                         <?php endforeach; ?>
@@ -265,6 +268,39 @@ if (
     <script type="text/javascript" src="/app/js/printThis.js"></script>
     <script>
         $(document).ready(function () {
+
+            $('.tableNonEffect tr td input').keydown(function (e) {
+
+                var $input = $(this);
+                var $td = $input.parent('td');
+                var $tr = $td.closest('tr');
+                var position = $td.data('tdposition');
+
+                switch (e.which) {
+                    case 37: // fleche gauche
+                        if ($td.prev('td').find('td').data('tdposition') !== 'undefined') {
+                            $td.prev('td').find('input').focus();
+                        }
+                        break;
+                    case 38: // fleche haut
+
+                        if ($tr.prev('tr').find('td').length) {
+                            $tr.prev('tr').find('td[data-tdposition="' + position + '"]').find('input').focus();
+                        }
+                        break;
+                    case 39: // fleche droite
+                        if ($td.next('td').find('td').data('tdposition') !== 'undefined') {
+                            $td.next('td').find('input').focus();
+                        }
+                        break;
+                    case 40: // fleche bas
+
+                        if ($tr.next('tr').find('td').length) {
+                            $tr.next('tr').find('td[data-tdposition="' + position + '"]').find('input').focus();
+                        }
+                        break;
+                }
+            });
 
             function prepareFirstMonthHalfFacture() {
                 $('.allFactureProducts').html('');
@@ -572,9 +608,8 @@ if (
                 };
             })();
 
-            $('input.mainCourantInput').on('input keyup', function (event) {
+            $('input.mainCourantInput').on('input', function (event) {
                 event.preventDefault();
-
                 var $Input = $(this);
                 var $InputInfo = $Input.next('small.prestationPrice');
 

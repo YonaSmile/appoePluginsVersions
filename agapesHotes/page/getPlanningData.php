@@ -38,7 +38,8 @@ if (
     ?>
     <div class="col-12 py-4">
         <h5 class="mb-0"><?= ucfirst(strftime("%B", strtotime($start->format('Y-m-d')))); ?> <?= $start->format('Y'); ?></h5>
-        <small class="d-block">Commence le <?= $start->format('d/m/Y'); ?> et se termine le <?= $end->format('d/m/Y'); ?></small>
+        <small class="d-block">Commence le <?= $start->format('d/m/Y'); ?> et se termine
+            le <?= $end->format('d/m/Y'); ?></small>
     </div>
     <div class="table-responsive col-12">
         <table id="planningTable" class="table table-striped tableNonEffect">
@@ -57,6 +58,8 @@ if (
             </thead>
             <tbody>
             <?php foreach ($allContratEmployes as $employeId => $contrat):
+
+                $count = 1;
                 if (array_key_exists($employeId, $allPti)):
                     $allPtiDates = array_keys($allPti[$employeId]);
                     usort($allPtiDates, 'reelDatesSortDESC');
@@ -91,7 +94,8 @@ if (
                                 }
                             }
                             ?>
-                            <td style="padding: 4px 0 !important; vertical-align: top !important;">
+                            <td style="padding: 4px 0 !important; vertical-align: top !important;"
+                                data-tdposition="<?= $count; ?>">
                                 <input class="text-center form-control updatePlanning inputUpdatePlanning"
                                        name="<?= !empty($Planning->id) ? $Planning->id : ''; ?>" type="text"
                                        maxlength="10" list="absenceReasonList" autocomplete="off"
@@ -129,7 +133,8 @@ if (
                                     <option value="R°DP" label="réunion DP au siège">R°DP</option>
                                 </datalist>
                             </td>
-                        <?php endforeach; ?>
+                            <?php $count++;
+                        endforeach; ?>
                     </tr>
                 <?php endif;
             endforeach; ?>
@@ -230,6 +235,39 @@ if (
     <script>
         $(document).ready(function () {
 
+            $('.tableNonEffect tr td input').keydown(function (e) {
+
+                var $input = $(this);
+                var $td = $input.parent('td');
+                var $tr = $td.closest('tr');
+                var position = $td.data('tdposition');
+
+                switch (e.which) {
+                    case 37: // fleche gauche
+                        if ($td.prev('td').find('td').data('tdposition') !== 'undefined') {
+                            $td.prev('td').find('input').focus();
+                        }
+                        break;
+                    case 38: // fleche haut
+
+                        if ($tr.prev('tr').find('td').length) {
+                            $tr.prev('tr').find('td[data-tdposition="' + position + '"]').find('input').focus();
+                        }
+                        break;
+                    case 39: // fleche droite
+                        if ($td.next('td').find('td').data('tdposition') !== 'undefined') {
+                            $td.next('td').find('input').focus();
+                        }
+                        break;
+                    case 40: // fleche bas
+
+                        if ($tr.next('tr').find('td').length) {
+                            $tr.next('tr').find('td[data-tdposition="' + position + '"]').find('input').focus();
+                        }
+                        break;
+                }
+            });
+
             $('[data-toggle="tooltip"]').tooltip({
                 trigger: 'focus',
                 placement: 'right'
@@ -277,7 +315,7 @@ if (
                 };
             })();
 
-            $('input.updatePlanning').on('input keyup', function (event) {
+            $('input.updatePlanning').on('input', function (event) {
                 event.preventDefault();
 
                 var $Input = $(this);
@@ -322,7 +360,7 @@ if (
                 }, 300);
             });
 
-            $('.inputPlanningPlus').on('input keyup', function (event) {
+            $('.inputPlanningPlus').on('input', function (event) {
                 event.preventDefault();
 
                 var $Input = $(this);

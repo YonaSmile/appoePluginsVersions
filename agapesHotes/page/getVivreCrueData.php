@@ -66,6 +66,8 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                         <th colspan="<?= ($end->format('t') + 5); ?>"><?= $etablissement->nom; ?></th>
                     </tr>
                     <?php foreach ($allCourses as $course):
+
+                        $count = 1;
                         $vivreCrueQuantiteTotalDay = 0; ?>
                         <tr data-idcourse="<?= $course->id ?>" class="vivreCrueTr">
                             <th class="positionRelative courseName" style="vertical-align: middle;">
@@ -94,7 +96,7 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                             </td>
                             <td class="text-center tdQuantity"
                                 data-quantitecourseid="<?= $course->id ?>"></td>
-                            <td class="text-center tdTotal" data-totalcourseid="<?= $course->id ?>"></td>
+                            <td class="text-center tdTotal" style="0.75em !important;" data-totalcourseid="<?= $course->id ?>"></td>
                             <?php foreach ($period as $key => $date):
                                 $vivreCrueId = '';
                                 $vivreCrueQuantite = '';
@@ -107,7 +109,7 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                                 }
                                 $vivreCrueQuantiteTotalDay += $vivreCrueQuantite;
                                 ?>
-                                <td style="padding: 4px !important;">
+                                <td style="padding: 4px !important;" data-tdposition="<?= $count; ?>">
                                     <input type="tel" data-idcourse="<?= $course->id; ?>"
                                            data-date="<?= $date->format('Y-m-d'); ?>"
                                            data-day="<?= $date->format('j'); ?>"
@@ -118,9 +120,9 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                                            style="padding: 5px 0 !important; <?= $date->format('Y-m-d') == date('Y-m-d') ? 'background:#4fb99f;color:#fff;' : ''; ?>">
                                 </td>
 
-                            <?php endforeach; ?>
+                                <?php $count++;
+                            endforeach; ?>
                         </tr>
-
                     <?php endforeach; ?>
                     </tbody>
                 <?php endif;
@@ -199,6 +201,39 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
     <script>
         $(document).ready(function () {
 
+            $('.tableNonEffect tr td input').keydown(function (e) {
+
+                var $input = $(this);
+                var $td = $input.parent('td');
+                var $tr = $td.closest('tr');
+                var position = $td.data('tdposition');
+
+                switch (e.which) {
+                    case 37: // fleche gauche
+                        if ($td.prev('td').find('td').data('tdposition') !== 'undefined') {
+                            $td.prev('td').find('input').focus();
+                        }
+                        break;
+                    case 38: // fleche haut
+
+                        if ($tr.prev('tr').find('td').length) {
+                            $tr.prev('tr').find('td[data-tdposition="' + position + '"]').find('input').focus();
+                        }
+                        break;
+                    case 39: // fleche droite
+                        if ($td.next('td').find('td').data('tdposition') !== 'undefined') {
+                            $td.next('td').find('input').focus();
+                        }
+                        break;
+                    case 40: // fleche bas
+
+                        if ($tr.next('tr').find('td').length) {
+                            $tr.next('tr').find('td[data-tdposition="' + position + '"]').find('input').focus();
+                        }
+                        break;
+                }
+            });
+
             function prepareTotalFacture() {
                 $('.allFactureProducts').html('');
                 var totalVariable = 0;
@@ -225,7 +260,7 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
 
                 var $totalTable = $('#totalHtTable').clone();
                 $totalTable.removeClass().addClass('float-right');
-                $('tbody', $totalTable).append('<tr><hr><td></td><td>'+financial(totalVariable) + '€'+'</td></tr>');
+                $('tbody', $totalTable).append('<tr><hr><td></td><td>' + financial(totalVariable) + '€' + '</td></tr>');
                 $('.totalContainer').append($totalTable);
             }
 
@@ -349,7 +384,7 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                 };
             })();
 
-            $('input.vivreCrueInput').on('input keyup', function (event) {
+            $('input.vivreCrueInput').on('input', function (event) {
                 event.preventDefault();
 
                 var $Input = $(this);

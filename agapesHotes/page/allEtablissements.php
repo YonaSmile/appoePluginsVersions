@@ -46,7 +46,7 @@ $siteAccess = $SiteAccess->showSiteByUser();
                                                         <a href="<?= AGAPESHOTES_URL; ?>page/allCourses/<?= $Secteur->getSlug(); ?>/<?= $Site->getSlug(); ?>/<?= $etablissement->slug; ?>/">
                                                             Liste de courses</a>&nbsp;
                                                         <a href="<?= AGAPESHOTES_URL; ?>page/vivreCrue/<?= $Secteur->getSlug(); ?>/<?= $Site->getSlug(); ?>/">
-                                                            Vivre crue</a>&nbsp;
+                                                            Vivre cru</a>&nbsp;
                                                         <a href="<?= AGAPESHOTES_URL; ?>page/allPrestations/<?= $Secteur->getSlug(); ?>/<?= $Site->getSlug(); ?>/<?= $etablissement->slug; ?>/">Liste
                                                             des prestations</a>&nbsp;
                                                         <a href="<?= AGAPESHOTES_URL; ?>page/mainCourante/<?= $Secteur->getSlug(); ?>/<?= $Site->getSlug(); ?>/">

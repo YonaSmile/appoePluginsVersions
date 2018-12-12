@@ -48,7 +48,7 @@ $View = new \App\Plugin\AgapesHotes\View();
                         <a href="<?= AGAPESHOTES_URL; ?>page/noteDeFrais/<?= $Site->secteurSlug; ?>/<?= $Site->slug; ?>/"
                            class="btn btn-block btn-info py-4">Note de frais</a>
                         <a href="<?= AGAPESHOTES_URL; ?>page/vivreCrue/<?= $Site->secteurSlug; ?>/<?= $Site->slug; ?>/"
-                           class="btn btn-block btn-info py-4">Vivre crue</a>
+                           class="btn btn-block btn-info py-4">Vivre cru</a>
                         <a href="<?= AGAPESHOTES_URL; ?>page/mainSupplementaire/<?= $Site->secteurSlug; ?>/<?= $Site->slug; ?>/"
                            class="btn btn-block btn-info py-4">Facturation HC</a>
 
