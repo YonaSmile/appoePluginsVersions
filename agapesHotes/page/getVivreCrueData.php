@@ -45,10 +45,8 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                 <th><?= trans('Quantité'); ?></th>
                 <th style="white-space: nowrap;"><?= trans('Total HT'); ?></th>
                 <?php foreach ($period as $key => $date): ?>
-                    <th class="text-center"
-                        style="<?= $date->format('Y-m-d') == date('Y-m-d') ? 'background:#4fb99f;color:#fff;' : ''; ?>
-                        <?= $date->format('N') == 7 ? 'background:#f2b134;color:#4b5b68;' : ''; ?>
-                        <?= isferie($date->format('Y-m-d'), $Site->getAlsaceMoselle()) ? 'background:#d8886f;color:#fff;' : ''; ?>"><?= $date->format('d'); ?></th>
+                    <th class="text-center" style="<?= getDayColor($date, $Site->getAlsaceMoselle()); ?>">
+                        <?= $date->format('d'); ?></th>
                 <?php endforeach; ?>
             </tr>
             </thead>
@@ -117,7 +115,7 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                                            class="text-center form-control vivreCrueInput sensibleField"
                                            name="<?= $vivreCrueId; ?>"
                                            value="<?= $vivreCrueQuantite; ?>"
-                                           style="padding: 5px 0 !important; <?= $date->format('Y-m-d') == date('Y-m-d') ? 'background:#4fb99f;color:#fff;' : ''; ?>">
+                                           style="padding: 5px 0 !important; <?= getDayColor($date, $Site->getAlsaceMoselle()); ?>">
                                 </td>
 
                                 <?php $count++;

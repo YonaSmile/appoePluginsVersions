@@ -337,3 +337,38 @@ function getBudget($siteId, $year, $month = '')
 
     return $Budget ? $Budget : 0;
 }
+
+function getDayColor($date, $alsaceMoselle = false)
+{
+
+    //Aujourd'hui et weekend
+    if ($date->format('Y-m-d') == date('Y-m-d') && ($date->format('N') == 7 || $date->format('N') == 6)) {
+        return 'background: linear-gradient(135deg, #4fb99f 0%,#4fb99f 50%,#aaa 51%,#aaa 100%);color:#fff;';
+    }
+
+    //Aujourd'hui et férié
+    if (isferie($date->format('Y-m-d'), $alsaceMoselle) && $date->format('Y-m-d') == date('Y-m-d')) {
+        return 'background: linear-gradient(135deg, #4fb99f 0%,#4fb99f 50%,#eaaa6f 51%,#eaaa6f 100%);color:#fff;';
+    }
+
+    //Aujourd'hui
+    if ($date->format('Y-m-d') == date('Y-m-d')) {
+        return 'background:#4fb99f;color:#fff;';
+    }
+
+    //Férié et weekend
+    if (isferie($date->format('Y-m-d'), $alsaceMoselle) && ($date->format('N') == 7 || $date->format('N') == 6)) {
+        return 'background: #aaa;color:#fff;';
+    }
+
+    //Férié
+    if (isferie($date->format('Y-m-d'), $alsaceMoselle)) {
+        return 'background:#eaaa6f;color:#fff;';
+    }
+
+    //Weekend
+    if ($date->format('N') == 7 || $date->format('N') == 6) {
+        return 'background:#aaa;color:#4b5b68;';
+    }
+    return '';
+}

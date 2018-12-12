@@ -47,12 +47,7 @@ if (
             <tr>
                 <th><?= trans('Employé'); ?></th>
                 <?php foreach ($period as $key => $date): ?>
-                    <th style="
-                    <?= $date->format('Y-m-d') == date('Y-m-d') ? 'background:#4fb99f;color:#fff;' : ''; ?>
-                    <?= $date->format('N') == 7 ? 'background:#f2b134;color:#4b5b68;' : ''; ?>
-                    <?= isferie($date->format('Y-m-d'), $Site->getAlsaceMoselle()) ? 'background:#d8886f;color:#fff;' : ''; ?>
-                    <?= isferie($date->format('Y-m-d'), $Site->getAlsaceMoselle()) && $date->format('N') == 7 ? 'background: linear-gradient(135deg, #f2b134 0%,#f2b134 50%,#d8886f 51%,#d8886f 100%);color:#fff;' : ''; ?>">
-                        <?= $date->format('d'); ?></th>
+                    <th style="<?= getDayColor($date, $Site->getAlsaceMoselle()); ?>"><?= $date->format('d'); ?></th>
                 <?php endforeach; ?>
             </tr>
             </thead>
@@ -99,7 +94,7 @@ if (
                                 <input class="text-center form-control updatePlanning inputUpdatePlanning"
                                        name="<?= !empty($Planning->id) ? $Planning->id : ''; ?>" type="text"
                                        maxlength="10" list="absenceReasonList" autocomplete="off"
-                                       style="padding: 5px 0 !important; <?= $date->format('Y-m-d') == date('Y-m-d') ? 'background:#4fb99f;color:#fff;' : ''; ?>"
+                                       style="padding: 5px 0 !important; <?= getDayColor($date, $Site->getAlsaceMoselle()); ?>"
                                        data-date="<?= $date->format('Y-m-d'); ?>"
                                        data-employeid="<?= $employeId; ?>"
                                        value="<?= $inputCase; ?>">

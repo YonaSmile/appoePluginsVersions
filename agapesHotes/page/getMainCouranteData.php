@@ -51,11 +51,7 @@ if (
             <tr style="text-align: center;">
                 <th><?= trans('Prestation'); ?></th>
                 <?php foreach ($period as $key => $date): ?>
-                    <th style="
-                    <?= $date->format('Y-m-d') == date('Y-m-d') ? 'background:#4fb99f;color:#fff;' : ''; ?>
-                    <?= $date->format('N') == 7 ? 'background:#f2b134;color:#4b5b68;' : ''; ?>
-                    <?= isferie($date->format('Y-m-d'), $Site->getAlsaceMoselle()) ? 'background:#d8886f;color:#fff;' : ''; ?>
-                    <?= isferie($date->format('Y-m-d'), $Site->getAlsaceMoselle()) && $date->format('N') == 7 ? 'background: linear-gradient(135deg, #f2b134 0%,#f2b134 50%,#d8886f 51%,#d8886f 100%);color:#fff;' : ''; ?>">
+                    <th style="<?= getDayColor($date, $Site->getAlsaceMoselle()); ?>">
                         <?= $date->format('d'); ?></th>
                 <?php endforeach; ?>
                 <th><i class="fas fa-balance-scale"></i></th>
@@ -130,7 +126,7 @@ if (
                                            class="text-center form-control mainCourantInput sensibleField"
                                            name="<?= $mainCourantId; ?>"
                                            value="<?= $mainCourantQuantite; ?>"
-                                           style="padding: 5px 0 !important; <?= $date->format('Y-m-d') == date('Y-m-d') ? 'background:#4fb99f;color:#fff;' : ''; ?>">
+                                           style="padding: 5px 0 !important; <?= getDayColor($date, $Site->getAlsaceMoselle()); ?>">
                                     <small class="d-block text-center prestationPrice"
                                            data-day="<?= $date->format('j'); ?>"
                                            data-prixprestation="<?= $prixReel; ?>"
@@ -157,7 +153,7 @@ if (
                     <tr>
                         <th><?= trans('Total'); ?></th>
                         <?php foreach ($period as $key => $date): ?>
-                            <td style="font-size:0.65em !important; padding-left: 0.5px !important; padding-right: 0.5px !important; <?= $date->format('d') == date('d') ? 'background:#4fb99f;color:#fff !important;' : ''; ?> <?= $date->format('N') == 7 ? 'background:#f2b134;color:#4b5b68;' : ''; ?>"
+                            <td style="font-size:0.65em !important; padding-left: 0.5px !important; padding-right: 0.5px !important; <?= getDayColor($date, $Site->getAlsaceMoselle()); ?>"
                                 class="totalDayPrestationPrice text-center" data-day="<?= $date->format('j'); ?>"
                                 data-etablissement="<?= $etablissement->id; ?>"></td>
                         <?php endforeach; ?>
