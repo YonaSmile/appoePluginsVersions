@@ -179,6 +179,7 @@ if (
             </tbody>
         </table>
     </div>
+
     <div class="modal fade" id="modalFactureMainCourante"
          tabindex="-1" role="dialog"
          aria-labelledby="modalFactureMainCouranteTitle"
@@ -264,6 +265,25 @@ if (
     <script type="text/javascript" src="/app/js/printThis.js"></script>
     <script>
         $(document).ready(function () {
+
+            var tablePosition = $('.tableNonEffect').offset();
+            var theadSize = {};
+
+            $('.tableNonEffect thead th').each(function (index, val) {
+                theadSize[index] = $(this).width();
+            });
+
+            $(window).scroll(function (e) {
+                var top = this.scrollY, left = this.scrollX;
+                if(top >= parseInt(tablePosition.top)) {
+                    $('.tableNonEffect thead').stop().css({top: (top-parseInt(tablePosition.top))+$('#navbarUser').outerHeight()-10, left: 0, position: 'absolute'});
+                    $('.tableNonEffect thead th').each(function (index, val) {
+                        $(this).width(theadSize[index]);
+                    });
+                } else{
+                    $('.tableNonEffect thead').css({top: 0, left: 0, position: 'static'});
+                }
+            });
 
             $('.tableNonEffect tr td input').keydown(function (e) {
 

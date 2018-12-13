@@ -94,7 +94,8 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                             </td>
                             <td class="text-center tdQuantity"
                                 data-quantitecourseid="<?= $course->id ?>"></td>
-                            <td class="text-center tdTotal" style="0.75em !important;" data-totalcourseid="<?= $course->id ?>"></td>
+                            <td class="text-center tdTotal" style="0.75em !important;"
+                                data-totalcourseid="<?= $course->id ?>"></td>
                             <?php foreach ($period as $key => $date):
                                 $vivreCrueId = '';
                                 $vivreCrueQuantite = '';
@@ -259,7 +260,7 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                 var $totalTable = $('#totalHtTable').clone();
                 $totalTable.removeClass().addClass('float-right');
                 $('tbody', $totalTable).append('<tr><hr><td></td><td>' + financial(totalVariable) + '€' + '</td></tr>');
-                $('.totalContainer').append($totalTable);
+                $('.totalContainer').html($totalTable);
             }
 
 

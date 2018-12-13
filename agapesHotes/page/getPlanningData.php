@@ -224,8 +224,6 @@ if (
             </tbody>
         </table>
     </div>
-
-
     <script type="text/javascript" src="/app/js/printThis.js"></script>
     <script>
         $(document).ready(function () {
