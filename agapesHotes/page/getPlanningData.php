@@ -42,7 +42,7 @@ if (
             le <?= $end->format('d/m/Y'); ?></small>
     </div>
     <div class="table-responsive col-12">
-        <table id="planningTable" class="table table-striped tableNonEffect">
+        <table id="planningTable" class="table table-striped tableNonEffect fixed-header">
             <thead>
             <tr>
                 <th><?= trans('Employé'); ?></th>
@@ -94,7 +94,7 @@ if (
                                 <input class="text-center form-control updatePlanning inputUpdatePlanning"
                                        name="<?= !empty($Planning->id) ? $Planning->id : ''; ?>" type="text"
                                        maxlength="10" list="absenceReasonList" autocomplete="off"
-                                       style="padding: 5px 0 !important; <?= getDayColor($date, $Site->getAlsaceMoselle()); ?>"
+                                       style="padding: 5px 0 !important; min-width: 45px; <?= getDayColor($date, $Site->getAlsaceMoselle()); ?>"
                                        data-date="<?= $date->format('Y-m-d'); ?>"
                                        data-employeid="<?= $employeId; ?>"
                                        value="<?= $inputCase; ?>">
@@ -224,6 +224,7 @@ if (
             </tbody>
         </table>
     </div>
+    <script type="text/javascript" src="<?= AGAPESHOTES_URL; ?>js/footer.js"></script>
     <script type="text/javascript" src="/app/js/printThis.js"></script>
     <script>
         $(document).ready(function () {

@@ -46,7 +46,7 @@ if (
         <button type="button" class="btn btn-sm btn-info printMainCouranteBtn my-2">Imprimer la facture</button>
     </div>
     <div class="table-responsive col-12">
-        <table id="mainCouranteTable" class="table table-striped tableNonEffect">
+        <table id="mainCouranteTable" class="table table-striped tableNonEffect fixed-header">
             <thead>
             <tr style="text-align: center;">
                 <th><?= trans('Prestation'); ?></th>
@@ -114,7 +114,7 @@ if (
                                 $mainCouranteQuantiteTotalDay += $mainCourantQuantite;
                                 ?>
 
-                                <td style="padding: 4px !important;" data-day="<?= $date->format('j'); ?>"
+                                <td style="padding: 4px !important; min-width: 45px;" data-day="<?= $date->format('j'); ?>"
                                     data-tdposition="<?= $count; ?>"
                                     data-prixprestation="<?= $prixReel; ?>" class="mainCouranteTd"
                                     title="<?= $date->format('d') . ' / ' . $prestation->nom; ?>">
@@ -262,28 +262,10 @@ if (
             </div>
         </div>
     </div>
+    <script type="text/javascript" src="<?= AGAPESHOTES_URL; ?>js/footer.js"></script>
     <script type="text/javascript" src="/app/js/printThis.js"></script>
     <script>
         $(document).ready(function () {
-
-            var tablePosition = $('.tableNonEffect').offset();
-            var theadSize = {};
-
-            $('.tableNonEffect thead th').each(function (index, val) {
-                theadSize[index] = $(this).width();
-            });
-
-            $(window).scroll(function (e) {
-                var top = this.scrollY, left = this.scrollX;
-                if(top >= parseInt(tablePosition.top)) {
-                    $('.tableNonEffect thead').stop().css({top: (top-parseInt(tablePosition.top))+$('#navbarUser').outerHeight()-10, left: 0, position: 'absolute'});
-                    $('.tableNonEffect thead th').each(function (index, val) {
-                        $(this).width(theadSize[index]);
-                    });
-                } else{
-                    $('.tableNonEffect thead').css({top: 0, left: 0, position: 'static'});
-                }
-            });
 
             $('.tableNonEffect tr td input').keydown(function (e) {
 

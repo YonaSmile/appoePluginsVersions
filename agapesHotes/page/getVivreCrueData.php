@@ -36,7 +36,7 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
         <button type="button" class="btn btn-sm btn-info printVivreCrueBtn my-2">Imprimer la facture</button>
     </div>
     <div class="table-responsive col-12">
-        <table class="table table-striped tableNonEffect">
+        <table class="table table-striped tableNonEffect fixed-header">
             <thead>
             <tr>
                 <th><?= trans('Course'); ?></th>
@@ -80,21 +80,21 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                                 $vivreCrueTauxTva = $VivreCrue->tauxTVA;
                             }
                             ?>
-                            <td class="text-center">
+                            <td class="text-center" style="min-width: 130px;">
                                 <input type="tel" name="prixUntitHT" value="<?= $vivreCruePrixHtUnit; ?>"
                                        class="text-center" data-idcourse="<?= $course->id ?>"
                                     <?= !empty($vivreCruePrixHtUnit) ? 'readonly' : ''; ?>
                                        style="width: 50px;margin-right: 5px;">€
                             </td>
-                            <td class="text-center">
+                            <td class="text-center" style="min-width: 90px;">
                                 <input type="tel" name="tauxTva" value="<?= $vivreCrueTauxTva; ?>"
                                        class="text-center" data-idcourse="<?= $course->id ?>"
                                     <?= !empty($vivreCrueTauxTva) ? 'readonly' : ''; ?>
                                        style="width: 50px;margin-right: 5px;">%
                             </td>
-                            <td class="text-center tdQuantity"
+                            <td class="text-center tdQuantity" style="min-width: 91px;"
                                 data-quantitecourseid="<?= $course->id ?>"></td>
-                            <td class="text-center tdTotal" style="0.75em !important;"
+                            <td class="text-center tdTotal" style="0.75em !important; min-width: 88px;"
                                 data-totalcourseid="<?= $course->id ?>"></td>
                             <?php foreach ($period as $key => $date):
                                 $vivreCrueId = '';
@@ -108,7 +108,7 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                                 }
                                 $vivreCrueQuantiteTotalDay += $vivreCrueQuantite;
                                 ?>
-                                <td style="padding: 4px !important;" data-tdposition="<?= $count; ?>">
+                                <td style="padding: 4px !important; min-width: 45px;" data-tdposition="<?= $count; ?>">
                                     <input type="tel" data-idcourse="<?= $course->id; ?>"
                                            data-date="<?= $date->format('Y-m-d'); ?>"
                                            data-day="<?= $date->format('j'); ?>"
@@ -196,6 +196,7 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
             </div>
         </div>
     </div>
+    <script type="text/javascript" src="<?= AGAPESHOTES_URL; ?>js/footer.js"></script>
     <script type="text/javascript" src="/app/js/printThis.js"></script>
     <script>
         $(document).ready(function () {
