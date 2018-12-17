@@ -36,18 +36,11 @@ if (
         <h5 class="mb-0"><?= ucfirst(strftime("%B", strtotime($start->format('Y-m-d')))); ?> <?= $start->format('Y'); ?></h5>
         <small class="d-block">Commence le <?= $start->format('d/m/Y'); ?> et se termine
             le <?= $end->format('d/m/Y'); ?></small>
-        <button type="button" class="btn btn-sm btn-info printFirstHalfMonthMainCouranteBtn my-2"
-                title="Du 1 au 15 <?= ucfirst(strftime("%B", strtotime($start->format('Y-m-d')))); ?> <?= $start->format('Y'); ?>">
-            Édition du 1 - 15
-        </button>
-        <button type="button" class="btn btn-sm btn-info printLastHalfMonthMainCouranteBtn my-2"
-                title="Du 16 au <?= $start->format('t'); ?> <?= ucfirst(strftime("%B", strtotime($start->format('Y-m-d')))); ?> <?= $start->format('Y'); ?>">
-            Édition du 16 - <?= $start->format('t'); ?></button>
-        <button type="button" class="btn btn-sm btn-info printMainCouranteBtn my-2">Imprimer la facture</button>
+
     </div>
     <div class="table-responsive col-12">
         <table id="mainCouranteTable" class="table table-striped tableNonEffect fixed-header">
-            <thead>
+            <thead style="z-index: 2">
             <tr style="text-align: center;">
                 <th><?= trans('Prestation'); ?></th>
                 <?php foreach ($period as $key => $date): ?>
@@ -71,14 +64,39 @@ if (
                 if ($allPrestations): ?>
                     <tbody data-etablissement="<?= $etablissement->id; ?>">
                     <tr>
-                        <th colspan="<?= $start->format('t') + 2; ?>"><?= $etablissement->nom; ?></th>
+                        <th colspan="<?= $start->format('t') + 2; ?>">
+                            <span style="font-size: 2em;font-weight: 100 !important;">
+                                <?= $etablissement->nom; ?>
+                            </span>
+                            <span class="float-right">
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-light printFirstHalfMonthMainCouranteBtn my-2"
+                                    data-etablissementid="<?= $etablissement->id; ?>"
+                                    data-etablissementname="<?= $etablissement->nom; ?>"
+                                    title="Du 1 au 15 <?= ucfirst(strftime("%B", strtotime($start->format('Y-m-d')))); ?> <?= $start->format('Y'); ?>">
+                                Édition du 1 - 15
+                            </button>
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-light printLastHalfMonthMainCouranteBtn my-2"
+                                    data-etablissementid="<?= $etablissement->id; ?>"
+                                    data-etablissementname="<?= $etablissement->nom; ?>"
+                                    title="Du 16 au <?= $start->format('t'); ?> <?= ucfirst(strftime("%B", strtotime($start->format('Y-m-d')))); ?> <?= $start->format('Y'); ?>">
+                                Édition du 16 - <?= $start->format('t'); ?></button>
+                            <button type="button" class="btn btn-sm btn-outline-light printMainCouranteBtn my-2"
+                                    data-etablissementid="<?= $etablissement->id; ?>"
+                                    data-etablissementname="<?= $etablissement->nom; ?>">
+                                Imprimer la demande de facturation
+                            </button>
+                        </span></th>
                     </tr>
                     <?php foreach ($allPrestations as $prestation):
                         $count = 1;
                         $mainCouranteQuantiteTotalDay = 0; ?>
-                        <tr data-idprestation="<?= $prestation->id ?>" class="mainCourantTr">
+                        <tr data-idprestation="<?= $prestation->id ?>" class="mainCourantTr"
+                            data-etablissementid="<?= $etablissement->id; ?>">
                             <th class="positionRelative" data-name="prestationName"
-                                style="vertical-align: middle;"><span><?= $prestation->nom; ?></span>
+                                style="vertical-align: middle; min-width: 150px; z-index: 1">
+                                <span><?= $prestation->nom; ?></span>
                                 <small class="prestationReelPrice"
                                        style="position: absolute;top: 0; right: 3px;font-size: 0.7em;"></small>
                             </th>
@@ -111,10 +129,13 @@ if (
                                     $mainCourantId = $MainCourante->id;
                                     $mainCourantQuantite = $MainCourante->quantite;
                                 }
-                                $mainCouranteQuantiteTotalDay += $mainCourantQuantite;
+                                if ($prixReel > 0) {
+                                    $mainCouranteQuantiteTotalDay += $mainCourantQuantite;
+                                }
                                 ?>
 
-                                <td style="padding: 4px !important; min-width: 45px;" data-day="<?= $date->format('j'); ?>"
+                                <td style="padding: 4px !important; min-width: 45px;"
+                                    data-day="<?= $date->format('j'); ?>"
                                     data-tdposition="<?= $count; ?>"
                                     data-prixprestation="<?= $prixReel; ?>" class="mainCouranteTd"
                                     title="<?= $date->format('d') . ' / ' . $prestation->nom; ?>">
@@ -132,7 +153,7 @@ if (
                                            data-prixprestation="<?= $prixReel; ?>"
                                            data-etablissement="<?= $etablissement->id; ?>"><?= financial($prixReel * $mainCourantQuantite); ?>
                                     </small>
-                                    <small class="d-block text-center prestationPriceCumule"
+                                    <small class="d-block text-center prestationPriceCumule" style="font-size: 0.65em;"
                                            data-day="<?= $date->format('j'); ?>"
                                            data-prixprestation="<?= $prixReel; ?>"
                                            data-etablissement="<?= $etablissement->id; ?>"><?= financial($prixReel * $mainCouranteQuantiteTotalDay); ?>
@@ -140,9 +161,10 @@ if (
                                 </td>
                                 <?php $count++;
                             endforeach; ?>
-                            <td class="quantityTotalDay text-center" data-idprestation="<?= $prestation->id ?>">
+                            <td class="quantityTotalDay text-center" data-idprestation="<?= $prestation->id ?>"
+                                style="padding: 4px !important; min-width: 45px;">
                                 <span><?= $mainCouranteQuantiteTotalDay; ?></span>
-                                <small class="d-block text-center prestationTotalPrice"
+                                <small class="d-block text-center prestationTotalPrice" style="font-size: 0.7em;"
                                        data-prixprestation="<?= $prixReel; ?>"
                                        data-etablissement="<?= $etablissement->id; ?>">
                                     <?= financial($prixReel * $mainCouranteQuantiteTotalDay); ?>
@@ -300,14 +322,14 @@ if (
                 }
             });
 
-            function prepareFirstMonthHalfFacture() {
+            function prepareFirstMonthHalfFacture(etablissementid) {
                 $('.allFactureProducts').html('');
                 var totalVariable = 0;
                 var totalQuantite = 0;
                 var totalPrestation = 0;
                 var facture = {};
 
-                $('tr.mainCourantTr td.mainCouranteTd').each(function () {
+                $('tr.mainCourantTr[data-etablissementid="' + etablissementid + '"] td.mainCouranteTd').each(function () {
                     var $td = $(this);
                     var $tr = $td.closest('tr');
                     var prestationName = $tr.find('th[data-name="prestationName"] span').text();
@@ -348,14 +370,14 @@ if (
                 $('.totalContainer .totalCaHt').html(financial(totalVariable) + '€');
             }
 
-            function prepareLastMonthHalfFacture() {
+            function prepareLastMonthHalfFacture(etablissementid) {
                 $('.allFactureProducts').html('');
                 var totalVariable = 0;
                 var totalQuantite = 0;
                 var totalPrestation = 0;
                 var facture = {};
 
-                $('tr.mainCourantTr td.mainCouranteTd').each(function () {
+                $('tr.mainCourantTr[data-etablissementid="' + etablissementid + '"] td.mainCouranteTd').each(function () {
                     var $td = $(this);
                     var $tr = $td.closest('tr');
                     var prestationName = $tr.find('th[data-name="prestationName"] span').text();
@@ -396,11 +418,11 @@ if (
                 $('.totalContainer .totalCaHt').html(financial(totalVariable) + '€');
             }
 
-            function prepareTotalFacture() {
+            function prepareTotalFacture(etablissementid) {
                 $('.allFactureProducts').html('');
                 var totalVariable = 0;
 
-                $('tr.mainCourantTr').each(function () {
+                $('tr.mainCourantTr[data-etablissementid="' + etablissementid + '"]').each(function () {
                     var $tr = $(this);
                     var prestationName = $tr.find('th[data-name="prestationName"] span').text();
                     var prestationPrice = parseFloat($tr.find('small.prestationReelPrice').text());
@@ -424,34 +446,40 @@ if (
             }
 
             $('.printFirstHalfMonthMainCouranteBtn').on('click', function () {
-                prepareFirstMonthHalfFacture();
+                var etablissementid = $(this).data('etablissementid');
+                var etablissementname = $(this).data('etablissementname');
+                prepareFirstMonthHalfFacture(etablissementid);
                 $('.factureDate').hide();
                 $('.facturePeriod').show();
                 $('#signatureFacture').show();
                 $('#modalFactureMainCouranteTitle').html('Edition Main Courante');
-                $('input#client_name').removeClass('is-invalid');
+                $('input#client_name').removeClass('is-invalid').val(etablissementname);
                 $('input#period').val($(this).attr('title'));
                 $('#modalFactureMainCourante').modal('show');
             });
 
             $('.printLastHalfMonthMainCouranteBtn').on('click', function () {
-                prepareLastMonthHalfFacture();
+                var etablissementid = $(this).data('etablissementid');
+                var etablissementname = $(this).data('etablissementname');
+                prepareLastMonthHalfFacture(etablissementid);
                 $('.factureDate').hide();
                 $('.facturePeriod').show();
                 $('#signatureFacture').show();
                 $('#modalFactureMainCouranteTitle').html('Edition Main Courante');
-                $('input#client_name').removeClass('is-invalid');
+                $('input#client_name').removeClass('is-invalid').val(etablissementname);
                 $('input#period').val($(this).attr('title'));
                 $('#modalFactureMainCourante').modal('show');
             });
 
             $('.printMainCouranteBtn').on('click', function () {
+                var etablissementid = $(this).data('etablissementid');
+                var etablissementname = $(this).data('etablissementname');
                 $('.facturePeriod').hide();
                 $('.factureDate').show();
                 $('#signatureFacture').hide();
                 $('#modalFactureMainCouranteTitle').html('Demande de Facturation');
-                prepareTotalFacture();
-                $('input#client_name').removeClass('is-invalid');
+                prepareTotalFacture(etablissementid);
+                $('input#client_name').removeClass('is-invalid').val(etablissementname);
                 $('#modalFactureMainCourante').modal('show');
             });
 
@@ -500,10 +528,11 @@ if (
                 $('.mainCourantInput[data-prestationid="' + idPrestation + '"]').each(function () {
                     var $input = $(this);
                     var $small = $input.next().next('.prestationPriceCumule');
-                    var prixprestation = $small.data('prixprestation');
+                    var prixprestation = $input.data('prixreelprestation');
                     var quantity = parseFloat($input.val());
 
-                    if ($.isNumeric(quantity) && quantity > 0) {
+                    if ($.isNumeric(quantity) && quantity > 0
+                        && $.isNumeric(prixprestation) && prixprestation > 0) {
                         totalQuantityByDay.push(quantity);
                     }
 
@@ -606,6 +635,11 @@ if (
                 };
             })();
 
+            var inputValue = '';
+            $('input.mainCourantInput').on('focusin', function (event) {
+                inputValue = $(this).val();
+            });
+
             $('input.mainCourantInput').on('input', function (event) {
                 event.preventDefault();
                 var $Input = $(this);
@@ -649,15 +683,18 @@ if (
                                 if (data && $.isNumeric(data)) {
                                     $Input.attr('name', data);
                                     $Input.addClass('successInput');
+
+                                    var prestationPrice = parseFloat($InputInfo.data('prixprestation'));
+                                    $InputInfo.html(financial(quantite * prestationPrice));
+                                    calculateTotalPrestationPricePerDay();
+                                    calculateTotalPrestationQuantityPerDay(prestationId);
                                 } else {
+                                    $Input.val(inputValue);
                                     alert(data);
                                 }
                                 availableApp();
-                                var prestationPrice = parseFloat($InputInfo.data('prixprestation'));
-                                $InputInfo.html(financial(quantite * prestationPrice));
                                 activateAllFields();
-                                calculateTotalPrestationPricePerDay();
-                                calculateTotalPrestationQuantityPerDay(prestationId);
+
                             }
                         );
                     }, 300);

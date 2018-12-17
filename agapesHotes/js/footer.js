@@ -4,11 +4,10 @@ $(document).ready(function () {
         var tablePosition = $('.fixed-header').offset();
         var theadSize = {};
 
-        $('.fixed-header thead th').each(function (index, val) {
-            theadSize[index] = $(this).width();
-        });
-
         $(window).scroll(function (e) {
+            $('.fixed-header thead th').each(function (index, val) {
+                theadSize[index] = $(this).width();
+            });
             var top = this.scrollY, left = this.scrollX;
             if (top >= parseInt(tablePosition.top)) {
                 $('.fixed-header thead').stop().css({

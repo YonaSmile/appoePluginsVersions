@@ -78,40 +78,45 @@ if (checkAjaxRequest()) {
         if (!empty($_POST['UPDATEPRESTATIONPRICE'])) {
 
             if (!empty($_POST['etablissementId']) && !empty($_POST['prestationId'])
-                && !empty($_POST['prixHT']) && !empty($_POST['dateDebut'])) {
+                && !empty($_POST['prixHT']) && !empty($_POST['dateDebutMois']) && !empty($_POST['dateDebutAnnee'])) {
 
-                $PrestationProcess->setId($_POST['prestationId']);
-                if ($PrestationProcess->show() && $PrestationProcess->getStatus()) {
+                if (checkdate($_POST['dateDebutMois'], 1, $_POST['dateDebutAnnee'])) {
+                    $PrestationProcess->setId($_POST['prestationId']);
+                    if ($PrestationProcess->show() && $PrestationProcess->getStatus()) {
 
-                    $PrestationPriceProcess = new App\Plugin\AgapesHotes\PrixPrestation();
-                    $PrestationPriceProcess->feed($_POST);
+                        $PrestationPriceProcess = new App\Plugin\AgapesHotes\PrixPrestation();
+                        $PrestationPriceProcess->feed($_POST);
+                        $PrestationPriceProcess->setDateDebut($_POST['dateDebutAnnee'] . '-' . $_POST['dateDebutMois'] . '-01');
 
-                    if ($PrestationPriceProcess->notExist()) {
+                        if ($PrestationPriceProcess->notExist()) {
 
-                        if ($PrestationPriceProcess->save()) {
-
-                            echo json_encode(true);
-                        } else {
-                            echo 'Impossible d\'enregistrer le nouveau prix';
-                        }
-
-                    } else {
-
-                        if ($PrestationPriceProcess->notExist(true)) {
-
-                            if ($PrestationPriceProcess->update()) {
+                            if ($PrestationPriceProcess->save()) {
 
                                 echo json_encode(true);
                             } else {
-                                echo 'Impossible de mettre à jour le nouveau prix';
+                                echo 'Impossible d\'enregistrer le nouveau prix';
                             }
 
                         } else {
-                            echo 'Le prix de la prestation existe déjà pour la même date !';
+
+                            if ($PrestationPriceProcess->notExist(true)) {
+
+                                if ($PrestationPriceProcess->update()) {
+
+                                    echo json_encode(true);
+                                } else {
+                                    echo 'Impossible de mettre à jour le nouveau prix';
+                                }
+
+                            } else {
+                                echo 'Le prix de la prestation existe déjà pour la même date !';
+                            }
                         }
+                    } else {
+                        echo 'Cette prestation n\'existe pas !';
                     }
                 } else {
-                    echo 'Cette prestation n\'existe pas !';
+                    echo 'Cette date n\'existe pas !';
                 }
             }
         }

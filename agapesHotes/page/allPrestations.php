@@ -138,12 +138,20 @@ if (!empty($_GET['secteur']) && !empty($_GET['site']) && !empty($_GET['etablisse
                         <div class="modal-body" id="modalPriceBody">
                             <div class="row">
                                 <div class="col-12 my-2">
-                                    <input type="hidden" id="etablissementIdInput" name="etablissementId" value="<?= $Etablissement->getId(); ?>">
+                                    <input type="hidden" id="etablissementIdInput" name="etablissementId"
+                                           value="<?= $Etablissement->getId(); ?>">
                                     <input type="hidden" id="prestationIdInput" name="prestationId" value="">
                                     <input type="hidden" id="idPrestationPrixInput" name="id" value="">
                                     <?= \App\Form::text('Nouveau prix HT', 'prixHT', 'text', '', true, 255); ?>
-                                    <div class="my-2"></div>
-                                    <?= \App\Form::text('Date d\'effet du nouveau prix', 'dateDebut', 'date', '', true, 10); ?>
+                                    <div class="my-3"></div>
+                                    <div class="row">
+                                        <div class="col-12 col-lg-6">
+                                            <?= \App\Form::select('Mois du nouveau prix', 'dateDebutMois', getMonth(), '', true); ?>
+                                        </div>
+                                        <div class="col-12 col-lg-6">
+                                            <?= \App\Form::select('Année du nouveau prix', 'dateDebutAnnee', array(date('Y') => date('Y'), date('Y') + 1 => date('Y') + 1, date('Y') + 2 => date('Y') + 2), '', true); ?>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row">
