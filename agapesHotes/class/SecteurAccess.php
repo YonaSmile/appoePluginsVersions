@@ -244,7 +244,7 @@ class SecteurAccess
         FROM appoe_plugin_agapeshotes_secteurs_access AS SECTEURACCESS
         INNER JOIN appoe_plugin_agapeshotes_secteurs AS SECTEUR
         ON(SECTEUR.id = SECTEURACCESS.secteur_id)
-        WHERE SECTEURACCESS.secteurUserId = :secteurUserId AND SECTEURACCESS.status = :status ORDER BY SECTEURACCESS.updated_at DESC';
+        WHERE SECTEURACCESS.secteurUserId = :secteurUserId AND SECTEUR.status = :status ORDER BY SECTEUR.updated_at DESC';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':secteurUserId', $this->secteurUserId);

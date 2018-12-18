@@ -248,7 +248,7 @@ class SiteAccess
         ON(SITE.id = SITEACCESS.site_id)
         INNER JOIN appoe_plugin_agapeshotes_secteurs AS SECTEUR
         ON(SITE.secteur_id = SECTEUR.id)
-        WHERE SITEACCESS.siteUserId = :siteUserId AND SITEACCESS.status = :status ORDER BY SITEACCESS.updated_at DESC';
+        WHERE SITEACCESS.siteUserId = :siteUserId AND SITE.status = :status ORDER BY SITE.updated_at DESC';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteUserId', $this->siteUserId);

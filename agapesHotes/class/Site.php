@@ -287,10 +287,11 @@ class Site
     public function showBySecteur($countSites = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_sites WHERE secteur_id = :secteurId';
+        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_sites WHERE secteur_id = :secteurId AND status = :status';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':secteurId', $this->secteurId);
+        $stmt->bindParam(':status', $this->status);
         $stmt->execute();
 
         $count = $stmt->rowCount();
