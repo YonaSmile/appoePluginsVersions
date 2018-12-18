@@ -253,7 +253,8 @@ class Secteur
     public function showAllEtablissements($countSecteurs = false)
     {
 
-        $sql = 'SELECT ETABL.* FROM appoe_plugin_agapeshotes_etablissements AS ETABL
+        $sql = 'SELECT ETABL.*, SITE.slug AS siteSlug, SITE.nom AS siteNom, SECTEUR.id AS secteurId, SECTEUR.slug AS secteurSlug , SECTEUR.nom AS secteurNom
+        FROM appoe_plugin_agapeshotes_etablissements AS ETABL
         INNER JOIN appoe_plugin_agapeshotes_sites AS SITE
         ON(SITE.id = ETABL.site_id)
         INNER JOIN appoe_plugin_agapeshotes_secteurs AS SECTEUR

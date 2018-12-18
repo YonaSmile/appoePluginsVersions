@@ -1,10 +1,11 @@
 <?php require('header.php');
 echo getTitle($Page->getName(), $Page->getSlug());
-$Site = new \App\Plugin\AgapesHotes\Site();
-$allSites = $Site->showAll();
-$allSitesBySecteur = groupMultipleKeysObjectsArray($allSites, 'secteur_id');
+
 $Secteur = new \App\Plugin\AgapesHotes\Secteur();
 $Budget = new \App\Plugin\AgapesHotes\Budget();
+
+$allSites = getSitesAccess();
+$allSitesBySecteur = groupMultipleKeysObjectsArray($allSites, 'secteur_id');
 
 $inventaireUrl = 'https://serventest.fr/pro/liaison_appoe/getInventaireServentest.php';
 $commandesUrl = 'https://serventest.fr/pro/liaison_appoe/getRefacturationServentest.php';

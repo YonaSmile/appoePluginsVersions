@@ -338,6 +338,84 @@ function getBudget($siteId, $year, $month = '')
     return $Budget ? $Budget : 0;
 }
 
+function getSecteurAccess()
+{
+
+    $allSecteurs = array();
+    $Secteur = new \App\Plugin\AgapesHotes\Secteur();
+
+    if (getUserRoleId() == 2) {
+
+        $SecteurAccess = new App\Plugin\AgapesHotes\SecteurAccess();
+        $SecteurAccess->setSecteurUserId(getUserIdSession());
+        $allSecteurs[] = $SecteurAccess->showSecteurByUser();
+
+    } else {
+        $allSecteurs = $Secteur->showAll();
+    }
+    return $allSecteurs;
+}
+
+function getSitesAccess()
+{
+
+    $allSites = array();
+    $Site = new \App\Plugin\AgapesHotes\Site();
+
+    if (getUserRoleId() == 1) {
+
+        $SiteAccess = new \App\Plugin\AgapesHotes\SiteAccess();
+        $SiteAccess->setSiteUserId(getUserIdSession());
+        $allSites[] = $SiteAccess->showSiteByUser();
+
+    } elseif (getUserRoleId() == 2) {
+
+        $SecteurAccess = new App\Plugin\AgapesHotes\SecteurAccess();
+        $SecteurAccess->setSecteurUserId(getUserIdSession());
+        $secteur = $SecteurAccess->showSecteurByUser();
+        if ($secteur) {
+            $Site->setSecteurId($secteur->id);
+            $allSites = $Site->showBySecteur();
+        }
+    } else {
+        $allSites = $Site->showAll();
+    }
+    return $allSites;
+}
+
+function getEtablissementAccess()
+{
+
+    $allEtablissements = array();
+    $Secteur = new \App\Plugin\AgapesHotes\Secteur();
+    $Etablissement = new \App\Plugin\AgapesHotes\Etablissement();
+
+    if (getUserRoleId() == 1) {
+        $SiteAccess = new \App\Plugin\AgapesHotes\SiteAccess();
+        $SiteAccess->setSiteUserId(getUserIdSession());
+        $site = $SiteAccess->showSiteByUser();
+        if ($site) {
+            $Etablissement->setSiteId($site->id);
+            $allEtablissements = $Etablissement->showAllBySite();
+        }
+
+    } elseif (getUserRoleId() == 2) {
+
+        $SecteurAccess = new App\Plugin\AgapesHotes\SecteurAccess();
+        $SecteurAccess->setSecteurUserId(getUserIdSession());
+        $secteur = $SecteurAccess->showSecteurByUser();
+
+        if ($secteur) {
+            $Secteur->setId($secteur->id);
+            $allEtablissements = $Secteur->showAllEtablissements();
+        }
+
+    } else {
+        $allEtablissements = $Etablissement->showAll();
+    }
+    return $allEtablissements;
+}
+
 function getDayColor($date, $alsaceMoselle = false)
 {
 

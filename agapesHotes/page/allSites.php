@@ -2,20 +2,9 @@
 <?= getTitle($Page->getName(), $Page->getSlug());
 
 $Secteur = new \App\Plugin\AgapesHotes\Secteur();
-$Site = new \App\Plugin\AgapesHotes\Site();
-$allSites = $Site->showAll();
+$allSecteurs = extractFromObjToSimpleArr(getSecteurAccess(), 'id', 'nom');
+$allSites = getSitesAccess();
 
-if(getUserRoleId() < 3) {
-    $SecteurAccess = new App\Plugin\AgapesHotes\SecteurAccess();
-    $SecteurAccess->setSecteurUserId(getUserIdSession());
-    $secteur = $SecteurAccess->showSecteurByUser();
-    if($secteur) {
-        $Site->setSecteurId($secteur->id);
-        $allSites = $Site->showBySecteur();
-    } else {
-        $allSites = array();
-    }
-}
 ?>
     <div class="container-fluid">
         <button id="addSite" type="button" class="btn btn-info btn-sm mb-4" data-toggle="modal"
@@ -109,10 +98,7 @@ if(getUserRoleId() < 3) {
                                 <?= \App\Form::text('Nom', 'nom', 'text', !empty($_POST['nom']) ? $_POST['nom'] : '', true, 255); ?>
                             </div>
                             <div class="col-12 col-lg-6 my-2">
-                                <?php
-                                $Secteur->setStatus(1);
-                                $allSecteurs = extractFromObjToSimpleArr($Secteur->showAll(), 'id', 'nom');
-                                echo \App\Form::select('Secteur', 'secteur_id', $allSecteurs, !empty($_POST['secteur_id']) ? $_POST['secteur_id'] : '', true); ?>
+                                <?= \App\Form::select('Secteur', 'secteur_id', $allSecteurs, !empty($_POST['secteur_id']) ? $_POST['secteur_id'] : '', true); ?>
                             </div>
                             <div class="col-12 col-lg-6 my-2 align-self-end">
                                 <div class="custom-control custom-checkbox">
@@ -154,9 +140,7 @@ if(getUserRoleId() < 3) {
                                 <?= \App\Form::text('Nom', 'nom', 'text', '', true, 255); ?>
                             </div>
                             <div class="col-12 col-lg-6 my-2">
-                                <?php
-                                $allSecteurs = extractFromObjToSimpleArr($Secteur->showAll(), 'id', 'nom');
-                                echo \App\Form::select('Secteur', 'secteur_id', $allSecteurs, '', true); ?>
+                                <?= \App\Form::select('Secteur', 'secteur_id', $allSecteurs, '', true); ?>
                             </div>
                             <div class="col-12 col-lg-6 my-2 align-self-end">
                                 <div class="custom-control custom-checkbox">

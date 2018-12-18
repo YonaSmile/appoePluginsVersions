@@ -3,33 +3,8 @@
 
 $Site = new \App\Plugin\AgapesHotes\Site();
 $Secteur = new \App\Plugin\AgapesHotes\Secteur();
-
-$Etablissement = new \App\Plugin\AgapesHotes\Etablissement();
-$allEtablissement = $Etablissement->showAll();
-
-if (getUserRoleId() < 2) {
-    $SiteAccess = new \App\Plugin\AgapesHotes\SiteAccess();
-    $SiteAccess->setSiteUserId(getUserIdSession());
-    $site = $SiteAccess->showSiteByUser();
-    if ($site) {
-        $Etablissement->setSiteId($site->id);
-        $allEtablissement = $Etablissement->showAllBySite();
-    } else {
-        $allEtablissement = array();
-    }
-}
-if (getUserRoleId() < 3) {
-    $SecteurAccess = new App\Plugin\AgapesHotes\SecteurAccess();
-    $SecteurAccess->setSecteurUserId(getUserIdSession());
-    $secteur = $SecteurAccess->showSecteurByUser();
-
-    if($secteur) {
-        $Secteur->setId($secteur->id);
-        $allEtablissement = $Secteur->showAllEtablissements();
-    } else {
-        $allEtablissement = array();
-    }
-}
+$allEtablissement = getEtablissementAccess();
+$allSites = extractFromObjToSimpleArr(getSitesAccess(), 'id', 'nom');
 ?>
     <div class="container-fluid">
         <button id="addEtablissement" type="button" class="btn btn-info btn-sm mb-4" data-toggle="modal"
@@ -119,10 +94,7 @@ if (getUserRoleId() < 3) {
                                 <?= \App\Form::text('Nom', 'nom', 'text', '', true, 255); ?>
                             </div>
                             <div class="col-12 my-2">
-                                <?php
-                                $Site->setStatus(1);
-                                $allSites = extractFromObjToSimpleArr($Site->showAll(), 'id', 'nom');
-                                echo \App\Form::select('Site', 'site_id', $allSites, '', true); ?>
+                                <?= App\Form::select('Site', 'site_id', $allSites, '', true); ?>
                             </div>
                         </div>
                         <div class="row">
@@ -157,10 +129,7 @@ if (getUserRoleId() < 3) {
                                 <?= \App\Form::text('Nom', 'nom', 'text', '', true, 255); ?>
                             </div>
                             <div class="col-12 my-2">
-                                <?php
-                                $Site->setStatus(1);
-                                $allSites = extractFromObjToSimpleArr($Site->showAll(), 'id', 'nom');
-                                echo \App\Form::select('Site', 'site_id', $allSites, '', true); ?>
+                                <?= App\Form::select('Site', 'site_id', $allSites, '', true); ?>
                             </div>
                         </div>
                         <div class="row">

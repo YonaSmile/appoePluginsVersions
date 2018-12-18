@@ -1,9 +1,10 @@
 <?php require('header.php');
 echo getTitle($Page->getName(), $Page->getSlug());
-$Site = new \App\Plugin\AgapesHotes\Site();
-$allSites = $Site->showAll();
-$allSitesBySecteur = groupMultipleKeysObjectsArray($allSites, 'secteur_id');
+
 $Secteur = new \App\Plugin\AgapesHotes\Secteur();
+
+$allSites = getSitesAccess();
+$allSitesBySecteur = groupMultipleKeysObjectsArray($allSites, 'secteur_id');
 
 $start = new \DateTime(date('Y-01-01'));
 $end = new \DateTime(date('Y-12-t'));
