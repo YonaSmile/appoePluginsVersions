@@ -33,11 +33,10 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
         <h5 class="mb-0"><?= ucfirst(strftime("%B", strtotime($start->format('Y-m-d')))); ?> <?= $start->format('Y'); ?></h5>
         <small class="d-block">Commence le <?= $start->format('d/m/Y'); ?> et se termine
             le <?= $end->format('d/m/Y'); ?></small>
-        <button type="button" class="btn btn-sm btn-info printVivreCrueBtn my-2">Imprimer la facture</button>
     </div>
     <div class="table-responsive col-12">
         <table class="table table-striped tableNonEffect fixed-header">
-            <thead>
+            <thead style="z-index: 2">
             <tr>
                 <th><?= trans('Course'); ?></th>
                 <th style="white-space: nowrap;"><?= trans('Prix/unité HT'); ?></th>
@@ -61,13 +60,20 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                 if ($allCourses): ?>
                     <tbody data-etablissement="<?= $etablissement->id; ?>">
                     <tr>
-                        <th colspan="<?= ($end->format('t') + 5); ?>"><?= $etablissement->nom; ?></th>
+                        <th colspan="<?= ($start->format('t') + 5); ?>"
+                            style="font-size: 2em;font-weight: 100 !important;">
+                            <?= $etablissement->nom; ?>
+                            <span class="float-right">
+                            <button type="button" class="btn btn-sm btn-outline-light printVivreCrueBtn my-2"
+                                    data-etablissementid="<?= $etablissement->id; ?>"
+                                    data-etablissementname="<?= $etablissement->nom; ?>">Imprimer la facture</button>
+                        </span></th>
                     </tr>
                     <?php foreach ($allCourses as $course):
-
                         $count = 1;
                         $vivreCrueQuantiteTotalDay = 0; ?>
-                        <tr data-idcourse="<?= $course->id ?>" class="vivreCrueTr">
+                        <tr data-idcourse="<?= $course->id ?>" class="vivreCrueTr"
+                            data-etablissementid="<?= $etablissement->id; ?>">
                             <th class="positionRelative courseName" style="vertical-align: middle;">
                                 <?= $course->nom; ?>
                             </th>
@@ -83,19 +89,21 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                             <td class="text-center" style="min-width: 130px;">
                                 <input type="tel" name="prixUntitHT" value="<?= $vivreCruePrixHtUnit; ?>"
                                        class="text-center" data-idcourse="<?= $course->id ?>"
+                                       data-etablissementid="<?= $etablissement->id; ?>"
                                     <?= !empty($vivreCruePrixHtUnit) ? 'readonly' : ''; ?>
                                        style="width: 50px;margin-right: 5px;">€
                             </td>
                             <td class="text-center" style="min-width: 90px;">
                                 <input type="tel" name="tauxTva" value="<?= $vivreCrueTauxTva; ?>"
                                        class="text-center" data-idcourse="<?= $course->id ?>"
+                                       data-etablissementid="<?= $etablissement->id; ?>"
                                     <?= !empty($vivreCrueTauxTva) ? 'readonly' : ''; ?>
                                        style="width: 50px;margin-right: 5px;">%
                             </td>
                             <td class="text-center tdQuantity" style="min-width: 91px;"
                                 data-quantitecourseid="<?= $course->id ?>"></td>
                             <td class="text-center tdTotal" style="0.75em !important; min-width: 88px;"
-                                data-totalcourseid="<?= $course->id ?>"></td>
+                                data-totalcourseid="<?= $course->id ?>" data-total=""></td>
                             <?php foreach ($period as $key => $date):
                                 $vivreCrueId = '';
                                 $vivreCrueQuantite = '';
@@ -127,7 +135,12 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                 <?php endif;
             endforeach; ?>
         </table>
-        <table class="table table-striped tableNonEffect" id="totalHtTable" style="width: 250px;">
+    </div>
+    <?php foreach ($allEtablissements as $etablissement): ?>
+    <div class="col-12 col-md-6 col-lg-4 col-xl-3 mt-3">
+        <h5 style="font-size: 2em;font-weight: 100 !important;"><?= $etablissement->nom; ?></h5>
+        <table class="table table-striped tableNonEffect totalHtTable"
+               data-etablissementid="<?= $etablissement->id; ?>">
             <thead>
             <tr>
                 <th>Tva</th>
@@ -138,6 +151,7 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
             </tbody>
         </table>
     </div>
+<?php endforeach; ?>
     <div class="modal fade" id="modalFactureMainCourante"
          tabindex="-1" role="dialog"
          aria-labelledby="modalFactureMainCouranteTitle"
@@ -234,31 +248,31 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                 }
             });
 
-            function prepareTotalFacture() {
+            function prepareTotalFacture(etablissementid) {
                 $('.allFactureProducts').html('');
                 var totalVariable = 0;
 
-                $('tr.vivreCrueTr').each(function () {
+                $('tr.vivreCrueTr[data-etablissementid="' + etablissementid + '"]').each(function () {
                     var $tr = $(this);
                     var prestationName = $tr.find('th.courseName').text();
                     var prestationPrice = parseFloat($tr.find('input[name="prixUntitHT"]').val());
                     var tva = parseFloat($tr.find('input[name="tauxTva"]').val());
                     var quantityTotal = parseFloat($tr.find('td.tdQuantity').text());
                     if ($.isNumeric(quantityTotal) && quantityTotal > 0) {
-                        var total = financial(prestationPrice * quantityTotal);
+                        var total = prestationPrice * quantityTotal;
 
                         var html = '<div class="row my-1 productFields positionRelative"><div class="col-3 mb-1">' +
                             prestationName + '</div><div class="col-3 mb-1">' +
                             quantityTotal + '</div><div class="col-4 mb-1">' +
                             prestationPrice + '€ (' + financial(tva) + '%)</div><div class="col-2 mb-1">' +
-                            total + '€</div></div>';
+                            financial(total) + '€</div></div>';
                         $('.allFactureProducts').append(html);
 
                         totalVariable += parseFloat(total);
                     }
                 });
 
-                var $totalTable = $('#totalHtTable').clone();
+                var $totalTable = $('.totalHtTable[data-etablissementid="' + etablissementid + '"]').clone();
                 $totalTable.removeClass().addClass('float-right');
                 $('tbody', $totalTable).append('<tr><hr><td></td><td>' + financial(totalVariable) + '€' + '</td></tr>');
                 $('.totalContainer').html($totalTable);
@@ -266,8 +280,10 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
 
 
             $('.printVivreCrueBtn').on('click', function () {
-                prepareTotalFacture();
-                $('input#client_name').removeClass('is-invalid');
+                var etablissementid = $(this).data('etablissementid');
+                var etablissementname = $(this).data('etablissementname');
+                prepareTotalFacture(etablissementid);
+                $('input#client_name').removeClass('is-invalid').val(etablissementname);
                 $('#modalFactureMainCourante').modal('show');
             });
 
@@ -334,10 +350,10 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                 calculateTotalPriceByCourse(courseId);
             }
 
-            function calculeAllTvaTypes() {
+            function calculeAllTvaTypes(etablissementid) {
 
                 var tvaTypes = {};
-                $('input[name="tauxTva"]').each(function () {
+                $('input[name="tauxTva"][data-etablissementid="' + etablissementid + '"]').each(function () {
 
                     var $input = $(this);
                     var idCourse = $input.data('idcourse');
@@ -356,9 +372,9 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                 });
 
                 if (tvaTypes.length !== 0) {
-                    $('table#totalHtTable tbody').html('');
+                    $('table.totalHtTable[data-etablissementid="' + etablissementid + '"] tbody').html('');
                     $.each(tvaTypes, function (tva, total) {
-                        $('table#totalHtTable tbody').append('<tr><td>' + tva + '%</td><td>' + total + '€</td></tr>');
+                        $('table.totalHtTable[data-etablissementid="' + etablissementid + '"] tbody').append('<tr><td>' + tva + '%</td><td>' + total + '€</td></tr>');
                     });
                 }
             }
@@ -367,14 +383,17 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
 
                 var totalQuantity = parseFloat($('td[data-quantitecourseid="' + courseId + '"]').text());
                 var unitPriceHT = $('input[name="prixUntitHT"][data-idcourse="' + courseId + '"]').val();
-                $('td[data-totalcourseid="' + courseId + '"]').html(financial(totalQuantity * unitPriceHT) + '€');
+                var total = totalQuantity * unitPriceHT;
+                $('td[data-totalcourseid="' + courseId + '"]').html(total.toFixed(2) + '€');
             }
 
             $('input.vivreCrueInput').each(function () {
                 calculateTotalQuantityByCourse($(this).data('idcourse'));
             });
 
-            calculeAllTvaTypes();
+            $('.totalHtTable').each(function () {
+                calculeAllTvaTypes($(this).data('etablissementid'));
+            });
 
             var delay = (function () {
                 var timer = 0;
@@ -441,7 +460,7 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                                             calculateTotalQuantityByCourse(idCourse);
                                             $('input[name="prixUntitHT"][data-idcourse="' + idCourse + '"]').attr('readonly', 'readonly');
                                             $('input[name="tauxTva"][data-idcourse="' + idCourse + '"]').attr('readonly', 'readonly');
-                                            calculeAllTvaTypes();
+                                            calculeAllTvaTypes(etablissementId);
                                         } else {
                                             alert(data);
                                         }

@@ -9,7 +9,6 @@ table.tableNonEffect {
     -moz-transition: none !important;
     -webkit-transition: none !important;
     position: relative;
-    padding-top:50px;
 }
 
 table.tableNonEffect tr {

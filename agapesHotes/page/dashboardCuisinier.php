@@ -61,7 +61,7 @@ $View = new \App\Plugin\AgapesHotes\View();
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <a href="<?= AGAPESHOTES_URL; ?>page/allCourses/<?= $Site->secteurSlug; ?>/<?= $Site->slug; ?>/<?= $etablissement->slug; ?>/"
-                                       class="btn btn-outline-dark btn-block my-2">Liste de courses</a>
+                                       class="btn btn-outline-dark btn-block my-2">Liste vivre crus</a>
                                 </div>
                             </div>
                         <?php endforeach; ?>
