@@ -247,6 +247,33 @@ class Secteur
     }
 
     /**
+     * @param $countSecteurs
+     * @return array|bool
+     */
+    public function showAllEtablissements($countSecteurs = false)
+    {
+
+        $sql = 'SELECT ETABL.* FROM appoe_plugin_agapeshotes_etablissements AS ETABL
+        INNER JOIN appoe_plugin_agapeshotes_sites AS SITE
+        ON(SITE.id = ETABL.site_id)
+        INNER JOIN appoe_plugin_agapeshotes_secteurs AS SECTEUR
+        ON(SITE.secteur_id = SECTEUR.id)
+        WHERE SECTEUR.id = :id AND ETABL.status = :status ORDER BY updated_at DESC';
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':id', $this->id);
+        $stmt->bindParam(':status', $this->status);
+        $stmt->execute();
+
+        $count = $stmt->rowCount();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            return !$countSecteurs ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
+        }
+    }
+
+    /**
      * @return bool
      */
     public function save()

@@ -1,14 +1,35 @@
 <?php require('header.php'); ?>
 <?= getTitle($Page->getName(), $Page->getSlug());
-$Etablissement = new \App\Plugin\AgapesHotes\Etablissement();
-$Etablissement->setStatus(1);
-$allEtablissement = $Etablissement->showAll();
+
 $Site = new \App\Plugin\AgapesHotes\Site();
 $Secteur = new \App\Plugin\AgapesHotes\Secteur();
 
-$SiteAccess = new \App\Plugin\AgapesHotes\SiteAccess();
-$SiteAccess->setSiteUserId(getUserIdSession());
-$siteAccess = $SiteAccess->showSiteByUser();
+$Etablissement = new \App\Plugin\AgapesHotes\Etablissement();
+$allEtablissement = $Etablissement->showAll();
+
+if (getUserRoleId() < 2) {
+    $SiteAccess = new \App\Plugin\AgapesHotes\SiteAccess();
+    $SiteAccess->setSiteUserId(getUserIdSession());
+    $site = $SiteAccess->showSiteByUser();
+    if ($site) {
+        $Etablissement->setSiteId($site->id);
+        $allEtablissement = $Etablissement->showAllBySite();
+    } else {
+        $allEtablissement = array();
+    }
+}
+if (getUserRoleId() < 3) {
+    $SecteurAccess = new App\Plugin\AgapesHotes\SecteurAccess();
+    $SecteurAccess->setSecteurUserId(getUserIdSession());
+    $secteur = $SecteurAccess->showSecteurByUser();
+
+    if($secteur) {
+        $Secteur->setId($secteur->id);
+        $allEtablissement = $Secteur->showAllEtablissements();
+    } else {
+        $allEtablissement = array();
+    }
+}
 ?>
     <div class="container-fluid">
         <button id="addEtablissement" type="button" class="btn btn-info btn-sm mb-4" data-toggle="modal"
@@ -30,51 +51,49 @@ $siteAccess = $SiteAccess->showSiteByUser();
                         </tr>
                         </thead>
                         <tbody>
-                        <?php if (($allEtablissement && $siteAccess) || ($allEtablissement && getUserRoleId() > 2)):
+                        <?php if ($allEtablissement):
                             foreach ($allEtablissement as $etablissement):
-                                if (($siteAccess && $etablissement->site_id == $siteAccess->id) || getUserRoleId() > 2):
-                                    $Site->setId($etablissement->site_id);
-                                    if ($Site->show() && $Site->getStatus()):
-                                        $Secteur->setId($Site->getSecteurId());
-                                        if ($Secteur->show() && $Secteur->getStatus()):
-                                            ?>
-                                            <tr data-idetablissement="<?= $etablissement->id ?>"
-                                                class="displayHiddenListOnHover">
-                                                <td>
-                                                    <span data-name="nom"><?= $etablissement->nom ?></span>
-                                                    <small class="hiddenList">
-                                                        <a href="<?= AGAPESHOTES_URL; ?>page/allCourses/<?= $Secteur->getSlug(); ?>/<?= $Site->getSlug(); ?>/<?= $etablissement->slug; ?>/">
-                                                            Liste vivre crus</a>&nbsp;
-                                                        <a href="<?= AGAPESHOTES_URL; ?>page/vivreCrue/<?= $Secteur->getSlug(); ?>/<?= $Site->getSlug(); ?>/">
-                                                            Vivre cru</a>&nbsp;
-                                                        <a href="<?= AGAPESHOTES_URL; ?>page/allPrestations/<?= $Secteur->getSlug(); ?>/<?= $Site->getSlug(); ?>/<?= $etablissement->slug; ?>/">Liste
-                                                            des prestations</a>&nbsp;
-                                                        <a href="<?= AGAPESHOTES_URL; ?>page/mainCourante/<?= $Secteur->getSlug(); ?>/<?= $Site->getSlug(); ?>/">
-                                                            Main courante
-                                                        </a>
-                                                    </small>
-                                                </td>
-                                                <td data-name="siteNom"
-                                                    data-siteid="<?= $Site->getId() ?>"><?= $Site->getNom() ?></td>
-                                                <td><?= getUserEntitled($etablissement->userId); ?></td>
-                                                <td><?= displayTimeStamp($etablissement->updated_at) ?></td>
-                                                <td>
-                                                    <button data-idetablissement="<?= $etablissement->id ?>"
-                                                            data-toggle="modal"
-                                                            data-target="#modalUpdateEtablissement"
-                                                            class="btn btn-sm updateEtablissement"
-                                                            title="<?= trans('Modifier'); ?>">
-                                                        <span class="btnEdit"><i class="fas fa-wrench"></i></span>
-                                                    </button>
-                                                    <button type="button" class="btn btn-sm archiveEtablissement"
-                                                            title="<?= trans('Archiver'); ?>"
-                                                            data-idetablissement="<?= $etablissement->id ?>">
-                                                        <span class="btnArchive"><i class="fas fa-archive"></i></span>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        <?php endif;
-                                    endif;
+                                $Site->setId($etablissement->site_id);
+                                if ($Site->show() && $Site->getStatus()):
+                                    $Secteur->setId($Site->getSecteurId());
+                                    if ($Secteur->show() && $Secteur->getStatus()):
+                                        ?>
+                                        <tr data-idetablissement="<?= $etablissement->id ?>"
+                                            class="displayHiddenListOnHover">
+                                            <td>
+                                                <span data-name="nom"><?= $etablissement->nom ?></span>
+                                                <small class="hiddenList">
+                                                    <a href="<?= AGAPESHOTES_URL; ?>page/allCourses/<?= $Secteur->getSlug(); ?>/<?= $Site->getSlug(); ?>/<?= $etablissement->slug; ?>/">
+                                                        Liste vivre crus</a>&nbsp;
+                                                    <a href="<?= AGAPESHOTES_URL; ?>page/vivreCrue/<?= $Secteur->getSlug(); ?>/<?= $Site->getSlug(); ?>/">
+                                                        Vivre cru</a>&nbsp;
+                                                    <a href="<?= AGAPESHOTES_URL; ?>page/allPrestations/<?= $Secteur->getSlug(); ?>/<?= $Site->getSlug(); ?>/<?= $etablissement->slug; ?>/">Liste
+                                                        des prestations</a>&nbsp;
+                                                    <a href="<?= AGAPESHOTES_URL; ?>page/mainCourante/<?= $Secteur->getSlug(); ?>/<?= $Site->getSlug(); ?>/">
+                                                        Main courante
+                                                    </a>
+                                                </small>
+                                            </td>
+                                            <td data-name="siteNom"
+                                                data-siteid="<?= $Site->getId() ?>"><?= $Site->getNom() ?></td>
+                                            <td><?= getUserEntitled($etablissement->userId); ?></td>
+                                            <td><?= displayTimeStamp($etablissement->updated_at) ?></td>
+                                            <td>
+                                                <button data-idetablissement="<?= $etablissement->id ?>"
+                                                        data-toggle="modal"
+                                                        data-target="#modalUpdateEtablissement"
+                                                        class="btn btn-sm updateEtablissement"
+                                                        title="<?= trans('Modifier'); ?>">
+                                                    <span class="btnEdit"><i class="fas fa-wrench"></i></span>
+                                                </button>
+                                                <button type="button" class="btn btn-sm archiveEtablissement"
+                                                        title="<?= trans('Archiver'); ?>"
+                                                        data-idetablissement="<?= $etablissement->id ?>">
+                                                    <span class="btnArchive"><i class="fas fa-archive"></i></span>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    <?php endif;
                                 endif;
                             endforeach; ?>
                         <?php endif; ?>

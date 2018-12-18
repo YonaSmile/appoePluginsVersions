@@ -42,7 +42,6 @@ if (!empty($_GET['secteur']) && !empty($_GET['site']) && !empty($_GET['etablisse
                             </thead>
                             <tbody>
                             <?php if ($allPrestations):
-
                                 $PrestationPrix = new \App\Plugin\AgapesHotes\PrixPrestation();
                                 foreach ($allPrestations as $prestation):
                                     $PrestationPrix->setDateDebut(date('Y-m-d'));
@@ -65,7 +64,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site']) && !empty($_GET['etablisse
                                             </span>
                                         </td>
                                         <td><?= getUserEntitled($prestation->userId); ?></td>
-                                        <td><?= displayTimeStamp($prestation->updated_at) ?></td>
+                                        <td><?= displayTimeStamp($prestation->updated_at); ?></td>
                                         <td>
                                             <button data-idprestation="<?= $prestation->id ?>"
                                                     class="btn btn-sm updatePrice" data-toggle="modal"
@@ -168,7 +167,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site']) && !empty($_GET['etablisse
                 </div>
             </div>
         </div>
-        <script>
+        <script type="text/javascript">
             $(document).ready(function () {
 
                 $('#savePrestationBtn').on('click', function (event) {

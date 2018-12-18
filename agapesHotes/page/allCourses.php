@@ -31,8 +31,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site']) && !empty($_GET['etablisse
             <div class="row">
                 <div class="col-12">
                     <div class="table-responsive">
-                        <table id="pagesTable"
-                               class="sortableTable table table-striped">
+                        <table class="sortableTable table table-striped">
                             <thead>
                             <tr>
                                 <th><?= trans('Nom de l\'article'); ?></th>

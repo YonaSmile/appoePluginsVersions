@@ -1,8 +1,21 @@
 <?php require('header.php'); ?>
 <?= getTitle($Page->getName(), $Page->getSlug());
+
+$Secteur = new \App\Plugin\AgapesHotes\Secteur();
 $Site = new \App\Plugin\AgapesHotes\Site();
 $allSites = $Site->showAll();
-$Secteur = new \App\Plugin\AgapesHotes\Secteur();
+
+if(getUserRoleId() < 3) {
+    $SecteurAccess = new App\Plugin\AgapesHotes\SecteurAccess();
+    $SecteurAccess->setSecteurUserId(getUserIdSession());
+    $secteur = $SecteurAccess->showSecteurByUser();
+    if($secteur) {
+        $Site->setSecteurId($secteur->id);
+        $allSites = $Site->showBySecteur();
+    } else {
+        $allSites = array();
+    }
+}
 ?>
     <div class="container-fluid">
         <button id="addSite" type="button" class="btn btn-info btn-sm mb-4" data-toggle="modal"
