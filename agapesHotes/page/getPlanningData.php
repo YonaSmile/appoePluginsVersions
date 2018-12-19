@@ -270,7 +270,7 @@ if (
                 $('.inputUpdatePlanning').each(function () {
                     var $input = $(this);
                     var $parent = $input.parent('td');
-                    var data = $input.val() == '' ? 0 : $input.val();
+                    var data = $input.val() == '' ? 0 : $input.val().replace(/\./g, ',');
                     $parent.find('small').hide();
                     $input.hide();
                     $parent.find('span.otherData').html(data).show();
@@ -279,7 +279,7 @@ if (
                 $('.inputPlanningPlus').each(function () {
                     var $input = $(this);
                     var $parent = $input.parent('td');
-                    var data = $input.val() == '' ? 0 : $input.val();
+                    var data = $input.val() == '' ? 0 : $input.val().replace(/\./g, ',');
                     $input.hide();
                     $parent.append('<span style="display:block;text-align:center;">' + data + '</span>');
                 });
