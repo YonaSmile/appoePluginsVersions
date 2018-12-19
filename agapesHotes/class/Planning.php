@@ -191,7 +191,7 @@ class Planning
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapeshotes_planning` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapesHotes_planning` (
   				`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   				PRIMARY KEY (`id`),
   				`date` date NOT NULL,
@@ -222,7 +222,7 @@ class Planning
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_planning WHERE id = :id';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_planning WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -253,7 +253,7 @@ class Planning
     public function showByDate()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_planning WHERE site_id = :siteId AND employe_id = :employeId AND date = :date';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_planning WHERE site_id = :siteId AND employe_id = :employeId AND date = :date';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
@@ -287,7 +287,7 @@ class Planning
     public function showAll($countContrats = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_planning 
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_planning 
         WHERE status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':status', $this->status);
@@ -309,7 +309,7 @@ class Planning
     public function showAllByDate($countContrats = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_planning WHERE site_id = :siteId AND MONTH(date) = :date';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_planning WHERE site_id = :siteId AND MONTH(date) = :date';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
@@ -332,7 +332,7 @@ class Planning
     public function showAllBySite($countContrats = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_planning 
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_planning 
         WHERE site_id = :siteId AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
@@ -355,7 +355,7 @@ class Planning
     public function showAllByEmploye($countContrats = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_planning 
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_planning 
         WHERE employe_id = :employeId AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':employeId', $this->employeId);
@@ -377,7 +377,7 @@ class Planning
     public function save()
     {
         $this->userId = getUserIdSession();
-        $sql = 'INSERT INTO appoe_plugin_agapeshotes_planning (date, site_id, employe_id, reelHours, absenceReason, status, userId, created_at) 
+        $sql = 'INSERT INTO appoe_plugin_agapesHotes_planning (date, site_id, employe_id, reelHours, absenceReason, status, userId, created_at) 
                 VALUES (:date, :siteId, :employeId, :reelHours, :absenceReason, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':date', $this->date);
@@ -404,7 +404,7 @@ class Planning
     public function update()
     {
         $this->userId = getUserIdSession();
-        $sql = 'UPDATE appoe_plugin_agapeshotes_planning 
+        $sql = 'UPDATE appoe_plugin_agapesHotes_planning 
         SET date = :date, site_id = :siteId, employe_id = :employeId, reelHours = :reelHours, absenceReason = :absenceReason, status = :status, userId = :userId WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
@@ -449,7 +449,7 @@ class Planning
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id FROM appoe_plugin_agapeshotes_planning 
+        $sql = 'SELECT id FROM appoe_plugin_agapesHotes_planning 
         WHERE date = :date AND site_id = :siteId AND employe_id = :employeId';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':date', $this->date);

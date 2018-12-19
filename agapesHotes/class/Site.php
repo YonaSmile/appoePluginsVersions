@@ -191,7 +191,7 @@ class Site
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapeshotes_sites` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapesHotes_sites` (
   				`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   				PRIMARY KEY (`id`),
                 `nom` varchar(255) NOT NULL,
@@ -224,7 +224,7 @@ class Site
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_sites WHERE id = :id';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_sites WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -255,7 +255,7 @@ class Site
     public function showBySlug()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_sites WHERE slug = :slug';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_sites WHERE slug = :slug';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':slug', $this->slug);
@@ -287,7 +287,7 @@ class Site
     public function showBySecteur($countSites = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_sites WHERE secteur_id = :secteurId AND status = :status';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_sites WHERE secteur_id = :secteurId AND status = :status';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':secteurId', $this->secteurId);
@@ -310,7 +310,7 @@ class Site
     public function showAll($countSites = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_sites WHERE status = :status ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_sites WHERE status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':status', $this->status);
         $stmt->execute();
@@ -330,7 +330,7 @@ class Site
     public function save()
     {
         $this->userId = getUserIdSession();
-        $sql = 'INSERT INTO appoe_plugin_agapeshotes_sites (nom, secteur_id, slug, alsaceMoselle, ref, status, userId, created_at) 
+        $sql = 'INSERT INTO appoe_plugin_agapesHotes_sites (nom, secteur_id, slug, alsaceMoselle, ref, status, userId, created_at) 
                 VALUES (:nom, :secteurId, :slug, :alsaceMoselle, :ref, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':nom', $this->nom);
@@ -358,7 +358,7 @@ class Site
     public function update()
     {
         $this->userId = getUserIdSession();
-        $sql = 'UPDATE appoe_plugin_agapeshotes_sites SET nom = :nom, secteur_id = :secteurId, slug = :slug, alsaceMoselle = :alsaceMoselle, ref = :ref, status = :status, userId = :userId WHERE id = :id';
+        $sql = 'UPDATE appoe_plugin_agapesHotes_sites SET nom = :nom, secteur_id = :secteurId, slug = :slug, alsaceMoselle = :alsaceMoselle, ref = :ref, status = :status, userId = :userId WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':nom', $this->nom);
@@ -402,7 +402,7 @@ class Site
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id FROM appoe_plugin_agapeshotes_sites 
+        $sql = 'SELECT id FROM appoe_plugin_agapesHotes_sites 
         WHERE nom = :nom AND secteur_id = :secteurId';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':nom', $this->nom);
@@ -438,7 +438,7 @@ class Site
     public function notExistSlug($forUpdate = false)
     {
 
-        $sql = 'SELECT id FROM appoe_plugin_agapeshotes_sites 
+        $sql = 'SELECT id FROM appoe_plugin_agapesHotes_sites 
         WHERE slug = :slug';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':slug', $this->slug);
@@ -473,7 +473,7 @@ class Site
     public function notExistRef($forUpdate = false)
     {
 
-        $sql = 'SELECT id FROM appoe_plugin_agapeshotes_sites 
+        $sql = 'SELECT id FROM appoe_plugin_agapesHotes_sites 
         WHERE ref = :ref';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':ref', $this->ref);

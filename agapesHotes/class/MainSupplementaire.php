@@ -242,7 +242,7 @@ class MainSupplementaire
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapeshotes_main_supplementaire` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapesHotes_main_supplementaire` (
   				`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   				PRIMARY KEY (`id`),
                 `site_id` int(11) NOT NULL,
@@ -273,7 +273,7 @@ class MainSupplementaire
     public function createView()
     {
         $sql = 'CREATE VIEW totalFacturationMainSupplementaire AS SELECT site_id, YEAR(date) AS annee, MONTH(date) AS mois, SUM(total) AS totalHT 
-        FROM appoe_plugin_agapeshotes_main_supplementaire GROUP BY MONTH(date)';
+        FROM appoe_plugin_agapesHotes_main_supplementaire GROUP BY MONTH(date)';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();
@@ -291,7 +291,7 @@ class MainSupplementaire
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_main_supplementaire WHERE id = :id';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_main_supplementaire WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -323,7 +323,7 @@ class MainSupplementaire
     public function showAll($countMainSupplementaire = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_main_supplementaire WHERE site_id = :siteId AND status = :status ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_main_supplementaire WHERE site_id = :siteId AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
         $stmt->bindParam(':status', $this->status);
@@ -347,7 +347,7 @@ class MainSupplementaire
     public function showByDate($dateDebut, $dateFin, $countMainSupplementaire = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_main_supplementaire WHERE site_id = :siteId AND (date BETWEEN :dateDebut AND :dateFin) AND status = :status ORDER BY date ASC';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_main_supplementaire WHERE site_id = :siteId AND (date BETWEEN :dateDebut AND :dateFin) AND status = :status ORDER BY date ASC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
         $stmt->bindParam(':dateDebut', $dateDebut);
@@ -370,7 +370,7 @@ class MainSupplementaire
     public function save()
     {
         $this->userId = getUserIdSession();
-        $sql = 'INSERT INTO appoe_plugin_agapeshotes_main_supplementaire (site_id, clientName, nom, prixHTunite, quantite, tauxTVA, total, date, status, userId, created_at) 
+        $sql = 'INSERT INTO appoe_plugin_agapesHotes_main_supplementaire (site_id, clientName, nom, prixHTunite, quantite, tauxTVA, total, date, status, userId, created_at) 
                 VALUES (:siteId, :clientName, :nom, :prixHTunite, :quantite, :tauxTVA, :total, :date, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
@@ -399,7 +399,7 @@ class MainSupplementaire
     public function update()
     {
         $this->userId = getUserIdSession();
-        $sql = 'UPDATE appoe_plugin_agapeshotes_main_supplementaire 
+        $sql = 'UPDATE appoe_plugin_agapesHotes_main_supplementaire 
         SET site_id = :siteId, clientName = :clientName, nom = :nom, prixHTunite = :prixHTunite, quantite = :quantite, tauxTVA = :tauxTVA, total = :total, date = :date, status = :status, userId = :userId 
         WHERE id = :id';
 
@@ -432,7 +432,7 @@ class MainSupplementaire
     public function delete()
     {
 
-        $sql = 'DELETE FROM appoe_plugin_agapeshotes_main_supplementaire WHERE id = :id';
+        $sql = 'DELETE FROM appoe_plugin_agapesHotes_main_supplementaire WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -454,7 +454,7 @@ class MainSupplementaire
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id, nom FROM appoe_plugin_agapeshotes_main_supplementaire 
+        $sql = 'SELECT id, nom FROM appoe_plugin_agapesHotes_main_supplementaire 
         WHERE site_id = :siteId AND clientName = :clientName AND nom = :nom AND date = :date';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);

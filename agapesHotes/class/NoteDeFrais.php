@@ -194,7 +194,7 @@ class NoteDeFrais
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapeshotes_note_frais` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapesHotes_note_frais` (
   				`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   				PRIMARY KEY (`id`),
   				`site_id` int(11) UNSIGNED NOT NULL,
@@ -222,9 +222,9 @@ class NoteDeFrais
     public function createView()
     {
         $sql = 'CREATE VIEW totalNoteDeFraisDenree AS SELECT site_id, YEAR(date) AS annee, MONTH(date) AS mois, SUM(montantHt) AS totalHT 
-        FROM appoe_plugin_agapeshotes_note_frais WHERE type = "Denrée Alimentaire" GROUP BY MONTH(date);
+        FROM appoe_plugin_agapesHotes_note_frais WHERE type = "Denrée Alimentaire" GROUP BY MONTH(date);
         CREATE VIEW totalNoteDeFraisNonAlimentaire AS SELECT site_id, YEAR(date) AS annee, MONTH(date) AS mois, SUM(montantHt) AS totalHT 
-        FROM appoe_plugin_agapeshotes_note_frais WHERE type = "Unique Entretien" GROUP BY MONTH(date);';
+        FROM appoe_plugin_agapesHotes_note_frais WHERE type = "Unique Entretien" GROUP BY MONTH(date);';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();
@@ -242,7 +242,7 @@ class NoteDeFrais
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_note_frais WHERE id = :id';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_note_frais WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -274,7 +274,7 @@ class NoteDeFrais
     public function showAllBySite($countNoteDeFrais = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_note_frais WHERE site_id = :siteId AND status = :status ORDER BY created_at ASC';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_note_frais WHERE site_id = :siteId AND status = :status ORDER BY created_at ASC';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
@@ -299,7 +299,7 @@ class NoteDeFrais
     public function showByDate($dateDebut, $dateFin, $countNoteDeFrais = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_note_frais WHERE site_id = :siteId AND (date BETWEEN :dateDebut AND :dateFin) AND status = :status ORDER BY date ASC';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_note_frais WHERE site_id = :siteId AND (date BETWEEN :dateDebut AND :dateFin) AND status = :status ORDER BY date ASC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
         $stmt->bindParam(':dateDebut', $dateDebut);
@@ -323,7 +323,7 @@ class NoteDeFrais
     public function showAll($countNoteDeFrais = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_note_frais WHERE status = :status ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_note_frais WHERE status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':status', $this->status);
         $stmt->execute();
@@ -343,7 +343,7 @@ class NoteDeFrais
     public function save()
     {
         $this->userId = getUserIdSession();
-        $sql = 'INSERT INTO appoe_plugin_agapeshotes_note_frais (site_id, nom, type, date, montantHt, status, userId, created_at) 
+        $sql = 'INSERT INTO appoe_plugin_agapesHotes_note_frais (site_id, nom, type, date, montantHt, status, userId, created_at) 
                 VALUES (:siteId, :nom, :type, :date, :montantHt, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
@@ -371,7 +371,7 @@ class NoteDeFrais
     public function update()
     {
         $this->userId = getUserIdSession();
-        $sql = 'UPDATE appoe_plugin_agapeshotes_note_frais SET nom = :nom, type = :type, date = :date, montantHt = :montantHt, status = :status, userId = :userId WHERE id = :id';
+        $sql = 'UPDATE appoe_plugin_agapesHotes_note_frais SET nom = :nom, type = :type, date = :date, montantHt = :montantHt, status = :status, userId = :userId WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':nom', $this->nom);
@@ -398,7 +398,7 @@ class NoteDeFrais
     public function delete()
     {
 
-        $sql = 'DELETE FROM appoe_plugin_agapeshotes_note_frais WHERE id = :id';
+        $sql = 'DELETE FROM appoe_plugin_agapesHotes_note_frais WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -420,7 +420,7 @@ class NoteDeFrais
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id, nom FROM appoe_plugin_agapeshotes_note_frais WHERE site_id = :siteId AND type = :type AND nom = :nom AND date = :date';
+        $sql = 'SELECT id, nom FROM appoe_plugin_agapesHotes_note_frais WHERE site_id = :siteId AND type = :type AND nom = :nom AND date = :date';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
         $stmt->bindParam(':nom', $this->nom);

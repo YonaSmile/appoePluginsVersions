@@ -175,7 +175,7 @@ class PrixPrestation
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapeshotes_prix_prestations` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapesHotes_prix_prestations` (
   				`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   				PRIMARY KEY (`id`),
                 `etablissement_id` int(11) UNSIGNED NOT NULL,
@@ -205,7 +205,7 @@ class PrixPrestation
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_prix_prestations WHERE id = :id';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_prix_prestations WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -236,7 +236,7 @@ class PrixPrestation
     public function showReelPrice()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_prix_prestations WHERE prestation_id = :prestationId AND dateDebut <= :dateDebut ORDER BY dateDebut DESC LIMIT 1';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_prix_prestations WHERE prestation_id = :prestationId AND dateDebut <= :dateDebut ORDER BY dateDebut DESC LIMIT 1';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':prestationId', $this->prestationId);
@@ -269,7 +269,7 @@ class PrixPrestation
     public function showAll($countPrixPrestations = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_prix_prestations WHERE etablissement_id = :etablissementId AND dateDebut <= :dateDebut AND status = :status ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_prix_prestations WHERE etablissement_id = :etablissementId AND dateDebut <= :dateDebut AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':etablissementId', $this->etablissementId);
         $stmt->bindParam(':status', $this->status);
@@ -291,7 +291,7 @@ class PrixPrestation
     public function save()
     {
         $this->userId = getUserIdSession();
-        $sql = 'INSERT INTO appoe_plugin_agapeshotes_prix_prestations (etablissement_id, prestation_id, prixHT, dateDebut, status, userId, created_at) 
+        $sql = 'INSERT INTO appoe_plugin_agapesHotes_prix_prestations (etablissement_id, prestation_id, prixHT, dateDebut, status, userId, created_at) 
                 VALUES (:etablissementId, :prestationId, :prixHT, :dateDebut, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':etablissementId', $this->etablissementId);
@@ -316,7 +316,7 @@ class PrixPrestation
     public function update()
     {
         $this->userId = getUserIdSession();
-        $sql = 'UPDATE appoe_plugin_agapeshotes_prix_prestations 
+        $sql = 'UPDATE appoe_plugin_agapesHotes_prix_prestations 
         SET etablissement_id = :etablissementId, prestation_id = :prestationId, prixHT = :prixHT, dateDebut = :dateDebut, status = :status, userId = :userId WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
@@ -360,7 +360,7 @@ class PrixPrestation
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id FROM appoe_plugin_agapeshotes_prix_prestations 
+        $sql = 'SELECT id FROM appoe_plugin_agapesHotes_prix_prestations 
         WHERE etablissement_id = :etablissementId AND prestation_id = :prestationId AND dateDebut = :dateDebut';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':etablissementId', $this->etablissementId);

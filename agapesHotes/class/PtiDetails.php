@@ -192,7 +192,7 @@ class PtiDetails
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapeshotes_pti_details` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapesHotes_pti_details` (
   				`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   				PRIMARY KEY (`id`),
                 `pti_id` int(11) UNSIGNED NOT NULL,
@@ -222,7 +222,7 @@ class PtiDetails
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_pti_details WHERE id = :id';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_pti_details WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -254,7 +254,7 @@ class PtiDetails
     public function showAll($countPti = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_pti_details WHERE pti_id = :ptiId AND status = :status ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_pti_details WHERE pti_id = :ptiId AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':ptiId', $this->ptiId);
         $stmt->bindParam(':status', $this->status);
@@ -275,7 +275,7 @@ class PtiDetails
     public function save()
     {
         $this->userId = getUserIdSession();
-        $sql = 'INSERT INTO appoe_plugin_agapeshotes_pti_details (pti_id, numeroJour, nbHeures, horaires, status, userId, created_at) 
+        $sql = 'INSERT INTO appoe_plugin_agapesHotes_pti_details (pti_id, numeroJour, nbHeures, horaires, status, userId, created_at) 
                 VALUES (:ptiId, :numeroJour, :nbHeures, :horaires, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':ptiId', $this->ptiId);
@@ -301,7 +301,7 @@ class PtiDetails
     public function update()
     {
         $this->userId = getUserIdSession();
-        $sql = 'UPDATE appoe_plugin_agapeshotes_pti_details 
+        $sql = 'UPDATE appoe_plugin_agapesHotes_pti_details 
         SET pti_id = :ptiId, numeroJour = :numeroJour, nbHeures = :nbHeures, horaires = :horaires,  status = :status, userId = :userId WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
@@ -343,7 +343,7 @@ class PtiDetails
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id FROM appoe_plugin_agapeshotes_pti_details WHERE pti_id = :ptiId AND employe_id = :employeId AND dateDebut = :dateDebut';
+        $sql = 'SELECT id FROM appoe_plugin_agapesHotes_pti_details WHERE pti_id = :ptiId AND employe_id = :employeId AND dateDebut = :dateDebut';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':ptiId', $this->ptiId);
         $stmt->bindParam(':employeId', $this->employeId);

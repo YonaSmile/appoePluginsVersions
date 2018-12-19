@@ -140,7 +140,7 @@ class SiteAccess
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapeshotes_sites_access` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapesHotes_sites_access` (
   				`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   				PRIMARY KEY (`id`),
                 `siteUserId` int(11) UNSIGNED NOT NULL,
@@ -168,7 +168,7 @@ class SiteAccess
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_sites_access WHERE id = :id';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_sites_access WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -200,7 +200,7 @@ class SiteAccess
     public function showAll($countSitesAccess = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_sites_access WHERE status = :status ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_sites_access WHERE status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':status', $this->status);
         $stmt->execute();
@@ -221,7 +221,7 @@ class SiteAccess
     public function showAllBySite($countSitesAccess = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_sites_access WHERE site_id = :siteId AND status = :status ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_sites_access WHERE site_id = :siteId AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
         $stmt->bindParam(':status', $this->status);
@@ -243,10 +243,10 @@ class SiteAccess
     {
 
         $sql = 'SELECT SITEACCESS.id AS idSiteAccess, SITE.*, SECTEUR.nom AS secteurNom, SECTEUR.slug AS secteurSlug 
-        FROM appoe_plugin_agapeshotes_sites_access AS SITEACCESS
-        INNER JOIN appoe_plugin_agapeshotes_sites AS SITE
+        FROM appoe_plugin_agapesHotes_sites_access AS SITEACCESS
+        INNER JOIN appoe_plugin_agapesHotes_sites AS SITE
         ON(SITE.id = SITEACCESS.site_id)
-        INNER JOIN appoe_plugin_agapeshotes_secteurs AS SECTEUR
+        INNER JOIN appoe_plugin_agapesHotes_secteurs AS SECTEUR
         ON(SITE.secteur_id = SECTEUR.id)
         WHERE SITEACCESS.siteUserId = :siteUserId AND SITE.status = :status ORDER BY SITE.updated_at DESC';
 
@@ -273,7 +273,7 @@ class SiteAccess
     public function save()
     {
         $this->userId = getUserIdSession();
-        $sql = 'INSERT INTO appoe_plugin_agapeshotes_sites_access (siteUserId, site_id, status, userId, created_at) 
+        $sql = 'INSERT INTO appoe_plugin_agapesHotes_sites_access (siteUserId, site_id, status, userId, created_at) 
                 VALUES (:siteUserId, :siteId, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteUserId', $this->siteUserId);
@@ -296,7 +296,7 @@ class SiteAccess
     public function update()
     {
         $this->userId = getUserIdSession();
-        $sql = 'UPDATE appoe_plugin_agapeshotes_sites_access SET siteUserId = :siteUserId, site_id = :site_id, status = :status, userId = :userId WHERE id = :id';
+        $sql = 'UPDATE appoe_plugin_agapesHotes_sites_access SET siteUserId = :siteUserId, site_id = :site_id, status = :status, userId = :userId WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteUserId', $this->siteUserId);
@@ -320,7 +320,7 @@ class SiteAccess
      */
     public function delete()
     {
-        $sql = 'DELETE FROM appoe_plugin_agapeshotes_sites_access WHERE id = :id';
+        $sql = 'DELETE FROM appoe_plugin_agapesHotes_sites_access WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -343,7 +343,7 @@ class SiteAccess
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id FROM appoe_plugin_agapeshotes_sites_access WHERE siteUserId = :siteUserId';
+        $sql = 'SELECT id FROM appoe_plugin_agapesHotes_sites_access WHERE siteUserId = :siteUserId';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteUserId', $this->siteUserId);
         $stmt->execute();

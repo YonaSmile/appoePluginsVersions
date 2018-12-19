@@ -140,7 +140,7 @@ class Secteur
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapeshotes_secteurs` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapesHotes_secteurs` (
   				`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   				PRIMARY KEY (`id`),
                 `nom` varchar(255) NOT NULL,
@@ -169,7 +169,7 @@ class Secteur
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_secteurs WHERE id = :id';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_secteurs WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -200,7 +200,7 @@ class Secteur
     public function showBySlug()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_secteurs WHERE slug = :slug';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_secteurs WHERE slug = :slug';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':slug', $this->slug);
@@ -232,7 +232,7 @@ class Secteur
     public function showAll($countSecteurs = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_secteurs WHERE status = :status ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_secteurs WHERE status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':status', $this->status);
         $stmt->execute();
@@ -254,10 +254,10 @@ class Secteur
     {
 
         $sql = 'SELECT ETABL.*, SITE.slug AS siteSlug, SITE.nom AS siteNom, SECTEUR.id AS secteurId, SECTEUR.slug AS secteurSlug , SECTEUR.nom AS secteurNom
-        FROM appoe_plugin_agapeshotes_etablissements AS ETABL
-        INNER JOIN appoe_plugin_agapeshotes_sites AS SITE
+        FROM appoe_plugin_agapesHotes_etablissements AS ETABL
+        INNER JOIN appoe_plugin_agapesHotes_sites AS SITE
         ON(SITE.id = ETABL.site_id)
-        INNER JOIN appoe_plugin_agapeshotes_secteurs AS SECTEUR
+        INNER JOIN appoe_plugin_agapesHotes_secteurs AS SECTEUR
         ON(SITE.secteur_id = SECTEUR.id)
         WHERE SECTEUR.id = :id AND ETABL.status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
@@ -280,7 +280,7 @@ class Secteur
     public function save()
     {
         $this->userId = getUserIdSession();
-        $sql = 'INSERT INTO appoe_plugin_agapeshotes_secteurs (nom, slug, status, userId, created_at) 
+        $sql = 'INSERT INTO appoe_plugin_agapesHotes_secteurs (nom, slug, status, userId, created_at) 
                 VALUES (:nom, :slug, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':nom', $this->nom);
@@ -303,7 +303,7 @@ class Secteur
     public function update()
     {
         $this->userId = getUserIdSession();
-        $sql = 'UPDATE appoe_plugin_agapeshotes_secteurs SET nom = :nom, slug = :slug, status = :status, userId = :userId WHERE id = :id';
+        $sql = 'UPDATE appoe_plugin_agapesHotes_secteurs SET nom = :nom, slug = :slug, status = :status, userId = :userId WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':nom', $this->nom);
@@ -343,7 +343,7 @@ class Secteur
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id, nom FROM appoe_plugin_agapeshotes_secteurs WHERE nom = :nom OR slug = :slug';
+        $sql = 'SELECT id, nom FROM appoe_plugin_agapesHotes_secteurs WHERE nom = :nom OR slug = :slug';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':nom', $this->nom);
         $stmt->bindParam(':slug', $this->slug);

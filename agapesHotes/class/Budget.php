@@ -294,7 +294,7 @@ class Budget
     public function createTable()
     {
 
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapeshotes_budget` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapesHotes_budget` (
   				`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   				PRIMARY KEY (`id`),
                 `site_id` int(11) UNSIGNED NOT NULL,
@@ -329,7 +329,7 @@ class Budget
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_budget WHERE id = :id';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_budget WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -364,7 +364,7 @@ class Budget
             $sqlAdd = ' AND month = :month ';
         }
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_budget WHERE site_id = :siteId AND year = :year ' . $sqlAdd . ' AND status = :status ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_budget WHERE site_id = :siteId AND year = :year ' . $sqlAdd . ' AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
         $stmt->bindParam(':year', $this->year);
@@ -416,7 +416,7 @@ class Budget
     public function showAll($countPrixPrestations = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_budget WHERE site_id = :siteId AND year = :year AND month = :month AND status = :status ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_budget WHERE site_id = :siteId AND year = :year AND month = :month AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
         $stmt->bindParam(':year', $this->year);
@@ -439,7 +439,7 @@ class Budget
     public function save()
     {
         $this->userId = getUserIdSession();
-        $sql = 'INSERT INTO appoe_plugin_agapeshotes_budget (site_id, year, month, ca, conso, personnel, fraisGeneraux, status, userId, created_at) 
+        $sql = 'INSERT INTO appoe_plugin_agapesHotes_budget (site_id, year, month, ca, conso, personnel, fraisGeneraux, status, userId, created_at) 
                 VALUES (:siteId, :year, :month, :ca, :conso, :personnel, :fraisGeneraux, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
@@ -467,7 +467,7 @@ class Budget
     public function update()
     {
         $this->userId = getUserIdSession();
-        $sql = 'UPDATE appoe_plugin_agapeshotes_budget 
+        $sql = 'UPDATE appoe_plugin_agapesHotes_budget 
         SET site_id = :siteId, year = :year, month = :month, ca = :ca, conso = :conso, personnel = :personnel, fraisGeneraux = :fraisGeneraux, status = :status, userId = :userId WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
@@ -514,7 +514,7 @@ class Budget
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id FROM appoe_plugin_agapeshotes_budget 
+        $sql = 'SELECT id FROM appoe_plugin_agapesHotes_budget 
         WHERE site_id = :siteId AND  year = :year AND month = :month';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);

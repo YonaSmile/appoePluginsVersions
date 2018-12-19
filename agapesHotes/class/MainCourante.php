@@ -208,7 +208,7 @@ class MainCourante
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapeshotes_main_courante` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapesHotes_main_courante` (
   				`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   				PRIMARY KEY (`id`),
                 `etablissement_id` int(11) NOT NULL,
@@ -237,8 +237,8 @@ class MainCourante
     public function createView()
     {
         $sql = 'CREATE VIEW totalFacturationMainCourante AS SELECT ETB.site_id AS site_id, YEAR(MC.date) AS annee, MONTH(MC.date) AS mois, SUM(MC.total) AS totalHT
-        FROM appoe_plugin_agapeshotes_main_courante AS MC
-        INNER JOIN appoe_plugin_agapeshotes_etablissements AS ETB
+        FROM appoe_plugin_agapesHotes_main_courante AS MC
+        INNER JOIN appoe_plugin_agapesHotes_etablissements AS ETB
         ON(ETB.id = MC.etablissement_id)
         GROUP BY MONTH(MC.date)';
 
@@ -258,7 +258,7 @@ class MainCourante
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_main_courante WHERE id = :id';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_main_courante WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -289,7 +289,7 @@ class MainCourante
     public function showByDate()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_main_courante WHERE etablissement_id = :etablissementId AND prestation_id = :prestationId AND date = :date';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_main_courante WHERE etablissement_id = :etablissementId AND prestation_id = :prestationId AND date = :date';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':etablissementId', $this->etablissementId);
@@ -323,7 +323,7 @@ class MainCourante
     public function showAll($countMainCourante = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_main_courante WHERE etablissement_id = :etablissementId AND status = :status ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_main_courante WHERE etablissement_id = :etablissementId AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':etablissementId', $this->etablissementId);
         $stmt->bindParam(':status', $this->status);
@@ -345,7 +345,7 @@ class MainCourante
     public function showAllByMonth($countMainCourante = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_main_courante WHERE etablissement_id = :etablissementId AND MONTH(date) = :date';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_main_courante WHERE etablissement_id = :etablissementId AND MONTH(date) = :date';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':etablissementId', $this->etablissementId);
@@ -367,7 +367,7 @@ class MainCourante
     public function save()
     {
         $this->userId = getUserIdSession();
-        $sql = 'INSERT INTO appoe_plugin_agapeshotes_main_courante (etablissement_id, prestation_id, prix_id, quantite, total, date, status, userId, created_at) 
+        $sql = 'INSERT INTO appoe_plugin_agapesHotes_main_courante (etablissement_id, prestation_id, prix_id, quantite, total, date, status, userId, created_at) 
                 VALUES (:etablissementId, :prestationId, :prixId, :quantite, :total, :date, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':etablissementId', $this->etablissementId);
@@ -395,7 +395,7 @@ class MainCourante
     public function update()
     {
         $this->userId = getUserIdSession();
-        $sql = 'UPDATE appoe_plugin_agapeshotes_main_courante 
+        $sql = 'UPDATE appoe_plugin_agapesHotes_main_courante 
         SET etablissement_id = :etablissementId, prestation_id = :prestationId, prix_id = :prixId, quantite = :quantite, total = :total, date = :date, status = :status, userId = :userId WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
@@ -441,7 +441,7 @@ class MainCourante
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id FROM appoe_plugin_agapeshotes_main_courante 
+        $sql = 'SELECT id FROM appoe_plugin_agapesHotes_main_courante 
         WHERE etablissement_id = :etablissementId AND prestation_id = :prestationId AND date = :date';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':etablissementId', $this->etablissementId);

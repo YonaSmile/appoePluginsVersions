@@ -174,7 +174,7 @@ class Inverntaire
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapeshotes_inventaire` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapesHotes_inventaire` (
   				`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   				PRIMARY KEY (`id`),
                 `site_id` int(11) UNSIGNED NOT NULL,
@@ -204,7 +204,7 @@ class Inverntaire
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_inventaire WHERE id = :id';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_inventaire WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -236,7 +236,7 @@ class Inverntaire
     public function showAll($countInventaire = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_inventaire WHERE site_id = :siteId AND status = 1 ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_inventaire WHERE site_id = :siteId AND status = 1 ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
         $stmt->execute();
@@ -255,7 +255,7 @@ class Inverntaire
      */
     public function save()
     {
-        $sql = 'INSERT INTO appoe_plugin_agapeshotes_inventaire (site_id, date, totalNonAlimentaire, totalDenree, status, userId, created_at) 
+        $sql = 'INSERT INTO appoe_plugin_agapesHotes_inventaire (site_id, date, totalNonAlimentaire, totalDenree, status, userId, created_at) 
                 VALUES (:siteId, :date, :totalNonAlimentaire, :totalDenree, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
@@ -280,7 +280,7 @@ class Inverntaire
     public function update()
     {
 
-        $sql = 'UPDATE appoe_plugin_agapeshotes_inventaire 
+        $sql = 'UPDATE appoe_plugin_agapesHotes_inventaire 
         SET site_id = :siteId, date = :date, totalNonAlimentaire = :totalNonAlimentaire, totalDenree = :totalDenree, status = :status, userId = :userId WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
@@ -324,7 +324,7 @@ class Inverntaire
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id, nom FROM appoe_plugin_agapeshotes_inventaire 
+        $sql = 'SELECT id, nom FROM appoe_plugin_agapesHotes_inventaire 
         WHERE site_id = :siteId AND date = :date';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);

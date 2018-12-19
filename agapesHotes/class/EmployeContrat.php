@@ -191,7 +191,7 @@ class EmployeContrat
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapeshotes_employes_contrats` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapesHotes_employes_contrats` (
   				`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   				PRIMARY KEY (`id`),
                 `site_id` int(11) UNSIGNED NOT NULL,
@@ -218,7 +218,7 @@ class EmployeContrat
 
     public function createView()
     {
-        $sql = 'CREATE VIEW reelDatesEmployesContrats AS SELECT employe_id AS reelContratEmployeId, MAX(dateDebut) AS reelContratDate FROM appoe_plugin_agapeshotes_employes_contrats GROUP BY employe_id';
+        $sql = 'CREATE VIEW reelDatesEmployesContrats AS SELECT employe_id AS reelContratEmployeId, MAX(dateDebut) AS reelContratDate FROM appoe_plugin_agapesHotes_employes_contrats GROUP BY employe_id';
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();
         $error = $stmt->errorInfo();
@@ -235,7 +235,7 @@ class EmployeContrat
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_employes_contrats WHERE id = :id';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_employes_contrats WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -266,7 +266,7 @@ class EmployeContrat
     public function showReelContrat()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_employes_contrats 
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_employes_contrats 
         WHERE site_id = :siteId AND employe_id = :employeId AND dateDebut <= :dateDebut AND status = :status ORDER BY dateDebut DESC LIMIT 1';
 
         $stmt = $this->dbh->prepare($sql);
@@ -304,7 +304,7 @@ class EmployeContrat
 
 
         $sql = 'SELECT ec.* FROM reelDatesEmployesContrats AS rdec
-        INNER JOIN appoe_plugin_agapeshotes_employes_contrats AS ec
+        INNER JOIN appoe_plugin_agapesHotes_employes_contrats AS ec
         ON(reelContratEmployeId = ec.employe_id AND reelContratDate = ec.dateDebut)
         WHERE ec.site_id = :siteId AND ec.status = :status AND ec.dateDebut <= :dateDebut';
 
@@ -330,7 +330,7 @@ class EmployeContrat
     public function showAll($countContrats = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_employes_contrats 
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_employes_contrats 
         WHERE status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':status', $this->status);
@@ -352,7 +352,7 @@ class EmployeContrat
     public function showAllBySite($countContrats = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_employes_contrats 
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_employes_contrats 
         WHERE site_id = :siteId AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
@@ -375,7 +375,7 @@ class EmployeContrat
     public function showAllByEmploye($countContrats = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_employes_contrats 
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_employes_contrats 
         WHERE employe_id = :employeId AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':employeId', $this->employeId);
@@ -397,7 +397,7 @@ class EmployeContrat
     public function save()
     {
         $this->userId = getUserIdSession();
-        $sql = 'INSERT INTO appoe_plugin_agapeshotes_employes_contrats (site_id, employe_id, typeContrat, nbHeuresSemaines, dateDebut, status, userId, created_at) 
+        $sql = 'INSERT INTO appoe_plugin_agapesHotes_employes_contrats (site_id, employe_id, typeContrat, nbHeuresSemaines, dateDebut, status, userId, created_at) 
                 VALUES (:siteId, :employeId, :typeContrat, :nbHeuresSemaines, :dateDebut, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
@@ -423,7 +423,7 @@ class EmployeContrat
     public function update()
     {
         $this->userId = getUserIdSession();
-        $sql = 'UPDATE appoe_plugin_agapeshotes_employes_contrats 
+        $sql = 'UPDATE appoe_plugin_agapesHotes_employes_contrats 
         SET site_id = :siteId, employe_id = :employeId, typeContrat = :typeContrat, nbHeuresSemaines = :nbHeuresSemaines, dateDebut = :dateDebut, status = :status, userId = :userId WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
@@ -468,7 +468,7 @@ class EmployeContrat
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id FROM appoe_plugin_agapeshotes_employes_contrats 
+        $sql = 'SELECT id FROM appoe_plugin_agapesHotes_employes_contrats 
         WHERE site_id = :siteId AND employe_id = :employeId AND dateDebut = :dateDebut';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);

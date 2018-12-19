@@ -225,7 +225,7 @@ class VivreCrue
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapeshotes_vivre_crue` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapesHotes_vivre_crue` (
   				`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   				PRIMARY KEY (`id`),
   				`etablissement_id` int(11) UNSIGNED NOT NULL,
@@ -255,8 +255,8 @@ class VivreCrue
     public function createView()
     {
         $sql = 'CREATE VIEW totalFacturationVivreCrue AS SELECT ETB.site_id AS site_id, YEAR(VC.date) AS annee, MONTH(VC.date) AS mois, SUM(VC.total) AS totalHT 
-        FROM appoe_plugin_agapeshotes_vivre_crue AS VC
-        INNER JOIN appoe_plugin_agapeshotes_etablissements AS ETB
+        FROM appoe_plugin_agapesHotes_vivre_crue AS VC
+        INNER JOIN appoe_plugin_agapesHotes_etablissements AS ETB
         ON(ETB.id = VC.etablissement_id)
         GROUP BY MONTH(VC.date)';
 
@@ -276,7 +276,7 @@ class VivreCrue
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_vivre_crue WHERE id = :id';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_vivre_crue WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -308,7 +308,7 @@ class VivreCrue
     public function showAll($countVivreCrue = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_vivre_crue WHERE etablissement_id = :etablissementId AND status = :status ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_vivre_crue WHERE etablissement_id = :etablissementId AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':etablissementId', $this->etablissementId);
         $stmt->bindParam(':status', $this->status);
@@ -330,7 +330,7 @@ class VivreCrue
     public function showAllByMonth($countVivreCrueByDate = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_vivre_crue WHERE etablissement_id = :etablissementId AND MONTH(date) = :date';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_vivre_crue WHERE etablissement_id = :etablissementId AND MONTH(date) = :date';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':etablissementId', $this->etablissementId);
@@ -352,7 +352,7 @@ class VivreCrue
     public function save()
     {
         $this->userId = getUserIdSession();
-        $sql = 'INSERT INTO appoe_plugin_agapeshotes_vivre_crue (etablissement_id, idCourse, prixHTunite, quantite, tauxTVA, total, date, status, userId, created_at) 
+        $sql = 'INSERT INTO appoe_plugin_agapesHotes_vivre_crue (etablissement_id, idCourse, prixHTunite, quantite, tauxTVA, total, date, status, userId, created_at) 
                 VALUES (:etablissementId, :idCourse, :prixHTunite, :quantite, :tauxTVA, :total, :date, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':etablissementId', $this->etablissementId);
@@ -381,7 +381,7 @@ class VivreCrue
     public function update()
     {
         $this->userId = getUserIdSession();
-        $sql = 'UPDATE appoe_plugin_agapeshotes_vivre_crue 
+        $sql = 'UPDATE appoe_plugin_agapesHotes_vivre_crue 
         SET etablissement_id = :etablissementId, idCourse = :idCourse, prixHTunite = :prixHTunite, quantite = :quantite, tauxTVA = :tauxTVA, total = :total, date = :date, status = :status, userId = :userId WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
@@ -428,7 +428,7 @@ class VivreCrue
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT idFROM appoe_plugin_agapeshotes_vivre_crue 
+        $sql = 'SELECT idFROM appoe_plugin_agapesHotes_vivre_crue 
         WHERE etablissement_id = :etablissementId AND idCourse = :idCourse AND date = :date';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':etablissementId', $this->etablissementId);

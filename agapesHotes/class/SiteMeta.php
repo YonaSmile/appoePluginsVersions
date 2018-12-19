@@ -192,7 +192,7 @@ class SiteMeta
     public function createTable()
     {
 
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapeshotes_site_meta` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapesHotes_site_meta` (
   				`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   				PRIMARY KEY (`id`),
                 `site_id` int(11) UNSIGNED NOT NULL,
@@ -223,7 +223,7 @@ class SiteMeta
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_site_meta WHERE id = :id';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_site_meta WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -258,7 +258,7 @@ class SiteMeta
         } else {
             $sqlAdd = ' AND month = :month ';
         }
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_site_meta WHERE site_id = :siteId AND year = :year ' . $sqlAdd . ' AND status = :status ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_site_meta WHERE site_id = :siteId AND year = :year ' . $sqlAdd . ' AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
         $stmt->bindParam(':year', $this->year);
@@ -282,7 +282,7 @@ class SiteMeta
     public function showByYear()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_site_meta WHERE site_id = :siteId AND year = :year AND status = :status ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_site_meta WHERE site_id = :siteId AND year = :year AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
         $stmt->bindParam(':year', $this->year);
@@ -304,7 +304,7 @@ class SiteMeta
     public function showAll($countPrixPrestations = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_site_meta WHERE site_id = :siteId AND year = :year AND month = :month AND status = :status ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_site_meta WHERE site_id = :siteId AND year = :year AND month = :month AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
         $stmt->bindParam(':year', $this->year);
@@ -327,7 +327,7 @@ class SiteMeta
     public function save()
     {
         $this->userId = getUserIdSession();
-        $sql = 'INSERT INTO appoe_plugin_agapeshotes_site_meta (site_id, year, month, dataName, data, status, userId, created_at) 
+        $sql = 'INSERT INTO appoe_plugin_agapesHotes_site_meta (site_id, year, month, dataName, data, status, userId, created_at) 
                 VALUES (:siteId, :year, :month, :dataName, :data, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
@@ -354,7 +354,7 @@ class SiteMeta
     public function update()
     {
         $this->userId = getUserIdSession();
-        $sql = 'UPDATE appoe_plugin_agapeshotes_site_meta 
+        $sql = 'UPDATE appoe_plugin_agapesHotes_site_meta 
         SET site_id = :siteId, year = :year, month = :month, dataName = :dataName, data = :data, status = :status, userId = :userId WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
@@ -399,7 +399,7 @@ class SiteMeta
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id FROM appoe_plugin_agapeshotes_site_meta 
+        $sql = 'SELECT id FROM appoe_plugin_agapesHotes_site_meta 
         WHERE site_id = :siteId AND year = :year AND month = :month AND dataName = :dataName';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);

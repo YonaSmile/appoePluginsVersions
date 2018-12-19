@@ -157,7 +157,7 @@ class Etablissement
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapeshotes_etablissements` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapesHotes_etablissements` (
   				`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   				PRIMARY KEY (`id`),
                 `nom` varchar(255) NOT NULL,
@@ -187,7 +187,7 @@ class Etablissement
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_etablissements WHERE id = :id';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_etablissements WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -218,7 +218,7 @@ class Etablissement
     public function showBySlug()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_etablissements WHERE slug = :slug';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_etablissements WHERE slug = :slug';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':slug', $this->slug);
@@ -250,7 +250,7 @@ class Etablissement
     public function showAllBySite($countEtablissements = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_etablissements WHERE site_id = :siteId AND status = :status ORDER BY created_at ASC';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_etablissements WHERE site_id = :siteId AND status = :status ORDER BY created_at ASC';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
@@ -273,7 +273,7 @@ class Etablissement
     public function showAll($countEtablissements = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_etablissements WHERE status = :status ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_etablissements WHERE status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':status', $this->status);
         $stmt->execute();
@@ -293,7 +293,7 @@ class Etablissement
     public function save()
     {
         $this->userId = getUserIdSession();
-        $sql = 'INSERT INTO appoe_plugin_agapeshotes_etablissements (nom, site_id, slug, status, userId, created_at) 
+        $sql = 'INSERT INTO appoe_plugin_agapesHotes_etablissements (nom, site_id, slug, status, userId, created_at) 
                 VALUES (:nom, :siteId, :slug, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':nom', $this->nom);
@@ -319,7 +319,7 @@ class Etablissement
     public function update()
     {
         $this->userId = getUserIdSession();
-        $sql = 'UPDATE appoe_plugin_agapeshotes_etablissements SET nom = :nom, site_id = :siteId, slug = :slug, status = :status, userId = :userId WHERE id = :id';
+        $sql = 'UPDATE appoe_plugin_agapesHotes_etablissements SET nom = :nom, site_id = :siteId, slug = :slug, status = :status, userId = :userId WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':nom', $this->nom);
@@ -361,7 +361,7 @@ class Etablissement
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id, nom FROM appoe_plugin_agapeshotes_etablissements WHERE (nom = :nom AND site_id = :siteId) OR slug = :slug';
+        $sql = 'SELECT id, nom FROM appoe_plugin_agapesHotes_etablissements WHERE (nom = :nom AND site_id = :siteId) OR slug = :slug';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':nom', $this->nom);
         $stmt->bindParam(':siteId', $this->siteId);

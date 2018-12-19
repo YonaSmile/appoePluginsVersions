@@ -293,7 +293,7 @@ class PlanningPlus
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapeshotes_planning_plus` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapesHotes_planning_plus` (
   				`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   				PRIMARY KEY (`id`),
   				`site_id` int(11) UNSIGNED NOT NULL,
@@ -330,7 +330,7 @@ class PlanningPlus
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_planning_plus WHERE id = :id';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_planning_plus WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -361,7 +361,7 @@ class PlanningPlus
     public function showByDate()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_planning_plus WHERE site_id = :siteId AND employe_id = :employeId AND year = :year  AND month = :month';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_planning_plus WHERE site_id = :siteId AND employe_id = :employeId AND year = :year  AND month = :month';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
@@ -396,7 +396,7 @@ class PlanningPlus
     public function showAll($countPlanningPlus = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_planning_plus 
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_planning_plus 
         WHERE status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':status', $this->status);
@@ -418,7 +418,7 @@ class PlanningPlus
     public function showAllByDate($countPlanningPlus = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_planning_plus WHERE site_id = :siteId AND year = :year  AND month = :month';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_planning_plus WHERE site_id = :siteId AND year = :year  AND month = :month';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
@@ -442,7 +442,7 @@ class PlanningPlus
     public function showAllBySite($countPlanningPlus = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_planning_plus 
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_planning_plus 
         WHERE site_id = :siteId AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
@@ -465,7 +465,7 @@ class PlanningPlus
     public function showAllByEmploye($countPlanningPlus = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_planning_plus 
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_planning_plus 
         WHERE employe_id = :employeId AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':employeId', $this->employeId);
@@ -487,7 +487,7 @@ class PlanningPlus
     public function save()
     {
         $this->userId = getUserIdSession();
-        $sql = 'INSERT INTO appoe_plugin_agapeshotes_planning_plus (site_id, employe_id, year, month, nbRepas, primeObjectif, primeExept, accompte, nbHeurePlus, nbJoursFeries, commentaires, status, userId, created_at) 
+        $sql = 'INSERT INTO appoe_plugin_agapesHotes_planning_plus (site_id, employe_id, year, month, nbRepas, primeObjectif, primeExept, accompte, nbHeurePlus, nbJoursFeries, commentaires, status, userId, created_at) 
                 VALUES (:siteId, :employeId, :year, :month, :nbRepas, :primeObjectif, :primeExept, :accompte, :nbHeurePlus, :nbJoursFeries, :commentaires, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
@@ -520,7 +520,7 @@ class PlanningPlus
     public function update()
     {
         $this->userId = getUserIdSession();
-        $sql = 'UPDATE appoe_plugin_agapeshotes_planning_plus 
+        $sql = 'UPDATE appoe_plugin_agapesHotes_planning_plus 
         SET site_id = :siteId, employe_id = :employeId, year = :year, month = :month, 
         nbRepas = :nbRepas, primeObjectif = :primeObjectif, primeExept = :primeExept, 
         accompte = :accompte, nbHeurePlus = :nbHeurePlus, nbJoursFeries = :nbJoursFeries, 
@@ -574,7 +574,7 @@ class PlanningPlus
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id FROM appoe_plugin_agapeshotes_planning_plus 
+        $sql = 'SELECT id FROM appoe_plugin_agapesHotes_planning_plus 
         WHERE year = :year AND month = :month AND site_id = :siteId AND employe_id = :employeId';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':year', $this->year);

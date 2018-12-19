@@ -140,7 +140,7 @@ class Courses
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapeshotes_courses` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapesHotes_courses` (
   				`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   				PRIMARY KEY (`id`),
                 `nom` varchar(255) NOT NULL,
@@ -168,7 +168,7 @@ class Courses
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_courses WHERE id = :id';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_courses WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -201,7 +201,7 @@ class Courses
     public function showAll($minimumStatus = true, $countCourses = false)
     {
         $sqlStatus = $minimumStatus ? 'status >= :status' : 'status = :status';
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_courses WHERE etablissement_id = :etablissementId AND ' . $sqlStatus . ' ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_courses WHERE etablissement_id = :etablissementId AND ' . $sqlStatus . ' ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':etablissementId', $this->etablissementId);
         $stmt->bindParam(':status', $this->status);
@@ -222,7 +222,7 @@ class Courses
     public function save()
     {
         $this->userId = getUserIdSession();
-        $sql = 'INSERT INTO appoe_plugin_agapeshotes_courses (nom, etablissement_id, status, userId, created_at) 
+        $sql = 'INSERT INTO appoe_plugin_agapesHotes_courses (nom, etablissement_id, status, userId, created_at) 
                 VALUES (:nom, :etablissementId, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':nom', $this->nom);
@@ -245,7 +245,7 @@ class Courses
     public function update()
     {
         $this->userId = getUserIdSession();
-        $sql = 'UPDATE appoe_plugin_agapeshotes_courses SET nom = :nom, etablissement_id = :etablissementId, status = :status, userId = :userId WHERE id = :id';
+        $sql = 'UPDATE appoe_plugin_agapesHotes_courses SET nom = :nom, etablissement_id = :etablissementId, status = :status, userId = :userId WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':nom', $this->nom);
@@ -286,7 +286,7 @@ class Courses
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id, nom FROM appoe_plugin_agapeshotes_courses WHERE nom = :nom AND etablissement_id = :etablissementId';
+        $sql = 'SELECT id, nom FROM appoe_plugin_agapesHotes_courses WHERE nom = :nom AND etablissement_id = :etablissementId';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':nom', $this->nom);
         $stmt->bindParam(':etablissementId', $this->etablissementId);

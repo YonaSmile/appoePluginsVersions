@@ -174,7 +174,7 @@ class Pti
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapeshotes_pti` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapesHotes_pti` (
   				`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   				PRIMARY KEY (`id`),
                 `site_id` int(11) UNSIGNED NOT NULL,
@@ -200,7 +200,7 @@ class Pti
 
     public function createView()
     {
-        $sql = 'CREATE VIEW reelEmployesPti AS SELECT employe_id AS reelPtiEmployeId, MAX(dateDebut) AS reelPtiDate FROM appoe_plugin_agapeshotes_pti GROUP BY employe_id';
+        $sql = 'CREATE VIEW reelEmployesPti AS SELECT employe_id AS reelPtiEmployeId, MAX(dateDebut) AS reelPtiDate FROM appoe_plugin_agapesHotes_pti GROUP BY employe_id';
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();
         $error = $stmt->errorInfo();
@@ -217,7 +217,7 @@ class Pti
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_pti WHERE id = :id';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_pti WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -249,7 +249,7 @@ class Pti
     public function showAll($countPti = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_pti WHERE status = :status ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_pti WHERE status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':status', $this->status);
         $stmt->execute();
@@ -270,7 +270,7 @@ class Pti
     public function showAllBySite($countPti = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_pti WHERE site_id = :siteId AND status = :status ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_pti WHERE site_id = :siteId AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
         $stmt->bindParam(':status', $this->status);
@@ -291,7 +291,7 @@ class Pti
     public function showReelPti()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_pti 
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_pti 
         WHERE dateDebut <= :dateDebut AND status = :status AND employe_id = :employeId AND site_id = :siteId
          ORDER BY dateDebut DESC LIMIT 1';
 
@@ -326,7 +326,7 @@ class Pti
     public function showAllReelPti($countPti = false)
     {
         $sql = 'SELECT pti.* FROM reelEmployesPti AS rep
-        INNER JOIN appoe_plugin_agapeshotes_pti AS pti
+        INNER JOIN appoe_plugin_agapesHotes_pti AS pti
         ON(reelPtiEmployeId = pti.employe_id AND reelPtiDate = pti.dateDebut)
         WHERE pti.site_id = :siteId AND pti.status = :status';
 
@@ -350,7 +350,7 @@ class Pti
     public function save()
     {
         $this->userId = getUserIdSession();
-        $sql = 'INSERT INTO appoe_plugin_agapeshotes_pti (site_id, employe_id, nbWeeksInCycle, dateDebut, status, userId, created_at) 
+        $sql = 'INSERT INTO appoe_plugin_agapesHotes_pti (site_id, employe_id, nbWeeksInCycle, dateDebut, status, userId, created_at) 
                 VALUES (:siteId, :employeId, :nbWeeksInCycle, :dateDebut, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
@@ -375,7 +375,7 @@ class Pti
     public function update()
     {
         $this->userId = getUserIdSession();
-        $sql = 'UPDATE appoe_plugin_agapeshotes_pti 
+        $sql = 'UPDATE appoe_plugin_agapesHotes_pti 
         SET site_id = :siteId, employe_id = :employeId, nbWeeksInCycle = :nbWeeksInCycle, dateDebut = :dateDebut, status = :status, userId = :userId WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
@@ -419,7 +419,7 @@ class Pti
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id FROM appoe_plugin_agapeshotes_pti WHERE site_id = :siteId AND employe_id = :employeId AND dateDebut = :dateDebut';
+        $sql = 'SELECT id FROM appoe_plugin_agapesHotes_pti WHERE site_id = :siteId AND employe_id = :employeId AND dateDebut = :dateDebut';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
         $stmt->bindParam(':employeId', $this->employeId);

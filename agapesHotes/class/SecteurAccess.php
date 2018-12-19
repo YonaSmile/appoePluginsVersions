@@ -140,7 +140,7 @@ class SecteurAccess
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapeshotes_secteurs_access` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapesHotes_secteurs_access` (
   				`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   				PRIMARY KEY (`id`),
                 `secteurUserId` int(11) UNSIGNED NOT NULL,
@@ -168,7 +168,7 @@ class SecteurAccess
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_secteurs_access WHERE id = :id';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_secteurs_access WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -199,7 +199,7 @@ class SecteurAccess
      */
     public function showAll($countSecteursAccess = false)
     {
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_secteurs_access WHERE status = :status ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_secteurs_access WHERE status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':status', $this->status);
         $stmt->execute();
@@ -219,7 +219,7 @@ class SecteurAccess
      */
     public function showAllBySecteur($countSecteursAccess = false)
     {
-        $sql = 'SELECT * FROM appoe_plugin_agapeshotes_secteurs_access WHERE secteur_id = :secteurId AND status = :status ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_secteurs_access WHERE secteur_id = :secteurId AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':secteurId', $this->secteurId);
         $stmt->bindParam(':status', $this->status);
@@ -241,8 +241,8 @@ class SecteurAccess
     {
 
         $sql = 'SELECT SECTEURACCESS.id AS idSecteurAccess, SECTEUR.* 
-        FROM appoe_plugin_agapeshotes_secteurs_access AS SECTEURACCESS
-        INNER JOIN appoe_plugin_agapeshotes_secteurs AS SECTEUR
+        FROM appoe_plugin_agapesHotes_secteurs_access AS SECTEURACCESS
+        INNER JOIN appoe_plugin_agapesHotes_secteurs AS SECTEUR
         ON(SECTEUR.id = SECTEURACCESS.secteur_id)
         WHERE SECTEURACCESS.secteurUserId = :secteurUserId AND SECTEUR.status = :status ORDER BY SECTEUR.updated_at DESC';
 
@@ -269,7 +269,7 @@ class SecteurAccess
     public function save()
     {
         $this->userId = getUserIdSession();
-        $sql = 'INSERT INTO appoe_plugin_agapeshotes_secteurs_access (secteurUserId, secteur_id, status, userId, created_at) 
+        $sql = 'INSERT INTO appoe_plugin_agapesHotes_secteurs_access (secteurUserId, secteur_id, status, userId, created_at) 
                 VALUES (:secteurUserId, :secteurId, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':secteurUserId', $this->secteurUserId);
@@ -292,7 +292,7 @@ class SecteurAccess
     public function update()
     {
         $this->userId = getUserIdSession();
-        $sql = 'UPDATE appoe_plugin_agapeshotes_secteurs_access SET secteurUserId = :secteurUserId, secteur_id = :secteurId, status = :status, userId = :userId WHERE id = :id';
+        $sql = 'UPDATE appoe_plugin_agapesHotes_secteurs_access SET secteurUserId = :secteurUserId, secteur_id = :secteurId, status = :status, userId = :userId WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':secteurUserId', $this->secteurUserId);
@@ -316,7 +316,7 @@ class SecteurAccess
      */
     public function delete()
     {
-        $sql = 'DELETE FROM appoe_plugin_agapeshotes_secteurs_access WHERE id = :id';
+        $sql = 'DELETE FROM appoe_plugin_agapesHotes_secteurs_access WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -339,7 +339,7 @@ class SecteurAccess
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id FROM appoe_plugin_agapeshotes_secteurs_access WHERE secteurUserId = :secteurUserId';
+        $sql = 'SELECT id FROM appoe_plugin_agapesHotes_secteurs_access WHERE secteurUserId = :secteurUserId';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':secteurUserId', $this->secteurUserId);
         $stmt->execute();
