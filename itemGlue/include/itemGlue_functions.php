@@ -21,7 +21,7 @@ function getArticlesByCategory($categoryId, $parent = false, $length = false)
         $article->metas = extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue');
     }
 
-    return $length ? array_slice($allArticles, 0, $length) : $allArticles;
+    return $length ? array_slice($allArticles, 0, $length, true) : $allArticles;
 }
 
 /**
