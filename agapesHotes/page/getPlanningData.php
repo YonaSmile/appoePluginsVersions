@@ -40,9 +40,10 @@ if (
         <h5 class="mb-0"><?= ucfirst(strftime("%B", strtotime($start->format('Y-m-d')))); ?> <?= $start->format('Y'); ?></h5>
         <small class="d-block">Commence le <?= $start->format('d/m/Y'); ?> et se termine
             le <?= $end->format('d/m/Y'); ?></small>
+        <button type="button" class="btn btn-link btn-sm copyTableData">Copier le tableau</button>
     </div>
     <div class="table-responsive col-12">
-        <table id="planningTable" class="table table-striped tableNonEffect fixed-header">
+        <table id="planningTable" class="table table-striped tableNonEffect">
             <thead>
             <tr>
                 <th><?= trans('Employé'); ?></th>
@@ -98,9 +99,10 @@ if (
                                        data-date="<?= $date->format('Y-m-d'); ?>"
                                        data-employeid="<?= $employeId; ?>"
                                        value="<?= $inputCase; ?>">
-                                <small class="text-center d-block">
+                                <small class="text-center" style="display: block;">
                                     <?= $dayInCycle > 0 ? $allPtiDetails[$dayInCycle]->nbHeures : ''; ?></small>
-                                <small class="text-center d-none horairesPlanning"><?= $dayInCycle > 0 ? $allPtiDetails[$dayInCycle]->horaires : ''; ?></small>
+                                <small class="text-center horairesPlanning"
+                                       style="display: none;"><?= $dayInCycle > 0 ? $allPtiDetails[$dayInCycle]->horaires : ''; ?></small>
                                 <datalist id="absenceReasonList">
                                     <option value="M" label="Maladie">M</option>
                                     <option value="AT" label="Accident du Travail">AT</option>
@@ -127,6 +129,7 @@ if (
                                     <option value="Dél" label="délégation">Dél</option>
                                     <option value="R°DP" label="réunion DP au siège">R°DP</option>
                                 </datalist>
+                                <span class="otherData text-center" style="display: block;"><span>
                             </td>
                             <?php $count++;
                         endforeach; ?>
@@ -260,6 +263,45 @@ if (
                         }
                         break;
                 }
+            });
+
+            $('body').on('click', '.copyTableData', function () {
+                $(this).html('Compléter le tableau').removeClass('copyTableData').addClass('completTable');
+                $('.inputUpdatePlanning').each(function () {
+                    var $input = $(this);
+                    var $parent = $input.parent('td');
+                    var data = $input.val() == '' ? 0 : $input.val();
+                    $parent.find('small').hide();
+                    $input.hide();
+                    $parent.find('span.otherData').html(data).show();
+                });
+
+                $('.inputPlanningPlus').each(function () {
+                    var $input = $(this);
+                    var $parent = $input.parent('td');
+                    var data = $input.val() == '' ? 0 : $input.val();
+                    $input.hide();
+                    $parent.append('<span style="display:block;text-align:center;">' + data + '</span>');
+                });
+            });
+
+            $('body').on('click', '.completTable', function () {
+                $(this).html('Copier le tableau').removeClass('completTable').addClass('copyTableData');
+                $('.inputUpdatePlanning').each(function () {
+                    var $input = $(this);
+                    var $parent = $input.parent('td');
+                    $parent.find('span.otherData').html('').hide();
+                    $input.show();
+                    $parent.find('small').not('.horairesPlanning').show();
+
+                });
+
+                $('.inputPlanningPlus').each(function () {
+                    var $input = $(this);
+                    var $parent = $input.parent('td');
+                    $parent.find('span').remove();
+                    $input.show();
+                });
             });
 
             $('[data-toggle="tooltip"]').tooltip({

@@ -1,4 +1,35 @@
 <?php
+/**
+ * @param $categoryId
+ * @param bool $parent
+ * @param bool $length
+ * @return array|bool
+ */
+function getArticlesByCategory($categoryId, $parent = false, $length = false)
+{
+    $Article = new \App\Plugin\ItemGlue\Article();
+    $allArticles = $Article->showByCategory($categoryId, $parent);
+
+    foreach ($allArticles as &$article) {
+
+        //Get Media
+        $ArticleMedia = new \App\Plugin\ItemGlue\ArticleMedia($article->id);
+        $article->medias = $ArticleMedia->showFiles();
+
+        //Get Metas
+        $ArticleMeta = new \App\Plugin\ItemGlue\ArticleMeta($article->id);
+        $article->metas = extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue');
+    }
+
+    return $length ? array_slice($allArticles, 0, $length) : $allArticles;
+}
+
+/**
+ * @param $categoryId
+ * @param bool $parentId
+ * @param int $favorite
+ * @return mixed
+ */
 function getSpecificArticlesCategory($categoryId, $parentId = false, $favorite = 1)
 {
     //get all articles categories
@@ -64,6 +95,10 @@ function getSpecificArticlesCategory($categoryId, $parentId = false, $favorite =
     return $all;
 }
 
+/**
+ * @param $slug
+ * @return bool
+ */
 function getSpecificArticlesDetailsBySlug($slug)
 {
     if (!empty($slug)) {
@@ -102,6 +137,10 @@ function getSpecificArticlesDetailsBySlug($slug)
     return false;
 }
 
+/**
+ * @param $id
+ * @return null
+ */
 function getCategoriesByArticle($id)
 {
     //get article
