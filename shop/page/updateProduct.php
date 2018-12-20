@@ -1,5 +1,5 @@
 <?php if (empty($_GET['id'])): ?>
-    <?php header('location:products.php'); ?>
+    <?php session_start(); header('location:products.php'); ?>
 <?php else: ?>
     <?php
     require('header.php');

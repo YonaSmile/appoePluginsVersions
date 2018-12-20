@@ -1,1 +1,1 @@
-<?php header( 'location:allEvents.php' );
+<?php session_start(); header( 'location:allEvents.php' );

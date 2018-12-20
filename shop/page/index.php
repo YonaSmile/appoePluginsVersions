@@ -1,1 +1,1 @@
-<?php header('location:commandes/');
+<?php session_start(); header('location:commandes/');

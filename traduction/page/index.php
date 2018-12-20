@@ -1,1 +1,1 @@
-<?php header('location:updateTraduction/');
+<?php session_start(); header('location:updateTraduction/');

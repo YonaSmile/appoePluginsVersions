@@ -1,1 +1,1 @@
-<?php header('location:allInterMaps/');
+<?php session_start(); header('location:allInterMaps/');

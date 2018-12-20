@@ -1,1 +1,1 @@
-<?php header('location:/');
+<?php session_start(); header('location:/');

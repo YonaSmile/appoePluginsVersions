@@ -1,1 +1,1 @@
-<?php header('location:allRating.php');
+<?php session_start(); header('location:allRating.php');

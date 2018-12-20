@@ -34,6 +34,7 @@ if (checkAjaxRequest()) {
                     }
 
                 }
+
             } else {
                 echo 'Tous les paramètres sont attendus !';
             }
