@@ -1,6 +1,6 @@
 <?php
 require_once('main.php');
-if ((session_id() != '') && getUserIdSession()) {
+if (getUserIdSession()) {
 
     $MessagIn = new \App\Plugin\MessagIn\MessagIn(getUserIdSession());
     $messagesCounter = 0;
@@ -10,8 +10,5 @@ if ((session_id() != '') && getUserIdSession()) {
             $messagesCounter++;
         }
     }
-
     echo $messagesCounter;
-} else {
-    echo trans('Vous avez été déconnecté');
 }
