@@ -11,7 +11,6 @@ $allCmsMenu = $CmsMenu->showAll();
 $MENUS = constructMenu($allCmsMenu);
 
 $allPages = extractFromObjToSimpleArr($Cms->showAllPages(), 'id', 'name');
-$allPages[10] = trans('Aucun parent');
 ?>
 <?= getTitle($Page->getName(), $Page->getSlug()); ?>
     <div class="container-fluid">
@@ -189,7 +188,7 @@ $allPages[10] = trans('Aucun parent');
                 $('input#name').val(($('option:selected', this).text()));
             });
 
-            $('.updateMenuData').on('keyup blur', function (event) {
+            $('.updateMenuData').on('input', function (event) {
                 event.preventDefault();
 
                 busyApp();

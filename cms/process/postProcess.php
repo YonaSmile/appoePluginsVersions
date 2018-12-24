@@ -134,4 +134,37 @@ if (checkPostAndTokenRequest()) {
             $Response->error_msg = trans('Tous les champs sont obligatoires');
         }
     }
+
+    if (isset($_POST['UPDATEMENUPAGE'])) {
+        if (!empty($_POST['id']) && !empty($_POST['parentId']) && !empty($_POST['location'])) {
+
+            $CmsMenu = new \App\Plugin\Cms\CmsMenu($_POST['id']);
+
+            if($CmsMenu->existParent() || $CmsMenu->getParentId() == 10) {
+
+                if ($CmsMenu->update()) {
+
+                    //Delete post data
+                    unset($_POST);
+
+                    $Response->status = 'success';
+                    $Response->error_code = 0;
+                    $Response->error_msg = trans('La menu a été mise à jour');
+
+                } else {
+                    $Response->status = 'danger';
+                    $Response->error_code = 1;
+                    $Response->error_msg = trans('Un problème est survenu lors de la mise à jour du menu');
+                }
+            } else {
+                $Response->status = 'danger';
+                $Response->error_code = 1;
+                $Response->error_msg = trans('Ce menu n\'existe pas');
+            }
+        } else {
+            $Response->status = 'danger';
+            $Response->error_code = 1;
+            $Response->error_msg = trans('Tous les champs sont obligatoires');
+        }
+    }
 }
