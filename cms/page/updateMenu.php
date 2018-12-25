@@ -6,11 +6,16 @@ require(CMS_PATH . 'process/postProcess.php');
 
 $Cms = new \App\Plugin\Cms\Cms();
 $CmsMenu = new \App\Plugin\Cms\CmsMenu();
+$Articles = new \App\Plugin\ItemGlue\Article();
 
+$allCmsPages = $Cms->showAllPages();
 $allCmsMenu = $CmsMenu->showAll();
+
 $MENUS = constructMenu($allCmsMenu);
 
-$allPages = extractFromObjToSimpleArr($Cms->showAllPages(), 'id', 'name');
+$allPages = extractFromObjToSimpleArr($allCmsPages, 'id', 'name');
+$allArticles = extractFromObjToSimpleArr($Articles->showAll(), 'slug', 'name');
+$allArticlesPages = extractFromObjToSimpleArr($allCmsPages, 'slug', 'name');
 ?>
 <?= getTitle($Page->getName(), $Page->getSlug()); ?>
     <div class="container-fluid">
@@ -121,13 +126,19 @@ $allPages = extractFromObjToSimpleArr($Cms->showAllPages(), 'id', 'name');
                         <?= getTokenField(); ?>
                         <div class="row">
                             <div class="col-12 mt-2">
-                                <?= \App\Form::radio('Type de menu', 'radioBtnIdCMS', array('Page' => 'Page', 'URL' => 'URL'), !empty($_POST['radioBtnIdCMS']) ? $_POST['radioBtnIdCMS'] : 'Page', true, 'custom-control-inline'); ?>
+                                <?= \App\Form::radio('Type de menu', 'radioBtnIdCMS', array('Page' => 'Page', 'URL' => 'URL', 'Article' => 'Article'), !empty($_POST['radioBtnIdCMS']) ? $_POST['radioBtnIdCMS'] : 'Page', true, 'custom-control-inline'); ?>
                             </div>
                             <div class="col-12 my-2 idCmsChoise" data-cmstype="URL" style="display: none;">
                                 <?= \App\Form::text('Lien URL', 'idCms', 'url', !empty($_POST['idCms']) ? $_POST['idCms'] : '', true, 255, 'disabled'); ?>
                             </div>
                             <div class="col-12 my-2 idCmsChoise" data-cmstype="Page">
                                 <?= \App\Form::select('Page', 'idCms', $allPages, !empty($_POST['idCms']) ? $_POST['idCms'] : '', true); ?>
+                            </div>
+                            <div class="col-12 my-2 idArticleChoise" data-cmstype="Article" style="display: none;">
+                                <?= \App\Form::select('Article', 'idArticle', $allArticles, !empty($_POST['idArticle']) ? $_POST['idArticle'] : '', true, 'disabled'); ?>
+                            </div>
+                            <div class="col-12 my-2 idArticleChoise" data-cmstype="Article" style="display: none;">
+                                <?= \App\Form::select('Page de l\'article', 'slugArticlePage', $allArticlesPages, !empty($_POST['slugArticlePage']) ? $_POST['slugArticlePage'] : '', true, 'disabled'); ?>
                             </div>
                             <div class="col-12 my-2">
                                 <?= \App\Form::text('Nom', 'name', 'text', !empty($_POST['name']) ? $_POST['name'] : '', true, 70); ?>
@@ -158,13 +169,8 @@ $allPages = extractFromObjToSimpleArr($Cms->showAllPages(), 'id', 'name');
             $('input[name="radioBtnIdCMS"]').on('change', function () {
 
                 var dataType = $(this).val();
-
-                $('.idCmsChoise').slideUp(400, function () {
-                    $(this).find('[name="idCms"]').attr('disabled', true);
-                    $('.idCmsChoise[data-cmstype="' + dataType + '"]').slideDown(400, function () {
-                        $(this).find('[name="idCms"]').attr('disabled', false);
-                    });
-                });
+                $('[data-cmstype]').slideUp().find('input, select').attr('disabled', true);
+                $('[data-cmstype="' + dataType + '"]').slideDown().find('input, select').prop('disabled', false);
             });
 
             $('select#location').on('change', function () {
@@ -184,7 +190,7 @@ $allPages = extractFromObjToSimpleArr($Cms->showAllPages(), 'id', 'name');
                 )
             });
 
-            $('select#idCms').change(function () {
+            $('select#idCms, select#idArticle').change(function () {
                 $('input#name').val(($('option:selected', this).text()));
             });
 

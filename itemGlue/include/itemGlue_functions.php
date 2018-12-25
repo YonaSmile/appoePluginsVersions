@@ -25,6 +25,32 @@ function getArticlesByCategory($categoryId, $parent = false, $length = false)
 }
 
 /**
+ * @param $articleId
+ * @param $categories
+ * @param bool $length
+ * @return array
+ */
+function getSimilarArticles($articleId, $categories, $length = false)
+{
+    $relatedArticles = array();
+    $allArticles = array();
+    if ($categories) {
+        foreach ($categories as $key => $category) {
+            $relatedArticles[$key] = unsetSameKeyInArr(extractFromObjArr(getArticlesByCategory($key, true), 'id'), $articleId);
+        }
+    }
+
+    foreach ($relatedArticles as $categoryId => $articles) {
+        foreach ($articles as $articleId => $article) {
+            $allArticles[] = $article;
+        }
+    }
+
+    return $length ? array_slice($allArticles, 0, $length, true) : $allArticles;
+
+}
+
+/**
  * @param $categoryId
  * @param bool $parentId
  * @param int $favorite

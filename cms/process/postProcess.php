@@ -25,7 +25,7 @@ if (checkPostAndTokenRequest()) {
                     $Traduction->setLang(LANG);
                     $Traduction->setMetaKey($Cms->getName());
                     $Traduction->setMetaValue($Cms->getName());
-                    if($Traduction->save()){
+                    if ($Traduction->save()) {
                         $Traduction->setMetaKey(slugify($Cms->getSlug()));
                         $Traduction->setMetaValue(slugify($Cms->getSlug()));
                         $Traduction->save();
@@ -98,35 +98,43 @@ if (checkPostAndTokenRequest()) {
     }
 
     if (isset($_POST['ADDMENUPAGE'])) {
-        if (!empty($_POST['idCms'])
-            && !empty($_POST['name'])
-            && !empty($_POST['parentId'])
-            && !empty($_POST['location'])
-        ) {
-            //Add Menu
-            $CmsMenu = new \App\Plugin\Cms\CmsMenu();
-            $CmsMenu->feed($_POST);
+        if (!empty($_POST['name']) && !empty($_POST['parentId']) && !empty($_POST['location'])) {
 
-            if($CmsMenu->existParent() || $CmsMenu->getParentId() == 10) {
+            if (!empty($_POST['idArticle']) && !empty($_POST['slugArticlePage'])) {
+                $_POST['idCms'] = WEB_DIR_URL . $_POST['slugArticlePage'] . DIRECTORY_SEPARATOR . $_POST['idArticle'];
+            }
 
-                if ($CmsMenu->save()) {
+            if (!empty($_POST['idCms'])) {
 
-                    //Delete post data
-                    unset($_POST);
+                //Add Menu
+                $CmsMenu = new \App\Plugin\Cms\CmsMenu();
+                $CmsMenu->feed($_POST);
 
-                    $Response->status = 'success';
-                    $Response->error_code = 0;
-                    $Response->error_msg = trans('La menu a été enregistré');
+                if ($CmsMenu->existParent() || $CmsMenu->getParentId() == 10) {
 
+                    if ($CmsMenu->save()) {
+
+                        //Delete post data
+                        unset($_POST);
+
+                        $Response->status = 'success';
+                        $Response->error_code = 0;
+                        $Response->error_msg = trans('La menu a été enregistré');
+
+                    } else {
+                        $Response->status = 'danger';
+                        $Response->error_code = 1;
+                        $Response->error_msg = trans('Un problème est survenu lors de l\'enregistrement du menu');
+                    }
                 } else {
                     $Response->status = 'danger';
                     $Response->error_code = 1;
-                    $Response->error_msg = trans('Un problème est survenu lors de l\'enregistrement du menu');
+                    $Response->error_msg = trans('Ce menu n\'existe pas');
                 }
             } else {
                 $Response->status = 'danger';
                 $Response->error_code = 1;
-                $Response->error_msg = trans('Ce menu n\'existe pas');
+                $Response->error_msg = trans('Aucune page n\'a été choisi');
             }
         } else {
             $Response->status = 'danger';
@@ -140,7 +148,7 @@ if (checkPostAndTokenRequest()) {
 
             $CmsMenu = new \App\Plugin\Cms\CmsMenu($_POST['id']);
 
-            if($CmsMenu->existParent() || $CmsMenu->getParentId() == 10) {
+            if ($CmsMenu->existParent() || $CmsMenu->getParentId() == 10) {
 
                 if ($CmsMenu->update()) {
 
