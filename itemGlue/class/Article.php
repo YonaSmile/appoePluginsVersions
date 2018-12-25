@@ -235,7 +235,7 @@ class Article
     public function showBySlug()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_itemGlue_articles WHERE slug = :slug AND statut = :statut';
+        $sql = 'SELECT * FROM appoe_plugin_itemGlue_articles WHERE slug = :slug AND statut >= :statut';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':slug', $this->slug);
