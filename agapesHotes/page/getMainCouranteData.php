@@ -38,7 +38,7 @@ if (
             le <?= $start->format('t/m/Y'); ?></small>
 
     </div>
-    <div class="table-responsive col-12">
+    <div class="col-12">
         <table id="mainCouranteTable" class="table table-striped tableNonEffect fixed-header">
             <thead style="z-index: 2">
             <tr style="text-align: center;">
@@ -48,6 +48,7 @@ if (
                         <?= $date->format('d'); ?></th>
                 <?php endforeach; ?>
                 <th><i class="fas fa-balance-scale"></i></th>
+                <th><?= trans('Prestation'); ?></th>
             </tr>
             </thead>
             <?php foreach ($allEtablissements as $etablissement):
@@ -64,7 +65,7 @@ if (
                 if ($allPrestations): ?>
                     <tbody data-etablissement="<?= $etablissement->id; ?>">
                     <tr>
-                        <th colspan="<?= $start->format('t') + 2; ?>">
+                        <th colspan="<?= $start->format('t') + 3; ?>">
                             <span style="font-size: 2em;font-weight: 100 !important;">
                                 <?= $etablissement->nom; ?>
                             </span>
@@ -170,6 +171,7 @@ if (
                                     <?= financial($prixReel * $mainCouranteQuantiteTotalDay); ?>
                                 </small>
                             </td>
+                            <th><?= $prestation->nom; ?></th>
                         </tr>
                     <?php endforeach; ?>
                     <tr>
@@ -183,6 +185,8 @@ if (
                 <?php endif; ?>
                 </tbody>
             <?php endforeach; ?>
+            <i type="button" id="tableRightCursor" class="fas fa-angle-right"></i>
+            <i type="button" id="tableLeftCursor" class="fas fa-angle-left"></i>
         </table>
         <table class="table table-striped tableNonEffect" style="width: 250px;">
             <tbody>
@@ -319,6 +323,34 @@ if (
                             $tr.next('tr').find('td[data-tdposition="' + position + '"]').find('input').focus();
                         }
                         break;
+                }
+            });
+
+            $('#tableRightCursor').on('click', function () {
+                $('#tableRightCursor').fadeOut();
+                $('html, body').animate({scrollLeft: 1000}, 800);
+                var sideBarPosition = $('#sidebar').css('margin-left') == 0 ? ($('#sidebar').offset().left + $('#sidebar').width()) : ($('#sidebar').offset().left + 250);
+                $('#tableLeftCursor').css({
+                    'left': sideBarPosition
+                }).fadeIn();
+            });
+
+
+            $('#tableLeftCursor').on('click', function () {
+                $('#tableLeftCursor').fadeOut();
+                $('html, body').animate({scrollLeft: -1000}, 800);
+                $('#tableRightCursor').fadeIn();
+            });
+
+            $('.sidebarCollapse').on('click', function () {
+                if ($('#sidebar').hasClass('active')) {
+                    $('#tableLeftCursor').css({
+                        'left': 0
+                    });
+                } else {
+                    $('#tableLeftCursor').css({
+                        'left': $('#sidebar').width()
+                    });
                 }
             });
 

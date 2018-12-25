@@ -421,27 +421,27 @@ function getDayColor($date, $alsaceMoselle = false)
 
     //Aujourd'hui et weekend
     if ($date->format('Y-m-d') == date('Y-m-d') && ($date->format('N') == 7 || $date->format('N') == 6)) {
-        return 'background: linear-gradient(135deg, #4fb99f 0%,#4fb99f 50%,#aaa 51%,#aaa 100%);color:#fff;';
+        return 'background: linear-gradient(135deg, #4fb99f 0%,#4fb99f 50%,#aaa 51%,#aaa 100%);color:#fff;font-weight:bold;';
     }
 
     //Aujourd'hui et férié
     if (isferie($date->format('Y-m-d'), $alsaceMoselle) && $date->format('Y-m-d') == date('Y-m-d')) {
-        return 'background: linear-gradient(135deg, #4fb99f 0%,#4fb99f 50%,#eaaa6f 51%,#eaaa6f 100%);color:#fff;';
+        return 'background: linear-gradient(135deg, #4fb99f 0%,#4fb99f 50%,#eaaa6f 51%,#eaaa6f 100%);color:#fff;font-weight:bold;';
     }
 
     //Aujourd'hui
     if ($date->format('Y-m-d') == date('Y-m-d')) {
-        return 'background:#4fb99f;color:#fff;';
+        return 'background:#4fb99f;color:#fff;font-weight:bold;';
     }
 
     //Férié et weekend
     if (isferie($date->format('Y-m-d'), $alsaceMoselle) && ($date->format('N') == 7 || $date->format('N') == 6)) {
-        return 'background: #aaa;color:#fff;';
+        return 'background: #aaa;color:#fff;font-weight:bold;';
     }
 
     //Férié
     if (isferie($date->format('Y-m-d'), $alsaceMoselle)) {
-        return 'background:#eaaa6f;color:#fff;';
+        return 'background:#eaaa6f;color:#fff;font-weight:bold;';
     }
 
     //Weekend

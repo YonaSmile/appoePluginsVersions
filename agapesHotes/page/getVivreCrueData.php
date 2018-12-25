@@ -34,7 +34,7 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
         <small class="d-block">Commence le <?= $start->format('d/m/Y'); ?> et se termine
             le <?= $start->format('t/m/Y'); ?></small>
     </div>
-    <div class="table-responsive col-12">
+    <div id="responsiveTable" class="col-12">
         <table class="table table-striped tableNonEffect fixed-header">
             <thead style="z-index: 2">
             <tr>
@@ -47,6 +47,7 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                     <th class="text-center" style="<?= getDayColor($date, $Site->getAlsaceMoselle()); ?>">
                         <?= $date->format('d'); ?></th>
                 <?php endforeach; ?>
+                <th><?= trans('Course'); ?></th>
             </tr>
             </thead>
             <?php foreach ($allEtablissements as $etablissement):
@@ -60,7 +61,7 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                 if ($allCourses): ?>
                     <tbody data-etablissement="<?= $etablissement->id; ?>">
                     <tr>
-                        <th colspan="<?= ($start->format('t') + 5); ?>"
+                        <th colspan="<?= ($start->format('t') + 6); ?>"
                             style="font-size: 2em;font-weight: 100 !important;">
                             <?= $etablissement->nom; ?>
                             <span class="float-right">
@@ -126,14 +127,18 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                                            value="<?= $vivreCrueQuantite; ?>"
                                            style="padding: 5px 0 !important; <?= getDayColor($date, $Site->getAlsaceMoselle()); ?>">
                                 </td>
-
                                 <?php $count++;
                             endforeach; ?>
+                            <th style="vertical-align: middle;">
+                                <?= $course->nom; ?>
+                            </th>
                         </tr>
                     <?php endforeach; ?>
                     </tbody>
                 <?php endif;
             endforeach; ?>
+            <i type="button" id="tableRightCursor" class="fas fa-angle-right"></i>
+            <i type="button" id="tableLeftCursor" class="fas fa-angle-left"></i>
         </table>
     </div>
     <?php foreach ($allEtablissements as $etablissement): ?>
@@ -245,6 +250,34 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                             $tr.next('tr').find('td[data-tdposition="' + position + '"]').find('input').focus();
                         }
                         break;
+                }
+            });
+
+            $('#tableRightCursor').on('click', function () {
+                $('#tableRightCursor').fadeOut();
+                $('html, body').animate({scrollLeft: 1000}, 800);
+                var sideBarPosition = $('#sidebar').css('margin-left') == 0 ? ($('#sidebar').offset().left + $('#sidebar').width()) : ($('#sidebar').offset().left + 250);
+                $('#tableLeftCursor').css({
+                    'left': sideBarPosition
+                }).fadeIn();
+            });
+
+
+            $('#tableLeftCursor').on('click', function () {
+                $('#tableLeftCursor').fadeOut();
+                $('html, body').animate({scrollLeft: -1000}, 800);
+                $('#tableRightCursor').fadeIn();
+            });
+
+            $('.sidebarCollapse').on('click', function () {
+                if ($('#sidebar').hasClass('active')) {
+                    $('#tableLeftCursor').css({
+                        'left': 0
+                    });
+                } else {
+                    $('#tableLeftCursor').css({
+                        'left': $('#sidebar').width()
+                    });
                 }
             });
 

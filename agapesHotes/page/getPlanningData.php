@@ -42,7 +42,7 @@ if (
             le <?= $start->format('t/m/Y'); ?></small>
         <button type="button" class="btn btn-link btn-sm copyTableData">Copier le tableau</button>
     </div>
-    <div class="table-responsive col-12">
+    <div class="col-12">
         <table id="planningTable" class="table table-striped tableNonEffect">
             <thead>
             <tr>
@@ -50,6 +50,7 @@ if (
                 <?php foreach ($period as $key => $date): ?>
                     <th style="<?= getDayColor($date, $Site->getAlsaceMoselle()); ?>"><?= $date->format('d'); ?></th>
                 <?php endforeach; ?>
+                <th><?= trans('Employé'); ?></th>
             </tr>
             </thead>
             <tbody>
@@ -133,11 +134,13 @@ if (
                             </td>
                             <?php $count++;
                         endforeach; ?>
+                        <th><?= $allEmployes[$employeId]->name . ' ' . $allEmployes[$employeId]->firstName; ?></th>
                     </tr>
                 <?php endif;
             endforeach; ?>
-
             </tbody>
+            <i type="button" id="tableRightCursor" class="fas fa-angle-right"></i>
+            <i type="button" id="tableLeftCursor" class="fas fa-angle-left"></i>
         </table>
     </div>
     <hr class="w-100 d-block mx-5 my-4">
@@ -262,6 +265,34 @@ if (
                             $tr.next('tr').find('td[data-tdposition="' + position + '"]').find('input').focus();
                         }
                         break;
+                }
+            });
+
+            $('#tableRightCursor').on('click', function () {
+                $('#tableRightCursor').fadeOut();
+                $('html, body').animate({scrollLeft: 1000}, 800);
+                var sideBarPosition = $('#sidebar').css('margin-left') == 0 ? ($('#sidebar').offset().left + $('#sidebar').width()) : ($('#sidebar').offset().left + 250);
+                $('#tableLeftCursor').css({
+                    'left': sideBarPosition
+                }).fadeIn();
+            });
+
+
+            $('#tableLeftCursor').on('click', function () {
+                $('#tableLeftCursor').fadeOut();
+                $('html, body').animate({scrollLeft: -1000}, 800);
+                $('#tableRightCursor').fadeIn();
+            });
+
+            $('.sidebarCollapse').on('click', function () {
+                if ($('#sidebar').hasClass('active')) {
+                    $('#tableLeftCursor').css({
+                        'left': 0
+                    });
+                } else {
+                    $('#tableLeftCursor').css({
+                        'left': $('#sidebar').width()
+                    });
                 }
             });
 
