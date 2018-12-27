@@ -7,180 +7,183 @@ $Budget = new \App\Plugin\AgapesHotes\Budget();
 $allSites = getSitesAccess();
 $allSitesBySecteur = groupMultipleKeysObjectsArray($allSites, 'secteur_id');
 
-$inventaireUrl = 'https://serventest.fr/pro/liaison_appoe/getInventaireServentest.php';
-$commandesUrl = 'https://serventest.fr/pro/liaison_appoe/getRefacturationServentest.php';
-
 $start = new \DateTime(date('Y-01-01'));
 $end = new \DateTime(date('Y-12-t'));
 $end->add(new \DateInterval('P1D'));
 $interval = new \DateInterval('P1M');
 
 $period = new \DatePeriod($start, $interval, $end);
-
-$budgetCumul = array();
-$budgetCumulCurrent = 0;
-$anneeAgoCumul = array();
-$anneeAgoCurrent = 0;
-$anneeCumul = array();
-$anneeCurrent = 0;
-$consoAgoCumul = array();
-$consoAgoCurrent = 0;
-$consoCumul = array();
-$consoCurrent = 0;
 ?>
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <div class="table-responsive">
-                <table id="syntheseSecteurTable" class="table table-striped tableNonEffect text-center">
-                    <thead>
-                    <tr>
-                        <th><?= trans('Site'); ?></th>
-                        <th>#</th>
-                        <?php foreach ($period as $key => $date): ?>
-                            <th><?= $date->format('m'); ?></th>
-                        <?php endforeach; ?>
-                    </tr>
-                    </thead>
-                    <tbody>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="table-responsive">
+                    <table id="syntheseSecteurTable" class="table table-striped tableNonEffect text-center">
+                        <thead>
+                        <tr>
+                            <th><?= trans('Site'); ?></th>
+                            <th>#</th>
+                            <?php foreach ($period as $key => $date): ?>
+                                <th><?= $date->format('m'); ?></th>
+                            <?php endforeach; ?>
+                        </tr>
+                        </thead>
+                        <tbody>
 
-                    <?php foreach ($allSitesBySecteur as $secteurId => $allSites):
-                        $Secteur->setId($secteurId);
-                        if ($Secteur->show() && $Secteur->getId() > 0):
-                            ?>
-                            <tr>
-                                <th style="text-align:center !important; background:#4fb99f;color:#fff;"
-                                    colspan="14"><?= $Secteur->getNom(); ?></th>
-                            </tr>
-                            <?php foreach ($allSites as $site): ?>
-                            <tr data-siteid="<?= $site->id; ?>" data-name="budgetrow">
-                                <th rowspan="6"
-                                    style="vertical-align:middle;"><?= $site->nom ?></th>
-                                <td style="text-align:left !important;">
-                                    <small><em>Budget</em></small>
-                                </td>
-                                <?php foreach ($period as $key => $date):
-                                    $Budget->setStatus(1);
-                                    $Budget->setYear(date('Y'));
-                                    $Budget->setSiteId($site->id);
-                                    $Budget->setMonth($date->format('n'));
-                                    $Budget->showBySite();
-                                    $budgetCumulCurrent += !empty($Budget->getConso()) ? $Budget->getConso() : 0;
+                        <?php foreach ($allSitesBySecteur as $secteurId => $allSites):
+                            $budgetCumul = array();
+                            $budgetCumulCurrent = 0;
+                            $Secteur->setId($secteurId);
+                            if ($Secteur->show() && $Secteur->getId() > 0):
+                                ?>
+                                <tr>
+                                    <th style="text-align:center !important; background:#4fb99f;color:#fff;"
+                                        colspan="14"><?= $Secteur->getNom(); ?></th>
+                                </tr>
+                                <?php foreach ($allSites as $site): ?>
 
-                                    $budgetCumul[$date->format('n')] = $budgetCumulCurrent;
-                                    ?>
-                                    <td><?= !empty($Budget->getConso()) ? financial($Budget->getConso()) : 0; ?>€</td>
-                                    <?php
-                                    $Budget->clean();
-                                endforeach; ?>
-                            </tr>
-                            <tr data-siteid="<?= $site->id; ?>" data-name="budgetrow">
-                                <td style="text-align:left !important;">
-                                    <small><em>Budget cumul</em></small>
-                                </td>
-                                <?php foreach ($period as $key => $date): ?>
-                                    <td><?= financial($budgetCumul[$date->format('n')]); ?>€</td>
-                                <?php endforeach; ?>
-                            </tr>
-                            <tr data-siteid="<?= $site->id; ?>" data-name="siterowYearAgo">
-                                <td style="text-align:left !important;">
-                                    <small><em><?= date('Y') - 1; ?></em></small>
-                                </td>
-                                <?php foreach ($period as $key => $date):
-                                    $paramsNow = array(
-                                        'key' => '123',
-                                        'ref' => $site->ref,
-                                        'dateDebut' => date((date('Y') - 1) . '-' . $date->format('m') . '-01'),
-                                        'dateFin' => date((date('Y') - 1) . '-' . $date->format('m') . '-t')
-                                    );
+                                <!-- BUDGET -->
+                                <tr data-siteid="<?= $site->id; ?>" data-name="budgetrow">
+                                    <th rowspan="6"
+                                        style="vertical-align:middle;"><?= $site->nom ?></th>
+                                    <td style="text-align:left !important;">
+                                        <small><em>Budget</em></small>
+                                    </td>
+                                    <?php foreach ($period as $key => $date):
+                                        $Budget->setStatus(1);
+                                        $Budget->setYear(date('Y'));
+                                        $Budget->setSiteId($site->id);
+                                        $Budget->setMonth($date->format('n'));
+                                        $Budget->showBySite();
+                                        $budgetCumulCurrent += !empty($Budget->getConso()) ? $Budget->getConso() : 0;
 
-                                    $paramsAgo = array(
-                                        'key' => '123',
-                                        'ref' => $site->ref,
-                                        'dateDebut' => date((date('Y') - 1) . '-' . ($date->format('m') - 1) . '-01'),
-                                        'dateFin' => date((date('Y') - 1) . '-' . $date->format('m') . '-t')
-                                    );
+                                        $budgetCumul[$date->format('n')] = $budgetCumulCurrent;
+                                        ?>
+                                        <td><?= !empty($Budget->getConso()) ? financial($Budget->getConso()) : 0; ?>€
+                                        </td>
+                                        <?php
+                                        $Budget->clean();
+                                    endforeach; ?>
+                                </tr>
 
-                                    $inventaireRequest = json_decode(postHttpRequest($inventaireUrl, $paramsNow), true);
-                                    $inventaireRequestMonthAgo = json_decode(postHttpRequest($inventaireUrl, $paramsAgo), true);
-                                    $commandesRequest = json_decode(postHttpRequest($commandesUrl, $paramsNow), true);
-                                    $commandes = getCommandesServentest($commandesRequest);
-                                    $inventaire = getInventaireServentest($inventaireRequest);
-                                    $inventaireMonthAgo = getInventaireServentest($inventaireRequestMonthAgo);
-                                    $noteDeFrais = getNoteDeFrais($site->id, date('Y'), $date->format('m'));
+                                <!-- CUMUL -->
+                                <tr data-siteid="<?= $site->id; ?>" data-name="budgetrowcumul">
+                                    <td style="text-align:left !important;">
+                                        <small><em>Budget cumul</em></small>
+                                    </td>
+                                    <?php foreach ($period as $key => $date): ?>
+                                        <td><?= financial($budgetCumul[$date->format('n')]); ?>€</td>
+                                    <?php endforeach; ?>
+                                </tr>
 
-                                    $consommation = (
-                                            $commandes['denree']['total']
-                                            + $inventaireMonthAgo['denree']['total']
-                                            + $noteDeFrais['denree']
-                                        ) - $inventaire['denree']['total'];
-                                    $consoAgoCurrent += $consommation;
-                                    $consoAgoCumul[$date->format('m')] = $consoAgoCurrent;
-                                    ?>
-                                    <td><?= $consommation; ?>€</td>
-                                <?php endforeach; ?>
-                            </tr>
-                            <tr data-siteid="<?= $site->id; ?>" data-name="siterowYearAgo">
-                                <td style="text-align:left !important;">
-                                    <small><em><?= date('Y') - 1; ?> cumul</em></small>
-                                </td>
-                                <?php foreach ($period as $key => $date): ?>
-                                    <td><?= financial($consoAgoCumul[$date->format('m')]); ?>€</td>
-                                <?php endforeach; ?>
-                            </tr>
-                            <tr data-siteid="<?= $site->id; ?>" data-name="siterow">
-                                <td style="text-align:left !important;">
-                                    <small><em><?= date('Y'); ?></em></small>
-                                </td>
-                                <?php foreach ($period as $key => $date):
-                                    $paramsNow = array(
-                                        'key' => '123',
-                                        'ref' => $site->ref,
-                                        'dateDebut' => date('Y' . '-' . $date->format('m') . '-01'),
-                                        'dateFin' => date('Y' . '-' . $date->format('m') . '-t')
-                                    );
+                                <!-- YEAR -1 -->
+                                <tr data-siteid="<?= $site->id; ?>" data-year="<?= date('Y') - 1; ?>"
+                                    data-name="siterow" data-secteurid="<?= $secteurId; ?>">
+                                    <td style="text-align:left !important;">
+                                        <small><em><?= date('Y') - 1; ?></em></small>
+                                    </td>
+                                    <?php foreach ($period as $key => $date): ?>
+                                        <td data-name="site-conso" data-month="<?= $date->format('n'); ?>"></td>
+                                    <?php endforeach; ?>
+                                </tr>
 
-                                    $paramsAgo = array(
-                                        'key' => '123',
-                                        'ref' => $site->ref,
-                                        'dateDebut' => date('Y' . '-' . ($date->format('m') - 1) . '-01'),
-                                        'dateFin' => date('Y' . '-' . $date->format('m') . '-t')
-                                    );
+                                <!-- CUMUL -->
+                                <tr data-siteid="<?= $site->id; ?>" data-name="sitecumul"
+                                    data-year="<?= date('Y') - 1; ?>" data-secteurid="<?= $secteurId; ?>">
+                                    <td style="text-align:left !important;">
+                                        <small><em><?= date('Y') - 1; ?> cumul</em></small>
+                                    </td>
+                                    <?php foreach ($period as $key => $date): ?>
+                                        <td data-name="site-conso-cumul" data-month="<?= $date->format('n'); ?>"></td>
+                                    <?php endforeach; ?>
+                                </tr>
 
-                                    $inventaireRequest = json_decode(postHttpRequest($inventaireUrl, $paramsNow), true);
-                                    $inventaireRequestMonthAgo = json_decode(postHttpRequest($inventaireUrl, $paramsAgo), true);
-                                    $commandesRequest = json_decode(postHttpRequest($commandesUrl, $paramsNow), true);
-                                    $commandes = getCommandesServentest($commandesRequest);
-                                    $inventaire = getInventaireServentest($inventaireRequest);
-                                    $inventaireMonthAgo = getInventaireServentest($inventaireRequestMonthAgo);
-                                    $noteDeFrais = getNoteDeFrais($site->id, date('Y'), $date->format('m'));
+                                <!-- YEAR -->
+                                <tr data-siteid="<?= $site->id; ?>" data-year="<?= date('Y'); ?>"
+                                    data-name="siterow" data-secteurid="<?= $secteurId; ?>">
+                                    <td style="text-align:left !important;">
+                                        <small><em><?= date('Y'); ?></em></small>
+                                    </td>
+                                    <?php foreach ($period as $key => $date): ?>
+                                        <td data-name="site-conso" data-month="<?= $date->format('n'); ?>"></td>
+                                    <?php endforeach; ?>
+                                </tr>
 
-                                    $consommation = (
-                                            $commandes['denree']['total']
-                                            + $inventaireMonthAgo['denree']['total']
-                                            + $noteDeFrais['denree']
-                                        ) - $inventaire['denree']['total'];
-                                    $consoCurrent += $consommation;
-                                    $consoCumul[$date->format('m')] = $consoCurrent;
-                                    ?>
-                                    <td><?= financial($consommation); ?>€</td>
-                                <?php endforeach; ?>
-                            </tr>
-                            <tr data-siteid="<?= $site->id; ?>" data-name="siterow">
-                                <td style="text-align:left !important;">
-                                    <small><em><?= date('Y'); ?> cumul</em></small>
-                                </td>
-                                <?php foreach ($period as $key => $date): ?>
-                                    <td><?= financial($consoCumul[$date->format('m')]); ?>€</td>
-                                <?php endforeach; ?>
-                            </tr>
-                        <?php endforeach;
-                        endif;
-                    endforeach; ?>
-                    </tbody>
-                </table>
+                                <!-- CUMUL -->
+                                <tr data-siteid="<?= $site->id; ?>" data-year="<?= date('Y'); ?>"
+                                    data-name="sitecumul" data-secteurid="<?= $secteurId; ?>">
+                                    <td style="text-align:left !important;">
+                                        <small><em><?= date('Y'); ?> cumul</em></small>
+                                    </td>
+                                    <?php foreach ($period as $key => $date): ?>
+                                        <td data-name="site-conso-cumul" data-month="<?= $date->format('n'); ?>"></td>
+                                    <?php endforeach; ?>
+                                </tr>
+
+                            <?php endforeach;
+                            endif;
+                        endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-</div>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var consoreelDenree = [];
+
+            setTimeout(function () {
+                $('td[data-name="site-conso"]').each(function () {
+
+                    var $td = $(this);
+                    var $tr = $td.closest('tr');
+                    var secteur = $tr.data('secteurid');
+                    var site = $tr.data('siteid');
+                    var year = $tr.data('year');
+                    var month = $td.data('month');
+                    var sendSata = {
+                        siteId: site,
+                        year: year,
+                        month: month
+                    };
+                    $.ajax({
+                        type: "POST",
+                        async: false,
+                        url: '<?= AGAPESHOTES_URL . 'page/getAllSiteData.php'; ?>',
+                        data: sendSata,
+                        success: function (data) {
+                            if (data) {
+                                var parsedData = jQuery.parseJSON(data);
+                                var $siteData = parsedData[secteur][site];
+
+                                if (typeof consoreelDenree[site] === 'undefined') {
+                                    consoreelDenree[site] = [];
+                                }
+                                if (typeof consoreelDenree[site][year] === 'undefined') {
+                                    consoreelDenree[site][year] = [];
+                                }
+                                if (typeof consoreelDenree[site][year][month] === 'undefined') {
+                                    consoreelDenree[site][year][month] = '';
+                                }
+
+                                $tr.find('td[data-name="site-conso"][data-month="' + month + '"]').text(financial($siteData['consoReel'].denree) + '€');
+                                consoreelDenree[site][year][month] = $.isNumeric($siteData['consoReel'].denree) ? parseFloat($siteData['consoReel'].denree) : 0;
+
+                                var sum = 0;
+                                $.each(consoreelDenree[site][year], function (month, val) {
+                                    val = parseFloat(val);
+                                    if ($.isNumeric(val)) {
+                                        sum += val;
+                                    }
+                                });
+                                $('tr[data-name="sitecumul"][data-siteid="' + site + '"][data-year="' + year + '"] td[data-name="site-conso-cumul"][data-month="' + month + '"]').text(financial(sum) + '€');
+                            }
+                        }
+                    });
+                });
+            }, 300);
+
+        });
+    </script>
 <?php require('footer.php'); ?>

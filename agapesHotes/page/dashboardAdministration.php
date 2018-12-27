@@ -2,6 +2,7 @@
 $Site = new \App\Plugin\AgapesHotes\Site();
 $allSites = $Site->showAll();
 $allOrdSites = extractFromObjToSimpleArr($allSites, 'id', 'secteur_id');
+array_unique($allOrdSites);
 $allSitesBySecteur = groupMultipleKeysObjectsArray($allSites, 'secteur_id');
 $Secteur = new \App\Plugin\AgapesHotes\Secteur();
 ?>
@@ -107,7 +108,7 @@ $Secteur = new \App\Plugin\AgapesHotes\Secteur();
                             <td style="text-align:left !important;">
                                 <small><em>Budget</em></small>
                             </td>
-                            <td data-name="budget-ca"></td>
+                            <td nowrap data-name="budget-ca"></td>
                             <td data-name="budget-conso"></td>
                             <td data-name="budget-perso"></td>
                             <td data-name="budget-fraisgeneraux"></td>
@@ -121,7 +122,7 @@ $Secteur = new \App\Plugin\AgapesHotes\Secteur();
                             <td style="text-align:left !important;">
                                 <small><em><?= date('Y') - 1; ?></em></small>
                             </td>
-                            <td data-name="site-facturation"></td>
+                            <td nowrap data-name="site-facturation"></td>
                             <td data-name="site-consoreel-denree"></td>
                             <td data-name="site-meta-fraisperso"></td>
                             <td data-name="site-fraisgeneraux"></td>
@@ -135,7 +136,7 @@ $Secteur = new \App\Plugin\AgapesHotes\Secteur();
                             <td style="text-align:left !important;">
                                 <small><em><?= date('Y'); ?></em></small>
                             </td>
-                            <td data-name="site-facturation"></td>
+                            <td nowrap data-name="site-facturation"></td>
                             <td data-name="site-consoreel-denree"></td>
                             <td data-name="site-meta-fraisperso"></td>
                             <td data-name="site-fraisgeneraux"></td>

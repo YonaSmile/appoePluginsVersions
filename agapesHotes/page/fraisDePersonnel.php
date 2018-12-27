@@ -7,9 +7,6 @@ $Budget = new \App\Plugin\AgapesHotes\Budget();
 $allSites = getSitesAccess();
 $allSitesBySecteur = groupMultipleKeysObjectsArray($allSites, 'secteur_id');
 
-$inventaireUrl = 'https://serventest.fr/pro/liaison_appoe/getInventaireServentest.php';
-$commandesUrl = 'https://serventest.fr/pro/liaison_appoe/getRefacturationServentest.php';
-
 $start = new \DateTime(date('Y-01-01'));
 $end = new \DateTime(date('Y-12-t'));
 $end->add(new \DateInterval('P1D'));
@@ -17,8 +14,6 @@ $interval = new \DateInterval('P1M');
 
 $period = new \DatePeriod($start, $interval, $end);
 
-$budgetCumul = array();
-$budgetCumulCurrent = 0;
 $anneeAgoCumul = array();
 $anneeAgoCurrent = 0;
 $anneeCumul = array();
@@ -43,6 +38,8 @@ $anneeCurrent = 0;
                     <?php foreach ($allSitesBySecteur as $secteurId => $allSites):
                         $Secteur->setId($secteurId);
                         if ($Secteur->show() && $Secteur->getId() > 0):
+                            $budgetCumul = array();
+                            $budgetCumulCurrent = 0;
                             ?>
                             <tr>
                                 <th style="text-align:center !important; background:#4fb99f;color:#fff;"
