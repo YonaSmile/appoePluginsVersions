@@ -302,12 +302,19 @@ class Article
 
     /**
      * @param bool $countArticles
+     * @param bool $length
      * @return array|bool
      */
-    public function showAll($countArticles = false)
+    public function showAll($countArticles = false, $length = false)
     {
-        $featured = $this->statut == 1 ? ' statut >= 1' : ' statut = ' . $this->statut . ' ';
-        $sql = 'SELECT * FROM appoe_plugin_itemGlue_articles WHERE ' . $featured . ' ORDER BY statut DESC, updated_at DESC';
+        $limit = $length ? ' LIMIT ' . $length . ' OFFSET 0' : '';
+        $featured = $this->statut == 1 ? ' ART.statut >= 1' : ' ART.statut = ' . $this->statut . ' ';
+
+        $sql = 'SELECT ART.*, AC.content AS content FROM appoe_plugin_itemGlue_articles AS ART
+        INNER JOIN appoe_plugin_itemGlue_articles_content AS AC
+        ON(AC.idArticle = ART.id)
+        WHERE ' . $featured . ' ORDER BY ART.statut DESC, AC.updated_at DESC ' . $limit;
+
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();
 
@@ -319,6 +326,30 @@ class Article
             $data = $stmt->fetchAll(\PDO::FETCH_OBJ);
 
             return (!$countArticles) ? $data : $count;
+        }
+    }
+
+    /**
+     * @param string $searching
+     * @return array|bool
+     */
+    public function searchFor($searching)
+    {
+        $featured = $this->statut == 1 ? ' ART.statut >= 1' : ' ART.statut = ' . $this->statut . ' ';
+
+        $sql = 'SELECT ART.*, AC.content AS content FROM appoe_plugin_itemGlue_articles AS ART
+        INNER JOIN appoe_plugin_itemGlue_articles_content AS AC
+        ON(AC.idArticle = ART.id)
+        WHERE ' . $featured . ' AND (ART.name LIKE ? OR AC.content LIKE ?) ORDER BY ART.statut DESC, AC.updated_at DESC ';
+
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->execute(array('%'.$searching.'%', '%'.$searching.'%'));
+
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            return $stmt->fetchAll(\PDO::FETCH_OBJ);
         }
     }
 

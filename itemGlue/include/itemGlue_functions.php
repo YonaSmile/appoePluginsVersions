@@ -25,6 +25,56 @@ function getArticlesByCategory($categoryId, $parent = false, $length = false)
 }
 
 /**
+ * @param bool $length
+ * @return array|bool
+ */
+function getRecentArticles($length = false)
+{
+    $Article = new \App\Plugin\ItemGlue\Article();
+    $allArticles = $Article->showAll(false, $length);
+
+    if ($allArticles) {
+        foreach ($allArticles as &$article) {
+
+            //Get Media
+            $ArticleMedia = new \App\Plugin\ItemGlue\ArticleMedia($article->id);
+            $article->medias = $ArticleMedia->showFiles();
+
+            //Get Metas
+            $ArticleMeta = new \App\Plugin\ItemGlue\ArticleMeta($article->id);
+            $article->metas = extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue');
+        }
+    }
+    return $allArticles;
+}
+
+/**
+ * @param string $searching
+ * @return array|bool
+ */
+function getSearchingArticles($searching)
+{
+    $searching = cleanData($searching);
+
+    $Article = new \App\Plugin\ItemGlue\Article();
+    $allArticles = $Article->searchFor($searching);
+
+    if ($allArticles) {
+        foreach ($allArticles as &$article) {
+
+            //Get Media
+            $ArticleMedia = new \App\Plugin\ItemGlue\ArticleMedia($article->id);
+            $article->medias = $ArticleMedia->showFiles();
+
+            //Get Metas
+            $ArticleMeta = new \App\Plugin\ItemGlue\ArticleMeta($article->id);
+            $article->metas = extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue');
+        }
+    }
+    return $allArticles;
+}
+
+/**
  * @param $articleId
  * @param $categories
  * @param bool $length
