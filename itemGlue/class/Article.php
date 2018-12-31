@@ -7,7 +7,6 @@ class Article
     private $name;
     private $description = null;
     private $slug;
-    private $content = null;
     private $statut = 1;
     private $userId;
     private $createdAt;
@@ -92,22 +91,6 @@ class Article
     }
 
     /**
-     * @return null
-     */
-    public function getContent()
-    {
-        return $this->content;
-    }
-
-    /**
-     * @param null $content
-     */
-    public function setContent($content)
-    {
-        $this->content = $content;
-    }
-
-    /**
      * @return mixed
      */
     public function getStatut()
@@ -181,7 +164,6 @@ class Article
   					`description` VARCHAR(160) NULL DEFAULT NULL,
   					`slug` VARCHAR(100) DEFAULT NULL,
   					UNIQUE (`slug`),
-  					`content` TEXT,
   					`statut` BOOLEAN NOT NULL DEFAULT TRUE,
   					`userId` INT(11) NOT NULL,
                 	`created_at` DATE NOT NULL,
@@ -313,9 +295,10 @@ class Article
         $sql = 'SELECT ART.*, AC.content AS content FROM appoe_plugin_itemGlue_articles AS ART
         INNER JOIN appoe_plugin_itemGlue_articles_content AS AC
         ON(AC.idArticle = ART.id)
-        WHERE ' . $featured . ' ORDER BY ART.statut DESC, AC.updated_at DESC ' . $limit;
+        WHERE ' . $featured . ' AND AC.lang = :lang ORDER BY ART.statut DESC, AC.updated_at DESC ' . $limit;
 
         $stmt = $this->dbh->prepare($sql);
+        $stmt->bindValue(':lang', LANG);
         $stmt->execute();
 
         $count = $stmt->rowCount();
@@ -330,6 +313,49 @@ class Article
     }
 
     /**
+     * @param int $year
+     * @param bool|int $month
+     * @param bool $length
+     * @return array|bool
+     */
+    public function showArchives($year, $month = false, $length = false)
+    {
+        if (!is_numeric($year) || strlen($year) != 4) {
+            $year = date('Y');
+        }
+
+        $sqlArchives = ' AND (YEAR(ART.updated_at) = :year OR YEAR(AC.updated_at) = :year) ';
+
+        if ($month && is_numeric($month) && checkdate($month, 1, $year)) {
+            $sqlArchives = ' AND (YEAR(ART.updated_at) = :year OR YEAR(AC.updated_at) = :year) AND (MONTH(ART.updated_at) = :month OR MONTH(AC.updated_at) = :month) ';
+        }
+
+        $limit = $length ? ' LIMIT ' . $length . ' OFFSET 0' : '';
+        $featured = $this->statut == 1 ? ' ART.statut >= 1' : ' ART.statut = ' . $this->statut . ' ';
+
+        $sql = 'SELECT ART.*, AC.content AS content FROM appoe_plugin_itemGlue_articles AS ART
+        INNER JOIN appoe_plugin_itemGlue_articles_content AS AC
+        ON(AC.idArticle = ART.id)
+        WHERE ' . $featured . ' AND AC.lang = :lang ' . $sqlArchives . ' ORDER BY ART.statut DESC, AC.updated_at DESC ' . $limit;
+
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindValue(':lang', LANG);
+        $stmt->bindValue(':year', $year);
+        if ($month) {
+            $stmt->bindValue(':month', $month);
+        }
+
+        $stmt->execute();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            return $stmt->fetchAll(\PDO::FETCH_OBJ);
+
+        }
+    }
+
+    /**
      * @param string $searching
      * @return array|bool
      */
@@ -340,10 +366,10 @@ class Article
         $sql = 'SELECT ART.*, AC.content AS content FROM appoe_plugin_itemGlue_articles AS ART
         INNER JOIN appoe_plugin_itemGlue_articles_content AS AC
         ON(AC.idArticle = ART.id)
-        WHERE ' . $featured . ' AND (ART.name LIKE ? OR AC.content LIKE ?) ORDER BY ART.statut DESC, AC.updated_at DESC ';
+        WHERE ' . $featured . ' AND (ART.name LIKE ? OR AC.content LIKE ?) AND AC.lang = ? ORDER BY ART.statut DESC, AC.updated_at DESC ';
 
         $stmt = $this->dbh->prepare($sql);
-        $stmt->execute(array('%'.$searching.'%', '%'.$searching.'%'));
+        $stmt->execute(array('%' . $searching . '%', '%' . $searching . '%', LANG));
 
         $error = $stmt->errorInfo();
         if ($error[0] != '00000') {

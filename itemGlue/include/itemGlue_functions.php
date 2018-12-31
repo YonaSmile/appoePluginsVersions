@@ -104,9 +104,10 @@ function getSimilarArticles($articleId, $categories, $length = false)
  * @param $categoryId
  * @param bool $parentId
  * @param int $favorite
+ * @param bool|array $archives
  * @return mixed
  */
-function getSpecificArticlesCategory($categoryId, $parentId = false, $favorite = 1)
+function getSpecificArticlesCategory($categoryId, $parentId = false, $favorite = 1, $archives = false)
 {
     //get all articles categories
     $Category = new \App\Category();
@@ -116,7 +117,7 @@ function getSpecificArticlesCategory($categoryId, $parentId = false, $favorite =
     //get all articles
     $Article = new \App\Plugin\ItemGlue\Article();
     $Article->setStatut($favorite);
-    $allArticles = extractFromObjArr($Article->showAll(), 'id');
+    $allArticles = !$archives ? extractFromObjArr($Article->showAll(), 'id') : extractFromObjArr($Article->showArchives($archives['year'], $archives['month']), 'id');
 
     //get all categories in relation with all articles
     $CategoryRelation = new \App\CategoryRelations();
