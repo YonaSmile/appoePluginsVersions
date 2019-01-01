@@ -4,7 +4,7 @@
         <?php $MessagIn = new \App\Plugin\MessagIn\MessagIn();
         $MessagIn->setToUser(getUserIdSession());
         $allMessages = $MessagIn->showAll();
-        global $ALLUSERS;
+        $ALLUSERS = unserialize(ALLUSERS);
         $counter = 0;
         $displayList = ''; ?>
         <div class="row">

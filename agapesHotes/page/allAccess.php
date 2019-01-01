@@ -6,8 +6,7 @@ $allSecteurs = extractFromObjToSimpleArr($Secteur->showAll(), 'id', 'nom');
 $allSites = extractFromObjToSimpleArr($Site->showAll(), 'id', 'nom');
 
 $allUsers = array();
-global $ALLUSERS;
-foreach ($ALLUSERS as $userId => $user) {
+foreach (unserialize(ALLUSERS) as $userId => $user) {
     if (getRoleId($user->role) < 3) {
         $allUsers[$userId] = $user;
     }
