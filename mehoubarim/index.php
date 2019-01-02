@@ -1,7 +1,5 @@
 <?php
 require_once('header.php');
-$User = new \App\Users();
-$ALLUSERS = extractFromObjArr($User->showAll(true), 'id');
 
 //Connected User
 mehoubarim_connectedUserStatus();
