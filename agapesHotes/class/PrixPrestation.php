@@ -22,6 +22,8 @@ class PrixPrestation
             $this->dbh = \App\DB::connect();
         }
 
+        $this->userId = getUserIdSession();
+
         if (!is_null($prestationId)) {
             $this->prestationId = $prestationId;
             $this->dateDebut = date('Y-m-d');
@@ -180,9 +182,9 @@ class PrixPrestation
   				PRIMARY KEY (`id`),
                 `etablissement_id` int(11) UNSIGNED NOT NULL,
                 `prestation_id` int(11) UNSIGNED NOT NULL,
-                `prixHT` decimal(7,2) UNSIGNED NOT NULL,
+                `prixHT` decimal(8,3) UNSIGNED NOT NULL,
                 `dateDebut` date NOT NULL,
-                UNIQUE (`etablissement_id`,`prestation_id`, `dateDebut`),
+                UNIQUE (`etablissement_id`,`prestation_id`, `dateDebut`, `prixHT`),
                 `status` tinyint(4) UNSIGNED NOT NULL DEFAULT 1,
                 `userId` int(11) UNSIGNED NOT NULL,
                 `created_at` date NOT NULL,
@@ -266,6 +268,28 @@ class PrixPrestation
      * @param $countPrixPrestations
      * @return array|bool
      */
+    public function showAllByEtablissement($countPrixPrestations = false)
+    {
+
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_prix_prestations WHERE etablissement_id = :etablissementId AND status = :status GROUP BY prestation_id ORDER BY updated_at DESC';
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':etablissementId', $this->etablissementId);
+        $stmt->bindParam(':status', $this->status);
+        $stmt->execute();
+
+        $count = $stmt->rowCount();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            return !$countPrixPrestations ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
+        }
+    }
+
+    /**
+     * @param $countPrixPrestations
+     * @return array|bool
+     */
     public function showAll($countPrixPrestations = false)
     {
 
@@ -290,7 +314,7 @@ class PrixPrestation
      */
     public function save()
     {
-        $this->userId = getUserIdSession();
+
         $sql = 'INSERT INTO appoe_plugin_agapesHotes_prix_prestations (etablissement_id, prestation_id, prixHT, dateDebut, status, userId, created_at) 
                 VALUES (:etablissementId, :prestationId, :prixHT, :dateDebut, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
@@ -315,9 +339,10 @@ class PrixPrestation
      */
     public function update()
     {
-        $this->userId = getUserIdSession();
+
         $sql = 'UPDATE appoe_plugin_agapesHotes_prix_prestations 
-        SET etablissement_id = :etablissementId, prestation_id = :prestationId, prixHT = :prixHT, dateDebut = :dateDebut, status = :status, userId = :userId WHERE id = :id';
+        SET etablissement_id = :etablissementId, prestation_id = :prestationId, prixHT = :prixHT, dateDebut = :dateDebut, status = :status, userId = :userId 
+        WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':etablissementId', $this->etablissementId);

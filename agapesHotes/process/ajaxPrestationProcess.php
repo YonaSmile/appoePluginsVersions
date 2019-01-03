@@ -73,7 +73,6 @@ if (checkAjaxRequest()) {
             }
         }
 
-
         // UPDATE | CREATE PRESTATION PRICE
         if (!empty($_POST['UPDATEPRESTATIONPRICE'])) {
 

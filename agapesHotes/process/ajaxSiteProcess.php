@@ -1,5 +1,6 @@
 <?php
 require_once('../main.php');
+
 if (checkAjaxRequest()) {
     if (getUserIdSession()) {
 

@@ -18,11 +18,14 @@ $paramsMonthNow = array(
     'dateFin' => date('Y-m-t')
 );
 
+$dateMonthAgo = new \DateTime();
+$dateMonthAgo->sub(new \DateInterval('P1M'));
+
 $paramsMonthAgo = array(
     'key' => '123',
     'ref' => $Site->ref,
-    'dateDebut' => date('Y-' . (date('m') - 1) . '-01'),
-    'dateFin' => date('Y-m-t')
+    'dateDebut' => $dateMonthAgo->format('Y-m').'-01',
+    'dateFin' => $dateMonthAgo->format('Y-m-t')
 );
 
 $inventaireRequest = json_decode(postHttpRequest($inventaireUrl, $paramsMonthNow), true);

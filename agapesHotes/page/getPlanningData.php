@@ -40,15 +40,16 @@ if (
         <h5 class="mb-0"><?= ucfirst(strftime("%B", strtotime($start->format('Y-m-d')))); ?> <?= $start->format('Y'); ?></h5>
         <small class="d-block">Commence le <?= $start->format('d/m/Y'); ?> et se termine
             le <?= $start->format('t/m/Y'); ?></small>
-        <button type="button" class="btn btn-link btn-sm copyTableData">Copier le tableau</button>
+        <!--<button type="button" class="btn btn-link btn-sm copyTableData">Copier le tableau</button>-->
     </div>
     <div class="col-12">
         <table id="planningTable" class="table table-striped tableNonEffect">
             <thead>
             <tr>
-                <th><?= trans('Employé'); ?></th>
+                <th colspan="2"><?= trans('Employé'); ?></th>
                 <?php foreach ($period as $key => $date): ?>
-                    <th style="<?= getDayColor($date, $Site->getAlsaceMoselle()); ?>"><?= $date->format('d'); ?></th>
+                    <th class="text-center"
+                        style="<?= getDayColor($date, $Site->getAlsaceMoselle()); ?>"><?= $date->format('d'); ?></th>
                 <?php endforeach; ?>
                 <th><?= trans('Employé'); ?></th>
             </tr>
@@ -66,6 +67,11 @@ if (
                             <small class="totalContainer"
                                    style="position: absolute;top: 0; right: 3px;font-size: 0.7em;"></small>
                         </th>
+                        <td>
+                            <small class="heightThirdTitle">Réels</small>
+                            <small class="heightThirdTitle">Pti</small>
+                            <small class="heightThirdTitle">Horaires</small>
+                        </td>
                         <?php foreach ($period as $key => $date):
 
                             $inputCase = '';
@@ -93,17 +99,16 @@ if (
                             ?>
                             <td style="padding: 4px 0 !important; vertical-align: top !important;"
                                 data-tdposition="<?= $count; ?>">
-                                <input class="text-center form-control updatePlanning inputUpdatePlanning"
+                                <input class="text-center form-control updatePlanning inputUpdatePlanning heightThird"
                                        name="<?= !empty($Planning->id) ? $Planning->id : ''; ?>" type="text"
                                        maxlength="10" list="absenceReasonList" autocomplete="off"
                                        style="padding: 5px 0 !important; min-width: 45px; <?= getDayColor($date, $Site->getAlsaceMoselle()); ?>"
                                        data-date="<?= $date->format('Y-m-d'); ?>"
                                        data-employeid="<?= $employeId; ?>"
                                        value="<?= $inputCase; ?>">
-                                <small class="text-center" style="display: block;">
+                                <small class="text-center heightThird">
                                     <?= $dayInCycle > 0 ? $allPtiDetails[$dayInCycle]->nbHeures : ''; ?></small>
-                                <small class="text-center horairesPlanning"
-                                       style="display: none;"><?= $dayInCycle > 0 ? $allPtiDetails[$dayInCycle]->horaires : ''; ?></small>
+                                <small class="text-center horairesPlanning heightThird p-1" style="min-width: 75px;"><?= $dayInCycle > 0 ? $allPtiDetails[$dayInCycle]->horaires : ''; ?></small>
                                 <datalist id="absenceReasonList">
                                     <option value="M" label="Maladie">M</option>
                                     <option value="AT" label="Accident du Travail">AT</option>
@@ -143,7 +148,7 @@ if (
             <i type="button" id="tableLeftCursor" class="fas fa-angle-left"></i>
         </table>
     </div>
-    <hr class="w-100 d-block mx-5 my-4">
+    <!--<hr class="w-100 d-block mx-5 my-4">
     <div class="table-responsive col-12" id="noteFraisTable">
         <table class="table table-striped tableNonEffect">
             <thead>
@@ -160,23 +165,23 @@ if (
             </thead>
             <tbody>
             <?php
-            $PlanningPlus = new \App\Plugin\AgapesHotes\PlanningPlus();
-            $PlanningPlus->setSiteId($Site->getId());
-            $PlanningPlus->setYear($start->format('Y'));
-            $PlanningPlus->setMonth($start->format('m'));
-            $allPlanningPlus = extractFromObjArr($PlanningPlus->showAllByDate(), 'employe_id');
+    $PlanningPlus = new \App\Plugin\AgapesHotes\PlanningPlus();
+    $PlanningPlus->setSiteId($Site->getId());
+    $PlanningPlus->setYear($start->format('Y'));
+    $PlanningPlus->setMonth($start->format('m'));
+    $allPlanningPlus = extractFromObjArr($PlanningPlus->showAllByDate(), 'employe_id');
 
-            foreach ($allContratEmployes as $employeId => $contrat):
+    foreach ($allContratEmployes as $employeId => $contrat):
 
-                $idPlanningPlus = !empty($allPlanningPlus[$employeId]->id) ? $allPlanningPlus[$employeId]->id : '';
-                $nbRepas = !empty($allPlanningPlus[$employeId]->nbRepas) ? $allPlanningPlus[$employeId]->nbRepas : '';
-                $primeObjectif = !empty($allPlanningPlus[$employeId]->primeObjectif) ? $allPlanningPlus[$employeId]->primeObjectif : '';
-                $primeExept = !empty($allPlanningPlus[$employeId]->primeExept) ? $allPlanningPlus[$employeId]->primeExept : '';
-                $accompte = !empty($allPlanningPlus[$employeId]->accompte) ? $allPlanningPlus[$employeId]->accompte : '';
-                $nbHeurePlus = !empty($allPlanningPlus[$employeId]->nbHeurePlus) ? $allPlanningPlus[$employeId]->nbHeurePlus : '';
-                $nbJoursFeries = !empty($allPlanningPlus[$employeId]->nbJoursFeries) ? $allPlanningPlus[$employeId]->nbJoursFeries : '';
-                $commentaires = !empty($allPlanningPlus[$employeId]->commentaires) ? $allPlanningPlus[$employeId]->commentaires : '';
-                ?>
+        $idPlanningPlus = !empty($allPlanningPlus[$employeId]->id) ? $allPlanningPlus[$employeId]->id : '';
+        $nbRepas = !empty($allPlanningPlus[$employeId]->nbRepas) ? $allPlanningPlus[$employeId]->nbRepas : '';
+        $primeObjectif = !empty($allPlanningPlus[$employeId]->primeObjectif) ? $allPlanningPlus[$employeId]->primeObjectif : '';
+        $primeExept = !empty($allPlanningPlus[$employeId]->primeExept) ? $allPlanningPlus[$employeId]->primeExept : '';
+        $accompte = !empty($allPlanningPlus[$employeId]->accompte) ? $allPlanningPlus[$employeId]->accompte : '';
+        $nbHeurePlus = !empty($allPlanningPlus[$employeId]->nbHeurePlus) ? $allPlanningPlus[$employeId]->nbHeurePlus : '';
+        $nbJoursFeries = !empty($allPlanningPlus[$employeId]->nbJoursFeries) ? $allPlanningPlus[$employeId]->nbJoursFeries : '';
+        $commentaires = !empty($allPlanningPlus[$employeId]->commentaires) ? $allPlanningPlus[$employeId]->commentaires : '';
+        ?>
                 <tr data-year="<?= $start->format('Y'); ?>"
                     data-month="<?= $start->format('m'); ?>"
                     data-idplanningplus="<?= $idPlanningPlus; ?>"
@@ -229,7 +234,7 @@ if (
             <?php endforeach; ?>
             </tbody>
         </table>
-    </div>
+    </div>-->
     <script type="text/javascript" src="<?= AGAPESHOTES_URL; ?>js/footer.js"></script>
     <script type="text/javascript" src="/app/js/printThis.js"></script>
     <script>

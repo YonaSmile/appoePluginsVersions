@@ -48,6 +48,35 @@ table.tableNonEffect tbody tr:focus, table.tableNonEffect tbody tr:hover {
     padding: 4px 10px;
 }
 
+.heightThirdTitle {
+    height: 35px;
+    width: 100%;
+    display: block;
+    line-height: 35px;
+}
+
+.heightThirdTitle:nth-child(n+3) {
+    min-height: 80px;
+    width: 100%;
+    display: block;
+    line-height: 80px;
+}
+
+.heightThird {
+    height: 35px;
+    width: 100%;
+    display: block;
+    line-height: 35px;
+}
+
+.heightThird:nth-child(n+3) {
+    min-height: 80px;
+    width: 100%;
+    display: block;
+    vertical-align: middle;
+    line-height: 16px;
+}
+
 #tableRightCursor {
     position: fixed;
     right: 0;

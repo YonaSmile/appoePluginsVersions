@@ -28,6 +28,10 @@ if (!empty($_GET['secteur']) && !empty($_GET['site']) && !empty($_GET['etablisse
                     data-target="#modalAddPrestation">
                 <?= trans('Ajouter une prestation'); ?>
             </button>
+            <button id="increasePrestation" type="button" class="btn btn-secondary btn-sm mb-4" data-toggle="modal"
+                    data-target="#modalIncreasePrestation">
+                <?= trans('majorer les prestations'); ?>
+            </button>
             <div class="row">
                 <div class="col-12">
                     <div class="table-responsive">
@@ -124,6 +128,48 @@ if (!empty($_GET['secteur']) && !empty($_GET['site']) && !empty($_GET['etablisse
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="modalIncreasePrestation" tabindex="-1" role="dialog"
+             aria-labelledby="modalIncreasePrestationTitle"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form action="<?= AGAPESHOTES_URL; ?>process/postProcess.php" method="post"
+                          id="increasePrestationForm">
+                        <div class="modal-header">
+                            <h5 class="modal-title"
+                                id="modalIncreasePrestationTitle"><?= trans('Majorer les prestations'); ?></h5>
+                        </div>
+                        <div class="modal-body" id="modalIncreasePrestationBody">
+                            <div class="row">
+                                <div class="col-12 my-2">
+                                    <?= getTokenField(); ?>
+                                    <input type="hidden" name="etablissementId" value="<?= $Etablissement->getId(); ?>">
+                                    <input type="hidden" name="redirectUrl" value="<?= $_SERVER['REQUEST_URI']; ?>">
+                                    <?= \App\Form::text('Indice de Majoration (%)', 'increase', 'text', !empty($_POST['increase']) ? $_POST['increase'] : '', true, 7, '', '', '', 'Ex: 0.05', false); ?>
+                                </div>
+                                <div class="my-3"></div>
+                                <div class="col-12 col-lg-6">
+                                    <?= \App\Form::select('Mois du nouveau prix', 'dateDebutMois', getMonth(), date('m'), true); ?>
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <?= \App\Form::select('Année du nouveau prix', 'dateDebutAnnee', array(date('Y') => date('Y'), date('Y') + 1 => date('Y') + 1), '', true); ?>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 my-2" id="FormIncreasePrestationInfos"></div>
+                            </div>
+                        </div>
+                        <div class="modal-footer" id="modalIncreasePrestationFooter">
+                            <?= \App\Form::target('INCREASEPRESTATION'); ?>
+                            <button type="submit" id="saveIncreasePrestationBtn"
+                                    class="btn btn-primary"><?= trans('Enregistrer'); ?></button>
+                            <button type="button" class="btn btn-secondary"
+                                    data-dismiss="modal"><?= trans('Fermer'); ?></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
         <div class="modal fade" id="modalAddPrice" tabindex="-1" role="dialog"
              aria-labelledby="modalAddPriceTitle"
              aria-hidden="true">
@@ -144,10 +190,10 @@ if (!empty($_GET['secteur']) && !empty($_GET['site']) && !empty($_GET['etablisse
                                     <div class="my-3"></div>
                                     <div class="row">
                                         <div class="col-12 col-lg-6">
-                                            <?= \App\Form::select('Mois du nouveau prix', 'dateDebutMois', getMonth(), '', true); ?>
+                                            <?= \App\Form::select('Mois du nouveau prix', 'dateDebutMois', getMonth(), date('m'), true); ?>
                                         </div>
                                         <div class="col-12 col-lg-6">
-                                            <?= \App\Form::select('Année du nouveau prix', 'dateDebutAnnee', array(date('Y') => date('Y'), date('Y') + 1 => date('Y') + 1, date('Y') + 2 => date('Y') + 2), '', true); ?>
+                                            <?= \App\Form::select('Année du nouveau prix', 'dateDebutAnnee', array(date('Y') - 1 => date('Y') - 1, date('Y') => date('Y'), date('Y') + 1 => date('Y') + 1), date('Y'), true); ?>
                                         </div>
                                     </div>
                                 </div>
