@@ -275,7 +275,7 @@ if (
 
             $('#tableRightCursor').on('click', function () {
                 $('#tableRightCursor').fadeOut();
-                $('html, body').animate({scrollLeft: 1000}, 800);
+                $('html, body').animate({scrollLeft: 1400}, 800);
                 var sideBarPosition = $('#sidebar').css('margin-left') == 0 ? ($('#sidebar').offset().left + $('#sidebar').width()) : ($('#sidebar').offset().left + 250);
                 $('#tableLeftCursor').css({
                     'left': sideBarPosition
@@ -285,7 +285,7 @@ if (
 
             $('#tableLeftCursor').on('click', function () {
                 $('#tableLeftCursor').fadeOut();
-                $('html, body').animate({scrollLeft: -1000}, 800);
+                $('html, body').animate({scrollLeft: -1400}, 800);
                 $('#tableRightCursor').fadeIn();
             });
 

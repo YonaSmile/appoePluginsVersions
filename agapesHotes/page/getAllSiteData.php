@@ -37,11 +37,13 @@ if (!empty($_POST['siteId']) && !empty($_POST['year'])) {
                 'dateFin' => date($year . '-' . $month . '-t')
             );
 
+            $dateMonthAgo = new \DateTime(date($year.'-'.$month.'-01'));
+            $dateMonthAgo->sub(new \DateInterval('P1M'));
             $paramsAgo = array(
                 'key' => '123',
                 'ref' => $Site->getRef(),
-                'dateDebut' => date($year . '-' . (date('m') - 1) . '-01'),
-                'dateFin' => date($year . '-m-t')
+                'dateDebut' => $dateMonthAgo->format('Y-m').'-01',
+                'dateFin' => $dateMonthAgo->format('Y-m-t')
             );
         }
 

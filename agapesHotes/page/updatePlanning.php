@@ -14,7 +14,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
         $Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $Secteur->getId()
     ):
         echo getTitle($Page->getName(), $Page->getSlug(), ' de <strong>' . $Site->getNom() . '</strong> du mois de <strong>' . strftime("%B", strtotime(date('Y-m-d'))) . '</strong>');
-        ?>
+    ?>
         <div class="row">
             <div class="col-12">
                 <button type="button" class="btn btn-sm btn-info seeMonthBefore">Mois précédent</button>

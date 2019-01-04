@@ -387,8 +387,6 @@ $View = new \App\Plugin\AgapesHotes\View();
                                         $totalFacturation = $View->get();
 
                                         $facturation = !empty($totalFacturation->totalHT) ? $totalFacturation->totalHT : 0;
-                                        $siteMeta = getSiteMeta($Site->id, date('Y'), date('m'));
-                                        $facturation += $siteMeta['fraisFixes'];
                                         ?>
                                         <th style="width: 200px;">CA variable</th>
                                         <td style="text-align: center !important;"><?= $facturation; ?>€

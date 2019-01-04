@@ -11,12 +11,12 @@ class View extends \App\DbView
     public function set()
     {
         //totalFacturation
-        $sql = 'CREATE VIEW totalFacturation AS SELECT MC.site_id, MC.annee, MC.mois, SUM(MC.totalHT + MS.totalHT + VC.totalHT) AS totalHT
+        $sql = 'CREATE VIEW totalFacturation AS SELECT MC.site_id, MC.annee, MC.mois, SUM(COALESCE(MC.totalHT,0) + COALESCE(MS.totalHT,0) + COALESCE(VC.totalHT,0)) AS totalHT
         FROM totalFacturationMainCourante AS MC
-        INNER JOIN totalFacturationMainSupplementaire AS MS
-        ON(MC.annee = MS.annee AND MC.mois = MS.mois)
-        INNER JOIN totalFacturationVivreCrue AS VC
-        ON(MC.annee = VC.annee AND MC.mois = VC.mois)
+        LEFT JOIN totalFacturationMainSupplementaire AS MS
+        ON(MC.site_id = MS.site_id AND MC.annee = MS.annee AND MC.mois = MS.mois)
+        LEFT JOIN totalFacturationVivreCrue AS VC
+        ON(MC.site_id = VC.site_id AND MC.annee = VC.annee AND MC.mois = VC.mois)
         GROUP BY MC.mois;';
 
         $stmt = $this->dbh->prepare($sql);
