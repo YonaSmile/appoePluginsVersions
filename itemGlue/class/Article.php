@@ -293,9 +293,9 @@ class Article
         $featured = $this->statut == 1 ? ' ART.statut >= 1' : ' ART.statut = ' . $this->statut . ' ';
 
         $sql = 'SELECT ART.*, AC.content AS content FROM appoe_plugin_itemGlue_articles AS ART
-        INNER JOIN appoe_plugin_itemGlue_articles_content AS AC
+        LEFT JOIN appoe_plugin_itemGlue_articles_content AS AC
         ON(AC.idArticle = ART.id)
-        WHERE ' . $featured . ' AND AC.lang = :lang ORDER BY ART.statut DESC, AC.updated_at DESC ' . $limit;
+        WHERE ' . $featured . ' AND (AC.lang IS NULL OR AC.lang = :lang) ORDER BY ART.statut DESC, AC.updated_at DESC ' . $limit;
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindValue(':lang', LANG);
@@ -334,9 +334,9 @@ class Article
         $featured = $this->statut == 1 ? ' ART.statut >= 1' : ' ART.statut = ' . $this->statut . ' ';
 
         $sql = 'SELECT ART.*, AC.content AS content FROM appoe_plugin_itemGlue_articles AS ART
-        INNER JOIN appoe_plugin_itemGlue_articles_content AS AC
+        LEFT JOIN appoe_plugin_itemGlue_articles_content AS AC
         ON(AC.idArticle = ART.id)
-        WHERE ' . $featured . ' AND AC.lang = :lang ' . $sqlArchives . ' ORDER BY ART.statut DESC, AC.updated_at DESC ' . $limit;
+        WHERE ' . $featured . ' AND (AC.lang IS NULL OR AC.lang = :lang) ' . $sqlArchives . ' ORDER BY ART.statut DESC, AC.updated_at DESC ' . $limit;
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindValue(':lang', LANG);

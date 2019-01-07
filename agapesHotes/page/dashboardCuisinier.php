@@ -412,7 +412,7 @@ $View = new \App\Plugin\AgapesHotes\View();
                                         $Budget->showBySite();
                                         ?>
                                         <th style="width: 200px;">Marge budget</th>
-                                        <td style="text-align: center !important;"><?= $Budget->getConso(); ?>
+                                        <td style="text-align: center !important;"><?= $facturation - $Budget->getConso(); ?>
                                             €
                                         </td>
                                         <td class="table-secondary"></td>

@@ -40,7 +40,7 @@ if (
         <h5 class="mb-0"><?= ucfirst(strftime("%B", strtotime($start->format('Y-m-d')))); ?> <?= $start->format('Y'); ?></h5>
         <small class="d-block">Commence le <?= $start->format('d/m/Y'); ?> et se termine
             le <?= $start->format('t/m/Y'); ?></small>
-        <!--<button type="button" class="btn btn-link btn-sm copyTableData">Copier le tableau</button>-->
+        <button type="button" class="btn btn-link btn-sm printPlanning">Imprimer le Planning</button>
     </div>
     <div class="col-12">
         <table id="planningTable" class="table table-striped tableNonEffect">
@@ -108,7 +108,8 @@ if (
                                        value="<?= $inputCase; ?>">
                                 <small class="text-center heightThird">
                                     <?= $dayInCycle > 0 ? $allPtiDetails[$dayInCycle]->nbHeures : ''; ?></small>
-                                <small class="text-center horairesPlanning heightThird p-1" style="min-width: 75px;"><?= $dayInCycle > 0 ? $allPtiDetails[$dayInCycle]->horaires : ''; ?></small>
+                                <small class="text-center horairesPlanning heightThird p-1"
+                                       style="min-width: 75px;"><?= $dayInCycle > 0 ? $allPtiDetails[$dayInCycle]->horaires : ''; ?></small>
                                 <datalist id="absenceReasonList">
                                     <option value="M" label="Maladie">M</option>
                                     <option value="AT" label="Accident du Travail">AT</option>
@@ -239,6 +240,12 @@ if (
     <script type="text/javascript" src="/app/js/printThis.js"></script>
     <script>
         $(document).ready(function () {
+
+            $('button.printPlanning').on('click', function () {
+                $('#mainContent').printThis({
+                    loadCSS: "<?= AGAPESHOTES_URL; ?>css/print.css",
+                });
+            });
 
             $('.tableNonEffect tr td input').keydown(function (e) {
 
@@ -486,30 +493,6 @@ if (
                         }
                     );
                 }, 300);
-            });
-
-            function prepareFacture($element) {
-
-                var $newParent = $element.clone();
-                var $form = $newParent.find('form');
-
-                $('input[type="hidden"]', $form).remove();
-
-                $('#noteFraisTable, datalist, hr', $form).remove();
-
-                return $newParent;
-
-            }
-
-            $('button.printFacture').on('click', function () {
-
-                var $btn = $(this);
-                var $parent = $('table#planningTable');
-
-                var $newParent = prepareFacture($parent);
-                $newParent.printThis({
-                    loadCSS: "<?= AGAPESHOTES_URL; ?>css/print.css",
-                });
             });
         });
     </script>

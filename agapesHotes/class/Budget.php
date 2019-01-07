@@ -12,6 +12,8 @@ class Budget
     public $conso = 0;
     public $personnel = 0;
     public $fraisGeneraux = 0;
+    public $caVariable = 0;
+    public $masseDeFrais = 0;
     public $retourAchat = 0;
     public $retourFraisSiege = 0;
     private $status = 1;
@@ -162,6 +164,37 @@ class Budget
     {
         $this->fraisGeneraux = $fraisGeneraux;
     }
+    /**
+     * @return int
+     */
+    public function getCaVariable()
+    {
+        return $this->caVariable;
+    }
+
+    /**
+     * @param int $caVariable
+     */
+    public function setCaVariable($caVariable)
+    {
+        $this->caVariable = $caVariable;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMasseDeFrais()
+    {
+        return $this->masseDeFrais;
+    }
+
+    /**
+     * @param int $masseDeFrais
+     */
+    public function setMasseDeFrais($masseDeFrais)
+    {
+        $this->masseDeFrais = $masseDeFrais;
+    }
 
     /**
      * @return mixed
@@ -304,6 +337,8 @@ class Budget
                 `conso` decimal(8,3) UNSIGNED NOT NULL,
                 `personnel` decimal(8,3) UNSIGNED NOT NULL,
                 `frais_generaux` decimal(8,3) UNSIGNED NOT NULL,
+                `caVariable` decimal(8,3) UNSIGNED NOT NULL,
+                `masseDeFrais` decimal(8,3) UNSIGNED NOT NULL,
                 `retourAchat` decimal(8,3) UNSIGNED NOT NULL,
                 `retourFraisSiege` decimal(8,3) UNSIGNED NOT NULL,
                 UNIQUE (`site_id`,`year`, `month`),
@@ -439,8 +474,8 @@ class Budget
     public function save()
     {
         $this->userId = getUserIdSession();
-        $sql = 'INSERT INTO appoe_plugin_agapesHotes_budget (site_id, year, month, ca, conso, personnel, fraisGeneraux, status, userId, created_at) 
-                VALUES (:siteId, :year, :month, :ca, :conso, :personnel, :fraisGeneraux, :status, :userId, CURDATE())';
+        $sql = 'INSERT INTO appoe_plugin_agapesHotes_budget (site_id, year, month, ca, conso, personnel, fraisGeneraux, caVariable, masseDeFrais, status, userId, created_at) 
+                VALUES (:siteId, :year, :month, :ca, :conso, :personnel, :fraisGeneraux,  :caVariable, :masseDeFrais, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
         $stmt->bindParam(':year', $this->year);
@@ -449,6 +484,8 @@ class Budget
         $stmt->bindParam(':conso', $this->conso);
         $stmt->bindParam(':personnel', $this->personnel);
         $stmt->bindParam(':fraisGeneraux', $this->fraisGeneraux);
+        $stmt->bindParam(':caVariable', $this->caVariable);
+        $stmt->bindParam(':masseDeFrais', $this->masseDeFrais);
         $stmt->bindParam(':status', $this->status);
         $stmt->bindParam(':userId', $this->userId);
         $stmt->execute();
@@ -468,7 +505,7 @@ class Budget
     {
         $this->userId = getUserIdSession();
         $sql = 'UPDATE appoe_plugin_agapesHotes_budget 
-        SET site_id = :siteId, year = :year, month = :month, ca = :ca, conso = :conso, personnel = :personnel, fraisGeneraux = :fraisGeneraux, status = :status, userId = :userId WHERE id = :id';
+        SET site_id = :siteId, year = :year, month = :month, ca = :ca, conso = :conso, personnel = :personnel, fraisGeneraux = :fraisGeneraux, caVariable = :caVariable, masseDeFrais = :masseDeFrais, status = :status, userId = :userId WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
@@ -478,6 +515,8 @@ class Budget
         $stmt->bindParam(':conso', $this->conso);
         $stmt->bindParam(':personnel', $this->personnel);
         $stmt->bindParam(':fraisGeneraux', $this->fraisGeneraux);
+        $stmt->bindParam(':caVariable', $this->caVariable);
+        $stmt->bindParam(':masseDeFrais', $this->masseDeFrais);
         $stmt->bindParam(':status', $this->status);
         $stmt->bindParam(':userId', $this->userId);
         $stmt->bindParam(':id', $this->id);

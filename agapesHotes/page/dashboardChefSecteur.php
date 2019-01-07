@@ -21,11 +21,13 @@ if ($Secteur):
             'dateFin' => date('Y-m-t')
         );
 
+        $dateMonthAgo = new \DateTime();
+        $dateMonthAgo->sub(new \DateInterval('P1M'));
         $paramsMonthAgo = array(
             'key' => '123',
             'ref' => $site->ref,
-            'dateDebut' => date('Y-' . (date('m') - 1) . '-01'),
-            'dateFin' => date('Y-m-t')
+            'dateDebut' => $dateMonthAgo->format('Y-m').'-01',
+            'dateFin' => $dateMonthAgo->format('Y-m-t')
         );
 
         $allSitesData[$site->id]['inventaireRequest'] = json_decode(postHttpRequest($inventaireUrl, $paramsMonthNow), true);
@@ -34,10 +36,10 @@ if ($Secteur):
         $allSitesData[$site->id]['commandes'] = getCommandesServentest($allSitesData[$site->id]['commandesRequest']);
         $allSitesData[$site->id]['inventaire'] = getInventaireServentest($allSitesData[$site->id]['inventaireRequest']);
         $allSitesData[$site->id]['inventaireMonthAgo'] = getInventaireServentest($allSitesData[$site->id]['inventaireRequestMonthAgo']);
-        $allSitesData[$site->id]['noteDeFrais'] = getNoteDeFrais($site->id, date('Y'), date('m'));
-        $allSitesData[$site->id]['siteMeta'] = getSiteMeta($site->id, date('Y'), date('m'));
-        $allSitesData[$site->id]['facturation'] = getFacturation($site->id, date('Y'), date('m')) + $allSitesData[$site->id]['siteMeta']['fraisFixes'];
-        $allSitesData[$site->id]['budget'] = getBudget($site->id, date('Y'), date('m'));
+        $allSitesData[$site->id]['noteDeFrais'] = getNoteDeFrais($site->id, date('Y'));
+        $allSitesData[$site->id]['siteMeta'] = getSiteMeta($site->id, date('Y'));
+        $allSitesData[$site->id]['facturation'] = getFacturation($site->id, date('Y')) + $allSitesData[$site->id]['siteMeta']['fraisFixes'];
+        $allSitesData[$site->id]['budget'] = getBudget($site->id, date('Y'));
 
         $allSitesData[$site->id]['consoReel']['denree'] = (
                 $allSitesData[$site->id]['commandes']['denree']['total']
@@ -91,14 +93,14 @@ if ($Secteur):
                                 <td style="text-align:left !important;">
                                     <small><em>Budget</em></small>
                                 </td>
-                                <td><?= $allSitesData[$site->id]['budget']->getCa(); ?>€</td>
-                                <td><?= $allSitesData[$site->id]['budget']->getConso(); ?>€</td>
-                                <td><?= $allSitesData[$site->id]['budget']->getPersonnel(); ?>€</td>
-                                <td><?= $allSitesData[$site->id]['budget']->getFraisGeneraux(); ?>€</td>
-                                <td><?= $allSitesData[$site->id]['budget']->getResultatExploitation(); ?>€</td>
-                                <td><?= $allSitesData[$site->id]['budget']->getRetourAchat(); ?>%</td>
-                                <td><?= $allSitesData[$site->id]['budget']->getRetourFraisSiege(); ?>€</td>
-                                <td><?= $allSitesData[$site->id]['budget']->getResultats(); ?>€</td>
+                                <td><?= financial($allSitesData[$site->id]['budget']->getCa()); ?>€</td>
+                                <td><?= financial($allSitesData[$site->id]['budget']->getConso()); ?>€</td>
+                                <td><?= financial($allSitesData[$site->id]['budget']->getPersonnel()); ?>€</td>
+                                <td><?= financial($allSitesData[$site->id]['budget']->getFraisGeneraux()); ?>€</td>
+                                <td><?= financial($allSitesData[$site->id]['budget']->getResultatExploitation()); ?>€</td>
+                                <td><?= financial($allSitesData[$site->id]['budget']->getRetourAchat()); ?>%</td>
+                                <td><?= financial($allSitesData[$site->id]['budget']->getRetourFraisSiege()); ?>€</td>
+                                <td><?= financial($allSitesData[$site->id]['budget']->getResultats()); ?>€</td>
                                 <td class="table-secondary"></td>
                             </tr>
                             <tr>
@@ -125,6 +127,7 @@ if ($Secteur):
                 </table>
             </div>
         </div>
+        <!--
         <?php foreach ($allSites as $site): ?>
             <div class="col-12 col-lg-6 my-3">
                 <div class="card border-0 w-100">
@@ -168,7 +171,7 @@ if ($Secteur):
                                                     </th>
                                                 </tr>
                                                 <?php if ($allSitesData[$site->id]['commandesRequest']):
-                                                    foreach ($allSitesData[$site->id]['commandes']['denree'] as $key => $allDenree): ?>
+            foreach ($allSitesData[$site->id]['commandes']['denree'] as $key => $allDenree): ?>
                                                         <tr>
                                                             <td><?= $allDenree['fournisseur']; ?></td>
                                                             <td><?= $allDenree['date_facturation']; ?></td>
@@ -408,5 +411,6 @@ if ($Secteur):
                 </div>
             </div>
         <?php endforeach; ?>
+        -->
     </div>
 <?php endif; ?>
