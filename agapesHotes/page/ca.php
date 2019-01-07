@@ -23,7 +23,7 @@ $Budget = new \App\Plugin\AgapesHotes\Budget();
         <div class="row">
             <div class="col-12">
                 <div class="table-responsive">
-                    <table id="syntheseSecteurTable" class="table table-striped tableNonEffect text-center">
+                    <table id="syntheseSecteurTable" class="table table-striped tableNonEffect text-center fixed-header">
                         <thead>
                         <tr>
                             <th><?= trans('Site'); ?></th>
@@ -130,4 +130,5 @@ $Budget = new \App\Plugin\AgapesHotes\Budget();
             </div>
         </div>
     </div>
+    <script type="text/javascript" src="<?= AGAPESHOTES_URL; ?>js/footer.js"></script>
 <?php require('footer.php'); ?>

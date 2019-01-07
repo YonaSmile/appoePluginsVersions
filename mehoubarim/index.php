@@ -14,10 +14,7 @@ if ($mehoubarim && is_array($mehoubarim)): ?>
                     <span class="logoutUser float-left linkBtn" data-userid="<?= $connectedUserId; ?>">
                         <i class="fas fa-times"></i></span>
                 <?php endif; ?>
-                <?php if (
-                    !empty(getUserFirstName($connectedUserId)) &&
-                    ((!isTechnicien(getUserRoleId()) && $connectedUserData['status'] != 'Déconnecté')
-                        || isTechnicien(getUserRoleId()))): ?>
+                <?php if ($connectedUserData['status'] != 'Déconnecté'): ?>
                     <span class="text-<?= STATUS_CONNECTED_USER[$connectedUserData['status']]; ?>"
                     <?= isTechnicien(getUserRoleId()) ? 'title="Location: ' . $connectedUserData['pageConsulting'] . '"' : ''; ?>>
                     <i class="fas fa-user"></i></span>

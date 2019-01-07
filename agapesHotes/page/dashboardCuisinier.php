@@ -412,7 +412,7 @@ $View = new \App\Plugin\AgapesHotes\View();
                                         $Budget->showBySite();
                                         ?>
                                         <th style="width: 200px;">Marge budget</th>
-                                        <td style="text-align: center !important;"><?= $facturation - $Budget->getConso(); ?>
+                                        <td style="text-align: center !important;"><?= $Budget->getCaVariable() - $Budget->getConso(); ?>
                                             €
                                         </td>
                                         <td class="table-secondary"></td>
@@ -472,7 +472,7 @@ $View = new \App\Plugin\AgapesHotes\View();
                         <div id="collapseResultats" class="collapse" aria-labelledby="headingFive"
                              data-parent="#infosAgapes">
                             <div class="littleContainer"><span class="littleTitle colorPrimary">CA</span>
-                                <span class="littleText"><?= $facturation; ?>€</span></div>
+                                <span class="littleText"><?= $facturation+$siteMeta['fraisFixes']; ?>€</span></div>
                             <div class="littleContainer"><span class="littleTitle colorPrimary">Consommation</span>
                                 <span class="littleText"><?= $consoReelDenrees; ?>€</span></div>
                             <div class="littleContainer"><span

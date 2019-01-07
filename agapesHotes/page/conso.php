@@ -18,7 +18,7 @@ $period = new \DatePeriod($start, $interval, $end);
         <div class="row">
             <div class="col-12">
                 <div class="table-responsive">
-                    <table id="syntheseSecteurTable" class="table table-striped tableNonEffect text-center">
+                    <table id="syntheseSecteurTable" class="table table-striped tableNonEffect text-center fixed-header">
                         <thead>
                         <tr>
                             <th><?= trans('Site'); ?></th>
@@ -129,6 +129,7 @@ $period = new \DatePeriod($start, $interval, $end);
             </div>
         </div>
     </div>
+    <script type="text/javascript" src="<?= AGAPESHOTES_URL; ?>js/footer.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             var consoreelDenree = [];

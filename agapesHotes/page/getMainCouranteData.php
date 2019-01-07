@@ -194,14 +194,14 @@ if (
                 <th>CA Mois</th>
                 <td class="caPrestationMonth"></td>
             </tr>
-            <tr>
+            <!--<tr>
                 <th>CA Semaine</th>
                 <td class="caPrestationWeek"></td>
             </tr>
             <tr>
                 <th>CA Jour</th>
                 <td class="caPrestationDay"></td>
-            </tr>
+            </tr>-->
             </tbody>
         </table>
     </div>

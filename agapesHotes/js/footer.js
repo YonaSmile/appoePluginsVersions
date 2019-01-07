@@ -1,15 +1,16 @@
 if ($('.fixed-header').length) {
-    var tablePosition = $('.fixed-header').offset();
     var theadSize = {};
 
     $(window).scroll(function (e) {
+        var tablePosition = parseInt($('.fixed-header').offset().top);
         $('.fixed-header thead th').each(function (index, val) {
             theadSize[index] = $(this).width();
         });
         var top = this.scrollY, left = this.scrollX;
-        if (top >= parseInt(tablePosition.top)) {
+
+        if (top >= tablePosition) {
             $('.fixed-header thead').stop().css({
-                top: (top - parseInt(tablePosition.top)) + $('#navbarUser').outerHeight() - 10,
+                top: (top - tablePosition) + $('#navbarUser').outerHeight() - 10,
                 left: 0,
                 position: 'absolute'
             });

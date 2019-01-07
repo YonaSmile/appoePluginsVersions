@@ -164,6 +164,7 @@ class Budget
     {
         $this->fraisGeneraux = $fraisGeneraux;
     }
+
     /**
      * @return int
      */
@@ -418,6 +419,8 @@ class Budget
 
                     $row = $stmt->fetch(\PDO::FETCH_OBJ);
                     $this->feed($row);
+                    $this->retourAchat = $this->conso * 0.08;
+                    $this->retourFraisSiege = $this->ca * 0.04;
                     $this->resultatExploitation = $this->ca - ($this->conso + $this->personnel + $this->fraisGeneraux);
                     $this->resultats = $this->resultatExploitation + $this->retourAchat + $this->retourFraisSiege;
 
@@ -433,12 +436,13 @@ class Budget
                     $this->conso += $row->conso;
                     $this->personnel += $row->personnel;
                     $this->fraisGeneraux += $row->frais_generaux;
-                    $this->retourAchat += $row->retourAchat;
-                    $this->retourFraisSiege += $row->retourFraisSiege;
-
-                    $this->resultatExploitation = $this->ca - ($this->conso + $this->personnel + $this->fraisGeneraux);
-                    $this->resultats = $this->resultatExploitation + $this->retourAchat + $this->retourFraisSiege;
+                    /*$this->retourAchat += $row->retourAchat;
+                    $this->retourFraisSiege += $row->retourFraisSiege;*/
                 }
+                $this->retourAchat = $this->conso * 0.08;
+                $this->retourFraisSiege = $this->ca * 0.04;
+                $this->resultatExploitation = $this->ca - ($this->conso + $this->personnel + $this->fraisGeneraux);
+                $this->resultats = $this->resultatExploitation + $this->retourAchat + $this->retourFraisSiege;
                 return true;
             }
         }

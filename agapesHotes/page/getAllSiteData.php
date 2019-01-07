@@ -37,12 +37,12 @@ if (!empty($_POST['siteId']) && !empty($_POST['year'])) {
                 'dateFin' => date($year . '-' . $month . '-t')
             );
 
-            $dateMonthAgo = new \DateTime(date($year.'-'.$month.'-01'));
+            $dateMonthAgo = new \DateTime(date($year . '-' . $month . '-01'));
             $dateMonthAgo->sub(new \DateInterval('P1M'));
             $paramsAgo = array(
                 'key' => '123',
                 'ref' => $Site->getRef(),
-                'dateDebut' => $dateMonthAgo->format('Y-m').'-01',
+                'dateDebut' => $dateMonthAgo->format('Y-m') . '-01',
                 'dateFin' => $dateMonthAgo->format('Y-m-t')
             );
         }
@@ -60,29 +60,37 @@ if (!empty($_POST['siteId']) && !empty($_POST['year'])) {
         $allSitesData[$Secteur->getId()][$Site->getId()]['facturation'] = getFacturation($Site->getId(), $year, $month) + $allSitesData[$Secteur->getId()][$Site->getId()]['siteMeta']['fraisFixes'];
         $allSitesData[$Secteur->getId()][$Site->getId()]['budget'] = getBudget($Site->getId(), $year, $month);
 
-        $allSitesData[$Secteur->getId()][$Site->getId()]['consoReel']['denree'] = (
+        $allSitesData[$Secteur->getId()][$Site->getId()]['consoReel']['denree'] = financial((
                 $allSitesData[$Secteur->getId()][$Site->getId()]['commandes']['denree']['total']
                 + $allSitesData[$Secteur->getId()][$Site->getId()]['inventaireMonthAgo']['denree']['total']
                 + $allSitesData[$Secteur->getId()][$Site->getId()]['noteDeFrais']['denree']
-            ) - $allSitesData[$Secteur->getId()][$Site->getId()]['inventaire']['denree']['total'];
+            ) - $allSitesData[$Secteur->getId()][$Site->getId()]['inventaire']['denree']['total'], true);
 
-        $allSitesData[$Secteur->getId()][$Site->getId()]['consoReel']['nonAlimentaire'] = (
+        $allSitesData[$Secteur->getId()][$Site->getId()]['consoReel']['nonAlimentaire'] = financial((
                 $allSitesData[$Secteur->getId()][$Site->getId()]['commandes']['nonAlimentaire']['total']
                 + $allSitesData[$Secteur->getId()][$Site->getId()]['inventaireMonthAgo']['nonAlimentaire']['total']
                 + $allSitesData[$Secteur->getId()][$Site->getId()]['noteDeFrais']['nonAlimentaire']
-            ) - $allSitesData[$Secteur->getId()][$Site->getId()]['inventaire']['nonAlimentaire']['total'];
+            ) - $allSitesData[$Secteur->getId()][$Site->getId()]['inventaire']['nonAlimentaire']['total'], true);
 
 
-        $allSitesData[$Secteur->getId()][$Site->getId()]['fraisDeSiege'] = $allSitesData[$Secteur->getId()][$Site->getId()]['facturation'] * 0.04;
+        $allSitesData[$Secteur->getId()][$Site->getId()]['fraisDeSiege'] = financial($allSitesData[$Secteur->getId()][$Site->getId()]['facturation'] * 0.04, true);
         $allSitesData[$Secteur->getId()][$Site->getId()]['fraisGeneraux'] =
-            $allSitesData[$Secteur->getId()][$Site->getId()]['siteMeta']['participationTournante']
-            + $allSitesData[$Secteur->getId()][$Site->getId()]['fraisDeSiege']
-            + $allSitesData[$Secteur->getId()][$Site->getId()]['consoReel']['nonAlimentaire'];
+            financial($allSitesData[$Secteur->getId()][$Site->getId()]['siteMeta']['participationTournante']
+                + $allSitesData[$Secteur->getId()][$Site->getId()]['fraisDeSiege']
+                + $allSitesData[$Secteur->getId()][$Site->getId()]['consoReel']['nonAlimentaire'], true);
 
-        $allSitesData[$Secteur->getId()][$Site->getId()]['resultatExploitation'] = $allSitesData[$Secteur->getId()][$Site->getId()]['facturation'] - ($allSitesData[$Secteur->getId()][$Site->getId()]['consoReel']['denree'] + $allSitesData[$Secteur->getId()][$Site->getId()]['siteMeta']['fraisDePersonnels'] + $allSitesData[$Secteur->getId()][$Site->getId()]['fraisGeneraux']);
-        $allSitesData[$Secteur->getId()][$Site->getId()]['retourAchat'] = $allSitesData[$Secteur->getId()][$Site->getId()]['consoReel']['denree'] * 0.08;
-        $allSitesData[$Secteur->getId()][$Site->getId()]['resultats'] = $allSitesData[$Secteur->getId()][$Site->getId()]['resultatExploitation'] + $allSitesData[$Secteur->getId()][$Site->getId()]['retourAchat'] + $allSitesData[$Secteur->getId()][$Site->getId()]['fraisDeSiege'];
-        $allSitesData[$Secteur->getId()][$Site->getId()]['pourcentagesDeRentabilite'] = $allSitesData[$Secteur->getId()][$Site->getId()]['facturation'] > 0 ? $allSitesData[$Secteur->getId()][$Site->getId()]['resultats'] / $allSitesData[$Secteur->getId()][$Site->getId()]['facturation'] : 0;
+        $allSitesData[$Secteur->getId()][$Site->getId()]['resultatExploitation'] = financial($allSitesData[$Secteur->getId()][$Site->getId()]['facturation']
+            - ($allSitesData[$Secteur->getId()][$Site->getId()]['consoReel']['denree']
+                + $allSitesData[$Secteur->getId()][$Site->getId()]['siteMeta']['fraisDePersonnels']
+                + $allSitesData[$Secteur->getId()][$Site->getId()]['fraisGeneraux']), true);
+        $allSitesData[$Secteur->getId()][$Site->getId()]['retourAchat'] = financial($allSitesData[$Secteur->getId()][$Site->getId()]['consoReel']['denree'] * 0.08, true);
+        $allSitesData[$Secteur->getId()][$Site->getId()]['resultats'] = financial($allSitesData[$Secteur->getId()][$Site->getId()]['resultatExploitation']
+            + $allSitesData[$Secteur->getId()][$Site->getId()]['retourAchat']
+            + $allSitesData[$Secteur->getId()][$Site->getId()]['fraisDeSiege'], true);
+        $allSitesData[$Secteur->getId()][$Site->getId()]['pourcentagesDeRentabilite'] =
+            financial($allSitesData[$Secteur->getId()][$Site->getId()]['facturation'] > 0
+                ? $allSitesData[$Secteur->getId()][$Site->getId()]['resultats'] / $allSitesData[$Secteur->getId()][$Site->getId()]['facturation']
+                : 0, true);
         echo json_encode($allSitesData);
     }
 
