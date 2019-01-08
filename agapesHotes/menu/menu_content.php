@@ -18,7 +18,7 @@ if (getUserRoleId() == 1):
     </li>
     <li class="<?= activePage('updateVivreCrue'); ?>">
         <a href="<?= WEB_PLUGIN_URL; ?>agapesHotes/page/vivreCrue/<?= $Site->secteurSlug; ?>/<?= $Site->slug; ?>/">
-            <?= trans('Vivre crue'); ?></a>
+            <?= trans('Vivre cru'); ?></a>
     </li>
     <li class="<?= activePage('updateMainSupplementaire'); ?>">
         <a href="<?= WEB_PLUGIN_URL; ?>agapesHotes/page/mainSupplementaire/<?= $Site->secteurSlug; ?>/<?= $Site->slug; ?>/">

@@ -242,6 +242,7 @@ if (
         $(document).ready(function () {
 
             $('button.printPlanning').on('click', function () {
+
                 $('#mainContent').printThis({
                     loadCSS: "<?= AGAPESHOTES_URL; ?>css/print.css",
                 });

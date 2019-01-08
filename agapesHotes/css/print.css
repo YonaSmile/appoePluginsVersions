@@ -1,16 +1,25 @@
 @page {
     size: auto;
-    margin: 0 4mm;
+    margin: 0 2mm;
 }
 
 @media only print {
+
+    #mainContent {
+        position: static !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
     div.productFields [class^="col-"],
     div.infoTable [class^="col-"] {
         padding-left: 5px !important;
-        padding-right: 0px !important;
+        padding-right: 0 !important;
     }
 
-    .horairesPlanning,i[type="button"] {
-        display: block;
+    #tableRightCursor,
+    #tableLeftCursor {
+        display: none !important;
     }
+
 }

@@ -14,24 +14,28 @@ if (checkAjaxRequest()) {
                 && !empty($_POST['prixHTunite']) && !empty($_POST['tauxTva'])
                 && isset($_POST['quantite']) && isset($_POST['id'])) {
 
-                $dateNow = new \DateTime();
+                //Check date permissions
+                if (getUserRoleId(getUserIdSession()) == 1) {
 
-                $dateMonthAgo = new DateTime();
-                $dateMonthAgo->sub(new \DateInterval('P1M'));
+                    $dateNow = new \DateTime();
 
-                $processDate = new \DateTime($_POST['date']);
+                    $dateMonthAgo = new DateTime();
+                    $dateMonthAgo->sub(new \DateInterval('P1M'));
 
-                if ($dateNow->format('j') >= 25) {
-                    if ($processDate->format('n') < $dateNow->format('n')
-                        && $processDate->format('Y') < $dateNow->format('Y')) {
-                        echo 'Vous ne pouvez plus modifier les données d\'avant !';
-                        exit();
-                    }
-                } else {
-                    if ($processDate->format('n') < $dateMonthAgo->format('n')
-                        && $processDate->format('Y') <= $dateMonthAgo->format('Y')) {
-                        echo 'Vous ne pouvez plus modifier les données d\'avant !';
-                        exit();
+                    $processDate = new \DateTime($_POST['date']);
+
+                    if ($dateNow->format('j') >= 25) {
+                        if ($processDate->format('n') < $dateNow->format('n')
+                            && $processDate->format('Y') < $dateNow->format('Y')) {
+                            echo 'Vous ne pouvez plus modifier les données d\'avant !';
+                            exit();
+                        }
+                    } else {
+                        if ($processDate->format('n') < $dateMonthAgo->format('n')
+                            && $processDate->format('Y') <= $dateMonthAgo->format('Y')) {
+                            echo 'Vous ne pouvez plus modifier les données d\'avant !';
+                            exit();
+                        }
                     }
                 }
 
