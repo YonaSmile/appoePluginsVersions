@@ -6,7 +6,7 @@ array_unique($allOrdSites);
 $allSitesBySecteur = groupMultipleKeysObjectsArray($allSites, 'secteur_id');
 $Secteur = new \App\Plugin\AgapesHotes\Secteur();
 ?>
-<h4>Synthèse Secteur</h4>
+<h4>Synthèse</h4>
 <div class="row mb-3">
     <div class="col-12 positionRelative">
         <div class="table-responsive">

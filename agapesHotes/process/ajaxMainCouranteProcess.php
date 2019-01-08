@@ -14,6 +14,27 @@ if (checkAjaxRequest()) {
                 && !empty($_POST['prixId']) && !empty($_POST['date']) && !empty($_POST['reelPrestationPrice'])
                 && isset($_POST['quantite']) && isset($_POST['id'])) {
 
+                $dateNow = new \DateTime();
+
+                $dateMonthAgo = new DateTime();
+                $dateMonthAgo->sub(new \DateInterval('P1M'));
+
+                $processDate = new \DateTime($_POST['date']);
+
+                if ($dateNow->format('j') >= 25) {
+                    if ($processDate->format('n') < $dateNow->format('n')
+                    && $processDate->format('Y') < $dateNow->format('Y')) {
+                        echo 'Vous ne pouvez plus modifier les données d\'avant !';
+                        exit();
+                    }
+                } else {
+                    if ($processDate->format('n') < $dateMonthAgo->format('n')
+                        && $processDate->format('Y') <= $dateMonthAgo->format('Y')) {
+                        echo 'Vous ne pouvez plus modifier les données d\'avant !';
+                        exit();
+                    }
+                }
+
                 $MainCourantProcess->feed($_POST);
                 $MainCourantProcess->setTotal($_POST['reelPrestationPrice'] * $_POST['quantite']);
                 if (empty($_POST['id'])) {

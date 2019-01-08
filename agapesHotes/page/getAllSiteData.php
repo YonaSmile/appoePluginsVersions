@@ -74,6 +74,7 @@ if (!empty($_POST['siteId']) && !empty($_POST['year'])) {
 
 
         $allSitesData[$Secteur->getId()][$Site->getId()]['fraisDeSiege'] = financial($allSitesData[$Secteur->getId()][$Site->getId()]['facturation'] * 0.04, true);
+
         $allSitesData[$Secteur->getId()][$Site->getId()]['fraisGeneraux'] =
             financial($allSitesData[$Secteur->getId()][$Site->getId()]['siteMeta']['participationTournante']
                 + $allSitesData[$Secteur->getId()][$Site->getId()]['fraisDeSiege']
@@ -83,10 +84,13 @@ if (!empty($_POST['siteId']) && !empty($_POST['year'])) {
             - ($allSitesData[$Secteur->getId()][$Site->getId()]['consoReel']['denree']
                 + $allSitesData[$Secteur->getId()][$Site->getId()]['siteMeta']['fraisDePersonnels']
                 + $allSitesData[$Secteur->getId()][$Site->getId()]['fraisGeneraux']), true);
+
         $allSitesData[$Secteur->getId()][$Site->getId()]['retourAchat'] = financial($allSitesData[$Secteur->getId()][$Site->getId()]['consoReel']['denree'] * 0.08, true);
+
         $allSitesData[$Secteur->getId()][$Site->getId()]['resultats'] = financial($allSitesData[$Secteur->getId()][$Site->getId()]['resultatExploitation']
             + $allSitesData[$Secteur->getId()][$Site->getId()]['retourAchat']
             + $allSitesData[$Secteur->getId()][$Site->getId()]['fraisDeSiege'], true);
+
         $allSitesData[$Secteur->getId()][$Site->getId()]['pourcentagesDeRentabilite'] =
             financial($allSitesData[$Secteur->getId()][$Site->getId()]['facturation'] > 0
                 ? $allSitesData[$Secteur->getId()][$Site->getId()]['resultats'] / $allSitesData[$Secteur->getId()][$Site->getId()]['facturation']

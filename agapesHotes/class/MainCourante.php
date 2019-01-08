@@ -28,6 +28,8 @@ class MainCourante
             $this->id = $id;
             $this->show();
         }
+
+        $this->userId = getUserIdSession();
     }
 
     /**
@@ -366,7 +368,6 @@ class MainCourante
      */
     public function save()
     {
-        $this->userId = getUserIdSession();
         $sql = 'INSERT INTO appoe_plugin_agapesHotes_main_courante (etablissement_id, prestation_id, prix_id, quantite, total, date, status, userId, created_at) 
                 VALUES (:etablissementId, :prestationId, :prixId, :quantite, :total, :date, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
@@ -394,7 +395,6 @@ class MainCourante
      */
     public function update()
     {
-        $this->userId = getUserIdSession();
         $sql = 'UPDATE appoe_plugin_agapesHotes_main_courante 
         SET etablissement_id = :etablissementId, prestation_id = :prestationId, prix_id = :prixId, quantite = :quantite, total = :total, date = :date, status = :status, userId = :userId WHERE id = :id';
 

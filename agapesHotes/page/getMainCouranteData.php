@@ -57,7 +57,7 @@ if (
                 $allPrestationsPrix = getAllPrestationsPriceByEtablissement($etablissement->id);
 
                 //Get main courante
-                $allMainCourante = getAllMainCouranteByEtablissementInMonth($etablissement->id);
+                $allMainCourante = getAllMainCouranteByEtablissementInMonth($etablissement->id, $start->format('m'));
 
                 $Prestation->setEtablissementId($etablissement->id);
                 $allPrestations = $Prestation->showAll();

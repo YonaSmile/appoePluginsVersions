@@ -12,6 +12,27 @@ if (checkAjaxRequest()) {
                 && !empty($_POST['date'])
                 && isset($_POST['absenceReason']) && isset($_POST['id'])) {
 
+                $dateNow = new \DateTime();
+
+                $dateMonthAgo = new DateTime();
+                $dateMonthAgo->sub(new \DateInterval('P1M'));
+
+                $processDate = new \DateTime($_POST['date']);
+
+                if ($dateNow->format('j') >= 25) {
+                    if ($processDate->format('n') < $dateNow->format('n')
+                        && $processDate->format('Y') < $dateNow->format('Y')) {
+                        echo 'Vous ne pouvez plus modifier les données d\'avant !';
+                        exit();
+                    }
+                } else {
+                    if ($processDate->format('n') < $dateMonthAgo->format('n')
+                        && $processDate->format('Y') <= $dateMonthAgo->format('Y')) {
+                        echo 'Vous ne pouvez plus modifier les données d\'avant !';
+                        exit();
+                    }
+                }
+
                 $PlanningProcess = new \App\Plugin\AgapesHotes\Planning();
                 $PlanningProcess->feed($_POST);
 

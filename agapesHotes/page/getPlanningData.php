@@ -14,18 +14,6 @@ if (
     $Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $Secteur->getId()
 ):
 
-    //Get all Planning
-    $allPlanning = getAllPlanningBySite($Site->getId());
-
-    //Get all Pti
-    $allPti = getAllPtiBySite($Site->getId());
-
-    //Get Employe
-    $Employe = new \App\Plugin\AgapesHotes\Employe();
-    $allEmployes = extractFromObjArr($Employe->showByType(), 'id');
-
-    $allContratEmployes = getAllEmployeHasContratInSite($Site->getId());
-
     $startDate = !empty($_POST['startDate']) ? $_POST['startDate'] : date('Y-m-01');
 
     //Select period
@@ -35,6 +23,18 @@ if (
     $interval = new \DateInterval('P1D');
 
     $period = new \DatePeriod($start, $interval, $end);
+
+    //Get all Planning
+    $allPlanning = getAllPlanningBySite($Site->getId(), $start->format('m'));
+
+    //Get all Pti
+    $allPti = getAllPtiBySite($Site->getId());
+
+    //Get Employe
+    $Employe = new \App\Plugin\AgapesHotes\Employe();
+    $allEmployes = extractFromObjArr($Employe->showByType(), 'id');
+
+    $allContratEmployes = getAllEmployeHasContratInSite($Site->getId());
     ?>
     <div class="col-12 py-4">
         <h5 class="mb-0"><?= ucfirst(strftime("%B", strtotime($start->format('Y-m-d')))); ?> <?= $start->format('Y'); ?></h5>
