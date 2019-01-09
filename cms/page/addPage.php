@@ -46,8 +46,12 @@ require(CMS_PATH . 'process/postProcess.php');
 </div>
 <script>
     $(document).ready(function () {
+        setTimeout(function () {
+            $('input#name').focus();
+        }, 100);
         $('input#name').keyup(function () {
             $('input#slug').val(convertToSlug($(this).val()));
+            $('input#description').val($(this).val());
         });
     });
 </script>

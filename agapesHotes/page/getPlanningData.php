@@ -42,9 +42,9 @@ if (
             le <?= $start->format('t/m/Y'); ?></small>
         <button type="button" class="btn btn-link btn-sm printPlanning">Imprimer le Planning</button>
     </div>
-    <div class="col-12">
-        <table id="planningTable" class="table table-striped tableNonEffect">
-            <thead>
+    <div class="col-12 table-responsive">
+        <table id="planningTable" class="table table-striped tableNonEffect fixed-header">
+            <thead style="z-index: 2">
             <tr>
                 <th colspan="2"><?= trans('Employé'); ?></th>
                 <?php foreach ($period as $key => $date): ?>
@@ -145,8 +145,6 @@ if (
                 <?php endif;
             endforeach; ?>
             </tbody>
-            <i type="button" id="tableRightCursor" class="fas fa-angle-right"></i>
-            <i type="button" id="tableLeftCursor" class="fas fa-angle-left"></i>
         </table>
     </div>
     <!--<hr class="w-100 d-block mx-5 my-4">
@@ -281,32 +279,14 @@ if (
                 }
             });
 
-            $('#tableRightCursor').on('click', function () {
-                $('#tableRightCursor').fadeOut();
-                $('html, body').animate({scrollLeft: 1400}, 800);
-                var sideBarPosition = $('#sidebar').css('margin-left') == 0 ? ($('#sidebar').offset().left + $('#sidebar').width()) : ($('#sidebar').offset().left + 250);
-                $('#tableLeftCursor').css({
-                    'left': sideBarPosition
-                }).fadeIn();
+            adaptResponsiveTable();
+            $(window).resize(function () {
+                adaptResponsiveTable();
             });
-
-
-            $('#tableLeftCursor').on('click', function () {
-                $('#tableLeftCursor').fadeOut();
-                $('html, body').animate({scrollLeft: -1400}, 800);
-                $('#tableRightCursor').fadeIn();
-            });
-
             $('.sidebarCollapse').on('click', function () {
-                if ($('#sidebar').hasClass('active')) {
-                    $('#tableLeftCursor').css({
-                        'left': 0
-                    });
-                } else {
-                    $('#tableLeftCursor').css({
-                        'left': $('#sidebar').width()
-                    });
-                }
+                setTimeout(function () {
+                    adaptResponsiveTable();
+                }, 300);
             });
 
             $('body').on('click', '.copyTableData', function () {

@@ -34,7 +34,7 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
         <small class="d-block">Commence le <?= $start->format('d/m/Y'); ?> et se termine
             le <?= $start->format('t/m/Y'); ?></small>
     </div>
-    <div id="responsiveTable" class="col-12">
+    <div id="responsiveTable" class="col-12 table-responsive">
         <table class="table table-striped tableNonEffect fixed-header">
             <thead style="z-index: 2">
             <tr>
@@ -137,26 +137,27 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                     </tbody>
                 <?php endif;
             endforeach; ?>
-            <i type="button" id="tableRightCursor" class="fas fa-angle-right"></i>
-            <i type="button" id="tableLeftCursor" class="fas fa-angle-left"></i>
         </table>
+        <div class="row">
+            <?php foreach ($allEtablissements as $etablissement): ?>
+                <div class="col-12 col-md-6 col-lg-4 col-xl-3 mt-3">
+                    <h5 style="font-size: 2em;font-weight: 100 !important;"><?= $etablissement->nom; ?></h5>
+                    <table class="table table-striped tableNonEffect totalHtTable"
+                           data-etablissementid="<?= $etablissement->id; ?>">
+                        <thead>
+                        <tr>
+                            <th>Tva</th>
+                            <th>Total HT</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endforeach; ?>
+        </div>
     </div>
-    <?php foreach ($allEtablissements as $etablissement): ?>
-    <div class="col-12 col-md-6 col-lg-4 col-xl-3 mt-3">
-        <h5 style="font-size: 2em;font-weight: 100 !important;"><?= $etablissement->nom; ?></h5>
-        <table class="table table-striped tableNonEffect totalHtTable"
-               data-etablissementid="<?= $etablissement->id; ?>">
-            <thead>
-            <tr>
-                <th>Tva</th>
-                <th>Total HT</th>
-            </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-    </div>
-<?php endforeach; ?>
+
     <div class="modal fade" id="modalFactureMainCourante"
          tabindex="-1" role="dialog"
          aria-labelledby="modalFactureMainCouranteTitle"
@@ -253,32 +254,14 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                 }
             });
 
-            $('#tableRightCursor').on('click', function () {
-                $('#tableRightCursor').fadeOut();
-                $('html, body').animate({scrollLeft: 1000}, 800);
-                var sideBarPosition = $('#sidebar').css('margin-left') == 0 ? ($('#sidebar').offset().left + $('#sidebar').width()) : ($('#sidebar').offset().left + 250);
-                $('#tableLeftCursor').css({
-                    'left': sideBarPosition
-                }).fadeIn();
+            adaptResponsiveTable();
+            $(window).resize(function () {
+                adaptResponsiveTable();
             });
-
-
-            $('#tableLeftCursor').on('click', function () {
-                $('#tableLeftCursor').fadeOut();
-                $('html, body').animate({scrollLeft: -1000}, 800);
-                $('#tableRightCursor').fadeIn();
-            });
-
             $('.sidebarCollapse').on('click', function () {
-                if ($('#sidebar').hasClass('active')) {
-                    $('#tableLeftCursor').css({
-                        'left': 0
-                    });
-                } else {
-                    $('#tableLeftCursor').css({
-                        'left': $('#sidebar').width()
-                    });
-                }
+                setTimeout(function () {
+                    adaptResponsiveTable();
+                }, 300);
             });
 
             function prepareTotalFacture(etablissementid) {

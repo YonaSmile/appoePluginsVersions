@@ -170,7 +170,7 @@ $View = new \App\Plugin\AgapesHotes\View();
                                 <button class="btn btn-link" type="button" data-toggle="collapse"
                                         data-target="#collapseRefactServ" aria-expanded="true"
                                         aria-controls="collapseRefactServ">
-                                    Refacturation ServenTest
+                                    Refacturation Serventest
                                 </button>
                             </h5>
                         </div>

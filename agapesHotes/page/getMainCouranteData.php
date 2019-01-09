@@ -38,7 +38,7 @@ if (
             le <?= $start->format('t/m/Y'); ?></small>
 
     </div>
-    <div class="col-12">
+    <div class="col-12 table-responsive">
         <table id="mainCouranteTable" class="table table-striped tableNonEffect fixed-header">
             <thead style="z-index: 2">
             <tr style="text-align: center;">
@@ -185,8 +185,6 @@ if (
                 <?php endif; ?>
                 </tbody>
             <?php endforeach; ?>
-            <i type="button" id="tableRightCursor" class="fas fa-angle-right"></i>
-            <i type="button" id="tableLeftCursor" class="fas fa-angle-left"></i>
         </table>
         <table class="table table-striped tableNonEffect" style="width: 250px;">
             <tbody>
@@ -293,6 +291,16 @@ if (
     <script>
         $(document).ready(function () {
 
+            adaptResponsiveTable();
+            $(window).resize(function () {
+                adaptResponsiveTable();
+            });
+            $('.sidebarCollapse').on('click', function () {
+                setTimeout(function () {
+                    adaptResponsiveTable();
+                }, 300);
+            });
+
             $('.tableNonEffect tr td input').keydown(function (e) {
 
                 var $input = $(this);
@@ -323,34 +331,6 @@ if (
                             $tr.next('tr').find('td[data-tdposition="' + position + '"]').find('input').focus();
                         }
                         break;
-                }
-            });
-
-            $('#tableRightCursor').on('click', function () {
-                $('#tableRightCursor').fadeOut();
-                $('html, body').animate({scrollLeft: 1000}, 800);
-                var sideBarPosition = $('#sidebar').css('margin-left') == 0 ? ($('#sidebar').offset().left + $('#sidebar').width()) : ($('#sidebar').offset().left + 250);
-                $('#tableLeftCursor').css({
-                    'left': sideBarPosition
-                }).fadeIn();
-            });
-
-
-            $('#tableLeftCursor').on('click', function () {
-                $('#tableLeftCursor').fadeOut();
-                $('html, body').animate({scrollLeft: -1000}, 800);
-                $('#tableRightCursor').fadeIn();
-            });
-
-            $('.sidebarCollapse').on('click', function () {
-                if ($('#sidebar').hasClass('active')) {
-                    $('#tableLeftCursor').css({
-                        'left': 0
-                    });
-                } else {
-                    $('#tableLeftCursor').css({
-                        'left': $('#sidebar').width()
-                    });
                 }
             });
 
