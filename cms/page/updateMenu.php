@@ -63,6 +63,14 @@ $allArticlesPages = extractFromObjToSimpleArr($allCmsPages, 'slug', 'name');
                                                     <span class="fas fa-times"></span>
                                                 </button>
                                             <?php endif; ?>
+                                            <button type="button" class="close updateIdCmsMenuBtn mr-3">
+                                                <span class="fas fa-link"></span>
+                                            </button>
+                                            <input type="text"
+                                                   data-menuid="<?= $menu->id; ?>"
+                                                   class="updateMenuData updateIdCmsMenu idCmsMenuInput"
+                                                   data-column="idCms"
+                                                   value="<?= $menu->idCms; ?>">
                                         </div>
                                         <?php if (!empty($MENUS[$key][$menu->id])): ?>
                                             <?php foreach ($MENUS[$key][$menu->id] as $subMenu): ?>
@@ -80,6 +88,14 @@ $allArticlesPages = extractFromObjToSimpleArr($allCmsPages, 'slug', 'name');
                                                             <span class="fas fa-times"></span>
                                                         </button>
                                                     <?php endif; ?>
+                                                    <button type="button" class="close updateIdCmsMenuBtn mr-3">
+                                                        <span class="fas fa-link"></span>
+                                                    </button>
+                                                    <input type="text"
+                                                           data-menuid="<?= $subMenu->id; ?>"
+                                                           class="updateMenuData updateIdCmsMenu idCmsMenuInput"
+                                                           data-column="idCms"
+                                                           value="<?= $subMenu->idCms; ?>">
                                                 </div>
                                                 <?php if (!empty($MENUS[$key][$subMenu->id])): ?>
                                                     <?php foreach ($MENUS[$key][$subMenu->id] as $subSubMenu): ?>
@@ -98,6 +114,14 @@ $allArticlesPages = extractFromObjToSimpleArr($allCmsPages, 'slug', 'name');
                                                                     <span class="fas fa-times"></span>
                                                                 </button>
                                                             <?php endif; ?>
+                                                            <button type="button" class="close updateIdCmsMenuBtn mr-3">
+                                                                <span class="fas fa-link"></span>
+                                                            </button>
+                                                            <input type="text"
+                                                                   data-menuid="<?= $subSubMenu->id; ?>"
+                                                                   class="updateMenuData updateIdCmsMenu idCmsMenuInput"
+                                                                   data-column="idCms"
+                                                                   value="<?= $subSubMenu->idCms; ?>">
                                                         </div>
                                                     <?php endforeach; ?>
                                                 <?php endif; ?>
@@ -220,6 +244,18 @@ $allArticlesPages = extractFromObjToSimpleArr($allCmsPages, 'slug', 'name');
                         }
                     }
                 );
+
+            });
+
+            $('.updateIdCmsMenuBtn').on('click', function (event) {
+                event.preventDefault();
+
+                var inputIdCms = $(this).next('input.updateIdCmsMenu');
+                if (inputIdCms.css('display') == 'none') {
+                    inputIdCms.fadeIn();
+                } else {
+                    inputIdCms.fadeOut();
+                }
 
             });
 

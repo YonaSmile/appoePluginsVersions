@@ -149,7 +149,7 @@ class CmsMenu
                 `parentId` INT(11) NOT NULL,
                 `position` INT(11) NULL DEFAULT NULL,
                 `location` INT(11) NOT NULL DEFAULT 1,
-                UNIQUE  (`idCms`, `parentId`, `location`),
+                UNIQUE  (`idCms`, `name`, `parentId`, `location`),
                 `statut` TINYINT(1) NOT NULL DEFAULT 1,
                 `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=11';
