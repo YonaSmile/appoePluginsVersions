@@ -42,11 +42,15 @@ if (!empty($_GET['id'])): ?>
                             <div class="col-12 my-2">
                                 <?= \App\Form::text('Description', 'description', 'text', $Article->getDescription(), true, 160); ?>
                             </div>
-                            <div class="col-12 mt-2">
+                            <div class="col-12 col-lg-8 mt-2">
                                 <?= \App\Form::text('Nom du lien URL' . ' (slug)', 'slug', 'text', $Article->getSlug(), true, 100); ?>
+                            </div>
+                            <div class="col-12 col-lg-4 mt-2">
+                                <?= \App\Form::text('Date de création', 'createdAt', 'text', displayFrDate($Article->getCreatedAt()), true, 9, '', '', 'datepicker'); ?>
                             </div>
                         </div>
                     </div>
+                    <div class="col-12 d-xs-block d-lg-none my-2"></div>
                     <div class="col-12 col-lg-4 bgColorPrimary">
                         <div class="row">
                             <div class="col-12 pt-2 pb-3">

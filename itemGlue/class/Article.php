@@ -24,6 +24,7 @@ class Article
             $this->id = $idArticle;
             $this->show();
         }
+        $this->userId = getUserIdSession();
     }
 
     /**
@@ -414,7 +415,7 @@ class Article
     public function update()
     {
 
-        $sql = 'UPDATE appoe_plugin_itemGlue_articles SET name = :name, description = :description, slug = :slug, statut = :statut, userId = :userId WHERE id = :id';
+        $sql = 'UPDATE appoe_plugin_itemGlue_articles SET name = :name, description = :description, slug = :slug, statut = :statut, userId = :userId, created_at = :created_at WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':name', $this->name);
@@ -422,6 +423,7 @@ class Article
         $stmt->bindParam(':slug', $this->slug);
         $stmt->bindParam(':statut', $this->statut);
         $stmt->bindParam(':userId', $this->userId);
+        $stmt->bindParam(':created_at', $this->createdAt);
         $stmt->bindParam(':id', $this->id);
 
         $stmt->execute();

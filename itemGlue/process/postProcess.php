@@ -15,8 +15,6 @@ if (checkPostAndTokenRequest()) {
 
             //Add Article
             $Article->feed($_POST);
-            $Article->setUserId(getUserIdSession());
-
             if ($Article->notExist()) {
                 if ($Article->save()) {
 
@@ -67,7 +65,6 @@ if (checkPostAndTokenRequest()) {
 
             //Update Article
             $Article->feed($_POST);
-            $Article->setUserId(getUserIdSession());
             if ($Article->notExist(true)) {
                 if ($Article->update()) {
 
