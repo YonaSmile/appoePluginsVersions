@@ -341,6 +341,39 @@ class MainCourante
     }
 
     /**
+     * @param $siteId
+     * @param $year
+     * @param string $month
+     * @return bool|array
+     */
+    public function showTotalMainCourante($siteId, $year, $month = '')
+    {
+
+        $sqlAdd = !empty($month) ? ' AND MONTH(MC.date) = :mois ' : '';
+        $sql = 'SELECT ETB.site_id AS site_id, YEAR(MC.date) AS annee, MONTH(MC.date) AS mois, SUM(MC.total) AS totalHT
+        FROM appoe_plugin_agapesHotes_main_courante AS MC
+        INNER JOIN appoe_plugin_agapesHotes_etablissements AS ETB
+        ON(ETB.id = MC.etablissement_id)
+        WHERE site_id = :siteId AND YEAR(MC.date) = :annee ' . $sqlAdd . '
+        GROUP BY MONTH(MC.date)';
+
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':siteId', $siteId);
+        $stmt->bindParam(':annee', $year);
+        if (!empty($month)) {
+            $stmt->bindParam(':mois', $month);
+        }
+        $stmt->execute();
+
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            return $stmt->fetchAll(\PDO::FETCH_OBJ);
+        }
+    }
+
+    /**
      * @param $countMainCourante
      * @return bool|array
      */

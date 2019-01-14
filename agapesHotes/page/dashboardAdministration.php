@@ -223,7 +223,7 @@ $Secteur = new \App\Plugin\AgapesHotes\Secteur();
                              */
                             $trSite.find('td[data-name="site-facturation"]').html(financial($siteData['facturation']) + '€');
                             $trSite.find('td[data-name="site-consoreel-denree"]').html(financial($siteData['consoReel'].denree) + '€');
-                            $trSite.find('td[data-name="site-meta-fraisperso"]').html(financial($siteData['siteMeta'].fraisDePersonnels) + '€');
+                            $trSite.find('td[data-name="site-meta-fraisperso"]').html(financial($siteData['siteMeta'].fraisDePersonnel) + '€');
                             $trSite.find('td[data-name="site-fraisgeneraux"]').html(financial($siteData['fraisGeneraux']) + '€');
                             $trSite.find('td[data-name="site-resultatexploitation"]').html(financial($siteData['resultatExploitation']) + '€');
                             $trSite.find('td[data-name="site-retourachat"]').html(financial($siteData['retourAchat']) + '€');
@@ -233,7 +233,7 @@ $Secteur = new \App\Plugin\AgapesHotes\Secteur();
 
                             facturation += $.isNumeric($siteData['facturation']) ? parseFloat($siteData['facturation']) : 0;
                             consoreelDenree += $.isNumeric($siteData['consoReel'].denree) ? parseFloat($siteData['consoReel'].denree) : 0;
-                            fraisperso += $.isNumeric($siteData['siteMeta'].fraisDePersonnels) ? parseFloat($siteData['siteMeta'].fraisDePersonnels) : 0;
+                            fraisperso += $.isNumeric($siteData['siteMeta'].fraisDePersonnel) ? parseFloat($siteData['siteMeta'].fraisDePersonnel) : 0;
                             fraisgeneraux += $.isNumeric($siteData['fraisGeneraux']) ? parseFloat($siteData['fraisGeneraux']) : 0;
                             resultatexploitation += $.isNumeric($siteData['resultatExploitation']) ? parseFloat($siteData['resultatExploitation']) : 0;
                             retourachat += $.isNumeric($siteData['retourAchat']) ? parseFloat($siteData['retourAchat']) : 0;
@@ -273,7 +273,7 @@ $Secteur = new \App\Plugin\AgapesHotes\Secteur();
                             var $siteData = parsedData[secteur][site];
                             $trSite.find('td[data-name="site-facturation"]').html($siteData['facturation'] + '€');
                             $trSite.find('td[data-name="site-consoreel-denree"]').html($siteData['consoReel'].denree + '€');
-                            $trSite.find('td[data-name="site-meta-fraisperso"]').html($siteData['siteMeta'].fraisDePersonnels + '€');
+                            $trSite.find('td[data-name="site-meta-fraisperso"]').html($siteData['siteMeta'].fraisDePersonnel + '€');
                             $trSite.find('td[data-name="site-fraisgeneraux"]').html($siteData['fraisGeneraux'] + '€');
                             $trSite.find('td[data-name="site-resultatexploitation"]').html($siteData['resultatExploitation'] + '€');
                             $trSite.find('td[data-name="site-retourachat"]').html($siteData['retourAchat'] + '€');
@@ -283,7 +283,7 @@ $Secteur = new \App\Plugin\AgapesHotes\Secteur();
 
                             facturationAgo += $.isNumeric($siteData['facturation']) ? parseFloat($siteData['facturation']) : 0;
                             consoreelDenreeAgo += $.isNumeric($siteData['consoReel'].denree) ? parseFloat($siteData['consoReel'].denree) : 0;
-                            fraispersoAgo += $.isNumeric($siteData['siteMeta'].fraisDePersonnels) ? parseFloat($siteData['siteMeta'].fraisDePersonnels) : 0;
+                            fraispersoAgo += $.isNumeric($siteData['siteMeta'].fraisDePersonnel) ? parseFloat($siteData['siteMeta'].fraisDePersonnel) : 0;
                             fraisgenerauxAgo += $.isNumeric($siteData['fraisGeneraux']) ? parseFloat($siteData['fraisGeneraux']) : 0;
                             resultatexploitationAgo += $.isNumeric($siteData['resultatExploitation']) ? parseFloat($siteData['resultatExploitation']) : 0;
                             retourachatAgo += $.isNumeric($siteData['retourAchat']) ? parseFloat($siteData['retourAchat']) : 0;

@@ -324,6 +324,39 @@ class VivreCrue
     }
 
     /**
+     * @param $siteId
+     * @param $year
+     * @param string $month
+     * @return bool|array
+     */
+    public function showTotalVivreCru($siteId, $year, $month = '')
+    {
+
+        $sqlAdd = !empty($month) ? ' AND MONTH(VC.date) = :mois ' : '';
+        $sql = 'SELECT ETB.site_id AS site_id, YEAR(VC.date) AS annee, MONTH(VC.date) AS mois, SUM(VC.total) AS totalHT 
+        FROM appoe_plugin_agapesHotes_vivre_crue AS VC
+        INNER JOIN appoe_plugin_agapesHotes_etablissements AS ETB
+        ON(ETB.id = VC.etablissement_id)
+        WHERE site_id = :siteId AND YEAR(VC.date) = :annee ' . $sqlAdd . '
+        GROUP BY MONTH(VC.date)';
+
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':siteId', $siteId);
+        $stmt->bindParam(':annee', $year);
+        if (!empty($month)) {
+            $stmt->bindParam(':mois', $month);
+        }
+        $stmt->execute();
+
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            return $stmt->fetchAll(\PDO::FETCH_OBJ);
+        }
+    }
+
+    /**
      * @param $countVivreCrueByDate
      * @return bool|array
      */

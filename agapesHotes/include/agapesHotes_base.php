@@ -252,7 +252,7 @@ function getSiteMeta($siteId, $year, $month = '')
 
     $siteMeta = array(
         'participationTournante' => 0,
-        'fraisDePersonnels' => 0,
+        'fraisDePersonnel' => 0,
         'fraisFixes' => 0
     );
 
@@ -267,7 +267,7 @@ function getSiteMeta($siteId, $year, $month = '')
 
     if (!isArrayEmpty($allSiteMetas)) {
         $siteMeta['participationTournante'] = array_key_exists('Participation tournant', $allSiteMetas) ? $allSiteMetas['Participation tournant']->data : 0;
-        $siteMeta['fraisDePersonnels'] = array_key_exists('Frais de personnels', $allSiteMetas) ? $allSiteMetas['Frais de personnels']->data : 0;
+        $siteMeta['fraisDePersonnel'] = array_key_exists('Frais de personnel', $allSiteMetas) ? $allSiteMetas['Frais de personnel']->data : 0;
         $siteMeta['fraisFixes'] = array_key_exists('Frais fixes', $allSiteMetas) ? $allSiteMetas['Frais fixes']->data : 0;
     }
 
@@ -307,20 +307,27 @@ function getNoteDeFrais($siteId, $year, $month = '')
 function getFacturation($siteId, $year, $month = '')
 {
 
-    $View = new \App\Plugin\AgapesHotes\View();
+    $MainCourant = new \App\Plugin\AgapesHotes\MainCourante();
+    $VivreCru = new \App\Plugin\AgapesHotes\VivreCrue();
+    $MainSupp = new \App\Plugin\AgapesHotes\MainSupplementaire();
 
-    $View->setViewName('totalFacturation');
-    if (!empty($month)) {
-        $View->setDataColumns(array('site_id', 'mois', 'annee'));
-        $View->setDataValues(array($siteId, $month, $year));
-    } else {
-        $View->setDataColumns(array('site_id', 'annee'));
-        $View->setDataValues(array($siteId, $year));
+    $allMainCourant = $MainCourant->showTotalMainCourante($siteId, $year, $month);
+    $allVivreCru = $VivreCru->showTotalVivreCru($siteId, $year, $month);
+    $allFacturationHC = $MainSupp->showTotalFacturationHC($siteId, $year, $month);
+
+    $totalFacturation = 0;
+    foreach ($allMainCourant as $mainCourant) {
+        $totalFacturation += $mainCourant->totalHT;
     }
-    $View->prepareSql();
-    $totalFacturation = $View->get();
+    foreach ($allVivreCru as $vivreCrue) {
+        $totalFacturation += $vivreCrue->totalHT;
+    }
+    foreach ($allFacturationHC as $facturationHC) {
+        $totalFacturation += $facturationHC->totalHT;
+    }
 
-    return $totalFacturation ? $totalFacturation->totalHT : 0;
+
+    return $totalFacturation;
 }
 
 function getBudget($siteId, $year, $month = '')
@@ -449,4 +456,20 @@ function getDayColor($date, $alsaceMoselle = false)
         return 'background:#aaa;color:#4b5b68;';
     }
     return '';
+}
+
+function isNotUniqueEntretien($fournisseur)
+{
+
+    $fournisseur = trim($fournisseur);
+    $uniqueEntretien = array('C2M', 'SILLIKER', 'EUROFINS', 'AGRIVALOR');
+    return !in_array($fournisseur, $uniqueEntretien);
+}
+
+function isUniqueEntretien($fournisseur)
+{
+
+    $fournisseur = trim($fournisseur);
+    $uniqueEntretien = array('C2M', 'SILLIKER', 'EUROFINS', 'AGRIVALOR');
+    return in_array($fournisseur, $uniqueEntretien);
 }

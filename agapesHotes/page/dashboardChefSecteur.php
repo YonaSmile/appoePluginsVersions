@@ -61,7 +61,7 @@ if ($Secteur):
             + $allSitesData[$site->id]['consoReel']['nonAlimentaire']
         );
 
-        $allSitesData[$site->id]['resultatExploitation'] = $allSitesData[$site->id]['facturation'] - ($allSitesData[$site->id]['consoReel']['denree'] + $allSitesData[$site->id]['siteMeta']['fraisDePersonnels'] + $allSitesData[$site->id]['fraisGeneraux']);
+        $allSitesData[$site->id]['resultatExploitation'] = $allSitesData[$site->id]['facturation'] - ($allSitesData[$site->id]['consoReel']['denree'] + $allSitesData[$site->id]['siteMeta']['fraisDePersonnel'] + $allSitesData[$site->id]['fraisGeneraux']);
         $allSitesData[$site->id]['retourAchat'] = $allSitesData[$site->id]['consoReel']['denree'] * 0.08;
         $allSitesData[$site->id]['resultats'] = $allSitesData[$site->id]['resultatExploitation'] + $allSitesData[$site->id]['retourAchat'] + $allSitesData[$site->id]['fraisDeSiege'];
     }
@@ -109,7 +109,7 @@ if ($Secteur):
                                 </td>
                                 <td><?= $allSitesData[$site->id]['facturation']; ?>€</td>
                                 <td><?= $allSitesData[$site->id]['consoReel']['denree']; ?>€</td>
-                                <td><?= $allSitesData[$site->id]['siteMeta']['fraisDePersonnels']; ?>€</td>
+                                <td><?= $allSitesData[$site->id]['siteMeta']['fraisDePersonnel']; ?>€</td>
                                 <td><?= $allSitesData[$site->id]['fraisGeneraux']; ?>€</td>
                                 <td><?= $allSitesData[$site->id]['resultatExploitation']; ?>€</td>
                                 <td><?= $allSitesData[$site->id]['retourAchat']; ?>%</td>
@@ -394,8 +394,8 @@ if ($Secteur):
                                         <span class="littleText"><?= $allSitesData[$site->id]['consoReel']['denree']; ?>€</span>
                                     </div>
                                     <div class="littleContainer"><span
-                                                class="littleTitle colorPrimary">Frais de personnels</span>
-                                        <span class="littleText"><?= $allSitesData[$site->id]['siteMeta']['fraisDePersonnels']; ?>€</span>
+                                                class="littleTitle colorPrimary">Frais de personnel</span>
+                                        <span class="littleText"><?= $allSitesData[$site->id]['siteMeta']['fraisDePersonnel']; ?>€</span>
                                     </div>
                                     <div class="littleContainer"><span
                                                 class="littleTitle colorPrimary">Frais généraux</span>

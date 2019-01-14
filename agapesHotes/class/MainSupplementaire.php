@@ -339,6 +339,37 @@ class MainSupplementaire
     }
 
     /**
+     * @param $siteId
+     * @param $year
+     * @param string $month
+     * @return bool|array
+     */
+    public function showTotalFacturationHC($siteId, $year, $month = '')
+    {
+
+        $sqlAdd = !empty($month) ? ' AND MONTH(date) = :mois ' : '';
+        $sql = 'SELECT site_id, YEAR(date) AS annee, MONTH(date) AS mois, SUM(total) AS totalHT 
+        FROM appoe_plugin_agapesHotes_main_supplementaire 
+        WHERE site_id = :siteId AND YEAR(date) = :annee ' . $sqlAdd . '
+        GROUP BY MONTH(date)';
+
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':siteId', $siteId);
+        $stmt->bindParam(':annee', $year);
+        if (!empty($month)) {
+            $stmt->bindParam(':mois', $month);
+        }
+        $stmt->execute();
+
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            return $stmt->fetchAll(\PDO::FETCH_OBJ);
+        }
+    }
+
+    /**
      * @param $dateDebut
      * @param $dateFin
      * @param $countMainSupplementaire

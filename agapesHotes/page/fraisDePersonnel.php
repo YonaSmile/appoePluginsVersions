@@ -82,10 +82,10 @@ $anneeCurrent = 0;
                                 <?php foreach ($period as $key => $date):
                                     $fraisPerso = getSiteMeta($site->id, date('Y') - 1, $date->format('m'));
 
-                                    $anneeAgoCurrent += !empty($fraisPerso['fraisDePersonnels']) ? $fraisPerso['fraisDePersonnels'] : 0;
+                                    $anneeAgoCurrent += !empty($fraisPerso['fraisDePersonnel']) ? $fraisPerso['fraisDePersonnel'] : 0;
                                     $anneeAgoCumul[$date->format('m')] = $anneeAgoCurrent;
                                     ?>
-                                    <td><?= !empty($fraisPerso['fraisDePersonnels']) ? financial($fraisPerso['fraisDePersonnels']) : 0; ?>
+                                    <td><?= !empty($fraisPerso['fraisDePersonnel']) ? financial($fraisPerso['fraisDePersonnel']) : 0; ?>
                                         €
                                     </td>
                                 <?php endforeach; ?>
@@ -104,10 +104,10 @@ $anneeCurrent = 0;
                                 </td>
                                 <?php foreach ($period as $key => $date):
                                     $fraisPerso = getSiteMeta($site->id, date('Y'), $date->format('m'));
-                                    $anneeCurrent += !empty($fraisPerso['fraisDePersonnels']) ? $fraisPerso['fraisDePersonnels'] : 0;
+                                    $anneeCurrent += !empty($fraisPerso['fraisDePersonnel']) ? $fraisPerso['fraisDePersonnel'] : 0;
                                     $anneeCumul[$date->format('m')] = $anneeCurrent;
                                     ?>
-                                    <td><?= !empty($fraisPerso['fraisDePersonnels']) ? financial($fraisPerso['fraisDePersonnels']) : 0; ?>
+                                    <td><?= !empty($fraisPerso['fraisDePersonnel']) ? financial($fraisPerso['fraisDePersonnel']) : 0; ?>
                                         €
                                     </td>
                                 <?php endforeach; ?>

@@ -24,7 +24,7 @@ $dateMonthAgo->sub(new \DateInterval('P1M'));
 $paramsMonthAgo = array(
     'key' => '123',
     'ref' => $Site->ref,
-    'dateDebut' => $dateMonthAgo->format('Y-m').'-01',
+    'dateDebut' => $dateMonthAgo->format('Y-m') . '-01',
     'dateFin' => $dateMonthAgo->format('Y-m-t')
 );
 
@@ -115,7 +115,7 @@ $View = new \App\Plugin\AgapesHotes\View();
                                         $totalCommandUniqueEntretien = 0;
                                         if ($commandesRequest):
                                             foreach ($commandesRequest as $key => $allDenree):
-                                                if (trim($allDenree['fournisseur']) != 'C2M'):
+                                                if (isNotUniqueEntretien($allDenree['fournisseur'])):
                                                     $totalCommandDenree += $allDenree['total']; ?>
                                                     <tr>
                                                         <td><?= $allDenree['fournisseur']; ?></td>
@@ -136,7 +136,7 @@ $View = new \App\Plugin\AgapesHotes\View();
                                                 </th>
                                             </tr>
                                             <?php foreach ($commandesRequest as $key => $allUniqueEntretien):
-                                            if (trim($allUniqueEntretien['fournisseur']) == 'C2M'):
+                                            if (isUniqueEntretien($allUniqueEntretien['fournisseur'])):
                                                 $totalCommandUniqueEntretien += $allUniqueEntretien['total']; ?>
                                                 <tr>
                                                     <td><?= $allUniqueEntretien['fournisseur']; ?></td>
@@ -199,7 +199,7 @@ $View = new \App\Plugin\AgapesHotes\View();
                                         $totalRefraCommandUniqueEntretien = 0;
                                         if ($refacturationRequest):
                                             foreach ($refacturationRequest as $key => $allDenree):
-                                                if (trim($allDenree['fournisseur']) != 'C2M'):
+                                                if (isNotUniqueEntretien($allDenree['fournisseur'])):
                                                     $totalRefraCommandDenree += $allDenree['total']; ?>
                                                     <tr>
                                                         <td><?= $allDenree['fournisseur']; ?></td>
@@ -220,7 +220,7 @@ $View = new \App\Plugin\AgapesHotes\View();
                                                 </th>
                                             </tr>
                                             <?php foreach ($refacturationRequest as $key => $allUniqueEntretien):
-                                            if (trim($allUniqueEntretien['fournisseur']) == 'C2M'):
+                                            if (isUniqueEntretien($allUniqueEntretien['fournisseur'])):
                                                 $totalRefraCommandUniqueEntretien += $allUniqueEntretien['total']; ?>
                                                 <tr>
                                                     <td><?= $allUniqueEntretien['fournisseur']; ?></td>
@@ -277,7 +277,7 @@ $View = new \App\Plugin\AgapesHotes\View();
                                     $totalInventaireUniqueEntretienMonthAgo = 0;
                                     if ($inventaireRequestMonthAgo) {
                                         foreach ($inventaireRequestMonthAgo as $key => $inventaire) {
-                                            if (trim($inventaire['fournisseur']) != 'C2M') {
+                                            if (isNotUniqueEntretien($inventaire['fournisseur'])) {
                                                 $totalInventaireDenreeMonthAgo += $inventaire['total'];
                                             } else {
                                                 $totalInventaireUniqueEntretienMonthAgo += $inventaire['total'];
@@ -343,7 +343,7 @@ $View = new \App\Plugin\AgapesHotes\View();
                                         $totalInventaireUniqueEntretien = 0;
                                         if ($inventaireRequest) {
                                             foreach ($inventaireRequest as $key => $inventaire) {
-                                                if (trim($inventaire['fournisseur']) != 'C2M') {
+                                                if (isNotUniqueEntretien($inventaire['fournisseur'])) {
                                                     $totalInventaireDenree += $inventaire['total'];
                                                 } else {
                                                     $totalInventaireUniqueEntretien += $inventaire['total'];
@@ -379,14 +379,8 @@ $View = new \App\Plugin\AgapesHotes\View();
                                     </tr>
                                     <tr>
                                         <?php
-                                        $View->clean();
-                                        $View->setViewName('totalFacturation');
-                                        $View->setDataColumns(array('site_id', 'mois', 'annee'));
-                                        $View->setDataValues(array($Site->id, date('m'), date('Y')));
-                                        $View->prepareSql();
-                                        $totalFacturation = $View->get();
 
-                                        $facturation = !empty($totalFacturation->totalHT) ? $totalFacturation->totalHT : 0;
+                                        $facturation = getFacturation($Site->id, date('Y'), date('m'));
                                         ?>
                                         <th style="width: 200px;">CA variable</th>
                                         <td style="text-align: center !important;"><?= $facturation; ?>€
@@ -439,7 +433,7 @@ $View = new \App\Plugin\AgapesHotes\View();
 
                         $siteMeta = getSiteMeta($Site->id, date('Y'), date('m'));
                         $ParticipationTournante = $siteMeta['participationTournante'];
-                        $FraisDePersonnels = $siteMeta['fraisDePersonnels'];
+                        $FraisDePersonnels = $siteMeta['fraisDePersonnel'];
 
                         $fraisDeSiege = financial($facturation * 0.04);
                         $fraisGenerauxTotal = financial($ParticipationTournante + $fraisDeSiege + $consoReelNonAlimentaires);
@@ -472,11 +466,11 @@ $View = new \App\Plugin\AgapesHotes\View();
                         <div id="collapseResultats" class="collapse" aria-labelledby="headingFive"
                              data-parent="#infosAgapes">
                             <div class="littleContainer"><span class="littleTitle colorPrimary">CA</span>
-                                <span class="littleText"><?= $facturation+$siteMeta['fraisFixes']; ?>€</span></div>
+                                <span class="littleText"><?= $facturation + $siteMeta['fraisFixes']; ?>€</span></div>
                             <div class="littleContainer"><span class="littleTitle colorPrimary">Consommation</span>
                                 <span class="littleText"><?= $consoReelDenrees; ?>€</span></div>
                             <div class="littleContainer"><span
-                                        class="littleTitle colorPrimary">Frais de personnels</span>
+                                        class="littleTitle colorPrimary">Frais de personnel</span>
                                 <span class="littleText"><?= $FraisDePersonnels; ?>€</span></div>
                             <div class="littleContainer"><span class="littleTitle colorPrimary">Frais généraux</span>
                                 <span class="littleText"><?= $fraisGenerauxTotal; ?>€</span></div>
