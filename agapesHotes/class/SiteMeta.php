@@ -27,6 +27,7 @@ class SiteMeta
             $this->id = $id;
             $this->show();
         }
+        $this->userId = getUserIdSession();
     }
 
     /**
@@ -326,7 +327,6 @@ class SiteMeta
      */
     public function save()
     {
-        $this->userId = getUserIdSession();
         $sql = 'INSERT INTO appoe_plugin_agapesHotes_site_meta (site_id, year, month, dataName, data, status, userId, created_at) 
                 VALUES (:siteId, :year, :month, :dataName, :data, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
@@ -353,7 +353,6 @@ class SiteMeta
      */
     public function update()
     {
-        $this->userId = getUserIdSession();
         $sql = 'UPDATE appoe_plugin_agapesHotes_site_meta 
         SET site_id = :siteId, year = :year, month = :month, dataName = :dataName, data = :data, status = :status, userId = :userId WHERE id = :id';
 
@@ -414,7 +413,7 @@ class SiteMeta
             return false;
         } else {
             if ($count >= 1) {
-                if ($forUpdate) {
+                if ($forUpdate && $count == 1) {
                     $data = $stmt->fetch(\PDO::FETCH_OBJ);
                     if ($data->id == $this->id) {
                         return true;

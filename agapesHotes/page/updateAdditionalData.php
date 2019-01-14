@@ -53,7 +53,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                                     <input class="text-center form-control inputSiteMeta sensibleField"
                                            name="<?= $meta; ?>" type="text" autocomplete="off"
                                            style="padding: 5px 0 !important; <?= $c == date('n') ? 'background:#4fb99f;color:#fff;' : ''; ?>"
-                                           data-month="<?= strlen($c) < 2 ? '0' . $c : $c; ?>"
+                                           data-month="<?= $c; ?>"
                                            data-idsitemeta="<?= !empty($siteMeta[$meta]->id) ? $siteMeta[$meta]->id : ''; ?>"
                                            value="<?= !empty($siteMeta[$meta]->data) ? $siteMeta[$meta]->data : ''; ?>">
                                 </td>
@@ -78,7 +78,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                 })();
 
 
-                $('.inputSiteMeta').on('input keyup', function (event) {
+                $('.inputSiteMeta').on('input', function (event) {
                     event.preventDefault();
 
                     var $Input = $(this);
@@ -88,16 +88,12 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
 
                     var dataName = $Input.attr('name');
                     var month = $Input.data('month');
-                    var data = $Input.val();
+                    var dataInput = $Input.val();
                     var id = $Input.data('idsitemeta');
                     var siteId = $Parent.data('siteid');
                     var year = $Parent.data('year');
 
-                    if (id.length == 0) {
-                        $('input.inputSiteMeta').attr('disabled', 'disabled');
-                    } else {
-                        disabledAllFields($Input);
-                    }
+                    disabledAllFields($Input);
 
                     delay(function () {
                         busyApp();
@@ -109,14 +105,47 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                                 siteId: siteId,
                                 dataName: dataName,
                                 year: year,
-                                month: month,
-                                data: data,
+                                month: month.length === 1 ? '0' + month : month,
+                                data: dataInput,
                                 id: id
                             },
                             function (data) {
                                 if (data && $.isNumeric(data)) {
                                     $Input.data('idsitemeta', data);
                                     $Input.addClass('successInput');
+
+                                    if (month < 12 && dataInput.length > 0) {
+                                        $Input.blur();
+
+                                        for (let c = month + 1; c <= 12; c++) {
+                                            setTimeout(function () {
+                                                var $inputBoucle = $('input.inputSiteMeta[name="' + dataName + '"][data-month="' + c + '"]');
+                                                var id = $inputBoucle.data('idsitemeta');
+
+                                                $inputBoucle.val(dataInput);
+
+                                                $.post(
+                                                    '<?= AGAPESHOTES_URL . 'process/ajaxSiteMetaProcess.php'; ?>',
+                                                    {
+                                                        UPDATESITEMETA: 'OK',
+                                                        siteId: siteId,
+                                                        dataName: dataName,
+                                                        year: year,
+                                                        month: c.length === 1 ? '0' + c : c,
+                                                        data: dataInput,
+                                                        id: id
+                                                    },
+                                                    function (data) {
+                                                        if (data && $.isNumeric(data)) {
+                                                            $inputBoucle.data('idsitemeta', data);
+                                                            $inputBoucle.addClass('successInput');
+                                                        }
+                                                    }
+                                                );
+                                            }, 300);
+                                        }
+                                    }
+
                                 } else {
                                     alert(data);
                                 }
