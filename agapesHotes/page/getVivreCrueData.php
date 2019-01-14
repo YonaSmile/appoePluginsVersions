@@ -290,7 +290,7 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
 
                 var $totalTable = $('.totalHtTable[data-etablissementid="' + etablissementid + '"]').clone();
                 $totalTable.removeClass().addClass('float-right');
-                $('tbody', $totalTable).append('<tr><hr><td></td><td>' + financial(totalVariable) + '€' + '</td></tr>');
+                $('tbody', $totalTable).append('<tr><hr><td style="padding: 2px 12px;"></td><td style="padding: 2px 12px;">' + financial(totalVariable) + '€' + '</td></tr>');
                 $('.totalContainer').html($totalTable);
             }
 
@@ -390,7 +390,7 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                 if (tvaTypes.length !== 0) {
                     $('table.totalHtTable[data-etablissementid="' + etablissementid + '"] tbody').html('');
                     $.each(tvaTypes, function (tva, total) {
-                        $('table.totalHtTable[data-etablissementid="' + etablissementid + '"] tbody').append('<tr><td>' + tva + '%</td><td>' + total + '€</td></tr>');
+                        $('table.totalHtTable[data-etablissementid="' + etablissementid + '"] tbody').append('<tr><td style="padding: 2px 12px;">' + tva + '%</td><td style="padding: 2px 12px;">' + financial(total) + '€</td></tr>');
                     });
                 }
             }

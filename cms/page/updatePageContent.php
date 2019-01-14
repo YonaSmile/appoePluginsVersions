@@ -72,78 +72,7 @@ if (!empty($_GET['id'])):
             <?php endif; ?>
         </div>
         <div class="my-4"></div>
-
-        <div class="modal fade bd-example-modal-lg" id="libraryModal" tabindex="-1" role="dialog"
-             aria-labelledby="mediaLibraryModalTitle" aria-hidden="true" data-inputid="">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title"
-                            id="mediaLibraryModalTitle"><?= trans('Choisissez le fichier média'); ?></h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body pt-1" id="libraryModalContent">
-                        <a href="<?= getUrl('updateMedia/'); ?>"
-                           class="btn btn-info btn-sm mb-3"><?= trans('Nouveau média'); ?></a>
-                        <?php
-                        $Media = new \App\Media();
-                        $Category = new \App\Category();
-
-                        $Category->setType('MEDIA');
-                        $allCategories = $Category->showByType();
-
-                        $listCatgories = extractFromObjToArrForList($Category->showByType(), 'id');
-                        $allLibrary = extractFromObjToSimpleArr($allCategories, 'id', 'name');
-
-                        if ($allLibrary): ?>
-                            <div class="container-fluid">
-                                <?php foreach ($allLibrary as $id => $name):
-                                    $Media->setTypeId($id);
-                                    $allFiles = $Media->showFiles();
-                                    if ($allFiles): ?>
-                                        <h6 class="libraryName p-3" id="media-<?= $id; ?>"><?= $name; ?></h6>
-                                        <hr class="my-3 mx-5">
-                                        <div class="card-columns">
-                                            <?php foreach ($allFiles as $file): ?>
-                                                <div class="card fileContent bg-none border-0">
-                                                    <?php if (isImage(FILE_DIR_PATH . $file->name)): ?>
-                                                        <img src="<?= getThumb($file->name, 370); ?>"
-                                                             alt="<?= $file->description; ?>"
-                                                             data-originsrc="<?= WEB_DIR_INCLUDE . $file->name; ?>"
-                                                             data-filename="<?= $file->name; ?>"
-                                                             class="img-fluid seeOnOverlay seeDataOnHover">
-                                                    <?php else: ?>
-                                                        <a href="<?= WEB_DIR_INCLUDE . $file->name; ?>" target="_blank">
-                                                            <img src="<?= getImgAccordingExtension(getFileExtension($file->name)); ?>"
-                                                                 class="seeDataOnHover"
-                                                                 data-filename="<?= $file->name; ?>">
-                                                        </a>
-                                                    <?php endif; ?>
-                                                    <div class="form-group mt-1 mb-0">
-                                                        <small style="font-size: 9px;">
-                                                            <strong class="fileLink"
-                                                                    data-src="<?= WEB_DIR_INCLUDE . $file->name; ?>">
-                                                                <button class="btn btn-sm btn-outline-info btn-block copyLinkOnClick">
-                                                                    <?= trans('Choisir'); ?>
-                                                                </button>
-                                                            </strong>
-                                                        </small>
-                                                    </div>
-                                                </div>
-                                            <?php endforeach; ?>
-                                        </div>
-                                        <div class="my-3"></div>
-                                    <?php endif;
-                                endforeach; ?>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+        <?= getAsset('mediaLibrary'); ?>
         <script type="text/javascript">
 
             function updateCmsContent($input, metaValue) {
