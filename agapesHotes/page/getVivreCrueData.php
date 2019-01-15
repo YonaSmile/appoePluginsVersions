@@ -168,7 +168,7 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                     <h5 class="modal-title"
                         id="modalFactureMainCouranteTitle">
                         <?= trans('Demande de facturation'); ?></h5>
-                    <small>Vivre Crue</small>
+                    <small>Vivre cru</small>
                 </div>
                 <div class="modal-body">
                     <div class="row">

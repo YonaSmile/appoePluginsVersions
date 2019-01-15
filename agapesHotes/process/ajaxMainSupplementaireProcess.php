@@ -12,6 +12,12 @@ if (checkAjaxRequest()) {
 
             if (!empty($_POST['siteId']) && !empty($_POST['date']) && !empty($_POST['client_name'])) {
 
+                //Check date permissions
+                if (!haveUserPermissionToUpdate($_POST['date'])) {
+                    echo 'Vous ne pouvez plus modifier les données d\'avant !';
+                    exit();
+                }
+
                 $MainSuppProcess->setSiteId($_POST['siteId']);
                 $MainSuppProcess->setDate($_POST['date']);
                 $MainSuppProcess->setClientName($_POST['client_name']);
@@ -21,13 +27,19 @@ if (checkAjaxRequest()) {
                 //Prepare products
                 $allProductFields = array();
                 $acceptedFields = array('nom', 'quantite', 'prixHTunite', 'tauxTVA', 'total');
+                $refusedFiledNb = array();
+
                 foreach ($_POST as $key => $value) {
 
-                    if (!empty($value) && false !== strpos($key, '_')) {
-
+                    if (false !== strpos($key, '_')) {
                         list($fieldName, $fieldNb) = explode('_', $key);
-                        if (in_array($fieldName, $acceptedFields)) {
 
+                        if ($fieldName == 'nom' && empty($value)) {
+                            $refusedFiledNb[] = $fieldNb;
+                            continue;
+                        }
+
+                        if (in_array($fieldName, $acceptedFields) && !in_array($fieldNb, $refusedFiledNb)) {
                             $allProductFields[$fieldNb][$fieldName] = $_POST[$key];
                         }
                     }
@@ -64,6 +76,12 @@ if (checkAjaxRequest()) {
 
             if (!empty($_POST['siteId']) && !empty($_POST['date']) && !empty($_POST['client_name'])) {
 
+                //Check date permissions
+                if (!haveUserPermissionToUpdate($_POST['date'])) {
+                    echo 'Vous ne pouvez plus modifier les données d\'avant !';
+                    exit();
+                }
+
                 $MainSuppProcess->setSiteId($_POST['siteId']);
                 $MainSuppProcess->setDate($_POST['date']);
                 $MainSuppProcess->setClientName($_POST['client_name']);
@@ -73,19 +91,26 @@ if (checkAjaxRequest()) {
                 //Prepare products
                 $allProductFields = array();
                 $acceptedFields = array('id', 'nom', 'quantite', 'prixHTunite', 'tauxTVA', 'total');
+                $refusedFiledNb = array();
+
                 foreach ($_POST as $key => $value) {
 
-                    if (!empty($value) && false !== strpos($key, '_')) {
-
+                    if (false !== strpos($key, '_')) {
                         list($fieldName, $fieldNb) = explode('_', $key);
-                        if (in_array($fieldName, $acceptedFields)) {
 
+                        if ($fieldName == 'nom' && empty($value)) {
+                            $refusedFiledNb[] = $fieldNb;
+                            continue;
+                        }
+
+                        if (in_array($fieldName, $acceptedFields) && !in_array($fieldNb, $refusedFiledNb)) {
                             $allProductFields[$fieldNb][$fieldName] = $_POST[$key];
                         }
                     }
                 }
 
                 foreach ($allProductFields as $nbProduct => $facture) {
+
                     $MainSuppProcess->setId('');
                     $MainSuppProcess->feed($facture);
                     if (!empty($MainSuppProcess->getId())) {
@@ -125,6 +150,14 @@ if (checkAjaxRequest()) {
         if (!empty($_POST['DELETEACHAT']) && !empty($_POST['idAchat'])) {
 
             $MainSuppProcess->setId($_POST['idAchat']);
+            $MainSuppProcess->show();
+
+            //Check date permissions
+            if (!haveUserPermissionToUpdate($MainSuppProcess->getDate())) {
+                echo 'Vous ne pouvez plus modifier les données d\'avant !';
+                exit();
+            }
+
             if ($MainSuppProcess->delete()) {
                 echo json_encode(true);
             } else {

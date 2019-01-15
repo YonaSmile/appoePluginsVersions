@@ -13,28 +13,9 @@ if (checkAjaxRequest()) {
                 && isset($_POST['absenceReason']) && isset($_POST['id'])) {
 
                 //Check date permissions
-                if (getUserRoleId(getUserIdSession()) == 1) {
-
-                    $dateNow = new \DateTime();
-
-                    $dateMonthAgo = new DateTime();
-                    $dateMonthAgo->sub(new \DateInterval('P1M'));
-
-                    $processDate = new \DateTime($_POST['date']);
-
-                    if ($dateNow->format('j') >= 25) {
-                        if ($processDate->format('n') < $dateNow->format('n')
-                            && $processDate->format('Y') < $dateNow->format('Y')) {
-                            echo 'Vous ne pouvez plus modifier les données d\'avant !';
-                            exit();
-                        }
-                    } else {
-                        if ($processDate->format('n') < $dateMonthAgo->format('n')
-                            && $processDate->format('Y') <= $dateMonthAgo->format('Y')) {
-                            echo 'Vous ne pouvez plus modifier les données d\'avant !';
-                            exit();
-                        }
-                    }
+                if (!haveUserPermissionToUpdate($_POST['date'])) {
+                    echo 'Vous ne pouvez plus modifier les données d\'avant !';
+                    exit();
                 }
 
                 $PlanningProcess = new \App\Plugin\AgapesHotes\Planning();

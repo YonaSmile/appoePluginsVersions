@@ -85,7 +85,7 @@ if (!empty($_POST['siteId']) && !empty($_POST['year'])) {
                 + $allSitesData[$Secteur->getId()][$Site->getId()]['siteMeta']['fraisDePersonnel']
                 + $allSitesData[$Secteur->getId()][$Site->getId()]['fraisGeneraux']), true);
 
-        $allSitesData[$Secteur->getId()][$Site->getId()]['retourAchat'] = financial($allSitesData[$Secteur->getId()][$Site->getId()]['consoReel']['denree'] * 0.08, true);
+        $allSitesData[$Secteur->getId()][$Site->getId()]['retourAchat'] = financial($allSitesData[$Secteur->getId()][$Site->getId()]['consoReel']['denree'] * 0.065, true);
 
         $allSitesData[$Secteur->getId()][$Site->getId()]['resultats'] = financial($allSitesData[$Secteur->getId()][$Site->getId()]['resultatExploitation']
             + $allSitesData[$Secteur->getId()][$Site->getId()]['retourAchat']

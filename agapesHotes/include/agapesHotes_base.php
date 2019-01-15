@@ -473,3 +473,30 @@ function isUniqueEntretien($fournisseur)
     $uniqueEntretien = array('C2M', 'SILLIKER', 'EUROFINS', 'AGRIVALOR');
     return in_array($fournisseur, $uniqueEntretien);
 }
+
+function haveUserPermissionToUpdate($date)
+{
+
+    if (getUserRoleId() == 1) {
+
+        $dateNow = new \DateTime();
+
+        $dateMonthAgo = new DateTime();
+        $dateMonthAgo->sub(new \DateInterval('P1M'));
+
+        $processDate = new \DateTime($date);
+
+        if ($dateNow->format('j') >= 25) {
+            if ($processDate->format('n') < $dateNow->format('n')
+                && $processDate->format('Y') < $dateNow->format('Y')) {
+                return false;
+            }
+        } else {
+            if ($processDate->format('n') < $dateMonthAgo->format('n')
+                && $processDate->format('Y') <= $dateMonthAgo->format('Y')) {
+                return false;
+            }
+        }
+    }
+    return true;
+}

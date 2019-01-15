@@ -8,10 +8,10 @@ class MainSupplementaire
     private $siteId;
     private $clientName;
     private $nom;
-    private $prixHTunite;
-    private $quantite;
-    private $tauxTVA;
-    private $total;
+    private $prixHTunite = 0.00;
+    private $quantite = 0;
+    private $tauxTVA = 0.00;
+    private $total = 0.00;
     private $date;
     private $status = 1;
     private $userId;
@@ -25,6 +25,8 @@ class MainSupplementaire
         if (is_null($this->dbh)) {
             $this->dbh = \App\DB::connect();
         }
+
+        $this->userId = getUserIdSession();
 
         if (!is_null($id)) {
             $this->id = $id;
@@ -400,7 +402,7 @@ class MainSupplementaire
      */
     public function save()
     {
-        $this->userId = getUserIdSession();
+
         $sql = 'INSERT INTO appoe_plugin_agapesHotes_main_supplementaire (site_id, clientName, nom, prixHTunite, quantite, tauxTVA, total, date, status, userId, created_at) 
                 VALUES (:siteId, :clientName, :nom, :prixHTunite, :quantite, :tauxTVA, :total, :date, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
@@ -429,7 +431,7 @@ class MainSupplementaire
      */
     public function update()
     {
-        $this->userId = getUserIdSession();
+
         $sql = 'UPDATE appoe_plugin_agapesHotes_main_supplementaire 
         SET site_id = :siteId, clientName = :clientName, nom = :nom, prixHTunite = :prixHTunite, quantite = :quantite, tauxTVA = :tauxTVA, total = :total, date = :date, status = :status, userId = :userId 
         WHERE id = :id';

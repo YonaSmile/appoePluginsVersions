@@ -15,28 +15,9 @@ if (checkAjaxRequest()) {
                 && isset($_POST['quantite']) && isset($_POST['id'])) {
 
                 //Check date permissions
-                if (getUserRoleId(getUserIdSession()) == 1) {
-
-                    $dateNow = new \DateTime();
-
-                    $dateMonthAgo = new DateTime();
-                    $dateMonthAgo->sub(new \DateInterval('P1M'));
-
-                    $processDate = new \DateTime($_POST['date']);
-
-                    if ($dateNow->format('j') >= 25) {
-                        if ($processDate->format('n') < $dateNow->format('n')
-                            && $processDate->format('Y') < $dateNow->format('Y')) {
-                            echo 'Vous ne pouvez plus modifier les données d\'avant !';
-                            exit();
-                        }
-                    } else {
-                        if ($processDate->format('n') < $dateMonthAgo->format('n')
-                            && $processDate->format('Y') <= $dateMonthAgo->format('Y')) {
-                            echo 'Vous ne pouvez plus modifier les données d\'avant !';
-                            exit();
-                        }
-                    }
+                if (!haveUserPermissionToUpdate($_POST['date'])) {
+                    echo 'Vous ne pouvez plus modifier les données d\'avant !';
+                    exit();
                 }
 
                 $VivreCrueProcess->feed($_POST);
@@ -46,7 +27,7 @@ if (checkAjaxRequest()) {
                     if ($VivreCrueProcess->save()) {
                         echo $VivreCrueProcess->getId();
                     } else {
-                        echo 'Impossible d\'enregistrer le vivre crue';
+                        echo 'Impossible d\'enregistrer le vivre cru';
                     }
 
                 } else {
@@ -55,7 +36,7 @@ if (checkAjaxRequest()) {
 
                         echo $VivreCrueProcess->getId();
                     } else {
-                        echo 'Impossible de mettre à jour le vivre crue';
+                        echo 'Impossible de mettre à jour le vivre cru';
                     }
 
                 }

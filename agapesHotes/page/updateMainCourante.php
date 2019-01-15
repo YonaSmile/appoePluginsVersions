@@ -13,7 +13,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
     if (
         $Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $Secteur->getId()
     ):
-        echo getTitle($Page->getName(), $Page->getSlug(), ' de <strong>' . $Site->getNom() . '</strong> du mois de <strong>' . strftime("%B", strtotime(date('Y-m-d'))) . '</strong>');
+        echo getTitle($Page->getName(), $Page->getSlug(), ' de <strong>' . $Site->getNom() . '</strong>');
         ?>
         <div class="row">
             <div class="col-12">

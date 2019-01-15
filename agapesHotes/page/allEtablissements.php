@@ -39,7 +39,7 @@ $allSites = extractFromObjToSimpleArr(getSitesAccess(), 'id', 'nom');
                                                 <span data-name="nom"><?= $etablissement->nom ?></span>
                                                 <small class="hiddenList">
                                                     <a href="<?= AGAPESHOTES_URL; ?>page/allCourses/<?= $Secteur->getSlug(); ?>/<?= $Site->getSlug(); ?>/<?= $etablissement->slug; ?>/">
-                                                        Liste vivre crus</a>&nbsp;
+                                                        Liste vivre cru</a>&nbsp;
                                                     <a href="<?= AGAPESHOTES_URL; ?>page/vivreCrue/<?= $Secteur->getSlug(); ?>/<?= $Site->getSlug(); ?>/">
                                                         Vivre cru</a>&nbsp;
                                                     <a href="<?= AGAPESHOTES_URL; ?>page/allPrestations/<?= $Secteur->getSlug(); ?>/<?= $Site->getSlug(); ?>/<?= $etablissement->slug; ?>/">Liste

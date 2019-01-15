@@ -26,7 +26,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site']) && !empty($_GET['etablisse
         <div class="container-fluid">
             <button id="addCourses" type="button" class="btn btn-info btn-sm mb-4" data-toggle="modal"
                     data-target="#modalAddCourses">
-                <?= trans('Ajouter à la Liste vivre crus'); ?>
+                <?= trans('Ajouter à la Liste vivre cru'); ?>
             </button>
             <div class="row">
                 <div class="col-12">
@@ -78,7 +78,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site']) && !empty($_GET['etablisse
                     <form action="" method="post" id="addCoursesForm">
                         <div class="modal-header">
                             <h5 class="modal-title"
-                                id="modalAddCoursesTitle"><?= trans('Ajouter à la Liste vivre crus'); ?></h5>
+                                id="modalAddCoursesTitle"><?= trans('Ajouter à la Liste vivre cru'); ?></h5>
                         </div>
                         <div class="modal-body" id="modalCoursesBody">
                             <div class="row">

@@ -62,7 +62,7 @@ if ($Secteur):
         );
 
         $allSitesData[$site->id]['resultatExploitation'] = $allSitesData[$site->id]['facturation'] - ($allSitesData[$site->id]['consoReel']['denree'] + $allSitesData[$site->id]['siteMeta']['fraisDePersonnel'] + $allSitesData[$site->id]['fraisGeneraux']);
-        $allSitesData[$site->id]['retourAchat'] = $allSitesData[$site->id]['consoReel']['denree'] * 0.08;
+        $allSitesData[$site->id]['retourAchat'] = $allSitesData[$site->id]['consoReel']['denree'] * 0.065;
         $allSitesData[$site->id]['resultats'] = $allSitesData[$site->id]['resultatExploitation'] + $allSitesData[$site->id]['retourAchat'] + $allSitesData[$site->id]['fraisDeSiege'];
     }
     ?>
