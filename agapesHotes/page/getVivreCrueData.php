@@ -38,7 +38,7 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
         <table class="table table-striped tableNonEffect fixed-header">
             <thead style="z-index: 2">
             <tr>
-                <th><?= trans('Course'); ?></th>
+                <th><?= trans('Produit'); ?></th>
                 <th style="white-space: nowrap;"><?= trans('Prix/unité HT'); ?></th>
                 <th style="white-space: nowrap;"><?= trans('Taux tva'); ?></th>
                 <th><?= trans('Quantité'); ?></th>
@@ -47,7 +47,7 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                     <th class="text-center" style="<?= getDayColor($date, $Site->getAlsaceMoselle()); ?>">
                         <?= $date->format('d'); ?></th>
                 <?php endforeach; ?>
-                <th><?= trans('Course'); ?></th>
+                <th><?= trans('Produit'); ?></th>
             </tr>
             </thead>
             <?php foreach ($allEtablissements as $etablissement):
@@ -85,20 +85,33 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                                 $VivreCrue = current($allVivresCrue[$course->id]);
                                 $vivreCruePrixHtUnit = $VivreCrue->prixHTunite;
                                 $vivreCrueTauxTva = $VivreCrue->tauxTVA;
+                            } else {
+                                $json = file_get_contents(AGAPESHOTES_PATH . 'product_price.json');
+                                $parsed_json = json_decode($json, true);
+
+                                if (!empty($parsed_json['products'][$course->id])) {
+
+                                    $product = $parsed_json['products'][$course->id];
+                                    if ($product['date'] <= $start->format('Y-m-d')) {
+
+                                        $vivreCruePrixHtUnit = $product['prixHTunite'];
+                                        $vivreCrueTauxTva = $product['tauxTva'];
+                                    }
+                                }
                             }
                             ?>
                             <td class="text-center" style="min-width: 130px;">
                                 <input type="tel" name="prixUntitHT" value="<?= $vivreCruePrixHtUnit; ?>"
                                        class="text-center" data-idcourse="<?= $course->id ?>"
+                                       data-date="<?= $start->format('Y-m-d'); ?>"
                                        data-etablissementid="<?= $etablissement->id; ?>"
-                                    <?= !empty($vivreCruePrixHtUnit) ? 'readonly' : ''; ?>
                                        style="width: 50px;margin-right: 5px;">€
                             </td>
                             <td class="text-center" style="min-width: 90px;">
                                 <input type="tel" name="tauxTva" value="<?= $vivreCrueTauxTva; ?>"
                                        class="text-center" data-idcourse="<?= $course->id ?>"
                                        data-etablissementid="<?= $etablissement->id; ?>"
-                                    <?= !empty($vivreCrueTauxTva) ? 'readonly' : ''; ?>
+                                       data-date="<?= $start->format('Y-m-d'); ?>"
                                        style="width: 50px;margin-right: 5px;">%
                             </td>
                             <td class="text-center tdQuantity" style="min-width: 91px;"
@@ -419,6 +432,113 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                 };
             })();
 
+            function updateProductPrice(idCourse, date, prixUniteHT, tauxTva) {
+                $.post(
+                    '<?= AGAPESHOTES_URL . 'process/ajaxVivreCrueProcess.php'; ?>',
+                    {
+                        UPDATEPRODUCTPRICE: 'OK',
+                        idCourse: idCourse,
+                        date: date,
+                        prixHTunite: prixUniteHT,
+                        tauxTva: tauxTva,
+                    },
+                    function (data) {
+                        console.log(data);
+                    }
+                );
+            }
+
+            function updateTvaAndPriceForAllMonth($input) {
+
+                var idCourse = $input.data('idcourse');
+                var oldVal = $input.data('oldVal');
+                var dateInputOrigin = $input.data('date');
+
+                var prixUniteHT = $('input[name="prixUntitHT"][data-idcourse="' + idCourse + '"]').val();
+                var tauxTva = $('input[name="tauxTva"][data-idcourse="' + idCourse + '"]').val();
+
+                if (typeof prixUniteHT !== 'undefined' && typeof tauxTva !== 'undefined'
+                    && prixUniteHT.length > 0 && tauxTva.length > 0) {
+
+                    delay(function () {
+
+                        if (tauxTva == 5.5 || tauxTva == 10 || tauxTva == 20) {
+
+                            var dateEnd = new Date();
+                            dateEnd.setDate(dateEnd.getDate() + 7);
+
+                            if (new Date(dateInputOrigin).getTime() <= dateEnd.getTime()) {
+
+                                $('input.vivreCrueInput[data-idcourse="' + idCourse + '"]').each(function (i) {
+
+                                    busyApp();
+
+                                    var $Input = $(this);
+                                    var idVivreCrue = $Input.attr('name');
+                                    var etablissementId = $Input.closest('tbody').data('etablissement');
+                                    var date = $Input.data('date');
+                                    var quantite = $Input.val();
+
+                                    if ($Input.val().length > 0) {
+
+
+                                        setTimeout(function () {
+
+                                            $.post(
+                                                '<?= AGAPESHOTES_URL . 'process/ajaxVivreCrueProcess.php'; ?>',
+                                                {
+                                                    UPDATEVIVRECRUE: 'OK',
+                                                    etablissementId: etablissementId,
+                                                    idCourse: idCourse,
+                                                    date: date,
+                                                    quantite: quantite,
+                                                    prixHTunite: prixUniteHT,
+                                                    tauxTva: tauxTva,
+                                                    total: (quantite * prixUniteHT),
+                                                    id: idVivreCrue
+                                                },
+                                                function (data) {
+                                                    if (data && $.isNumeric(data)) {
+                                                        $Input.attr('name', data);
+                                                        $Input.addClass('successInput');
+                                                        calculateTotalQuantityByCourse(idCourse);
+                                                        calculeAllTvaTypes(etablissementId);
+                                                    }
+                                                }
+                                            );
+                                        }, 300);
+                                    }
+                                    availableApp();
+
+                                });
+
+                                updateProductPrice(idCourse, dateInputOrigin, prixUniteHT, tauxTva);
+
+                            } else {
+                                $input.val(oldVal);
+                                alert('Il est interdit de saisir une quantité pour une date supérieure à une semaine depuis aujourd\'hui !');
+                            }
+                        } else {
+                            $input.val(oldVal);
+                            alert('Le taux de tva ne peut être que : 5.50 / 10.00 / 20.00');
+                        }
+                    }, 1000);
+                }
+            }
+
+            $('input[name="tauxTva"], input[name="prixUntitHT"]').on('focusin', function () {
+                $(this).data('oldVal', $(this).val());
+                $('input.vivreCrueInput').removeClass('successInput');
+            });
+
+            $('input[name="prixUntitHT"], input[name="tauxTva"]').on('input', function (event) {
+                event.preventDefault();
+                if ($(this).data('oldVal') != $(this).val()) {
+                    updateTvaAndPriceForAllMonth($(this));
+                }
+
+            });
+
             $('input.vivreCrueInput').on('input', function (event) {
                 event.preventDefault();
 
@@ -474,8 +594,6 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                                             $Input.attr('name', data);
                                             $Input.addClass('successInput');
                                             calculateTotalQuantityByCourse(idCourse);
-                                            $('input[name="prixUntitHT"][data-idcourse="' + idCourse + '"]').attr('readonly', 'readonly');
-                                            $('input[name="tauxTva"][data-idcourse="' + idCourse + '"]').attr('readonly', 'readonly');
                                             calculeAllTvaTypes(etablissementId);
                                         } else {
                                             alert(data);
@@ -501,7 +619,8 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
             });
 
 
-        });
+        })
+        ;
     </script>
 <?php else: ?>
     <?= getContainerErrorMsg(trans('Ce site n\'est pas accessible')); ?>
