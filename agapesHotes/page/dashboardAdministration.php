@@ -14,7 +14,7 @@ $Secteur = new \App\Plugin\AgapesHotes\Secteur();
                 <thead>
                 <tr>
                     <th></th>
-                    <th colspan="2"><?= trans('Chiffre d\'affaire'); ?></th>
+                    <th colspan="2"><?= trans('Chiffre d\'affaires'); ?></th>
                     <th><?= trans('Consommation'); ?></th>
                     <th><?= trans('Personnel'); ?></th>
                     <th><?= trans('Frais généraux'); ?></th>
@@ -80,7 +80,7 @@ $Secteur = new \App\Plugin\AgapesHotes\Secteur();
                 <thead>
                 <tr>
                     <th><?= trans('Site'); ?></th>
-                    <th colspan="2"><?= trans('Chiffre d\'affaire'); ?></th>
+                    <th colspan="2"><?= trans('Chiffre d\'affaires'); ?></th>
                     <th><?= trans('Consommation'); ?></th>
                     <th><?= trans('Personnel'); ?></th>
                     <th><?= trans('Frais généraux'); ?></th>
@@ -201,15 +201,15 @@ $Secteur = new \App\Plugin\AgapesHotes\Secteur();
                             $trBudget.find('td[data-name="budget-resultats"]').text($siteData.budget.resultats ? financial($siteData.budget.resultats) : 0);
                             $trBudget.find('td[data-name="budget-pourcentagesrentabilite"]').text($siteData.budget.conso > 0 ? financial($siteData.budget.resultats / $siteData.budget.ca) : 0);
 
-                            budgetCa += $.isNumeric($siteData.budget.ca) ? parseFloat(financial($siteData.budget.ca)) : 0;
-                            budgetConso += $.isNumeric($siteData.budget.conso) ? parseFloat($siteData.budget.conso) : 0;
-                            budgetPerso += $.isNumeric($siteData.budget.personnel) ? parseFloat($siteData.budget.personnel) : 0;
-                            budgetFraisGeneraux += $.isNumeric($siteData.budget.fraisGeneraux) ? parseFloat($siteData.budget.fraisGeneraux) : 0;
-                            budgetResultatsExploitation += $.isNumeric($siteData.budget.resultatExploitation) ? parseFloat($siteData.budget.resultatExploitation) : 0;
-                            budgetretoruAchat += $.isNumeric($siteData.budget.retourAchat) ? parseFloat($siteData.budget.retourAchat) : 0;
-                            budgetFraisSiege += $.isNumeric($siteData.budget.retourFraisSiege) ? parseFloat($siteData.budget.retourFraisSiege) : 0;
-                            budgetResultats += $.isNumeric($siteData.budget.resultats) ? parseFloat($siteData.budget.resultats) : 0;
-                            budgetPourcentageRentabilite += $siteData.budget.conso > 0 ? parseFloat(siteData.budget.resultats / $siteData.budget.ca) : 0;
+                            budgetCa += $.isNumeric($siteData.budget.ca) ? parseReelFloat($siteData.budget.ca) : 0;
+                            budgetConso += $.isNumeric($siteData.budget.conso) ? parseReelFloat($siteData.budget.conso) : 0;
+                            budgetPerso += $.isNumeric($siteData.budget.personnel) ? parseReelFloat($siteData.budget.personnel) : 0;
+                            budgetFraisGeneraux += $.isNumeric($siteData.budget.fraisGeneraux) ? parseReelFloat($siteData.budget.fraisGeneraux) : 0;
+                            budgetResultatsExploitation += $.isNumeric($siteData.budget.resultatExploitation) ? parseReelFloat($siteData.budget.resultatExploitation) : 0;
+                            budgetretoruAchat += $.isNumeric($siteData.budget.retourAchat) ? parseReelFloat($siteData.budget.retourAchat) : 0;
+                            budgetFraisSiege += $.isNumeric($siteData.budget.retourFraisSiege) ? parseReelFloat($siteData.budget.retourFraisSiege) : 0;
+                            budgetResultats += $.isNumeric($siteData.budget.resultats) ? parseReelFloat($siteData.budget.resultats) : 0;
+                            budgetPourcentageRentabilite += $siteData.budget.conso > 0 ? parseReelFloat(siteData.budget.resultats / $siteData.budget.ca) : 0;
 
                             $trTotalBudget.find('td[data-name="budget-ca"]').html(financial(budgetCa));
                             $trTotalBudget.find('td[data-name="budget-conso"]').html(financial(budgetConso));
@@ -235,15 +235,15 @@ $Secteur = new \App\Plugin\AgapesHotes\Secteur();
                             $trSite.find('td[data-name="site-resultats"]').html(financial($siteData['resultats']));
                             $trSite.find('td[data-name="site-pourcentagesrentabilite"]').html(financial($siteData['pourcentagesDeRentabilite']) + '%');
 
-                            facturation += $.isNumeric($siteData['facturation']) ? parseFloat($siteData['facturation']) : 0;
-                            consoreelDenree += $.isNumeric($siteData['consoReel'].denree) ? parseFloat($siteData['consoReel'].denree) : 0;
-                            fraisperso += $.isNumeric($siteData['siteMeta'].fraisDePersonnel) ? parseFloat($siteData['siteMeta'].fraisDePersonnel) : 0;
-                            fraisgeneraux += $.isNumeric($siteData['fraisGeneraux']) ? parseFloat($siteData['fraisGeneraux']) : 0;
-                            resultatexploitation += $.isNumeric($siteData['resultatExploitation']) ? parseFloat($siteData['resultatExploitation']) : 0;
-                            retourachat += $.isNumeric($siteData['retourAchat']) ? parseFloat($siteData['retourAchat']) : 0;
-                            fraissiege += $.isNumeric($siteData['fraisDeSiege']) ? parseFloat($siteData['fraisDeSiege']) : 0;
-                            resultats += $.isNumeric($siteData['resultats']) ? parseFloat($siteData['resultats']) : 0;
-                            pourcentagesrentabilite += $.isNumeric($siteData['pourcentagesDeRentabilite']) ? parseFloat($siteData['pourcentagesDeRentabilite']) : 0;
+                            facturation += $.isNumeric($siteData['facturation']) ? parseReelFloat($siteData['facturation']) : 0;
+                            consoreelDenree += $.isNumeric($siteData['consoReel'].denree) ? parseReelFloat($siteData['consoReel'].denree) : 0;
+                            fraisperso += $.isNumeric($siteData['siteMeta'].fraisDePersonnel) ? parseReelFloat($siteData['siteMeta'].fraisDePersonnel) : 0;
+                            fraisgeneraux += $.isNumeric($siteData['fraisGeneraux']) ? parseReelFloat($siteData['fraisGeneraux']) : 0;
+                            resultatexploitation += $.isNumeric($siteData['resultatExploitation']) ? parseReelFloat($siteData['resultatExploitation']) : 0;
+                            retourachat += $.isNumeric($siteData['retourAchat']) ? parseReelFloat($siteData['retourAchat']) : 0;
+                            fraissiege += $.isNumeric($siteData['fraisDeSiege']) ? parseReelFloat($siteData['fraisDeSiege']) : 0;
+                            resultats += $.isNumeric($siteData['resultats']) ? parseReelFloat($siteData['resultats']) : 0;
+                            pourcentagesrentabilite += $.isNumeric($siteData['pourcentagesDeRentabilite']) ? parseReelFloat($siteData['pourcentagesDeRentabilite']) : 0;
 
                             $trTotalSite.find('td[data-name="site-facturation"]').html(financial(facturation));
                             $trTotalSite.find('td[data-name="site-consoreel-denree"]').html(financial(consoreelDenree));
@@ -285,15 +285,15 @@ $Secteur = new \App\Plugin\AgapesHotes\Secteur();
                             $trSite.find('td[data-name="site-resultats"]').html($siteData['resultats']);
                             $trSite.find('td[data-name="site-pourcentagesrentabilite"]').html($siteData['pourcentagesDeRentabilite'] + '%');
 
-                            facturationAgo += $.isNumeric($siteData['facturation']) ? parseFloat($siteData['facturation']) : 0;
-                            consoreelDenreeAgo += $.isNumeric($siteData['consoReel'].denree) ? parseFloat($siteData['consoReel'].denree) : 0;
-                            fraispersoAgo += $.isNumeric($siteData['siteMeta'].fraisDePersonnel) ? parseFloat($siteData['siteMeta'].fraisDePersonnel) : 0;
-                            fraisgenerauxAgo += $.isNumeric($siteData['fraisGeneraux']) ? parseFloat($siteData['fraisGeneraux']) : 0;
-                            resultatexploitationAgo += $.isNumeric($siteData['resultatExploitation']) ? parseFloat($siteData['resultatExploitation']) : 0;
-                            retourachatAgo += $.isNumeric($siteData['retourAchat']) ? parseFloat($siteData['retourAchat']) : 0;
-                            fraissiegeAgo += $.isNumeric($siteData['fraisDeSiege']) ? parseFloat($siteData['fraisDeSiege']) : 0;
-                            resultatsAgo += $.isNumeric($siteData['resultats']) ? parseFloat($siteData['resultats']) : 0;
-                            pourcentagesrentabiliteAgo += $.isNumeric($siteData['pourcentagesDeRentabilite']) ? parseFloat($siteData['pourcentagesDeRentabilite']) : 0;
+                            facturationAgo += $.isNumeric($siteData['facturation']) ? parseReelFloat($siteData['facturation']) : 0;
+                            consoreelDenreeAgo += $.isNumeric($siteData['consoReel'].denree) ? parseReelFloat($siteData['consoReel'].denree) : 0;
+                            fraispersoAgo += $.isNumeric($siteData['siteMeta'].fraisDePersonnel) ? parseReelFloat($siteData['siteMeta'].fraisDePersonnel) : 0;
+                            fraisgenerauxAgo += $.isNumeric($siteData['fraisGeneraux']) ? parseReelFloat($siteData['fraisGeneraux']) : 0;
+                            resultatexploitationAgo += $.isNumeric($siteData['resultatExploitation']) ? parseReelFloat($siteData['resultatExploitation']) : 0;
+                            retourachatAgo += $.isNumeric($siteData['retourAchat']) ? parseReelFloat($siteData['retourAchat']) : 0;
+                            fraissiegeAgo += $.isNumeric($siteData['fraisDeSiege']) ? parseReelFloat($siteData['fraisDeSiege']) : 0;
+                            resultatsAgo += $.isNumeric($siteData['resultats']) ? parseReelFloat($siteData['resultats']) : 0;
+                            pourcentagesrentabiliteAgo += $.isNumeric($siteData['pourcentagesDeRentabilite']) ? parseReelFloat($siteData['pourcentagesDeRentabilite']) : 0;
 
                             $trTotalSiteYearAgo.find('td[data-name="site-facturation"]').html(financial(facturationAgo));
                             $trTotalSiteYearAgo.find('td[data-name="site-consoreel-denree"]').html(financial(consoreelDenreeAgo));

@@ -116,10 +116,10 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                                             <?= \App\Form::text('Émetteur', 'emetteur', 'texte', 'Les Agapes Hôtes, ' . $Site->getNom(), true, 255, 'disabled="disabled" readonly', '', 'basePrint'); ?>
                                         </div>
                                         <div class="col-4 my-2">
-                                            <?= \App\Form::text('Date de la Facture', 'date', 'date', current($data)->date, true, 255, 'min="' . $start->format('Y-m-d') . '" max="' . $end->format('Y-m-d') . '"', '', 'basePrint'); ?>
+                                            <?= \App\Form::text('Date de la Facture *', 'date', 'date', current($data)->date, true, 255, 'min="' . $start->format('Y-m-d') . '" max="' . $end->format('Y-m-d') . '"', '', 'basePrint'); ?>
                                         </div>
                                         <div class="col-4 my-2">
-                                            <?= App\Form::text('Destinataire', 'client_name', 'text', $clientName, true, 150, 'list="etablissementList" autocomplete="off"', '', 'basePrint'); ?>
+                                            <?= App\Form::text('Destinataire *', 'client_name', 'text', $clientName, true, 150, 'list="etablissementList" autocomplete="off"', '', 'basePrint'); ?>
                                             <?php if ($allEtablissements): ?>
                                                 <datalist id="etablissementList">
                                                     <?php foreach ($allEtablissements as $etablissement): ?>
@@ -160,7 +160,7 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                                                     <i class="fas fa-ban"></i>
                                                 </span>
                                                 <div class="col-3 my-1">
-                                                    <?= \App\Form::text('Nom de l\'article', 'nom_' . $c, 'text', $achat->nom, true, 255, 'list="coursesList" autocomplete="off"', '', 'form-control-sm', 'Nom de l\'article'); ?>
+                                                    <?= \App\Form::text('Nom de l\'article *', 'nom_' . $c, 'text', $achat->nom, true, 255, 'list="coursesList" autocomplete="off"', '', 'form-control-sm', 'Nom de l\'article'); ?>
                                                     <?php if ($allCourses): ?>
                                                         <datalist id="coursesList">
                                                             <?php foreach ($allCourses as $cours): ?>
@@ -257,10 +257,10 @@ endif; ?>
                                 <?= \App\Form::target('ADDMAINSUPPLEMENTAIRE'); ?>
                                 <div class="row my-2">
                                     <div class="col-12 col-lg-2 my-2">
-                                        <?= \App\Form::text('Date de la Facture', 'date', 'date', $start->format('Y-m-01'), true, 255, 'min="' . $start->format('Y-m-d') . '" max="' . $end->format('Y-m-d') . '"'); ?>
+                                        <?= \App\Form::text('Date de la Facture *', 'date', 'date', $start->format('Y-m-01'), true, 255, 'min="' . $start->format('Y-m-d') . '" max="' . $end->format('Y-m-d') . '"'); ?>
                                     </div>
                                     <div class="col-12 col-lg-3 my-2">
-                                        <?= App\Form::text('Destinataire', 'client_name', 'text', '', true, 150, 'list="etablissementList" autocomplete="off"'); ?>
+                                        <?= App\Form::text('Destinataire *', 'client_name', 'text', '', true, 150, 'list="etablissementList" autocomplete="off"'); ?>
                                         <?php if ($allEtablissements): ?>
                                             <datalist id="etablissementList">
                                                 <?php foreach ($allEtablissements as $etablissement): ?>
@@ -285,7 +285,7 @@ endif; ?>
                                     <?php for ($c = 1; $c <= 5; $c++): ?>
                                         <div class="row my-1 productFields">
                                             <div class="col-12 col-lg-3 my-1">
-                                                <?= \App\Form::text('Nom de l\'article', 'nom_' . $c, 'text', '', true, 255, 'list="coursesList" autocomplete="off"', '', 'form-control-sm', 'Nom de l\'article'); ?>
+                                                <?= \App\Form::text('Nom de l\'article *', 'nom_' . $c, 'text', '', true, 255, 'list="coursesList" autocomplete="off"', '', 'form-control-sm', 'Nom de l\'article'); ?>
                                                 <?php if ($allCourses): ?>
                                                     <datalist id="coursesList">
                                                         <?php foreach ($allCourses as $cours): ?>
@@ -340,19 +340,19 @@ endif; ?>
 
                 $('.allFactureProducts').find('.productFields').each(function (i) {
                     var $parent = $(this);
-                    var quantite = parseFloat($parent.find('input.quantiteField').val());
-                    var prixUnitaire = parseFloat($parent.find('input.prixUnitaireField').val());
+                    var quantite = parseReelFloat($parent.find('input.quantiteField').val());
+                    var prixUnitaire = parseReelFloat($parent.find('input.prixUnitaireField').val());
 
                     if (quantite > 0 && prixUnitaire > 0) {
-                        var totalHT = parseFloat(quantite * prixUnitaire);
+                        var totalHT = parseReelFloat(quantite * prixUnitaire);
                         $parent.find('input.totalField').val(financial(totalHT));
 
-                        var tauxTva = parseFloat($parent.find('input.tvaField').val());
+                        var tauxTva = parseReelFloat($parent.find('input.tvaField').val());
 
                         if (tauxTva > 0) {
                             if (tauxTva == 5.5 || tauxTva == 10 || tauxTva == 20) {
                                 var taxe = (totalHT * (tauxTva / 100));
-                                var totalTtc = parseFloat(totalHT + taxe);
+                                var totalTtc = parseReelFloat(totalHT + taxe);
                                 $parent.find('input.totalTtcField').val(financial(totalTtc));
                             } else {
                                 $parent.find('input.tvaField').val('');

@@ -199,6 +199,27 @@ function reelDatesSortDESC($a, $b)
     return strtotime($b) - strtotime($a);
 }
 
+function getAllCommandes($siteId, $year = '', $month = '')
+{
+
+    $year = !empty($year) ? $year : date('Y');
+    $month = !empty($month) ? $month : '';
+
+    $Achat = new \App\Plugin\AgapesHotes\Achat();
+    $Achat->setSiteId($siteId);
+    $allAchat = $Achat->showBySite($year, $month);
+
+    if (!isArrayEmpty($allAchat)) {
+        foreach ($allAchat as &$achat) {
+
+            $oldDate = new \Datetime($achat['date_livraison']);
+            $achat['date_livraison'] = $oldDate->format('d/m/Y');
+        }
+    }
+    return $allAchat;
+
+}
+
 function getCommandesServentest($allCommandes)
 {
 
@@ -209,7 +230,7 @@ function getCommandesServentest($allCommandes)
 
     if (!isArrayEmpty($allCommandes)) {
         foreach ($allCommandes as $key => $allDenree) {
-            if (trim($allDenree['fournisseur']) != 'C2M') {
+            if (isNotUniqueEntretien($allDenree['fournisseur'])) {
                 $commandServentest['denree']['total'] += $allDenree['total'];
                 $commandServentest['denree'][] = $allDenree;
             } else {

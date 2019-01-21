@@ -1,14 +1,14 @@
 <?php
 
 namespace App\Plugin\AgapesHotes;
-class Etablissement
+class Achat
 {
 
     private $id;
-    private $nom;
     private $siteId;
-    private $slug;
-    private $principal = 0;
+    private $date;
+    private $fournisseur;
+    private $total;
     private $status = 1;
     private $userId;
     private $createdAt;
@@ -49,22 +49,6 @@ class Etablissement
     /**
      * @return mixed
      */
-    public function getNom()
-    {
-        return $this->nom;
-    }
-
-    /**
-     * @param mixed $nom
-     */
-    public function setNom($nom)
-    {
-        $this->nom = $nom;
-    }
-
-    /**
-     * @return mixed
-     */
     public function getSiteId()
     {
         return $this->siteId;
@@ -81,37 +65,53 @@ class Etablissement
     /**
      * @return mixed
      */
-    public function getSlug()
+    public function getDate()
     {
-        return $this->slug;
+        return $this->date;
     }
 
     /**
-     * @param mixed $slug
+     * @param mixed $date
      */
-    public function setSlug($slug)
+    public function setDate($date)
     {
-        $this->slug = $slug;
-    }
-
-    /**
-     * @return int
-     */
-    public function getPrincipal()
-    {
-        return $this->principal;
-    }
-
-    /**
-     * @param int $principal
-     */
-    public function setPrincipal($principal)
-    {
-        $this->principal = $principal;
+        $this->date = $date;
     }
 
     /**
      * @return mixed
+     */
+    public function getFournisseur()
+    {
+        return $this->fournisseur;
+    }
+
+    /**
+     * @param mixed $fournisseur
+     */
+    public function setFournisseur($fournisseur)
+    {
+        $this->fournisseur = $fournisseur;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTotal()
+    {
+        return $this->total;
+    }
+
+    /**
+     * @param mixed $total
+     */
+    public function setTotal($total)
+    {
+        $this->total = $total;
+    }
+
+    /**
+     * @return int
      */
     public function getStatus()
     {
@@ -119,7 +119,7 @@ class Etablissement
     }
 
     /**
-     * @param mixed $status
+     * @param int $status
      */
     public function setStatus($status)
     {
@@ -176,14 +176,15 @@ class Etablissement
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapesHotes_etablissements` (
+
+        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapesHotes_achat` (
   				`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   				PRIMARY KEY (`id`),
-                `nom` varchar(255) NOT NULL,
                 `site_id` int(11) UNSIGNED NOT NULL,
-                `slug` varchar(255) NOT NULL,
-                `principal` tinyint(1) NOT NULL DEFAULT 0,
-                UNIQUE (`site_id`,`nom`, `slug`),
+                `date_livraison` date NOT NULL,
+                `fournisseur` VARCHAR(255) NOT NULL,
+                `total` decimal(7,2) UNSIGNED NOT NULL,
+                UNIQUE (`site_id`, `date_livraison`, `fournisseur`),
                 `status` tinyint(4) UNSIGNED NOT NULL DEFAULT 1,
                 `userId` int(11) UNSIGNED NOT NULL,
                 `created_at` date NOT NULL,
@@ -206,7 +207,7 @@ class Etablissement
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_etablissements WHERE id = :id';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_achat WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -232,45 +233,42 @@ class Etablissement
     }
 
     /**
-     * @return bool
+     * @param $year
+     * @param $month
+     * @return array|bool
      */
-    public function showBySlug()
+    public function showBySite($year, $month = '')
     {
-
-        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_etablissements WHERE slug = :slug';
-
+        $addSql = '';
+        if (!empty($month)) {
+            $addSql = ' AND MONTH(date_livraison) = :month ';
+        }
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_achat WHERE site_id = :siteId AND YEAR(date_livraison) = :year ' . $addSql . ' AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':slug', $this->slug);
+        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':year', $year);
+        if (!empty($month)) {
+            $stmt->bindParam(':month', $month);
+        }
+        $stmt->bindParam(':status', $this->status);
         $stmt->execute();
 
-        $count = $stmt->rowCount();
         $error = $stmt->errorInfo();
         if ($error[0] != '00000') {
             return false;
         } else {
-            if ($count == 1) {
-
-                $row = $stmt->fetch(\PDO::FETCH_OBJ);
-                $this->feed($row);
-
-                return true;
-
-            } else {
-
-                return false;
-            }
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
         }
     }
 
     /**
-     * @param $countEtablissements
+     * @param $countPrixPrestations
      * @return array|bool
      */
-    public function showAllBySite($countEtablissements = false)
+    public function showAll($countPrixPrestations = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_etablissements WHERE site_id = :siteId AND status = :status ORDER BY created_at ASC';
-
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_achat WHERE site_id = :siteId AND status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
         $stmt->bindParam(':status', $this->status);
@@ -281,28 +279,7 @@ class Etablissement
         if ($error[0] != '00000') {
             return false;
         } else {
-            return !$countEtablissements ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
-        }
-    }
-
-    /**
-     * @param $countEtablissements
-     * @return array|bool
-     */
-    public function showAll($countEtablissements = false)
-    {
-
-        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_etablissements WHERE status = :status ORDER BY updated_at DESC';
-        $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':status', $this->status);
-        $stmt->execute();
-
-        $count = $stmt->rowCount();
-        $error = $stmt->errorInfo();
-        if ($error[0] != '00000') {
-            return false;
-        } else {
-            return !$countEtablissements ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
+            return !$countPrixPrestations ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
         }
     }
 
@@ -311,42 +288,16 @@ class Etablissement
      */
     public function save()
     {
-        $sql = 'INSERT INTO appoe_plugin_agapesHotes_etablissements (nom, site_id, slug, principal, status, userId, created_at) 
-                VALUES (:nom, :siteId, :slug, :principal, :status, :userId, CURDATE())';
+
+        $sql = 'INSERT INTO appoe_plugin_agapesHotes_achat (site_id, date_livraison, fournisseur, total, status, userId, created_at) 
+                VALUES (:siteId, :date, :fournisseur, :total, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':nom', $this->nom);
         $stmt->bindParam(':siteId', $this->siteId);
-        $stmt->bindParam(':slug', $this->slug);
-        $stmt->bindParam(':principal', $this->principal);
+        $stmt->bindParam(':date', $this->date);
+        $stmt->bindParam(':fournisseur', $this->fournisseur);
+        $stmt->bindParam(':total', $this->total);
         $stmt->bindParam(':status', $this->status);
         $stmt->bindParam(':userId', $this->userId);
-        $stmt->execute();
-
-        $error = $stmt->errorInfo();
-        if ($error[0] != '00000') {
-            return false;
-        } else {
-
-            $this->id = $this->dbh->lastInsertId();
-            return true;
-        }
-    }
-
-    /**
-     * @return bool
-     */
-    public function update()
-    {
-        $sql = 'UPDATE appoe_plugin_agapesHotes_etablissements SET nom = :nom, site_id = :siteId, slug = :slug, status = :status, userId = :userId WHERE id = :id';
-
-        $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':nom', $this->nom);
-        $stmt->bindParam(':siteId', $this->siteId);
-        $stmt->bindParam(':slug', $this->slug);
-        $stmt->bindParam(':status', $this->status);
-        $stmt->bindParam(':userId', $this->userId);
-        $stmt->bindParam(':id', $this->id);
-
         $stmt->execute();
 
         $error = $stmt->errorInfo();
@@ -363,27 +314,31 @@ class Etablissement
     public function delete()
     {
 
-        $this->status = 0;
-        if ($this->update()) {
-            return true;
-        } else {
+        $sql = 'DELETE FROM appoe_plugin_agapesHotes_achat WHERE id = :id';
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':id', $this->id);
+        $stmt->execute();
+
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
             return false;
+        } else {
+            return true;
         }
     }
 
     /**
-     * @param bool $forUpdate
-     *
      * @return bool
      */
-    public function notExist($forUpdate = false)
+    public function exist()
     {
 
-        $sql = 'SELECT id, nom FROM appoe_plugin_agapesHotes_etablissements WHERE (nom = :nom AND site_id = :siteId) OR slug = :slug';
+        $sql = 'SELECT id FROM appoe_plugin_agapesHotes_achat 
+        WHERE site_id = :siteId AND date_livraison = :date AND fournisseur = :fournisseur';
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':nom', $this->nom);
         $stmt->bindParam(':siteId', $this->siteId);
-        $stmt->bindParam(':slug', $this->slug);
+        $stmt->bindParam(':date', $this->date);
+        $stmt->bindParam(':fournisseur', $this->fournisseur);
         $stmt->execute();
 
         $count = $stmt->rowCount();
@@ -391,17 +346,11 @@ class Etablissement
         if ($error[0] != '00000') {
             return false;
         } else {
-            if ($count == 1) {
-                if ($forUpdate) {
-                    $data = $stmt->fetch(\PDO::FETCH_OBJ);
-                    if ($data->id == $this->id) {
-                        return true;
-                    }
-                }
+            if ($count >= 1) {
 
-                return false;
-            } else {
                 return true;
+            } else {
+                return false;
             }
         }
     }
@@ -418,6 +367,20 @@ class Etablissement
 
             if (is_callable(array($this, $method))) {
                 $this->$method($value);
+            }
+        }
+    }
+
+    /**
+     * Clean class attributs
+     */
+    public function clean()
+    {
+        foreach (get_object_vars($this) as $attribut => $value) {
+            $method = 'set' . str_replace(' ', '', ucwords(str_replace('_', ' ', $attribut)));
+
+            if (is_callable(array($this, $method))) {
+                $this->$method(null);
             }
         }
     }

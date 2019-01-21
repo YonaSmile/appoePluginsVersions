@@ -15,7 +15,7 @@ function adaptResponsiveTable() {
     var height = '100%';
 
     if ((tableWidth + $('table', $element).offset().left) > windowWidth) {
-        height = (windowHeight - $element.offset().top - parseFloat($('#mainContent').css('padding-bottom')) - 25) + 'px';
+        height = (windowHeight - $element.offset().top - parseReelFloat($('#mainContent').css('padding-bottom')) - 25) + 'px';
     }
 
     $element.css({height: height});

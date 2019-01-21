@@ -284,9 +284,9 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                 $('tr.vivreCrueTr[data-etablissementid="' + etablissementid + '"]').each(function () {
                     var $tr = $(this);
                     var prestationName = $tr.find('th.courseName').text();
-                    var prestationPrice = parseFloat($tr.find('input[name="prixUntitHT"]').val());
-                    var tva = parseFloat($tr.find('input[name="tauxTva"]').val());
-                    var quantityTotal = parseFloat($tr.find('td.tdQuantity').text());
+                    var prestationPrice = parseReelFloat($tr.find('input[name="prixUntitHT"]').val());
+                    var tva = parseReelFloat($tr.find('input[name="tauxTva"]').val());
+                    var quantityTotal = parseReelFloat($tr.find('td.tdQuantity').text());
                     if ($.isNumeric(quantityTotal) && quantityTotal > 0) {
                         var total = prestationPrice * quantityTotal;
 
@@ -297,7 +297,7 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                             financial(total) + '€</div></div>';
                         $('.allFactureProducts').append(html);
 
-                        totalVariable += parseFloat(total);
+                        totalVariable += parseReelFloat(total);
                     }
                 });
 
@@ -365,7 +365,7 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                 var totalQuantityByDay = [];
                 $('input.vivreCrueInput[data-idcourse="' + courseId + '"]').each(function () {
 
-                    var quantity = parseFloat($(this).val());
+                    var quantity = parseReelFloat($(this).val());
                     if ($.isNumeric(quantity) && quantity > 0) {
                         totalQuantityByDay.push(quantity);
                     }
@@ -388,7 +388,7 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                     var idCourse = $input.data('idcourse');
                     var tauxTva = $input.val();
                     var $parent = $input.closest('tr');
-                    var totalHT = parseFloat($parent.find('td.tdTotal').text());
+                    var totalHT = parseReelFloat($parent.find('td.tdTotal').text());
 
                     if ($.isNumeric(tauxTva) && tauxTva > 0) {
 
@@ -410,7 +410,7 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
 
             function calculateTotalPriceByCourse(courseId) {
 
-                var totalQuantity = parseFloat($('td[data-quantitecourseid="' + courseId + '"]').text());
+                var totalQuantity = parseReelFloat($('td[data-quantitecourseid="' + courseId + '"]').text());
                 var unitPriceHT = $('input[name="prixUntitHT"][data-idcourse="' + courseId + '"]').val();
                 var total = totalQuantity * unitPriceHT;
                 $('td[data-totalcourseid="' + courseId + '"]').html(total.toFixed(2) + '€');

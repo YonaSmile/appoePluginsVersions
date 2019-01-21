@@ -28,7 +28,9 @@ if (checkAjaxRequest()) {
                         $Etablissement = new \App\Plugin\AgapesHotes\Etablissement();
                         $Etablissement->setSiteId($SiteProcess->getId());
                         $Etablissement->setNom($SiteProcess->getNom());
-                        $Etablissement->setSlug(slugify($SiteProcess->getNom()));
+                        $siteName = explode(' ', trim($SiteProcess->getNom()));
+                        $Etablissement->setSlug(slugify($siteName[0] . '-' . $SiteProcess->getNom()));
+                        $Etablissement->setPrincipal(1);
                         $Etablissement->save();
                     }
                 } else {

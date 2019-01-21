@@ -167,7 +167,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                     var produit = $tr.find('[data-name="produit"]').text();
                     var date = $tr.find('[data-name="date"]').data('dateformat');
                     var type = $tr.find('[data-name="type"]').text();
-                    var montantHt = parseFloat($tr.find('[data-name="montantht"]').text());
+                    var montantHt = parseReelFloat($tr.find('[data-name="montantht"]').text());
 
                     var $form = $('#noteDeFraisForm');
 

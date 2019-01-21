@@ -67,7 +67,7 @@ if (checkAjaxRequest()) {
                 }
 
             } else {
-                echo 'Tous les champs sont obligatoires !';
+                echo 'Tous les champs avec un * sont obligatoires !';
             }
         }
 
@@ -143,7 +143,7 @@ if (checkAjaxRequest()) {
                 }
 
             } else {
-                echo 'Tous les champs sont obligatoires !';
+                echo 'Tous les champs avec un * sont obligatoires !';
             }
         }
 

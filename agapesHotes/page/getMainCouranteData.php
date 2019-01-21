@@ -345,7 +345,7 @@ if (
                     var $td = $(this);
                     var $tr = $td.closest('tr');
                     var prestationName = $tr.find('th[data-name="prestationName"] span').text();
-                    var prestationPrice = parseFloat($tr.find('small.prestationReelPrice').text());
+                    var prestationPrice = parseReelFloat($tr.find('small.prestationReelPrice').text());
 
                     if (!(prestationName in facture)) {
                         facture[prestationName] = {price: prestationPrice, quantite: 0};
@@ -354,11 +354,11 @@ if (
 
                     if ($td.data('day') < 16) {
                         var $input = $td.find('input.mainCourantInput');
-                        var quantite = parseFloat($input.val());
+                        var quantite = parseReelFloat($input.val());
 
                         if ($.isNumeric(quantite) && quantite > 0) {
 
-                            totalQuantite += parseFloat(quantite);
+                            totalQuantite += parseReelFloat(quantite);
                             facture[prestationName].quantite = totalQuantite;
                         }
                     }
@@ -367,7 +367,7 @@ if (
                 if (facture.length !== 0) {
                     $.each(facture, function (prestation, data) {
 
-                        totalVariable += parseFloat(data.price * data.quantite);
+                        totalVariable += parseReelFloat(data.price * data.quantite);
 
                         var html = '<div class="row my-1 productFields positionRelative"><div class="col-4 mb-1">' +
                             prestation + '</div><div class="col-3 mb-1">' +
@@ -393,7 +393,7 @@ if (
                     var $td = $(this);
                     var $tr = $td.closest('tr');
                     var prestationName = $tr.find('th[data-name="prestationName"] span').text();
-                    var prestationPrice = parseFloat($tr.find('small.prestationReelPrice').text());
+                    var prestationPrice = parseReelFloat($tr.find('small.prestationReelPrice').text());
 
                     if (!(prestationName in facture)) {
                         facture[prestationName] = {price: prestationPrice, quantite: 0};
@@ -402,11 +402,11 @@ if (
 
                     if ($td.data('day') > 15) {
                         var $input = $td.find('input.mainCourantInput');
-                        var quantite = parseFloat($input.val());
+                        var quantite = parseReelFloat($input.val());
 
                         if ($.isNumeric(quantite) && quantite > 0) {
 
-                            totalQuantite += parseFloat(quantite);
+                            totalQuantite += parseReelFloat(quantite);
                             facture[prestationName].quantite = totalQuantite;
                         }
                     }
@@ -415,7 +415,7 @@ if (
                 if (facture.length !== 0) {
                     $.each(facture, function (prestation, data) {
 
-                        totalVariable += parseFloat(data.price * data.quantite);
+                        totalVariable += parseReelFloat(data.price * data.quantite);
 
                         var html = '<div class="row my-1 productFields positionRelative"><div class="col-4 mb-1">' +
                             prestation + '</div><div class="col-3 mb-1">' +
@@ -437,8 +437,8 @@ if (
                 $('tr.mainCourantTr[data-etablissementid="' + etablissementid + '"]').each(function () {
                     var $tr = $(this);
                     var prestationName = $tr.find('th[data-name="prestationName"] span').text();
-                    var prestationPrice = parseFloat($tr.find('small.prestationReelPrice').text());
-                    var quantityTotalDay = parseFloat($tr.find('td.quantityTotalDay span').text());
+                    var prestationPrice = parseReelFloat($tr.find('small.prestationReelPrice').text());
+                    var quantityTotalDay = parseReelFloat($tr.find('td.quantityTotalDay span').text());
                     var total = financial(prestationPrice * quantityTotalDay);
 
                     var html = '<div class="row my-1 productFields positionRelative"><div class="col-4 mb-1">' +
@@ -448,12 +448,12 @@ if (
                         total + '€</div></div>';
                     $('.allFactureProducts').append(html);
 
-                    totalVariable += parseFloat(total);
+                    totalVariable += parseReelFloat(total);
                 });
                 $('#totalVariableContainer').show();
                 $('#totalFraisFixesContainer').show();
                 $('.totalContainer .totalVariable').html(financial(totalVariable) + '€');
-                var totalFraisFixes = parseFloat($('.totalContainer .totalFraisFixes').text());
+                var totalFraisFixes = parseReelFloat($('.totalContainer .totalFraisFixes').text());
                 $('.totalContainer .totalCaHt').html(financial(totalVariable + totalFraisFixes) + '€');
             }
 
@@ -541,7 +541,7 @@ if (
                     var $input = $(this);
                     var $small = $input.next().next('.prestationPriceCumule');
                     var prixprestation = $input.data('prixreelprestation');
-                    var quantity = parseFloat($input.val());
+                    var quantity = parseReelFloat($input.val());
 
                     if ($.isNumeric(quantity) && quantity > 0
                         && $.isNumeric(prixprestation) && prixprestation > 0) {
@@ -572,7 +572,7 @@ if (
                     var $info = $(this);
                     var day = $info.data('day');
                     var etablissement = $info.data('etablissement');
-                    var totalDay = parseFloat($info.text());
+                    var totalDay = parseReelFloat($info.text());
 
                     if (typeof totalPriceByDay[etablissement] === 'undefined') {
                         totalPriceByDay[etablissement] = [];
@@ -599,7 +599,7 @@ if (
                 var totalPriceByDay = [];
                 $('.totalDayPrestationPrice').each(function () {
                     var $totalDay = $(this);
-                    var totalDay = parseFloat($totalDay.text());
+                    var totalDay = parseReelFloat($totalDay.text());
 
                     totalPriceByDay.push(totalDay);
                 });
@@ -614,7 +614,7 @@ if (
 
             function calculateAveragePrestationPricePerDay() {
 
-                var totalMonth = parseFloat($('.caPrestationMonth').text());
+                var totalMonth = parseReelFloat($('.caPrestationMonth').text());
                 var averageDay = (totalMonth / parseFloat(<?= date('t'); ?>));
 
                 $('.caPrestationDay').html(financial(averageDay) + '€');
@@ -624,7 +624,7 @@ if (
 
             function calculateAveragePrestationPricePerWeek() {
 
-                var totalDays = parseFloat($('.caPrestationDay').text());
+                var totalDays = parseReelFloat($('.caPrestationDay').text());
                 var averageWeek = (totalDays * 7);
 
                 $('.caPrestationWeek').html(financial(averageWeek) + '€');
@@ -668,7 +668,7 @@ if (
                 var prestationId = $Input.data('prestationid');
                 var date = $Input.data('date');
                 var reelPrestationPrice = $Input.data('prixreelprestation');
-                var prixId = parseFloat($Input.data('prixid'));
+                var prixId = parseReelFloat($Input.data('prixid'));
                 var quantite = $Input.val();
 
                 var dateEnd = new Date();
@@ -696,7 +696,7 @@ if (
                                     $Input.attr('name', data);
                                     $Input.addClass('successInput');
 
-                                    var prestationPrice = parseFloat($InputInfo.data('prixprestation'));
+                                    var prestationPrice = parseReelFloat($InputInfo.data('prixprestation'));
                                     $InputInfo.html(financial(quantite * prestationPrice));
                                     calculateTotalPrestationPricePerDay();
                                     calculateTotalPrestationQuantityPerDay(prestationId);

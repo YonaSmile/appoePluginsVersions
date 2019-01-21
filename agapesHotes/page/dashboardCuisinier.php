@@ -33,6 +33,7 @@ $inventaireRequestMonthAgo = json_decode(postHttpRequest($inventaireUrl, $params
 $commandesRequest = json_decode(postHttpRequest($commandesUrl, $paramsMonthNow), true);
 $refacturationRequest = json_decode(postHttpRequest($refacturationUrl, $paramsMonthNow), true);
 $View = new \App\Plugin\AgapesHotes\View();
+
 ?>
 <div class="row mb-3">
     <div class="d-flex col-12 col-lg-4">
@@ -88,6 +89,12 @@ $View = new \App\Plugin\AgapesHotes\View();
                                         data-target="#collapseAchat" aria-expanded="true" aria-controls="collapseAchat">
                                     Achats
                                 </button>
+                                <span class="float-right">
+                                    <button type="button" class="btn btn-link btn-sm" data-toggle="modal"
+                                            data-target="#modalAddOtherAchat">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </span>
                             </h5>
                         </div>
 
@@ -120,13 +127,36 @@ $View = new \App\Plugin\AgapesHotes\View();
                                                     <tr>
                                                         <td><?= $allDenree['fournisseur']; ?></td>
                                                         <td><?= $allDenree['date_livraison']; ?></td>
-                                                        <td><?= financial($allDenree['total']); ?>€</td>
+                                                        <td data-name="totalDenree"><?= financial($allDenree['total']); ?>
+                                                            €
+                                                        </td>
                                                     </tr>
-                                                <?php endif; ?>
-                                            <?php endforeach; ?>
+                                                <?php endif;
+                                            endforeach;
+                                            $otherAchat = getAllCommandes($Site->id, date('Y'), date('m'));
+                                            if ($otherAchat):
+                                                foreach ($otherAchat as $key => $allDenree):
+                                                    if (isNotUniqueEntretien($allDenree['fournisseur'])):
+                                                        $totalCommandDenree += $allDenree['total']; ?>
+                                                        <tr class="table-warning">
+                                                            <td>
+                                                                <button type="button"
+                                                                        data-idotherachat="<?= $allDenree['id']; ?>"
+                                                                        data-influence="totalDenree"
+                                                                        class="btn btn-link btn-sm deleteOtherAchat">
+                                                                    <i class="fas fa-times"></i></button>
+                                                                <?= $allDenree['fournisseur']; ?></td>
+                                                            <td><?= $allDenree['date_livraison']; ?></td>
+                                                            <td data-name="totalDenree"><?= financial($allDenree['total']); ?>
+                                                                €
+                                                            </td>
+                                                        </tr>
+                                                    <?php endif;
+                                                endforeach;
+                                            endif; ?>
                                             <tr>
                                                 <td colspan="2">Total denrées</td>
-                                                <th><?= financial($totalCommandDenree); ?>€</th>
+                                                <th data-name="totalDenree"><?= financial($totalCommandDenree); ?>€</th>
                                             </tr>
                                             <tr>
                                                 <th colspan="3"
@@ -140,16 +170,40 @@ $View = new \App\Plugin\AgapesHotes\View();
                                                 <tr>
                                                     <td><?= $allUniqueEntretien['fournisseur']; ?></td>
                                                     <td><?= $allUniqueEntretien['date_livraison']; ?></td>
-                                                    <td><?= financial($allUniqueEntretien['total']); ?>€</td>
+                                                    <td data-name="totalUniqueEntretien"><?= financial($allUniqueEntretien['total']); ?>
+                                                        €
+                                                    </td>
                                                 </tr>
-                                            <?php endif; ?>
-                                        <?php endforeach; ?>
+                                            <?php endif;
+                                        endforeach;
+                                            if ($otherAchat):
+                                                foreach ($otherAchat as $key => $allUniqueEntretien):
+                                                    if (isUniqueEntretien($allUniqueEntretien['fournisseur'])):
+                                                        $totalCommandUniqueEntretien += $allUniqueEntretien['total']; ?>
+                                                        <tr class="table-warning">
+                                                            <td>
+                                                                <button type="button"
+                                                                        data-idotherachat="<?= $allUniqueEntretien['id']; ?>"
+                                                                        data-influence="totalUniqueEntretien"
+                                                                        class="btn btn-link btn-sm deleteOtherAchat">
+                                                                    <i class="fas fa-times"></i>
+                                                                </button><?= $allUniqueEntretien['fournisseur']; ?></td>
+                                                            <td><?= $allUniqueEntretien['date_livraison']; ?></td>
+                                                            <td data-name="totalUniqueEntretien"><?= financial($allUniqueEntretien['total']); ?>
+                                                                €
+                                                            </td>
+                                                        </tr>
+                                                    <?php endif;
+                                                endforeach;
+                                            endif; ?>
                                             <tr>
                                                 <td colspan="2">Total produits unique entretien</td>
-                                                <th><?= financial($totalCommandUniqueEntretien); ?>€</th>
+                                                <th data-name="totalUniqueEntretien"><?= financial($totalCommandUniqueEntretien); ?>
+                                                    €
+                                                </th>
                                             </tr>
                                             <tr>
-                                                <th colspan="3"
+                                                <th colspan="3" data-name="totalAchats"
                                                     style="text-align:center !important; background:#b96d36;color:#fff;">
                                                     Total <?= financial($totalCommandUniqueEntretien + $totalCommandDenree); ?>
                                                     €
@@ -481,3 +535,114 @@ $View = new \App\Plugin\AgapesHotes\View();
         </div>
     </div>
 </div>
+<?php
+$otherFournisseurs = array('BOULANGER' => 'BOULANGER', 'TRANSGOURMET' => 'TRANSGOURMET');
+?>
+<div class="modal fade" id="modalAddOtherAchat" tabindex="-1" role="dialog"
+     aria-labelledby="modalAddOtherAchat"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="" method="post" id="addOtherAchatForm">
+                <input type="hidden" name="siteId" value="<?= $Site->id; ?>"
+                <?= getTokenField(); ?>
+                <div class="modal-header">
+                    <h5 class="modal-title"
+                        id="modalAddOtherAchat"><?= trans('Ajouter un accès à un secteur'); ?></h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 my-2">
+                            <?= \App\Form::select('Fournisseur', 'fournisseur', $otherFournisseurs, '', true); ?>
+                        </div>
+                        <div class="col-12 my-2">
+                            <?= \App\Form::text('Date de livraison', 'date', 'text', '', true, 10, '', '', 'datepicker'); ?>
+                        </div>
+                        <div class="col-12 my-2">
+                            <?= \App\Form::text('Total', 'total', 'text', '', true); ?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 my-2" id="FormAddOtherAchatInfos"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <?= \App\Form::target('ADDOTHERACHAT'); ?>
+                    <button type="submit" id="saveAddOtherAchatBtn"
+                            class="btn btn-primary"><?= trans('Enregistrer'); ?></button>
+                    <button type="button" class="btn btn-secondary"
+                            data-dismiss="modal"><?= trans('Fermer'); ?></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+
+    function calculeTotal(totalType) {
+
+        var total = 0;
+        $('td[data-name="' + totalType + '"]').each(function (index, val) {
+            total += parseReelFloat($(this).text());
+        });
+
+        $('th[data-name="' + totalType + '"]').html(financial(total) + '€');
+
+        var totalDenree = parseReelFloat($('th[data-name="totalDenree"]').text());
+        var totalUnique = parseReelFloat($('th[data-name="totalUniqueEntretien"]').text());
+
+        $('th[data-name="totalAchats"]').html('Total ' + financial(totalDenree + totalUnique) + ' €')
+
+    }
+
+    $(document).ready(function () {
+
+        $('form#addOtherAchatForm').on('submit', function (event) {
+            event.preventDefault();
+
+            busyApp();
+            var $form = $(this);
+            $('#FormAddOtherAchatInfos').hide().html('');
+
+            $.post(
+                '<?= AGAPESHOTES_URL . 'process/ajaxOther.php'; ?>',
+                $form.serialize(),
+                function (data) {
+                    if (data === true || data == 'true') {
+                        $('#loader').fadeIn(400);
+                        location.reload();
+                    } else {
+                        $('#FormAddOtherAchatInfos')
+                            .html('<p class="bg-danger text-white">' + data + '</p>').show();
+                    }
+                    availableApp();
+                }
+            );
+        });
+
+        $('.deleteOtherAchat').on('click', function (event) {
+            event.preventDefault();
+
+            var $btn = $(this);
+            var $parent = $btn.closest('tr');
+            var idAchat = $btn.data('idotherachat');
+            var influence = $btn.data('influence');
+
+            if (confirm('Vous allez supprimer cette achat !')) {
+                $.post(
+                    '<?= AGAPESHOTES_URL . 'process/ajaxOther.php'; ?>',
+                    {
+                        DELETEACHAT: 'OK',
+                        idAchat: idAchat
+                    },
+                    function (data) {
+                        if (data) {
+                            $parent.fadeOut().remove();
+                            calculeTotal(influence);
+                        }
+                    }
+                );
+            }
+        });
+    });
+</script>

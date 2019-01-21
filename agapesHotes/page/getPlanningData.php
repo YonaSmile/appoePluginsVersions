@@ -337,7 +337,7 @@ if (
                 var totalArr = [];
                 $('input.updatePlanning').each(function () {
                     var input = $(this);
-                    var hours = parseFloat(input.val());
+                    var hours = parseReelFloat(input.val());
                     if ($.isNumeric(hours)) {
                         var idEmploye = input.data('employeid');
                         if (typeof totalArr[idEmploye] === 'undefined') {

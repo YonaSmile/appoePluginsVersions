@@ -22,5 +22,6 @@ const PLUGIN_TABLES = array(
     'appoe_plugin_agapesHotes_planning_plus',
     'appoe_plugin_agapesHotes_note_frais',
     'appoe_plugin_agapesHotes_budget',
-    'appoe_plugin_agapesHotes_site_meta'
+    'appoe_plugin_agapesHotes_site_meta',
+    'appoe_plugin_agapesHotes_achat'
 );

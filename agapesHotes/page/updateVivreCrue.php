@@ -42,10 +42,10 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
 
                 $('.seeMonthBefore').on('click', function () {
                     if (month > 1) {
-                        month = parseFloat(month) - 1;
+                        month = parseReelFloat(month) - 1;
                     } else {
                         month = '12';
-                        year = parseFloat(year) - 1;
+                        year = parseReelFloat(year) - 1;
                     }
                     busyApp();
                     $('#vivreCrueContainer').load('<?= AGAPESHOTES_URL . 'page/getVivreCrueData.php'; ?>', {
@@ -59,10 +59,10 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
 
                 $('.seeMonthAfter').on('click', function () {
                     if (month < 12) {
-                        month = parseFloat(month) + 1;
+                        month = parseReelFloat(month) + 1;
                     } else {
                         month = '01';
-                        year = parseFloat(year) + 1;
+                        year = parseReelFloat(year) + 1;
                     }
                     busyApp();
                     $('#vivreCrueContainer').load('<?= AGAPESHOTES_URL . 'page/getVivreCrueData.php'; ?>', {

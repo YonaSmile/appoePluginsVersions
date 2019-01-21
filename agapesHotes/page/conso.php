@@ -169,11 +169,11 @@ $period = new \DatePeriod($start, $interval, $end);
                                 }
 
                                 $tr.find('td[data-name="site-conso"][data-month="' + month + '"]').text(financial($siteData['consoReel'].denree) + '€');
-                                consoreelDenree[site][year][month] = $.isNumeric($siteData['consoReel'].denree) ? parseFloat($siteData['consoReel'].denree) : 0;
+                                consoreelDenree[site][year][month] = $.isNumeric($siteData['consoReel'].denree) ? parseReelFloat($siteData['consoReel'].denree) : 0;
 
                                 var sum = 0;
                                 $.each(consoreelDenree[site][year], function (month, val) {
-                                    val = parseFloat(val);
+                                    val = parseReelFloat(val);
                                     if ($.isNumeric(val)) {
                                         sum += val;
                                     }
