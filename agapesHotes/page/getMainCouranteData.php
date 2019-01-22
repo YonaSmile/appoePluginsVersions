@@ -94,7 +94,8 @@ if (
                         $count = 1;
                         $mainCouranteQuantiteTotalDay = 0; ?>
                         <tr data-idprestation="<?= $prestation->id ?>" class="mainCourantTr"
-                            data-etablissementid="<?= $etablissement->id; ?>">
+                            data-etablissementid="<?= $etablissement->id; ?>"
+                            data-principal="<?= $etablissement->principal ? 'principal' : ''; ?>">
                             <th class="positionRelative" data-name="prestationName"
                                 style="vertical-align: middle; min-width: 150px; z-index: 1">
                                 <span><?= $prestation->nom; ?></span>
@@ -367,14 +368,16 @@ if (
                 if (facture.length !== 0) {
                     $.each(facture, function (prestation, data) {
 
-                        totalVariable += parseReelFloat(data.price * data.quantite);
+                        if (data.quantite > 0) {
+                            totalVariable += parseReelFloat(data.price * data.quantite);
 
-                        var html = '<div class="row my-1 productFields positionRelative"><div class="col-4 mb-1">' +
-                            prestation + '</div><div class="col-3 mb-1">' +
-                            data.quantite + '</div><div class="col-3 mb-1">' +
-                            data.price + '€</div><div class="col-2 mb-1">' +
-                            financial(data.price * data.quantite) + '€</div></div>';
-                        $('.allFactureProducts').append(html);
+                            var html = '<div class="row my-1 productFields positionRelative"><div class="col-4 mb-1">' +
+                                prestation + '</div><div class="col-3 mb-1">' +
+                                data.quantite + '</div><div class="col-3 mb-1">' +
+                                data.price + '€</div><div class="col-2 mb-1">' +
+                                financial(data.price * data.quantite) + '€</div></div>';
+                            $('.allFactureProducts').append(html);
+                        }
                     });
                 }
                 $('#totalVariableContainer').hide();
@@ -415,14 +418,16 @@ if (
                 if (facture.length !== 0) {
                     $.each(facture, function (prestation, data) {
 
-                        totalVariable += parseReelFloat(data.price * data.quantite);
+                        if (data.quantite > 0) {
+                            totalVariable += parseReelFloat(data.price * data.quantite);
 
-                        var html = '<div class="row my-1 productFields positionRelative"><div class="col-4 mb-1">' +
-                            prestation + '</div><div class="col-3 mb-1">' +
-                            data.quantite + '</div><div class="col-3 mb-1">' +
-                            data.price + '€</div><div class="col-2 mb-1">' +
-                            financial(data.price * data.quantite) + '€</div></div>';
-                        $('.allFactureProducts').append(html);
+                            var html = '<div class="row my-1 productFields positionRelative"><div class="col-4 mb-1">' +
+                                prestation + '</div><div class="col-3 mb-1">' +
+                                data.quantite + '</div><div class="col-3 mb-1">' +
+                                data.price + '€</div><div class="col-2 mb-1">' +
+                                financial(data.price * data.quantite) + '€</div></div>';
+                            $('.allFactureProducts').append(html);
+                        }
                     });
                 }
                 $('#totalVariableContainer').hide();
@@ -433,27 +438,39 @@ if (
             function prepareTotalFacture(etablissementid) {
                 $('.allFactureProducts').html('');
                 var totalVariable = 0;
+                var principal = '';
 
                 $('tr.mainCourantTr[data-etablissementid="' + etablissementid + '"]').each(function () {
                     var $tr = $(this);
                     var prestationName = $tr.find('th[data-name="prestationName"] span').text();
                     var prestationPrice = parseReelFloat($tr.find('small.prestationReelPrice').text());
                     var quantityTotalDay = parseReelFloat($tr.find('td.quantityTotalDay span').text());
-                    var total = financial(prestationPrice * quantityTotalDay);
+                    if (quantityTotalDay > 0) {
+                        var total = financial(prestationPrice * quantityTotalDay);
+                        principal = $tr.data('principal');
 
-                    var html = '<div class="row my-1 productFields positionRelative"><div class="col-4 mb-1">' +
-                        prestationName + '</div><div class="col-3 mb-1">' +
-                        quantityTotalDay + '</div><div class="col-3 mb-1">' +
-                        prestationPrice + '€</div><div class="col-2 mb-1">' +
-                        total + '€</div></div>';
-                    $('.allFactureProducts').append(html);
+                        var html = '<div class="row my-1 productFields positionRelative"><div class="col-4 mb-1">' +
+                            prestationName + '</div><div class="col-3 mb-1">' +
+                            quantityTotalDay + '</div><div class="col-3 mb-1">' +
+                            prestationPrice + '€</div><div class="col-2 mb-1">' +
+                            total + '€</div></div>';
+                        $('.allFactureProducts').append(html);
 
-                    totalVariable += parseReelFloat(total);
+                        totalVariable += parseReelFloat(total);
+                    }
                 });
                 $('#totalVariableContainer').show();
-                $('#totalFraisFixesContainer').show();
+
+                var totalFraisFixes = 0;
+                if (principal === 'principal') {
+                    $('#totalFraisFixesContainer').show();
+                    totalFraisFixes = parseReelFloat($('.totalContainer .totalFraisFixes').text());
+                } else {
+                    $('#totalFraisFixesContainer').hide();
+                }
+
                 $('.totalContainer .totalVariable').html(financial(totalVariable) + '€');
-                var totalFraisFixes = parseReelFloat($('.totalContainer .totalFraisFixes').text());
+
                 $('.totalContainer .totalCaHt').html(financial(totalVariable + totalFraisFixes) + '€');
             }
 

@@ -12,9 +12,11 @@ if (checkAjaxRequest()) {
 
             if (!empty($_POST['nom']) && !empty($_POST['site_id'])) {
 
-                $EtablissementProcess->setNom($_POST['nom']);
-                $EtablissementProcess->setSlug(slugify($_POST['nom']));
                 $EtablissementProcess->setSiteId($_POST['site_id']);
+                $EtablissementProcess->setNom($_POST['nom']);
+
+                $Site = new \App\Plugin\AgapesHotes\Site($EtablissementProcess->getSiteId());
+                $EtablissementProcess->setSlug(slugify(getFirstLetters($Site->getNom()) . '-' . $EtablissementProcess->getNom()));
 
                 if ($EtablissementProcess->notExist()) {
 
@@ -37,9 +39,11 @@ if (checkAjaxRequest()) {
                 $EtablissementProcess->setId($_POST['idEtablissementUpdate']);
                 if ($EtablissementProcess->show()) {
 
-                    $EtablissementProcess->setNom($_POST['nom']);
-                    $EtablissementProcess->setSlug(slugify($_POST['nom']));
                     $EtablissementProcess->setSiteId($_POST['site_id']);
+                    $EtablissementProcess->setNom($_POST['nom']);
+
+                    $Site = new \App\Plugin\AgapesHotes\Site($EtablissementProcess->getSiteId());
+                    $EtablissementProcess->setSlug(slugify(getFirstLetters($Site->getNom()) . '-' . $EtablissementProcess->getNom()));
 
                     if ($EtablissementProcess->notExist(true)) {
 

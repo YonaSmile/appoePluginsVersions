@@ -1,5 +1,5 @@
 <?php require('header.php');
-echo getTitle($Page->getName(), $Page->getSlug());
+echo getTitle($Page->getName() . ' (€)', $Page->getSlug());
 
 $Secteur = new \App\Plugin\AgapesHotes\Secteur();
 
@@ -13,17 +13,15 @@ $interval = new \DateInterval('P1M');
 
 $period = new \DatePeriod($start, $interval, $end);
 
-$anneeAgoCumul = array();
-$anneeAgoCurrent = 0;
-$anneeCumul = array();
-$anneeCurrent = 0;
+$secteurTotal = array('budget' => array(), (date('Y') - 1) => array(), (date('Y')) => array());
 $Budget = new \App\Plugin\AgapesHotes\Budget();
 ?>
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
                 <div class="table-responsive">
-                    <table id="syntheseSecteurTable" class="table table-striped tableNonEffect text-center fixed-header">
+                    <table id="syntheseSecteurTable"
+                           class="table table-striped tableNonEffect text-center fixed-header">
                         <thead>
                         <tr>
                             <th><?= trans('Site'); ?></th>
@@ -38,14 +36,19 @@ $Budget = new \App\Plugin\AgapesHotes\Budget();
                         <?php foreach ($allSitesBySecteur as $secteurId => $allSites):
                             $Secteur->setId($secteurId);
                             if ($Secteur->show() && $Secteur->getId() > 0):
-                                $budgetCumul = array();
-                                $budgetCumulCurrent = 0;
                                 ?>
                                 <tr>
                                     <th style="text-align:center !important; background:#4fb99f;color:#fff;"
                                         colspan="14"><?= $Secteur->getNom(); ?></th>
                                 </tr>
-                                <?php foreach ($allSites as $site): ?>
+                                <?php foreach ($allSites as $site):
+                                $budgetCumul = array();
+                                $budgetCumulCurrent = 0.00;
+                                $anneeAgoCumul = array();
+                                $anneeAgoCurrent = 0.00;
+                                $anneeCumul = array();
+                                $anneeCurrent = 0.00;
+                                ?>
                                 <tr data-siteid="<?= $site->id; ?>" data-name="budgetrow">
                                     <th rowspan="6"
                                         style="vertical-align:middle;"><?= $site->nom ?></th>
@@ -60,9 +63,13 @@ $Budget = new \App\Plugin\AgapesHotes\Budget();
                                         $Budget->showBySite();
                                         $budgetCumulCurrent += !empty($Budget->getCa()) ? $Budget->getCa() : 0;
 
+                                        if(!array_key_exists($date->format('n'), $secteurTotal['budget'])){
+                                            $secteurTotal['budget'][$date->format('n')] = 0;
+                                        }
+                                        $secteurTotal['budget'][$date->format('n')] += !empty($Budget->getCa()) ? $Budget->getCa() : 0;
                                         $budgetCumul[$date->format('n')] = $budgetCumulCurrent;
                                         ?>
-                                        <td><?= !empty($Budget->getCa()) ? $Budget->getCa() : 0; ?>€</td>
+                                        <td><?= !empty($Budget->getCa()) ? $Budget->getCa() : 0; ?></td>
                                         <?php
                                         $Budget->clean();
                                     endforeach; ?>
@@ -72,7 +79,7 @@ $Budget = new \App\Plugin\AgapesHotes\Budget();
                                         <small><em>Budget cumul</em></small>
                                     </td>
                                     <?php foreach ($period as $key => $date): ?>
-                                        <td><?= financial($budgetCumul[$date->format('n')]); ?>€</td>
+                                        <td><?= financial($budgetCumul[$date->format('n')]); ?></td>
                                     <?php endforeach; ?>
                                 </tr>
                                 <tr data-siteid="<?= $site->id; ?>" data-name="siterowYearAgo">
@@ -80,14 +87,19 @@ $Budget = new \App\Plugin\AgapesHotes\Budget();
                                         <small><em><?= date('Y') - 1; ?></em></small>
                                     </td>
                                     <?php foreach ($period as $key => $date):
-                                        $facturation = 0;
+                                        $facturation = 0.00;
                                         $facturation = getFacturation($site->id, date('Y') - 1, $date->format('m'));
                                         $siteMeta = getSiteMeta($site->id, date('Y') - 1, date('m'));
                                         $facturation += $siteMeta['fraisFixes'];
                                         $anneeAgoCurrent += $facturation;
                                         $anneeAgoCumul[$date->format('m')] = $anneeAgoCurrent;
+
+                                        if(!array_key_exists($date->format('n'), $secteurTotal[date('Y') - 1])){
+                                            $secteurTotal[date('Y') - 1][$date->format('n')] = 0.00;
+                                        }
+                                        $secteurTotal[date('Y') - 1][$date->format('n')] += $facturation;
                                         ?>
-                                        <td><?= financial($facturation); ?>€</td>
+                                        <td><?= financial($facturation); ?></td>
                                     <?php endforeach; ?>
                                 </tr>
                                 <tr data-siteid="<?= $site->id; ?>" data-name="siterowYearAgo">
@@ -95,7 +107,7 @@ $Budget = new \App\Plugin\AgapesHotes\Budget();
                                         <small><em><?= date('Y') - 1; ?> cumul</em></small>
                                     </td>
                                     <?php foreach ($period as $key => $date): ?>
-                                        <td><?= financial($anneeAgoCumul[$date->format('m')]); ?>€</td>
+                                        <td><?= financial($anneeAgoCumul[$date->format('m')]); ?></td>
                                     <?php endforeach; ?>
                                 </tr>
                                 <tr data-siteid="<?= $site->id; ?>" data-name="siterow">
@@ -109,8 +121,13 @@ $Budget = new \App\Plugin\AgapesHotes\Budget();
                                         $facturation += $siteMeta['fraisFixes'];
                                         $anneeCurrent += $facturation;
                                         $anneeCumul[$date->format('m')] = $anneeCurrent;
+
+                                        if(!array_key_exists($date->format('n'), $secteurTotal[date('Y')])){
+                                            $secteurTotal[date('Y')][$date->format('n')] = 0.00;
+                                        }
+                                        $secteurTotal[date('Y')][$date->format('n')] += $facturation;
                                         ?>
-                                        <td><?= number_format($facturation, 2, '.', ' '); ?>€</td>
+                                        <td><?= number_format($facturation, 2, '.', ' '); ?></td>
                                     <?php endforeach; ?>
                                 </tr>
                                 <tr data-siteid="<?= $site->id; ?>" data-name="siterow">
@@ -118,12 +135,39 @@ $Budget = new \App\Plugin\AgapesHotes\Budget();
                                         <small><em><?= date('Y'); ?> cumul</em></small>
                                     </td>
                                     <?php foreach ($period as $key => $date): ?>
-                                        <td><?= financial($anneeCumul[$date->format('m')]); ?>€</td>
+                                        <td><?= financial($anneeCumul[$date->format('m')]); ?></td>
                                     <?php endforeach; ?>
                                 </tr>
                             <?php endforeach;
-                            endif;
-                        endforeach; ?>
+                            endif; ?>
+                            <tr>
+                                <th rowspan="6"
+                                    style="vertical-align:middle;">Total
+                                </th>
+                                <td style="text-align:left !important;">
+                                    <small><em>Budget</em></small>
+                                </td>
+                                <?php foreach ($period as $key => $date): ?>
+                                    <td><?= financial($secteurTotal['budget'][$date->format('n')]); ?></td>
+                                <?php endforeach; ?>
+                            </tr>
+                            <tr>
+                                <td style="text-align:left !important;">
+                                    <small><em><?= date('Y') - 1; ?></em></small>
+                                </td>
+                                <?php foreach ($period as $key => $date): ?>
+                                    <td><?= financial($secteurTotal[date('Y') - 1][$date->format('n')]); ?></td>
+                                <?php endforeach; ?>
+                            </tr>
+                            <tr>
+                                <td style="text-align:left !important;">
+                                    <small><em><?= date('Y'); ?></em></small>
+                                </td>
+                                <?php foreach ($period as $key => $date): ?>
+                                    <td><?= financial($secteurTotal[date('Y')][$date->format('n')]); ?></td>
+                                <?php endforeach; ?>
+                            </tr>
+                        <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>

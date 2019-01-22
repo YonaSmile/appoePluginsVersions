@@ -521,3 +521,9 @@ function haveUserPermissionToUpdate($date)
     }
     return true;
 }
+
+function getFirstLetters($word)
+{
+    preg_match_all('/(?<=\s|^)[a-z]/i', $word, $matches);
+    return implode('', $matches[0]);
+}
