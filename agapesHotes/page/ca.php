@@ -13,7 +13,7 @@ $interval = new \DateInterval('P1M');
 
 $period = new \DatePeriod($start, $interval, $end);
 
-$secteurTotal = array('budget' => array(), (date('Y') - 1) => array(), (date('Y')) => array());
+$secteurTotal = array();
 $Budget = new \App\Plugin\AgapesHotes\Budget();
 ?>
     <div class="container-fluid">
@@ -36,6 +36,9 @@ $Budget = new \App\Plugin\AgapesHotes\Budget();
                         <?php foreach ($allSitesBySecteur as $secteurId => $allSites):
                             $Secteur->setId($secteurId);
                             if ($Secteur->show() && $Secteur->getId() > 0):
+                                if(!array_key_exists($secteurId, $secteurTotal)){
+                                    $secteurTotal[$secteurId] = array('budget' => array(), (date('Y') - 1) => array(), (date('Y')) => array());
+                                }
                                 ?>
                                 <tr>
                                     <th style="text-align:center !important; background:#4fb99f;color:#fff;"
@@ -63,10 +66,10 @@ $Budget = new \App\Plugin\AgapesHotes\Budget();
                                         $Budget->showBySite();
                                         $budgetCumulCurrent += !empty($Budget->getCa()) ? $Budget->getCa() : 0;
 
-                                        if(!array_key_exists($date->format('n'), $secteurTotal['budget'])){
-                                            $secteurTotal['budget'][$date->format('n')] = 0;
+                                        if(!array_key_exists($date->format('n'), $secteurTotal[$secteurId]['budget'])){
+                                            $secteurTotal[$secteurId]['budget'][$date->format('n')] = 0;
                                         }
-                                        $secteurTotal['budget'][$date->format('n')] += !empty($Budget->getCa()) ? $Budget->getCa() : 0;
+                                        $secteurTotal[$secteurId]['budget'][$date->format('n')] += !empty($Budget->getCa()) ? $Budget->getCa() : 0;
                                         $budgetCumul[$date->format('n')] = $budgetCumulCurrent;
                                         ?>
                                         <td><?= !empty($Budget->getCa()) ? $Budget->getCa() : 0; ?></td>
@@ -94,10 +97,10 @@ $Budget = new \App\Plugin\AgapesHotes\Budget();
                                         $anneeAgoCurrent += $facturation;
                                         $anneeAgoCumul[$date->format('m')] = $anneeAgoCurrent;
 
-                                        if(!array_key_exists($date->format('n'), $secteurTotal[date('Y') - 1])){
-                                            $secteurTotal[date('Y') - 1][$date->format('n')] = 0.00;
+                                        if(!array_key_exists($date->format('n'), $secteurTotal[$secteurId][date('Y') - 1])){
+                                            $secteurTotal[$secteurId][date('Y') - 1][$date->format('n')] = 0.00;
                                         }
-                                        $secteurTotal[date('Y') - 1][$date->format('n')] += $facturation;
+                                        $secteurTotal[$secteurId][date('Y') - 1][$date->format('n')] += $facturation;
                                         ?>
                                         <td><?= financial($facturation); ?></td>
                                     <?php endforeach; ?>
@@ -122,10 +125,10 @@ $Budget = new \App\Plugin\AgapesHotes\Budget();
                                         $anneeCurrent += $facturation;
                                         $anneeCumul[$date->format('m')] = $anneeCurrent;
 
-                                        if(!array_key_exists($date->format('n'), $secteurTotal[date('Y')])){
-                                            $secteurTotal[date('Y')][$date->format('n')] = 0.00;
+                                        if(!array_key_exists($date->format('n'), $secteurTotal[$secteurId][date('Y')])){
+                                            $secteurTotal[$secteurId][date('Y')][$date->format('n')] = 0.00;
                                         }
-                                        $secteurTotal[date('Y')][$date->format('n')] += $facturation;
+                                        $secteurTotal[$secteurId][date('Y')][$date->format('n')] += $facturation;
                                         ?>
                                         <td><?= number_format($facturation, 2, '.', ' '); ?></td>
                                     <?php endforeach; ?>
@@ -148,7 +151,7 @@ $Budget = new \App\Plugin\AgapesHotes\Budget();
                                     <small><em>Budget</em></small>
                                 </td>
                                 <?php foreach ($period as $key => $date): ?>
-                                    <td><?= financial($secteurTotal['budget'][$date->format('n')]); ?></td>
+                                    <td><?= financial($secteurTotal[$secteurId]['budget'][$date->format('n')]); ?></td>
                                 <?php endforeach; ?>
                             </tr>
                             <tr>
@@ -156,7 +159,7 @@ $Budget = new \App\Plugin\AgapesHotes\Budget();
                                     <small><em><?= date('Y') - 1; ?></em></small>
                                 </td>
                                 <?php foreach ($period as $key => $date): ?>
-                                    <td><?= financial($secteurTotal[date('Y') - 1][$date->format('n')]); ?></td>
+                                    <td><?= financial($secteurTotal[$secteurId][date('Y') - 1][$date->format('n')]); ?></td>
                                 <?php endforeach; ?>
                             </tr>
                             <tr>
@@ -164,7 +167,7 @@ $Budget = new \App\Plugin\AgapesHotes\Budget();
                                     <small><em><?= date('Y'); ?></em></small>
                                 </td>
                                 <?php foreach ($period as $key => $date): ?>
-                                    <td><?= financial($secteurTotal[date('Y')][$date->format('n')]); ?></td>
+                                    <td><?= financial($secteurTotal[$secteurId][date('Y')][$date->format('n')]); ?></td>
                                 <?php endforeach; ?>
                             </tr>
                         <?php endforeach; ?>

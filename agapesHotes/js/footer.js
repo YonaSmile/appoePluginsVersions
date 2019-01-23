@@ -1,10 +1,7 @@
-if ($('.fixed-header').length) {
+$('.table-responsive').on('scroll', function () {
+    fixeTableHeader(parseInt($(this).offset().top));
+});
 
-    $('.table-responsive').on('scroll', function () {
-        fixeTableHeader(parseInt($(this).offset().top));
-    });
-
-    $(window).scroll(function () {
-        fixeTableHeader(this.scrollY + $('#navbarUser').innerHeight());
-    });
-}
+$(window).scroll(function () {
+    fixeTableHeader(this.scrollY + $('#navbarUser').innerHeight());
+});
