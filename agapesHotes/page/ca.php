@@ -141,7 +141,7 @@ $Budget = new \App\Plugin\AgapesHotes\Budget();
                             <?php endforeach;
                             endif; ?>
                             <tr>
-                                <th rowspan="6"
+                                <th rowspan="3"
                                     style="vertical-align:middle;">Total
                                 </th>
                                 <td style="text-align:left !important;">

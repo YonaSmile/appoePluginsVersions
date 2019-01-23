@@ -12,6 +12,7 @@
                            class="sortableTable table table-striped">
                         <thead>
                         <tr>
+                            <th><?= trans('ID'); ?></th>
                             <th><?= trans('Nom'); ?></th>
                             <th><?= trans('Description'); ?></th>
                             <th><?= trans('Slug'); ?></th>
@@ -23,6 +24,7 @@
                         <?php if ($allPages): ?>
                             <?php foreach ($allPages as $cmsPage): ?>
                                 <tr data-idcms="<?= $cmsPage->id ?>">
+                                    <td><?= $cmsPage->id ?></td>
                                     <td><?= $cmsPage->name ?></td>
                                     <td><?= mb_strimwidth($cmsPage->description, 0, 70, '...'); ?></td>
                                     <td><?= $cmsPage->slug ?></td>
