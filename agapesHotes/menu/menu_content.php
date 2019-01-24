@@ -8,10 +8,10 @@ if (getUserRoleId() == 1):
         <a href="<?= WEB_PLUGIN_URL; ?>agapesHotes/page/mainCourante/<?= $Site->secteurSlug; ?>/<?= $Site->slug; ?>/">
             <?= trans('Main Courante'); ?></a>
     </li>
-    <li class="<?= activePage('updatePlanning'); ?>">
+    <!--<li class="<?= activePage('updatePlanning'); ?>">
         <a href="<?= WEB_PLUGIN_URL; ?>agapesHotes/page/planning/<?= $Site->secteurSlug; ?>/<?= $Site->slug; ?>/">
             <?= trans('Planning'); ?></a>
-    </li>
+    </li>-->
     <li class="<?= activePage('updateNoteDeFrais'); ?>">
         <a href="<?= WEB_PLUGIN_URL; ?>agapesHotes/page/noteDeFrais/<?= $Site->secteurSlug; ?>/<?= $Site->slug; ?>/">
             <?= trans('Note de frais'); ?></a>

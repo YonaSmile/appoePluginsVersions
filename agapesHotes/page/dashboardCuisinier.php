@@ -47,8 +47,8 @@ $View = new \App\Plugin\AgapesHotes\View();
                     <div class="col-12">
                         <a href="<?= AGAPESHOTES_URL; ?>page/mainCourante/<?= $Site->secteurSlug; ?>/<?= $Site->slug; ?>/"
                            class="btn btn-block btn-info py-4">Main Courante</a>
-                        <a href="<?= AGAPESHOTES_URL; ?>page/planning/<?= $Site->secteurSlug; ?>/<?= $Site->slug; ?>/"
-                           class="btn btn-block btn-info py-4">Planning</a>
+                        <!--<a href="<?= AGAPESHOTES_URL; ?>page/planning/<?= $Site->secteurSlug; ?>/<?= $Site->slug; ?>/"
+                           class="btn btn-block btn-info py-4">Planning</a>-->
                         <a href="<?= AGAPESHOTES_URL; ?>page/noteDeFrais/<?= $Site->secteurSlug; ?>/<?= $Site->slug; ?>/"
                            class="btn btn-block btn-info py-4">Note de frais</a>
                         <a href="<?= AGAPESHOTES_URL; ?>page/vivreCrue/<?= $Site->secteurSlug; ?>/<?= $Site->slug; ?>/"
@@ -548,7 +548,7 @@ $otherFournisseurs = array('BOULANGER' => 'BOULANGER', 'TRANSGOURMET' => 'TRANSG
                 <?= getTokenField(); ?>
                 <div class="modal-header">
                     <h5 class="modal-title"
-                        id="modalAddOtherAchat"><?= trans('Ajouter un accès à un secteur'); ?></h5>
+                        id="modalAddOtherAchat"><?= trans('Ajouter un achat'); ?></h5>
                 </div>
                 <div class="modal-body">
                     <div class="row">
