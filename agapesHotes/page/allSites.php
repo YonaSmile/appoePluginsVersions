@@ -44,9 +44,9 @@ $allSites = getSitesAccess();
                                                 <a href="<?= AGAPESHOTES_URL; ?>page/mainSupplementaire/<?= $Secteur->getSlug(); ?>/<?= $site->slug; ?>/">
                                                     Facturation HC
                                                 </a>&nbsp;
-                                                <a href="<?= AGAPESHOTES_URL; ?>page/planning/<?= $Secteur->getSlug(); ?>/<?= $site->slug; ?>/">
+                                                <!--<a href="<?= AGAPESHOTES_URL; ?>page/planning/<?= $Secteur->getSlug(); ?>/<?= $site->slug; ?>/">
                                                     Planning
-                                                </a>&nbsp;
+                                                </a>&nbsp;-->
                                                 <a href="<?= AGAPESHOTES_URL; ?>page/noteDeFrais/<?= $Secteur->getSlug(); ?>/<?= $site->slug; ?>/">
                                                     Note de frais
                                                 </a>&nbsp;

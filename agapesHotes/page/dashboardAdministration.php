@@ -22,7 +22,7 @@ $Secteur = new \App\Plugin\AgapesHotes\Secteur();
                     <th><?= trans('Retour achat 6.5%'); ?></th>
                     <th><?= trans('Frais de siège 4%'); ?></th>
                     <th><?= trans('Résultats'); ?></th>
-                    <th><?= trans('Pourcentages de rentabilité'); ?></th>
+                    <th><?= trans('Rentabilité (%)'); ?></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -76,7 +76,7 @@ $Secteur = new \App\Plugin\AgapesHotes\Secteur();
         </div>
         <hr class="my-4">
         <div class="table-responsive">
-            <table id="syntheseSecteurTable" class="table table-striped tableNonEffect text-center">
+            <table id="syntheseSecteurTable" class="table table-striped tableNonEffect text-center fixed-header">
                 <thead>
                 <tr>
                     <th><?= trans('Site'); ?></th>
@@ -158,6 +158,8 @@ $Secteur = new \App\Plugin\AgapesHotes\Secteur();
     $(document).ready(function () {
 
         var allSites = <?= json_encode($allOrdSites); ?>;
+        var countSites = Object.keys(allSites).length;
+        var confirmedSites = 0;
 
         var budgetCa = 0, budgetConso = 0, budgetPerso = 0, budgetFraisGeneraux = 0, budgetResultatsExploitation = 0,
             budgetretoruAchat = 0, budgetFraisSiege = 0, budgetResultats = 0, budgetPourcentageRentabilite = 0;
@@ -168,6 +170,8 @@ $Secteur = new \App\Plugin\AgapesHotes\Secteur();
         var facturationAgo = 0, consoreelDenreeAgo = 0, fraispersoAgo = 0, fraisgenerauxAgo = 0,
             resultatexploitationAgo = 0,
             retourachatAgo = 0, fraissiegeAgo = 0, resultatsAgo = 0, pourcentagesrentabiliteAgo = 0;
+
+        $('html').css('overflow', 'hidden');
 
         $.each(allSites, function (site, secteur) {
             if (secteur > 0) {
@@ -209,7 +213,7 @@ $Secteur = new \App\Plugin\AgapesHotes\Secteur();
                             budgetretoruAchat += $.isNumeric($siteData.budget.retourAchat) ? parseReelFloat($siteData.budget.retourAchat) : 0;
                             budgetFraisSiege += $.isNumeric($siteData.budget.retourFraisSiege) ? parseReelFloat($siteData.budget.retourFraisSiege) : 0;
                             budgetResultats += $.isNumeric($siteData.budget.resultats) ? parseReelFloat($siteData.budget.resultats) : 0;
-                            budgetPourcentageRentabilite += $siteData.budget.conso > 0 ? parseReelFloat(siteData.budget.resultats / $siteData.budget.ca) : 0;
+                            budgetPourcentageRentabilite += $.isNumeric($siteData.budget.conso) && $siteData.budget.conso > 0 ? parseReelFloat($siteData.budget.resultats / $siteData.budget.ca) : 0;
 
                             $trTotalBudget.find('td[data-name="budget-ca"]').html(financial(budgetCa));
                             $trTotalBudget.find('td[data-name="budget-conso"]').html(financial(budgetConso));
@@ -254,6 +258,8 @@ $Secteur = new \App\Plugin\AgapesHotes\Secteur();
                             $trTotalSite.find('td[data-name="site-fraissiege"]').html(financial(fraissiege));
                             $trTotalSite.find('td[data-name="site-resultats"]').html(financial(resultats));
                             $trTotalSite.find('td[data-name="site-pourcentagesrentabilite"]').html(financial(pourcentagesrentabilite) + '%');
+
+                            confirmedSites++;
                         }
                     }
                 );
@@ -304,10 +310,18 @@ $Secteur = new \App\Plugin\AgapesHotes\Secteur();
                             $trTotalSiteYearAgo.find('td[data-name="site-fraissiege"]').html(financial(fraissiegeAgo));
                             $trTotalSiteYearAgo.find('td[data-name="site-resultats"]').html(financial(resultatsAgo));
                             $trTotalSiteYearAgo.find('td[data-name="site-pourcentagesrentabilite"]').html(financial(pourcentagesrentabiliteAgo) + '%');
+                            confirmedSites++;
                         }
                     }
                 );
             }
         });
+
+        var interval = setInterval(function () {
+            if(countSites == confirmedSites){
+                $('html').css('overflow', 'scroll');
+                clearInterval(interval);
+            }
+        }, 500);
     });
 </script>
