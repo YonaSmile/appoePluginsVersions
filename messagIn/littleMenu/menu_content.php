@@ -1,5 +1,5 @@
 <li class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMessageMenu" role="button"
+    <a class="nav-link dropdown-toggle sidebarLink" href="#" id="navbarDropdownMessageMenu" role="button"
        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <i class="fas fa-envelope"></i>
     </a>
