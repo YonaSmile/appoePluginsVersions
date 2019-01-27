@@ -338,6 +338,25 @@ if (!empty($_GET['secteur']) && !empty($_GET['site']) && !empty($_GET['etablisse
                         );
                     }
                 });
+
+                $('body').on('click', '.retaurePrestation', function () {
+                    var $btn = $(this);
+                    var idPrestation = $btn.data('restaureprestationid');
+
+                    $.post(
+                        '<?= AGAPESHOTES_URL . 'process/ajaxPrestationProcess.php'; ?>',
+                        {
+                            RESTAUREPRESTATION: 'OK',
+                            idPrestationRestaure: idPrestation
+                        },
+                        function (data) {
+                            if (data && (data == 'true' || data === true)) {
+                                window.location = window.location.href;
+                                window.location.reload(true);
+                            }
+                        }
+                    )
+                });
             });
         </script>
     <?php else: ?>

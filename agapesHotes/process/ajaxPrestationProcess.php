@@ -21,7 +21,13 @@ if (checkAjaxRequest()) {
                         echo json_encode(true);
                     }
                 } else {
-                    echo 'Ce nom de prestation existe déjà !';
+
+                    if ($PrestationProcess->getStatus() == 0) {
+                        echo 'Cet prestation est archivée. Voulez vous le restaurer ?' .
+                            '<button type="button" data-restaureprestationid="' . $PrestationProcess->getId() . '" class="btn btn-sm btn-link retaurePrestation">Oui</button>';
+                    } else {
+                        echo 'Cette prestation existe déjà !';
+                    }
                 }
             } else {
                 echo 'Un nom est attendu !';
@@ -69,6 +75,27 @@ if (checkAjaxRequest()) {
                     }
                 } else {
                     echo 'Cette prestation n\'existe pas !';
+                }
+            }
+        }
+
+        // RESTAURE PRESTATION
+        if (!empty($_POST['RESTAUREPRESTATION'])) {
+
+            if (!empty($_POST['idPrestationRestaure'])) {
+
+                $PrestationProcess->setId($_POST['idPrestationRestaure']);
+                if ($PrestationProcess->show()) {
+
+                    $PrestationProcess->setStatus(1);
+
+                    if ($PrestationProcess->update()) {
+                        echo json_encode(true);
+                    } else {
+                        echo 'Impossible de restaurer cet prestation !';
+                    }
+                } else {
+                    echo 'Cet prestation n\'existe pas !';
                 }
             }
         }

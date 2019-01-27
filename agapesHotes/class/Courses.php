@@ -286,7 +286,7 @@ class Courses
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id, nom FROM appoe_plugin_agapesHotes_courses WHERE nom = :nom AND etablissement_id = :etablissementId';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_courses WHERE nom = :nom AND etablissement_id = :etablissementId';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':nom', $this->nom);
         $stmt->bindParam(':etablissementId', $this->etablissementId);
@@ -298,13 +298,16 @@ class Courses
             return false;
         } else {
             if ($count == 1) {
+
+                $data = $stmt->fetch(\PDO::FETCH_OBJ);
+
                 if ($forUpdate) {
-                    $data = $stmt->fetch(\PDO::FETCH_OBJ);
                     if ($data->id == $this->id) {
                         return true;
                     }
                 }
 
+                $this->feed($data);
                 return false;
             } else {
                 return true;

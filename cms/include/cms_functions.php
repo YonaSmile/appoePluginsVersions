@@ -7,7 +7,6 @@
  */
 function loadPage($slug = 'home')
 {
-    $pageContent = getContainerErrorMsg('Cette page n\'existe pas');
     $Cms = new \App\Plugin\Cms\Cms();
 
     //Get Page parameters
@@ -16,8 +15,9 @@ function loadPage($slug = 'home')
 
     //Check if Page exist and accessible
     if ((!$existPage && pageName() == 'Non définie') || $Cms->getStatut() != 1) {
-        echo $pageContent;
-        exit();
+        if (false === include_once(WEB_PUBLIC_PATH . 'html/' . $slug . '.php')) {
+            return 'Cette page n\'existe pas.';
+        }
     }
 
     $CmsContent = new \App\Plugin\Cms\CmsContent($Cms->getId(), LANG);

@@ -189,6 +189,25 @@ if (!empty($_GET['secteur']) && !empty($_GET['site']) && !empty($_GET['etablisse
                         );
                     }
                 });
+
+                $('body').on('click', '.retaureArticle', function () {
+                    var $btn = $(this);
+                    var idCourse = $btn.data('restaurearticleid');
+
+                    $.post(
+                        '<?= AGAPESHOTES_URL . 'process/ajaxCoursesProcess.php'; ?>',
+                        {
+                            RESTAURECOURSES: 'OK',
+                            idCoursesRestaure: idCourse
+                        },
+                        function (data) {
+                            if (data && (data == 'true' || data === true)) {
+                                window.location = window.location.href;
+                                window.location.reload(true);
+                            }
+                        }
+                    )
+                });
             });
         </script>
     <?php else: ?>

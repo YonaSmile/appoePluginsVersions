@@ -21,7 +21,13 @@ if (checkAjaxRequest()) {
                         echo json_encode(true);
                     }
                 } else {
-                    echo 'Cet article existe déjà !';
+
+                    if ($CoursesProcess->getStatus() == 0) {
+                        echo 'Cet article est archivée. Voulez vous le restaurer ?' .
+                            '<button type="button" data-restaurearticleid="' . $CoursesProcess->getId() . '" class="btn btn-sm btn-link retaureArticle">Oui</button>';
+                    } else {
+                        echo 'Cet article existe déjà !';
+                    }
                 }
             } else {
                 echo 'Un nom est attendu !';
@@ -72,6 +78,27 @@ if (checkAjaxRequest()) {
                 }
             }
         }
-        
+
+        // RESTAURE COURSES
+        if (!empty($_POST['RESTAURECOURSES'])) {
+
+            if (!empty($_POST['idCoursesRestaure'])) {
+
+                $CoursesProcess->setId($_POST['idCoursesRestaure']);
+                if ($CoursesProcess->show()) {
+
+                    $CoursesProcess->setStatus(1);
+
+                    if ($CoursesProcess->update()) {
+                        echo json_encode(true);
+                    } else {
+                        echo 'Impossible de restaurer cet article !';
+                    }
+                } else {
+                    echo 'Cet article n\'existe pas !';
+                }
+            }
+        }
+
     }
 }
