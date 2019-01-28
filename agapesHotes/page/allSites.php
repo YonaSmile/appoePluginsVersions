@@ -31,7 +31,8 @@ $allSites = getSitesAccess();
                                 $Secteur->setId($site->secteur_id);
                                 if ($Secteur->show() && $Secteur->getStatus()):
                                     ?>
-                                    <tr data-idsite="<?= $site->id ?>" data-alsacemoselle="<?= $site->alsaceMoselle ?>" class="displayHiddenListOnHover">
+                                    <tr data-idsite="<?= $site->id ?>" data-alsacemoselle="<?= $site->alsaceMoselle ?>"
+                                        class="displayHiddenListOnHover">
                                         <td data-name="siteRef"><?= $site->ref ?></td>
                                         <td>
                                             <span data-name="nom"><?= $site->nom ?></span>
@@ -50,9 +51,11 @@ $allSites = getSitesAccess();
                                                 <a href="<?= AGAPESHOTES_URL; ?>page/noteDeFrais/<?= $Secteur->getSlug(); ?>/<?= $site->slug; ?>/">
                                                     Note de frais
                                                 </a>&nbsp;
-                                                <a href="<?= AGAPESHOTES_URL; ?>page/additionalData/<?= $Secteur->getSlug(); ?>/<?= $site->slug; ?>/">
-                                                    Données complémentaires
-                                                </a>
+                                                <?php if (getUserRoleId() > 2): ?>
+                                                    <a href="<?= AGAPESHOTES_URL; ?>page/additionalData/<?= $Secteur->getSlug(); ?>/<?= $site->slug; ?>/">
+                                                        Données complémentaires
+                                                    </a>
+                                                <?php endif; ?>
                                             </small>
                                         </td>
                                         <td data-name="secteurNom"
@@ -102,8 +105,10 @@ $allSites = getSitesAccess();
                             </div>
                             <div class="col-12 col-lg-6 my-2 align-self-end">
                                 <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" checked class="custom-control-input" id="alsaceMoselle" name="alsaceMoselle">
-                                    <label class="custom-control-label" for="alsaceMoselle">Site en Alsace Moselle</label>
+                                    <input type="checkbox" checked class="custom-control-input" id="alsaceMoselle"
+                                           name="alsaceMoselle">
+                                    <label class="custom-control-label" for="alsaceMoselle">Site en Alsace
+                                        Moselle</label>
                                 </div>
                             </div>
                         </div>
@@ -144,8 +149,10 @@ $allSites = getSitesAccess();
                             </div>
                             <div class="col-12 col-lg-6 my-2 align-self-end">
                                 <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="alsaceMoselleUpdate" name="alsaceMoselleUpdate">
-                                    <label class="custom-control-label" for="alsaceMoselleUpdate">Site en Alsace Moselle</label>
+                                    <input type="checkbox" class="custom-control-input" id="alsaceMoselleUpdate"
+                                           name="alsaceMoselleUpdate">
+                                    <label class="custom-control-label" for="alsaceMoselleUpdate">Site en Alsace
+                                        Moselle</label>
                                 </div>
                             </div>
                         </div>
@@ -229,7 +236,7 @@ $allSites = getSitesAccess();
                 $form.find('input#ref').val(oldRef);
                 $form.find('input#nom').val(oldName);
                 $form.find('select#secteur_id').val(oldSecteurId);
-                if($.isNumeric(alsaceMoselle) && alsaceMoselle > 0) {
+                if ($.isNumeric(alsaceMoselle) && alsaceMoselle > 0) {
                     $form.find('input#alsaceMoselleUpdate').prop('checked', 'checked');
                 }
 

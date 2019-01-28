@@ -28,10 +28,12 @@ if (!empty($_GET['secteur']) && !empty($_GET['site']) && !empty($_GET['etablisse
                     data-target="#modalAddPrestation">
                 <?= trans('Ajouter une prestation'); ?>
             </button>
+            <?php if (getUserRoleId() > 1): ?>
             <button id="increasePrestation" type="button" class="btn btn-secondary btn-sm mb-4" data-toggle="modal"
                     data-target="#modalIncreasePrestation">
                 <?= trans('majorer les prestations'); ?>
             </button>
+            <?php endif; ?>
             <div class="row">
                 <div class="col-12">
                     <div class="table-responsive">
@@ -48,6 +50,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site']) && !empty($_GET['etablisse
                             <?php if ($allPrestations):
                                 $PrestationPrix = new \App\Plugin\AgapesHotes\PrixPrestation();
                                 foreach ($allPrestations as $prestation):
+                                    $PrestationPrix->setId('');
                                     $PrestationPrix->setDateDebut(date('Y-m-d'));
                                     $PrestationPrix->setPrestationId($prestation->id);
                                     ?>
@@ -70,12 +73,14 @@ if (!empty($_GET['secteur']) && !empty($_GET['site']) && !empty($_GET['etablisse
                                         <td><?= getUserEntitled($prestation->userId); ?></td>
                                         <td><?= displayTimeStamp($prestation->updated_at); ?></td>
                                         <td>
+                                            <?php if (getUserRoleId() > 1 || empty($PrestationPrix->getId())): ?>
                                             <button data-idprestation="<?= $prestation->id ?>"
                                                     class="btn btn-sm updatePrice" data-toggle="modal"
                                                     data-target="#modalAddPrice"
                                                     title="<?= trans('Mettre à jour le prix de la prestation'); ?>">
                                                 <span class="btnPrice"><i class="fas fa-dollar-sign"></i></span>
                                             </button>
+                                            <?php endif; ?>
                                             <button data-idprestation="<?= $prestation->id ?>"
                                                     class="btn btn-sm updatePrestation"
                                                     title="<?= trans('Modifier'); ?>">

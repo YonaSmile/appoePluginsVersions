@@ -507,7 +507,7 @@ function haveUserPermissionToUpdate($date)
 
         $processDate = new \DateTime($date);
 
-        if ($dateNow->format('j') >= 25) {
+        if ($dateNow->format('j') >= 10) {
             if ($processDate->format('n') < $dateNow->format('n')
                 && $processDate->format('Y') < $dateNow->format('Y')) {
                 return false;

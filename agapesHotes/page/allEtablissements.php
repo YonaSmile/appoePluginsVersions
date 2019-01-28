@@ -7,10 +7,12 @@ $allEtablissement = getEtablissementAccess();
 $allSites = extractFromObjToSimpleArr(getSitesAccess(), 'id', 'nom');
 ?>
     <div class="container-fluid">
-        <button id="addEtablissement" type="button" class="btn btn-info btn-sm mb-4" data-toggle="modal"
-                data-target="#modalAddEtablissement">
-            <?= trans('Ajouter un établissement'); ?>
-        </button>
+        <?php if (getUserRoleId() > 1): ?>
+            <button id="addEtablissement" type="button" class="btn btn-info btn-sm mb-4" data-toggle="modal"
+                    data-target="#modalAddEtablissement">
+                <?= trans('Ajouter un établissement'); ?>
+            </button>
+        <?php endif; ?>
         <div class="row">
             <div class="col-12">
                 <div class="table-responsive">
@@ -54,18 +56,20 @@ $allSites = extractFromObjToSimpleArr(getSitesAccess(), 'id', 'nom');
                                             <td><?= getUserEntitled($etablissement->userId); ?></td>
                                             <td><?= displayTimeStamp($etablissement->updated_at) ?></td>
                                             <td>
-                                                <button data-idetablissement="<?= $etablissement->id ?>"
-                                                        data-toggle="modal"
-                                                        data-target="#modalUpdateEtablissement"
-                                                        class="btn btn-sm updateEtablissement"
-                                                        title="<?= trans('Modifier'); ?>">
-                                                    <span class="btnEdit"><i class="fas fa-wrench"></i></span>
-                                                </button>
-                                                <button type="button" class="btn btn-sm archiveEtablissement"
-                                                        title="<?= trans('Archiver'); ?>"
-                                                        data-idetablissement="<?= $etablissement->id ?>">
-                                                    <span class="btnArchive"><i class="fas fa-archive"></i></span>
-                                                </button>
+                                                <?php if (getUserRoleId() > 1): ?>
+                                                    <button data-idetablissement="<?= $etablissement->id ?>"
+                                                            data-toggle="modal"
+                                                            data-target="#modalUpdateEtablissement"
+                                                            class="btn btn-sm updateEtablissement"
+                                                            title="<?= trans('Modifier'); ?>">
+                                                        <span class="btnEdit"><i class="fas fa-wrench"></i></span>
+                                                    </button>
+                                                    <button type="button" class="btn btn-sm archiveEtablissement"
+                                                            title="<?= trans('Archiver'); ?>"
+                                                            data-idetablissement="<?= $etablissement->id ?>">
+                                                        <span class="btnArchive"><i class="fas fa-archive"></i></span>
+                                                    </button>
+                                                <?php endif; ?>
                                             </td>
                                         </tr>
                                     <?php endif;
@@ -78,6 +82,7 @@ $allSites = extractFromObjToSimpleArr(getSitesAccess(), 'id', 'nom');
             </div>
         </div>
     </div>
+<?php if (getUserRoleId() > 1): ?>
     <div class="modal fade" id="modalAddEtablissement" tabindex="-1" role="dialog"
          aria-labelledby="modalAddEtablissementTitle"
          aria-hidden="true">
@@ -147,6 +152,7 @@ $allSites = extractFromObjToSimpleArr(getSitesAccess(), 'id', 'nom');
             </div>
         </div>
     </div>
+<?php endif; ?>
     <script>
         $(document).ready(function () {
 

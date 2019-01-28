@@ -451,7 +451,7 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
             function updateTvaAndPriceForAllMonth($input) {
 
                 var idCourse = $input.data('idcourse');
-                var oldVal = $input.data('oldVal');
+                var oldVal = $input.data('oldVal').length ? $input.data('oldVal') : '';
                 var dateInputOrigin = $input.data('date');
 
                 var prixUniteHT = $('input[name="prixUntitHT"][data-idcourse="' + idCourse + '"]').val();
@@ -460,69 +460,68 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                 if (typeof prixUniteHT !== 'undefined' && typeof tauxTva !== 'undefined'
                     && prixUniteHT.length > 0 && tauxTva.length > 0) {
 
-                    delay(function () {
 
-                        if (tauxTva == 5.5 || tauxTva == 10 || tauxTva == 20) {
+                    if (tauxTva == 5.5 || tauxTva == 10 || tauxTva == 20) {
 
-                            var dateEnd = new Date();
-                            dateEnd.setDate(dateEnd.getDate() + 7);
+                        var dateEnd = new Date();
+                        dateEnd.setDate(dateEnd.getDate() + 7);
 
-                            if (new Date(dateInputOrigin).getTime() <= dateEnd.getTime()) {
+                        if (new Date(dateInputOrigin).getTime() <= dateEnd.getTime()) {
 
-                                $('input.vivreCrueInput[data-idcourse="' + idCourse + '"]').each(function (i) {
+                            $('input.vivreCrueInput[data-idcourse="' + idCourse + '"]').each(function (i) {
 
-                                    busyApp();
+                                busyApp();
 
-                                    var $Input = $(this);
-                                    var idVivreCrue = $Input.attr('name');
-                                    var etablissementId = $Input.closest('tbody').data('etablissement');
-                                    var date = $Input.data('date');
-                                    var quantite = $Input.val();
+                                var $Input = $(this);
+                                var idVivreCrue = $Input.attr('name');
+                                var etablissementId = $Input.closest('tbody').data('etablissement');
+                                var date = $Input.data('date');
+                                var quantite = $Input.val();
 
-                                    if ($Input.val().length > 0) {
+                                if ($Input.val().length > 0) {
 
 
-                                        setTimeout(function () {
+                                    setTimeout(function () {
 
-                                            $.post(
-                                                '<?= AGAPESHOTES_URL . 'process/ajaxVivreCrueProcess.php'; ?>',
-                                                {
-                                                    UPDATEVIVRECRUE: 'OK',
-                                                    etablissementId: etablissementId,
-                                                    idCourse: idCourse,
-                                                    date: date,
-                                                    quantite: quantite,
-                                                    prixHTunite: prixUniteHT,
-                                                    tauxTva: tauxTva,
-                                                    total: (quantite * prixUniteHT),
-                                                    id: idVivreCrue
-                                                },
-                                                function (data) {
-                                                    if (data && $.isNumeric(data)) {
-                                                        $Input.attr('name', data);
-                                                        $Input.addClass('successInput');
-                                                        calculateTotalQuantityByCourse(idCourse);
-                                                        calculeAllTvaTypes(etablissementId);
-                                                    }
+                                        $.post(
+                                            '<?= AGAPESHOTES_URL . 'process/ajaxVivreCrueProcess.php'; ?>',
+                                            {
+                                                UPDATEVIVRECRUE: 'OK',
+                                                etablissementId: etablissementId,
+                                                idCourse: idCourse,
+                                                date: date,
+                                                quantite: quantite,
+                                                prixHTunite: prixUniteHT,
+                                                tauxTva: tauxTva,
+                                                total: (quantite * prixUniteHT),
+                                                id: idVivreCrue
+                                            },
+                                            function (data) {
+                                                if (data && $.isNumeric(data)) {
+                                                    $Input.attr('name', data);
+                                                    $Input.addClass('successInput');
+                                                    calculateTotalQuantityByCourse(idCourse);
+                                                    calculeAllTvaTypes(etablissementId);
                                                 }
-                                            );
-                                        }, 300);
-                                    }
-                                    availableApp();
+                                            }
+                                        );
+                                    }, 300);
+                                }
+                                availableApp();
 
-                                });
+                            });
 
-                                updateProductPrice(idCourse, dateInputOrigin, prixUniteHT, tauxTva);
+                            updateProductPrice(idCourse, dateInputOrigin, prixUniteHT, tauxTva);
 
-                            } else {
-                                $input.val(oldVal);
-                                alert('Il est interdit de saisir une quantité pour une date supérieure à une semaine depuis aujourd\'hui !');
-                            }
                         } else {
                             $input.val(oldVal);
-                            alert('Le taux de tva ne peut être que : 5.50 / 10.00 / 20.00');
+                            alert('Il est interdit de saisir une quantité pour une date supérieure à une semaine depuis aujourd\'hui !');
                         }
-                    }, 1000);
+                    } else {
+                        $input.val(oldVal);
+                        alert('Le taux de tva ne peut être que : 5.50 / 10.00 / 20.00');
+                    }
+
                 }
             }
 
@@ -531,7 +530,7 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                 $('input.vivreCrueInput').removeClass('successInput');
             });
 
-            $('input[name="prixUntitHT"], input[name="tauxTva"]').on('input', function (event) {
+            $('input[name="prixUntitHT"], input[name="tauxTva"]').on('blur', function (event) {
                 event.preventDefault();
                 if ($(this).data('oldVal') != $(this).val()) {
                     updateTvaAndPriceForAllMonth($(this));
@@ -615,12 +614,8 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                     $Input.val('');
                     alert('Veuillez fournir le prix/unité HT et le taux de TVA');
                 }
-
             });
-
-
-        })
-        ;
+        });
     </script>
 <?php else: ?>
     <?= getContainerErrorMsg(trans('Ce site n\'est pas accessible')); ?>
