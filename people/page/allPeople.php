@@ -26,7 +26,7 @@
                             <?php foreach ($allPersons as $person): ?>
                                 <tr data-idperson="<?= $person->id ?>">
                                     <td><?= $person->type ?></td>
-                                    <td><?= !empty($person->nature) ? trans(PEOPLE_NATURE[$person->nature]) : ''; ?></td>
+                                    <td><?= !empty($person->nature) ? trans(getPeopleNatureNameById($person->nature)) : ''; ?></td>
                                     <td><?= $person->entitled ?></td>
                                     <td>
                                         <strong><?= (!empty($person->birthDate) && $person->birthDate != '0000-00-00') ? age($person->birthDate) : '' ?></strong>

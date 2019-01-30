@@ -24,7 +24,7 @@ if (!empty($_GET['id'])): ?>
                         <?= \App\Form::select('Enregistrement de type', 'type', getAppTypes(), $People->getType(), true); ?>
                     </div>
                     <div class="col-12 col-lg-4 my-2">
-                        <?= \App\Form::select('Nature de la personne', 'nature', PEOPLE_NATURE, $People->getNature(), true); ?>
+                        <?= \App\Form::select('Nature de la personne', 'nature', getPeopleNatureName(), $People->getNature(), true); ?>
                     </div>
                     <div class="col-12 col-lg-4 my-2">
                         <?= \App\Form::text('Nom', 'name', 'text', $People->getName(), true, 150); ?>

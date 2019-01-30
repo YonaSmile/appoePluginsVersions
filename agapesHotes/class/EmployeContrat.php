@@ -301,11 +301,11 @@ class EmployeContrat
      */
     public function showAllReelDateEmployesContrats($countContrats = false)
     {
-
-
-        $sql = 'SELECT ec.* FROM reelDatesEmployesContrats AS rdec
+        $sql = 'SELECT ec.*, p.nature AS employe_nature, p.name AS employe_name, p.firstName AS employe_firstName FROM reelDatesEmployesContrats AS rdec
         INNER JOIN appoe_plugin_agapesHotes_employes_contrats AS ec
         ON(reelContratEmployeId = ec.employe_id AND reelContratDate = ec.dateDebut)
+        INNER JOIN appoe_plugin_people AS p
+        ON(p.id = ec.employe_id)
         WHERE ec.site_id = :siteId AND ec.status = :status AND ec.dateDebut <= :dateDebut';
 
         $stmt = $this->dbh->prepare($sql);
@@ -468,7 +468,7 @@ class EmployeContrat
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id FROM appoe_plugin_agapesHotes_employes_contrats 
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_employes_contrats 
         WHERE site_id = :siteId AND employe_id = :employeId AND dateDebut = :dateDebut';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
@@ -482,13 +482,16 @@ class EmployeContrat
             return false;
         } else {
             if ($count == 1) {
+
+                $data = $stmt->fetch(\PDO::FETCH_OBJ);
+
                 if ($forUpdate) {
-                    $data = $stmt->fetch(\PDO::FETCH_OBJ);
                     if ($data->id == $this->id) {
                         return true;
                     }
                 }
 
+                $this->feed($data);
                 return false;
             } else {
                 return true;

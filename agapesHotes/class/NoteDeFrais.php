@@ -6,10 +6,19 @@ class NoteDeFrais
 
     private $id;
     private $siteId;
-    private $nom;
+    private $employeId;
+    private $day;
+    private $month;
+    private $year;
     private $type;
-    private $date;
+    private $code;
+    private $nom;
+    private $motif;
+    private $affectation;
+    private $commentaire = null;
     private $montantHt;
+    private $tva;
+    private $montantTtc;
     private $status = 1;
     private $userId;
     private $createdAt;
@@ -22,6 +31,8 @@ class NoteDeFrais
         if (is_null($this->dbh)) {
             $this->dbh = \App\DB::connect();
         }
+
+        $this->userId = getUserIdSession();
 
         if (!is_null($id)) {
             $this->id = $id;
@@ -61,6 +72,101 @@ class NoteDeFrais
         $this->siteId = $siteId;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getEmployeId()
+    {
+        return $this->employeId;
+    }
+
+    /**
+     * @param mixed $employe_id
+     */
+    public function setEmployeId($employe_id)
+    {
+        $this->employeId = $employe_id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDay()
+    {
+        return $this->day;
+    }
+
+    /**
+     * @param mixed $day
+     */
+    public function setDay($day)
+    {
+        $this->day = $day;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMonth()
+    {
+        return $this->month;
+    }
+
+    /**
+     * @param mixed $month
+     */
+    public function setMonth($month)
+    {
+        $this->month = $month;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getYear()
+    {
+        return $this->year;
+    }
+
+    /**
+     * @param mixed $year
+     */
+    public function setYear($year)
+    {
+        $this->year = $year;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param mixed $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCode()
+    {
+        return $this->code;
+    }
+
+    /**
+     * @param mixed $code
+     */
+    public function setCode($code)
+    {
+        $this->code = $code;
+    }
 
     /**
      * @return mixed
@@ -81,36 +187,50 @@ class NoteDeFrais
     /**
      * @return mixed
      */
-    public function getType()
+    public function getMotif()
     {
-        return $this->type;
+        return $this->motif;
     }
 
     /**
-     * @param mixed $type
+     * @param mixed $motif
      */
-    public function setType($type)
+    public function setMotif($motif)
     {
-        $this->type = $type;
+        $this->motif = $motif;
     }
-
 
     /**
      * @return mixed
      */
-    public function getDate()
+    public function getAffectation()
     {
-        return $this->date;
+        return $this->affectation;
     }
 
     /**
-     * @param mixed $date
+     * @param mixed $affectation
      */
-    public function setDate($date)
+    public function setAffectation($affectation)
     {
-        $this->date = $date;
+        $this->affectation = $affectation;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getCommentaire()
+    {
+        return $this->commentaire;
+    }
+
+    /**
+     * @param mixed $commentaire
+     */
+    public function setCommentaire($commentaire)
+    {
+        $this->commentaire = $commentaire;
+    }
 
     /**
      * @return mixed
@@ -131,13 +251,45 @@ class NoteDeFrais
     /**
      * @return mixed
      */
+    public function getTva()
+    {
+        return $this->tva;
+    }
+
+    /**
+     * @param mixed $tva
+     */
+    public function setTva($tva)
+    {
+        $this->tva = $tva;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMontantTtc()
+    {
+        return $this->montantTtc;
+    }
+
+    /**
+     * @param mixed $montantTtc
+     */
+    public function setMontantTtc($montantTtc)
+    {
+        $this->montantTtc = $montantTtc;
+    }
+
+    /**
+     * @return int
+     */
     public function getStatus()
     {
         return $this->status;
     }
 
     /**
-     * @param mixed $status
+     * @param int $status
      */
     public function setStatus($status)
     {
@@ -194,37 +346,30 @@ class NoteDeFrais
 
     public function createTable()
     {
+
         $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapesHotes_note_frais` (
   				`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   				PRIMARY KEY (`id`),
   				`site_id` int(11) UNSIGNED NOT NULL,
+                `employe_id` int(11) UNSIGNED NOT NULL,
+                `day` varchar(2) NOT NULL,
+                `month` varchar(2) NOT NULL,
+                `year` varchar(4) NOT NULL,
+                `type` TINYINT(4) UNSIGNED NOT NULL,
+                `code` varchar(10) NOT NULL,
                 `nom` varchar(255) NOT NULL,
-                `type` varchar(255) NOT NULL,
-                `date` date NOT NULL,
+                `motif` varchar(255) NOT NULL,
+                `affectation` int(11) UNSIGNED NOT NULL,
+                `commentaire` varchar(255) NULL,
                 `montantHt` decimal(7,2) UNSIGNED NOT NULL,
-                UNIQUE (`site_id`, `nom`, `type`, `date`),
+                `tva` decimal(4,2) UNSIGNED NOT NULL,
+                `montantTtc` decimal(7,2) UNSIGNED NOT NULL,
+                UNIQUE (`site_id`, `employe_id`, `type`, `nom`, `day`, `month`, `year`),
                 `status` tinyint(4) UNSIGNED NOT NULL DEFAULT 1,
                 `userId` int(11) UNSIGNED NOT NULL,
                 `created_at` date NOT NULL,
                 `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 				) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;';
-
-        $stmt = $this->dbh->prepare($sql);
-        $stmt->execute();
-        $error = $stmt->errorInfo();
-        if ($error[0] != '00000') {
-            return false;
-        }
-
-        return true;
-    }
-
-    public function createView()
-    {
-        $sql = 'CREATE VIEW totalNoteDeFraisDenree AS SELECT site_id, YEAR(date) AS annee, MONTH(date) AS mois, SUM(montantHt) AS totalHT 
-        FROM appoe_plugin_agapesHotes_note_frais WHERE type = "Denrée Alimentaire" GROUP BY MONTH(date);
-        CREATE VIEW totalNoteDeFraisNonAlimentaire AS SELECT site_id, YEAR(date) AS annee, MONTH(date) AS mois, SUM(montantHt) AS totalHT 
-        FROM appoe_plugin_agapesHotes_note_frais WHERE type = "Unique Entretien" GROUP BY MONTH(date);';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();
@@ -274,7 +419,8 @@ class NoteDeFrais
     public function showAllBySite($countNoteDeFrais = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_note_frais WHERE site_id = :siteId AND status = :status ORDER BY created_at ASC';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_note_frais 
+        WHERE site_id = :siteId AND status = :status ORDER BY created_at ASC';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
@@ -291,19 +437,44 @@ class NoteDeFrais
     }
 
     /**
-     * @param $dateDebut
-     * @param $dateFin
-     * @param $countNoteDeFrais
-     * @return array|bool
+     * @param bool $countNoteDeFrais
+     * @return array|int|bool
      */
-    public function showByDate($dateDebut, $dateFin, $countNoteDeFrais = false)
+    public function showByDate($countNoteDeFrais = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_note_frais WHERE site_id = :siteId AND (date BETWEEN :dateDebut AND :dateFin) AND status = :status ORDER BY date ASC';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_note_frais 
+        WHERE site_id = :siteId AND year = :year AND month = :month AND status = :status';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
-        $stmt->bindParam(':dateDebut', $dateDebut);
-        $stmt->bindParam(':dateFin', $dateFin);
+        $stmt->bindParam(':year', $this->year);
+        $stmt->bindParam(':month', $this->month);
+        $stmt->bindParam(':status', $this->status);
+        $stmt->execute();
+
+        $count = $stmt->rowCount();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            return !$countNoteDeFrais ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
+        }
+    }
+
+    /**
+     * @param bool $countNoteDeFrais
+     * @return array|int|bool
+     */
+    public function showByDateAndEmploye($countNoteDeFrais = false)
+    {
+
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_note_frais 
+        WHERE site_id = :siteId AND employe_id = :employeId AND year = :year AND month = :month AND status = :status';
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':siteId', $this->siteId);
+        $stmt->bindParam(':employeId', $this->employeId);
+        $stmt->bindParam(':year', $this->year);
+        $stmt->bindParam(':month', $this->month);
         $stmt->bindParam(':status', $this->status);
         $stmt->execute();
 
@@ -323,7 +494,8 @@ class NoteDeFrais
     public function showAll($countNoteDeFrais = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_note_frais WHERE status = :status ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_note_frais 
+        WHERE status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':status', $this->status);
         $stmt->execute();
@@ -342,15 +514,24 @@ class NoteDeFrais
      */
     public function save()
     {
-        $this->userId = getUserIdSession();
-        $sql = 'INSERT INTO appoe_plugin_agapesHotes_note_frais (site_id, nom, type, date, montantHt, status, userId, created_at) 
-                VALUES (:siteId, :nom, :type, :date, :montantHt, :status, :userId, CURDATE())';
+
+        $sql = 'INSERT INTO appoe_plugin_agapesHotes_note_frais (site_id, employe_id, day, month, year, type, code, nom, motif, affectation, commentaire, montantHt, tva, montantTtc, status, userId, created_at) 
+                VALUES (:siteId, :employe_id, :day, :month, :year, :type, :code, :nom, :motif, :affectation, :commentaire, :montantHt, :tva, :montantTtc, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
-        $stmt->bindParam(':nom', $this->nom);
+        $stmt->bindParam(':employe_id', $this->employeId);
+        $stmt->bindParam(':day', $this->day);
+        $stmt->bindParam(':month', $this->month);
+        $stmt->bindParam(':year', $this->year);
         $stmt->bindParam(':type', $this->type);
-        $stmt->bindParam(':date', $this->date);
+        $stmt->bindParam(':code', $this->code);
+        $stmt->bindParam(':nom', $this->nom);
+        $stmt->bindParam(':motif', $this->motif);
+        $stmt->bindParam(':affectation', $this->affectation);
+        $stmt->bindParam(':commentaire', $this->commentaire);
         $stmt->bindParam(':montantHt', $this->montantHt);
+        $stmt->bindParam(':tva', $this->tva);
+        $stmt->bindParam(':montantTtc', $this->montantTtc);
         $stmt->bindParam(':status', $this->status);
         $stmt->bindParam(':userId', $this->userId);
         $stmt->execute();
@@ -370,14 +551,20 @@ class NoteDeFrais
      */
     public function update()
     {
-        $this->userId = getUserIdSession();
-        $sql = 'UPDATE appoe_plugin_agapesHotes_note_frais SET nom = :nom, type = :type, date = :date, montantHt = :montantHt, status = :status, userId = :userId WHERE id = :id';
+        $sql = 'UPDATE appoe_plugin_agapesHotes_note_frais 
+        SET day = :day, type = :type, code = :code, nom = :nom, motif = :motif, affectation = :affectation, commentaire = :commentaire, montantHt = :montantHt, tva = :tva, montantTtc = :montantTtc, status = :status, userId = :userId WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':nom', $this->nom);
+        $stmt->bindParam(':day', $this->day);
         $stmt->bindParam(':type', $this->type);
-        $stmt->bindParam(':date', $this->date);
+        $stmt->bindParam(':code', $this->code);
+        $stmt->bindParam(':nom', $this->nom);
+        $stmt->bindParam(':motif', $this->motif);
+        $stmt->bindParam(':affectation', $this->affectation);
+        $stmt->bindParam(':commentaire', $this->commentaire);
         $stmt->bindParam(':montantHt', $this->montantHt);
+        $stmt->bindParam(':tva', $this->tva);
+        $stmt->bindParam(':montantTtc', $this->montantTtc);
         $stmt->bindParam(':status', $this->status);
         $stmt->bindParam(':userId', $this->userId);
         $stmt->bindParam(':id', $this->id);
@@ -420,12 +607,16 @@ class NoteDeFrais
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id, nom FROM appoe_plugin_agapesHotes_note_frais WHERE site_id = :siteId AND type = :type AND nom = :nom AND date = :date';
+        $sql = 'SELECT id, nom FROM appoe_plugin_agapesHotes_note_frais 
+        WHERE site_id = :siteId AND employe_id = :employe_id AND type = :type AND nom = :nom AND day = :day AND month = :month AND year = :year';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
-        $stmt->bindParam(':nom', $this->nom);
+        $stmt->bindParam(':employe_id', $this->employeId);
         $stmt->bindParam(':type', $this->type);
-        $stmt->bindParam(':date', $this->date);;
+        $stmt->bindParam(':nom', $this->nom);
+        $stmt->bindParam(':day', $this->day);
+        $stmt->bindParam(':month', $this->month);
+        $stmt->bindParam(':year', $this->year);
         $stmt->execute();
 
         $count = $stmt->rowCount();

@@ -173,16 +173,16 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                                                     <?= \App\Form::text('Qté', 'quantite_' . $c, 'number', $achat->quantite, false, 255, '', '', 'form-control-sm quantiteField', 'Quantité'); ?>
                                                 </div>
                                                 <div class="col-2 my-1">
-                                                    <?= \App\Form::text('Prix/unité HT', 'prixHTunite_' . $c, 'text', $achat->prixHTunite, true, 255, '', '', 'form-control-sm prixUnitaireField', 'Prix unitaire HT'); ?>
+                                                    <?= \App\Form::text('Prix/unité HT', 'prixHTunite_' . $c, 'text', $achat->prixHTunite, false, 255, '', '', 'form-control-sm prixUnitaireField', 'Prix unitaire HT'); ?>
                                                 </div>
                                                 <div class="col-2 my-1">
-                                                    <?= \App\Form::text('Total HT', 'total_' . $c, 'text', $achat->total, true, 255, 'readonly', '', 'form-control-sm totalField', 'Total HT'); ?>
+                                                    <?= \App\Form::text('Total HT', 'total_' . $c, 'text', $achat->total, false, 255, 'readonly', '', 'form-control-sm totalField', 'Total HT'); ?>
                                                 </div>
                                                 <div class="col-2 my-1">
-                                                    <?= \App\Form::text('TVA', 'tauxTVA_' . $c, 'text', $achat->tauxTVA, true, 255, '', '', 'form-control-sm tvaField', 'TVA (%)'); ?>
+                                                    <?= \App\Form::text('TVA', 'tauxTVA_' . $c, 'text', $achat->tauxTVA, false, 255, '', '', 'form-control-sm tvaField', 'TVA (%)'); ?>
                                                 </div>
                                                 <div class="col-2 my-1">
-                                                    <?= \App\Form::text('Total TTC', 'totalTtc_' . $c, 'text', financial($achat->total + $taxe), true, 255, 'readonly', '', 'form-control-sm totalTtcField', 'Total TTC'); ?>
+                                                    <?= \App\Form::text('Total TTC', 'totalTtc_' . $c, 'text', financial($achat->total + $taxe), false, 255, 'readonly', '', 'form-control-sm totalTtcField', 'Total TTC'); ?>
                                                 </div>
                                                 <hr class="mx-auto my-1 w-25 d-md-block d-lg-none">
                                             </div>
@@ -298,16 +298,16 @@ endif; ?>
                                                 <?= \App\Form::text('Quantité', 'quantite_' . $c, 'number', '', false, 255, '', '', 'form-control-sm quantiteField', 'Quantité'); ?>
                                             </div>
                                             <div class="col-12 col-lg-2 my-1">
-                                                <?= \App\Form::text('Prix unitaire HT', 'prixHTunite_' . $c, 'text', '', true, 255, '', '', 'form-control-sm prixUnitaireField', 'Prix unitaire HT'); ?>
+                                                <?= \App\Form::text('Prix unitaire HT', 'prixHTunite_' . $c, 'text', '', false, 255, '', '', 'form-control-sm prixUnitaireField', 'Prix unitaire HT'); ?>
                                             </div>
                                             <div class="col-12 col-lg-2 my-1">
-                                                <?= \App\Form::text('Total HT', 'total_' . $c, 'text', '', true, 255, 'readonly', '', 'form-control-sm totalField', 'Total HT'); ?>
+                                                <?= \App\Form::text('Total HT', 'total_' . $c, 'text', '', false, 255, 'readonly', '', 'form-control-sm totalField', 'Total HT'); ?>
                                             </div>
                                             <div class="col-12 col-lg-2 my-1">
-                                                <?= \App\Form::text('TVA (%)', 'tauxTVA_' . $c, 'text', '', true, 255, '', '', 'form-control-sm tvaField', 'TVA (%)'); ?>
+                                                <?= \App\Form::text('TVA (%)', 'tauxTVA_' . $c, 'text', '', false, 255, '', '', 'form-control-sm tvaField', 'TVA (%)'); ?>
                                             </div>
                                             <div class="col-12 col-lg-2 my-1">
-                                                <?= \App\Form::text('Total TTC', 'totalTtc_' . $c, 'text', '', true, 255, 'readonly', '', 'form-control-sm totalTtcField', 'Total TTC'); ?>
+                                                <?= \App\Form::text('Total TTC', 'totalTtc_' . $c, 'text', '', false, 255, 'readonly', '', 'form-control-sm totalTtcField', 'Total TTC'); ?>
                                             </div>
                                             <hr class="mx-auto my-1 w-25 d-md-block d-lg-none">
                                         </div>

@@ -6,11 +6,11 @@ array_unique($allOrdSites);
 $allSitesBySecteur = groupMultipleKeysObjectsArray($allSites, 'secteur_id');
 $Secteur = new \App\Plugin\AgapesHotes\Secteur();
 ?>
-<h4>Synthèse (en €)</h4>
+<h4>Synthèse (en € )</h4>
 <div class="row mb-3">
     <div class="col-12 positionRelative">
         <div class="table-responsive">
-            <table class="table table-striped tableNonEffect text-center">
+            <table class="table table-striped tableNonEffect text-center" id="totalSyntheseTable">
                 <thead>
                 <tr>
                     <th></th>
@@ -158,7 +158,7 @@ $Secteur = new \App\Plugin\AgapesHotes\Secteur();
     $(document).ready(function () {
 
         var allSites = <?= json_encode($allOrdSites); ?>;
-        var countSites = Object.keys(allSites).length;
+        var countSites = (Object.keys(allSites).length * 2);
         var confirmedSites = 0;
 
         var budgetCa = 0, budgetConso = 0, budgetPerso = 0, budgetFraisGeneraux = 0, budgetResultatsExploitation = 0,
@@ -310,6 +310,7 @@ $Secteur = new \App\Plugin\AgapesHotes\Secteur();
                             $trTotalSiteYearAgo.find('td[data-name="site-fraissiege"]').html(financial(fraissiegeAgo));
                             $trTotalSiteYearAgo.find('td[data-name="site-resultats"]').html(financial(resultatsAgo));
                             $trTotalSiteYearAgo.find('td[data-name="site-pourcentagesrentabilite"]').html(financial(pourcentagesrentabiliteAgo) + '%');
+
                             confirmedSites++;
                         }
                     }
@@ -318,10 +319,19 @@ $Secteur = new \App\Plugin\AgapesHotes\Secteur();
         });
 
         var interval = setInterval(function () {
-            if(countSites == confirmedSites){
+            if (countSites == confirmedSites) {
                 $('html').css('overflow', 'scroll');
                 clearInterval(interval);
             }
         }, 500);
+
+        function printSynthese() {
+            var url = '<?= AGAPESHOTES_URL; ?>page/getFactures.php';
+            var form = $('<form action="' + url + '" method="post" target="_blank">' +
+                '<input type="text" name="tableData" value="' + escapeHtml($('#totalSyntheseTable').prop('outerHTML')) + '" />' +
+                '</form>');
+            $('body').append(form);
+            form.submit();
+        }
     });
 </script>

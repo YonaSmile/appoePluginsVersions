@@ -1,4 +1,11 @@
 <?php
+
+const PEOPLE_NATURE = array(
+    1 => 'Société',
+    2 => 'Monsieur',
+    3 => 'Madame'
+);
+
 function people_addPersonFormFields(array $excludesFields = array(), array $dataFields = array(), array $requiredFields = array(), $formName = 'ADDPERSON', $showType = true, $showSaveBtn = true)
 {
     //defaults fields
@@ -21,7 +28,7 @@ function people_addPersonFormFields(array $excludesFields = array(), array $data
     $html .= '<div class="my-4"></div><div class="row">';
     $html .= $showType ? '<div class="col my-2">' . App\Form::select('Enregistrement de type', 'type', getAppTypes(), $type, true) . '</div>' : '';
 
-    $html .= $natureF ? '<div class="col my-2">' . App\Form::select('Nature', 'nature', PEOPLE_NATURE, $nature, $natureR) . '</div>' : '';
+    $html .= $natureF ? '<div class="col my-2">' . App\Form::select('Nature', 'nature', getPeopleNatureName(), $nature, $natureR) . '</div>' : '';
     $html .= $nameF ? '<div class="col my-2">' . App\Form::text('Nom', 'name', 'text', $name, $nameR, 150) . '</div>' : '';
 
     $html .= '</div><div class="row">';
@@ -45,4 +52,17 @@ function people_addPersonFormFields(array $excludesFields = array(), array $data
     $html .= $showSaveBtn ? '<div class="my-2"><div class="row"><div class="col-12">' . App\Form::submit('Enregistrer', $formName . 'SUBMIT') . '</div></div>' : '';
 
     return $html;
+}
+
+function getPeopleNatureName()
+{
+    return PEOPLE_NATURE;
+}
+
+function getPeopleNatureNameById($natureId)
+{
+    if (array_key_exists($natureId, getPeopleNatureName())) {
+        return PEOPLE_NATURE[$natureId];
+    }
+    return false;
 }

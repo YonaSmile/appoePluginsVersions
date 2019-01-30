@@ -43,20 +43,38 @@ function employeHasContrat($idEmploye, $idSite)
     return false;
 }
 
+
 /**
  * @param $idSite
+ * @param $year
+ * @param string $month
  * @return array
+ * @noinspection PhpUnhandledExceptionInspection
  */
-function getAllEmployeHasContratInSite($idSite)
+function getAllEmployeHasContratInSite($idSite, $year, $month = '')
 {
 
-    //Get Employe Contrat
-    $EmployeContrat = new \App\Plugin\AgapesHotes\EmployeContrat();
-    $EmployeContrat->setDateDebut(date('Y-M-d'));
-    $EmployeContrat->setSiteId($idSite);
-    $allContratsDates = $EmployeContrat->showAllReelDateEmployesContrats();
+    $allContratsDates = array();
+    $day = '01';
 
-    return extractFromObjArr($allContratsDates, 'employe_id');
+    if(empty($month)){
+        $month = date('m');
+    }
+
+    try {
+        $dateContrat = new \DateTime($year . '-' . $month . '-' . $day);
+
+        //Get Employe Contrat
+        $EmployeContrat = new \App\Plugin\AgapesHotes\EmployeContrat();
+        $EmployeContrat->setDateDebut($dateContrat->format('Y-m-d'));
+        $EmployeContrat->setSiteId($idSite);
+        $allContratsDates = $EmployeContrat->showAllReelDateEmployesContrats();
+
+        return extractFromObjArr($allContratsDates, 'employe_id');
+    } catch (Exception $e){
+        error_log($e->getMessage());
+    }
+    return $allContratsDates;
 }
 
 /**
@@ -96,6 +114,10 @@ function getEmployeContrats($idEmploye)
     return $allReelContrats;
 }
 
+/**
+ * @param $siteId
+ * @return array
+ */
 function getAllPtiBySite($siteId)
 {
 
@@ -124,6 +146,10 @@ function getAllPtiBySite($siteId)
     return $allPti;
 }
 
+/**
+ * @param $etablissementId
+ * @return array
+ */
 function getAllPrestationsPriceByEtablissement($etablissementId)
 {
 
@@ -141,6 +167,11 @@ function getAllPrestationsPriceByEtablissement($etablissementId)
     return $allPrestationsPrice;
 }
 
+/**
+ * @param $etablissementId
+ * @param string $month
+ * @return array
+ */
 function getAllMainCouranteByEtablissementInMonth($etablissementId, $month = '')
 {
 
@@ -159,6 +190,11 @@ function getAllMainCouranteByEtablissementInMonth($etablissementId, $month = '')
     return $allMainCourante;
 }
 
+/**
+ * @param $etablissementId
+ * @param string $month
+ * @return array
+ */
 function getAllVivreCrueByEtablissementInMonth($etablissementId, $month = '')
 {
 
@@ -177,6 +213,11 @@ function getAllVivreCrueByEtablissementInMonth($etablissementId, $month = '')
     return $allVivresCrue;
 }
 
+/**
+ * @param $siteId
+ * @param string $month
+ * @return array
+ */
 function getAllPlanningBySite($siteId, $month = '')
 {
     $month = !empty($month) ? $month : date('m');
@@ -194,11 +235,23 @@ function getAllPlanningBySite($siteId, $month = '')
     return $allPlanning;
 }
 
+/**
+ * @param $a
+ * @param $b
+ * @return false|int
+ */
 function reelDatesSortDESC($a, $b)
 {
     return strtotime($b) - strtotime($a);
 }
 
+/**
+ * @param $siteId
+ * @param string $year
+ * @param string $month
+ * @return array|bool
+ * @throws Exception
+ */
 function getAllCommandes($siteId, $year = '', $month = '')
 {
 
@@ -220,6 +273,10 @@ function getAllCommandes($siteId, $year = '', $month = '')
 
 }
 
+/**
+ * @param $allCommandes
+ * @return array
+ */
 function getCommandesServentest($allCommandes)
 {
 
@@ -244,6 +301,10 @@ function getCommandesServentest($allCommandes)
 
 }
 
+/**
+ * @param $allInventaire
+ * @return array
+ */
 function getInventaireServentest($allInventaire)
 {
 
@@ -268,6 +329,12 @@ function getInventaireServentest($allInventaire)
 
 }
 
+/**
+ * @param $siteId
+ * @param $year
+ * @param string $month
+ * @return array
+ */
 function getSiteMeta($siteId, $year, $month = '')
 {
 
@@ -296,6 +363,12 @@ function getSiteMeta($siteId, $year, $month = '')
 
 }
 
+/**
+ * @param $siteId
+ * @param $year
+ * @param string $month
+ * @return array
+ */
 function getNoteDeFrais($siteId, $year, $month = '')
 {
     $noteDeFrais = array(
@@ -325,6 +398,12 @@ function getNoteDeFrais($siteId, $year, $month = '')
     return $noteDeFrais;
 }
 
+/**
+ * @param $siteId
+ * @param $year
+ * @param string $month
+ * @return int
+ */
 function getFacturation($siteId, $year, $month = '')
 {
 
@@ -351,6 +430,12 @@ function getFacturation($siteId, $year, $month = '')
     return $totalFacturation;
 }
 
+/**
+ * @param $siteId
+ * @param $year
+ * @param string $month
+ * @return \App\Plugin\AgapesHotes\Budget|int
+ */
 function getBudget($siteId, $year, $month = '')
 {
 
@@ -366,6 +451,9 @@ function getBudget($siteId, $year, $month = '')
     return $Budget ? $Budget : 0;
 }
 
+/**
+ * @return array|bool
+ */
 function getSecteurAccess()
 {
 
@@ -384,6 +472,9 @@ function getSecteurAccess()
     return $allSecteurs;
 }
 
+/**
+ * @return array|bool
+ */
 function getSitesAccess()
 {
 
@@ -411,6 +502,9 @@ function getSitesAccess()
     return $allSites;
 }
 
+/**
+ * @return array|bool
+ */
 function getEtablissementAccess()
 {
 
@@ -444,6 +538,11 @@ function getEtablissementAccess()
     return $allEtablissements;
 }
 
+/**
+ * @param $date
+ * @param bool $alsaceMoselle
+ * @return string
+ */
 function getDayColor($date, $alsaceMoselle = false)
 {
 
@@ -479,6 +578,10 @@ function getDayColor($date, $alsaceMoselle = false)
     return '';
 }
 
+/**
+ * @param $fournisseur
+ * @return bool
+ */
 function isNotUniqueEntretien($fournisseur)
 {
 
@@ -487,6 +590,10 @@ function isNotUniqueEntretien($fournisseur)
     return !in_array($fournisseur, $uniqueEntretien);
 }
 
+/**
+ * @param $fournisseur
+ * @return bool
+ */
 function isUniqueEntretien($fournisseur)
 {
 
@@ -495,6 +602,11 @@ function isUniqueEntretien($fournisseur)
     return in_array($fournisseur, $uniqueEntretien);
 }
 
+/**
+ * @param $date
+ * @return bool
+ * @throws Exception
+ */
 function haveUserPermissionToUpdate($date)
 {
 
@@ -522,6 +634,10 @@ function haveUserPermissionToUpdate($date)
     return true;
 }
 
+/**
+ * @param $word
+ * @return string
+ */
 function getFirstLetters($word)
 {
     preg_match_all('/(?<=\s|^)[a-z]/i', $word, $matches);

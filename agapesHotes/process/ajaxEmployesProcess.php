@@ -95,6 +95,10 @@ if (checkAjaxRequest()) {
                     } else {
                         echo 'Impossible d\'enregistrer ce contrat !';
                     }
+                }
+                if ($EmployeContratProcess->getStatus() == 0) {
+                    echo 'Ce contrat est archivée. Voulez vous le restaurer ?' .
+                        '<button type="button" data-restaurecontratid="' . $EmployeContratProcess->getId() . '" class="btn btn-sm btn-link restaureContrat">Oui</button>';
                 } else {
                     echo 'Ce contrat existe déjà !';
                 }
@@ -119,6 +123,29 @@ if (checkAjaxRequest()) {
                 echo 'Ce contrat n\'existe pas !';
             }
 
+        }
+
+        // RESTAURE EMPLOYE CONTRAT
+        if (!empty($_POST['RESTAURECONTRAT'])) {
+
+            if (!empty($_POST['idContratRestaure'])) {
+
+                $EmployeContratProcess = new \App\Plugin\AgapesHotes\EmployeContrat();
+
+                $EmployeContratProcess->setId($_POST['idContratRestaure']);
+                if ($EmployeContratProcess->show()) {
+
+                    $EmployeContratProcess->setStatus(1);
+
+                    if ($EmployeContratProcess->update()) {
+                        echo json_encode(true);
+                    } else {
+                        echo 'Impossible de restaurer ce contrat !';
+                    }
+                } else {
+                    echo 'Ce contrat n\'existe pas !';
+                }
+            }
         }
 
     }

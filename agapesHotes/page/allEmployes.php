@@ -42,7 +42,7 @@
                         <?php if ($allEmployes): ?>
                             <?php foreach ($allEmployes as $employe): ?>
                                 <tr data-idemploye="<?= $employe->id ?>">
-                                    <td data-nature="<?= $employe->nature; ?>"><?= !empty($employe->nature) ? trans(PEOPLE_NATURE[$employe->nature]) : ''; ?></td>
+                                    <td data-nature="<?= $employe->nature; ?>"><?= !empty($employe->nature) ? trans(getPeopleNatureNameById($employe->nature)) : ''; ?></td>
                                     <td data-name="<?= $employe->name ?>"><?= $employe->name ?></td>
                                     <td data-firstname="<?= $employe->firstName ?>"><?= $employe->firstName ?></td>
                                     <td>
@@ -68,7 +68,7 @@
                                                 data-toggle="modal" data-target="#modalUpdateContratEmploye"
                                                 title="<?= trans('Contrat'); ?>"
                                                 data-idemploye="<?= $employe->id ?>"
-                                                data-name="<?= (!empty($employe->nature) ? trans(PEOPLE_NATURE[$employe->nature]) . ' ' : ' ') . $employe->name ?>">
+                                                data-name="<?= (!empty($employe->nature) ? trans(getPeopleNatureNameById($employe->nature)) . ' ' : ' ') . $employe->name ?>">
                                             <span class="btnPrice"><i class="fas fa-file-alt"></i></span>
                                         </button>
                                         <button type="button" class="btn btn-sm updateEmploye"
@@ -368,7 +368,7 @@
                 )
             });
 
-            $('.archiveEmploye').on('click', function () {
+            $('body').on('click', '.archiveEmploye', function () {
                 var idEmploye = $(this).data('idemploye');
                 if (confirm('<?= trans('Vous allez supprimer cet employé'); ?>')) {
                     busyApp();
@@ -386,6 +386,25 @@
                         }
                     );
                 }
+            });
+
+            $('body').on('click', '.restaureContrat', function () {
+                var $btn = $(this);
+                var idContrat = $btn.data('restaurecontratid');
+
+                $.post(
+                    '<?= AGAPESHOTES_URL . 'process/ajaxEmployesProcess.php'; ?>',
+                    {
+                        RESTAURECONTRAT: 'OK',
+                        idContratRestaure: idContrat
+                    },
+                    function (data) {
+                        if (data && (data == 'true' || data === true)) {
+                            window.location = window.location.href;
+                            window.location.reload(true);
+                        }
+                    }
+                )
             });
         });
     </script>
