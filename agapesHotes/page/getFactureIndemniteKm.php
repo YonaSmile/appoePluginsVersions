@@ -9,6 +9,7 @@ $params = array(
     '{{typeVehicule}}' => $_POST['typeVehicule'],
     '{{puissance}}' => $_POST['puissance'],
     '{{taux}}' => $_POST['taux'],
+    '{{commentaires}}' => $_POST['commentaires'],
     '{{indemniteKmTable}}' => $_POST['indemniteKmTable'],
     '{{total}}' => $_POST['total']
 );

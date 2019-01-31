@@ -4,7 +4,7 @@
         <?php $MessagIn = new \App\Plugin\MessagIn\MessagIn();
         $MessagIn->setToUser(getUserIdSession());
         $allMessages = $MessagIn->showAll();
-        $ALLUSERS = unserialize(ALLUSERS);
+        $ALLUSERS = getAllUsers();
         $counter = 0;
         $displayList = ''; ?>
         <div class="row">
@@ -108,8 +108,7 @@
 
                 if ($nbMsgCounter == 1) {
                     $msgBadge.remove();
-                }
-                else if ($nbMsgCounter <= 11) {
+                } else if ($nbMsgCounter <= 11) {
                     $msgContainer.find('div.msgContent').removeClass('tooMuchMessage');
                 }
             }

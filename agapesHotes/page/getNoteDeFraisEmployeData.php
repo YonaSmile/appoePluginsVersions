@@ -74,7 +74,7 @@ if ($Site->showBySlug()):
             <div id="indemniteKmContainer">
                 <?php foreach ($allIndemniteKm as $typeVehicule => $indemnitesKm) : ?>
                     <h6>Indemnité kilométrique pour
-                        <em><?= TYPES_VEHICULE[$typeVehicule]; ?></em></h6>
+                        <em><?= TYPES_VEHICULE[$typeVehicule]; ?></em>&nbsp;<span id="indemniteKmVehiculeInfos"></span></h6>
                     <table class="table table-sm table-striped tableNonEffect tableNoteDeFrais">
                         <thead>
                         <tr>
@@ -89,6 +89,7 @@ if ($Site->showBySlug()):
                         <tbody>
                         <?php foreach ($indemnitesKm as $indemniteKm) : ?>
                             <tr class="indemniteKmTR" data-totalindemnitekm="<?= $indemniteKm->montantHt; ?>"
+                                data-commentaires="<?= $indemniteKm->commentaire; ?>"
                                 data-typevehicule="<?= TYPES_VEHICULE[$typeVehicule]; ?>"
                                 data-puissance="<?= $indemniteKm->puissance; ?>" data-taux="<?= $indemniteKm->taux; ?>">
                                 <td style="text-align: center"><?= $indemniteKm->day; ?></td>
@@ -153,7 +154,7 @@ if ($Site->showBySlug()):
                 $.each($('body td[data-name="totalNoteDeFrais"]'), function () {
                     sum += parseReelFloat($(this).text());
                 });
-                $('body #totalNoteDeFraisInfo').html(sum + '€');
+                $('body #totalNoteDeFraisInfo').html(financial(sum) + '€');
             }
 
             function calculateTotalIndemniteKm() {

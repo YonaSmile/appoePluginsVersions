@@ -364,29 +364,17 @@ $View = new \App\Plugin\AgapesHotes\View();
                                     </tr>
                                     <tr>
                                         <?php
-                                        $View->clean();
-                                        $View->setViewName('totalNoteDeFraisDenree');
-                                        $View->setDataColumns(array('site_id', 'mois', 'annee'));
-                                        $View->setDataValues(array($Site->id, date('m'), date('Y')));
-                                        $View->prepareSql();
-                                        $totalNotesDeFraisDenrees = $View->get();
-
-                                        $View->setViewName('totalNoteDeFraisNonAlimentaire');
-                                        $View->prepareSql();
-                                        $totalNotesDeFraisNonAlimentaire = $View->get();
-
-                                        $totalDenreeNotes = !empty($totalNotesDeFraisDenrees->totalHT) ? $totalNotesDeFraisDenrees->totalHT : 0;
-                                        $totalNonAlimentaireNotes = !empty($totalNotesDeFraisNonAlimentaire->totalHT) ? $totalNotesDeFraisNonAlimentaire->totalHT : 0;
+                                        $noteDeFrais = getNoteDeFrais($Site->id, date('Y'), date('m'));
                                         ?>
                                         <th style="width: 200px;">Notes de frais</th>
-                                        <td style="text-align: center !important;"><?= financial($totalDenreeNotes); ?>
+                                        <td style="text-align: center !important;"><?= financial($noteDeFrais['denree']); ?>
                                             €
                                         </td>
-                                        <td style="text-align: center !important;"><?= financial($totalNonAlimentaireNotes); ?>
+                                        <td style="text-align: center !important;"><?= financial($noteDeFrais['nonAlimentaire']); ?>
                                             €
                                         </td>
                                         <td style="text-align: center !important;">
-                                            <?= financial($totalDenreeNotes + $totalNonAlimentaireNotes); ?>
+                                            <?= financial($noteDeFrais['denree'] + $noteDeFrais['nonAlimentaire']); ?>
                                             €
                                         </td>
                                     </tr>
@@ -418,8 +406,8 @@ $View = new \App\Plugin\AgapesHotes\View();
                                     <tr>
                                         <th style="width: 200px;">Consommation réelle</th>
                                         <?php
-                                        $consoReelDenrees = ($totalRefraCommandDenree + $totalInventaireDenreeMonthAgo + $totalDenreeNotes) - $totalInventaireDenree;;
-                                        $consoReelNonAlimentaires = ($totalRefraCommandUniqueEntretien + $totalInventaireUniqueEntretienMonthAgo + $totalNonAlimentaireNotes) - $totalInventaireUniqueEntretien;
+                                        $consoReelDenrees = ($totalRefraCommandDenree + $totalInventaireDenreeMonthAgo + $noteDeFrais['denree']) - $totalInventaireDenree;;
+                                        $consoReelNonAlimentaires = ($totalRefraCommandUniqueEntretien + $totalInventaireUniqueEntretienMonthAgo + $noteDeFrais['nonAlimentaire']) - $totalInventaireUniqueEntretien;
                                         ?>
                                         <td style="text-align: center !important;"><?= financial($consoReelDenrees); ?>€
                                         </td>
@@ -484,15 +472,21 @@ $View = new \App\Plugin\AgapesHotes\View();
                         $siteMeta = getSiteMeta($Site->id, date('Y'), date('m'));
                         $ParticipationTournante = $siteMeta['participationTournante'];
                         $FraisDePersonnels = $siteMeta['fraisDePersonnel'];
-
+                        $indemniteKm = getIndemniteKm($Site->id, date('Y'), date('m'));
                         $fraisDeSiege = financial($facturation * 0.04);
-                        $fraisGenerauxTotal = financial($ParticipationTournante + $fraisDeSiege + $consoReelNonAlimentaires);
+                        $fraisGenerauxTotal = financial($ParticipationTournante + $fraisDeSiege + $consoReelNonAlimentaires + $noteDeFrais['autreAchat'] + $indemniteKm);
                         ?>
                         <div id="collapseFraisGener" class="collapse" aria-labelledby="headingFour"
                              data-parent="#infosAgapes">
-                            <div class="littleContainer"><span
-                                        class="littleTitle colorPrimary">Participation tournant</span>
+                            <div class="littleContainer">
+                                <span class="littleTitle colorPrimary">Participation tournant</span>
                                 <span class="littleText"><?= financial($ParticipationTournante); ?>€</span></div>
+                            <div class="littleContainer">
+                                <span class="littleTitle colorPrimary">Note de frais autre achat</span>
+                                <span class="littleText"><?= financial($noteDeFrais['autreAchat']); ?>€</span></div>
+                            <div class="littleContainer">
+                                <span class="littleTitle colorPrimary">Note de frais indemnité kilométrique</span>
+                                <span class="littleText"><?= financial($indemniteKm); ?>€</span></div>
                             <div class="littleContainer"><span class="littleTitle colorPrimary">Frais de siège</span>
                                 <span class="littleText"><?= $fraisDeSiege; ?>€</span></div>
                             <div class="littleContainer"><span class="littleTitle colorPrimary">Consommation produits d'entretien</span>

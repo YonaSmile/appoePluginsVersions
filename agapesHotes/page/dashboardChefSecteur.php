@@ -38,6 +38,7 @@ if ($Secteur):
         $allSitesData[$site->id]['inventaire'] = getInventaireServentest($allSitesData[$site->id]['inventaireRequest']);
         $allSitesData[$site->id]['inventaireMonthAgo'] = getInventaireServentest($allSitesData[$site->id]['inventaireRequestMonthAgo']);
         $allSitesData[$site->id]['noteDeFrais'] = getNoteDeFrais($site->id, date('Y'));
+        $allSitesData[$site->id]['indemniteKm'] = getIndemniteKm($site->id, date('Y'));
         $allSitesData[$site->id]['siteMeta'] = getSiteMeta($site->id, date('Y'));
         $allSitesData[$site->id]['facturation'] = getFacturation($site->id, date('Y')) + $allSitesData[$site->id]['siteMeta']['fraisFixes'];
         $allSitesData[$site->id]['budget'] = getBudget($site->id, date('Y'));
@@ -59,6 +60,8 @@ if ($Secteur):
         $allSitesData[$site->id]['fraisGeneraux'] = financial(
             $allSitesData[$site->id]['siteMeta']['participationTournante']
             + $allSitesData[$site->id]['fraisDeSiege']
+            + $allSitesData[$site->id]['noteDeFrais']['autreAchat']
+            + $allSitesData[$site->id]['indemniteKm']
             + $allSitesData[$site->id]['consoReel']['nonAlimentaire']
         );
 

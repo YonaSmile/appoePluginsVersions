@@ -443,12 +443,15 @@ class NoteDeFrais
     public function showByDate($countNoteDeFrais = false)
     {
 
+        $addSql = !empty($this->month) ? ' AND month = :month ' : '';
         $sql = 'SELECT * FROM appoe_plugin_agapesHotes_note_frais 
-        WHERE site_id = :siteId AND year = :year AND month = :month AND status = :status';
+        WHERE site_id = :siteId AND year = :year ' . $addSql . ' AND status = :status';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
         $stmt->bindParam(':year', $this->year);
-        $stmt->bindParam(':month', $this->month);
+        if (!empty($this->month)) {
+            $stmt->bindParam(':month', $this->month);
+        }
         $stmt->bindParam(':status', $this->status);
         $stmt->execute();
 

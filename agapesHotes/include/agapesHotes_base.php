@@ -57,7 +57,7 @@ function getAllEmployeHasContratInSite($idSite, $year, $month = '')
     $allContratsDates = array();
     $day = '01';
 
-    if(empty($month)){
+    if (empty($month)) {
         $month = date('m');
     }
 
@@ -71,7 +71,7 @@ function getAllEmployeHasContratInSite($idSite, $year, $month = '')
         $allContratsDates = $EmployeContrat->showAllReelDateEmployesContrats();
 
         return extractFromObjArr($allContratsDates, 'employe_id');
-    } catch (Exception $e){
+    } catch (Exception $e) {
         error_log($e->getMessage());
     }
     return $allContratsDates;
@@ -366,36 +366,66 @@ function getSiteMeta($siteId, $year, $month = '')
 /**
  * @param $siteId
  * @param $year
- * @param string $month
+ * @param $month
  * @return array
  */
 function getNoteDeFrais($siteId, $year, $month = '')
 {
-    $noteDeFrais = array(
+
+    $noteDeFraisArr = array(
         'denree' => 0,
-        'nonAlimentaire' => 0
+        'nonAlimentaire' => 0,
+        'autreAchat' => 0
     );
 
-    $View = new \App\Plugin\AgapesHotes\View();
-
-    $View->setViewName('totalNoteDeFraisDenree');
+    $NoteDeFrais = new \App\Plugin\AgapesHotes\NoteDeFrais();
+    $NoteDeFrais->setSiteId($siteId);
+    $NoteDeFrais->setYear($year);
     if (!empty($month)) {
-        $View->setDataColumns(array('site_id', 'mois', 'annee'));
-        $View->setDataValues(array($siteId, $month, $year));
-    } else {
-        $View->setDataColumns(array('site_id', 'annee'));
-        $View->setDataValues(array($siteId, $year));
+        $NoteDeFrais->setMonth($month);
     }
-    $View->prepareSql();
-    $totalDenrees = $View->get();
-    $noteDeFrais['denree'] = $totalDenrees ? $totalDenrees->totalHT : 0;
+    $allNotesFrais = $NoteDeFrais->showByDate();
 
-    $View->setViewName('totalNoteDeFraisNonAlimentaire');
-    $View->prepareSql();
-    $totalNonAlimentaire = $View->get();
-    $noteDeFrais['nonAlimentaire'] = $totalNonAlimentaire ? $totalNonAlimentaire->totalHT : 0;
+    if ($allNotesFrais && !isArrayEmpty($allNotesFrais)) {
+        foreach ($allNotesFrais as $noteDeFrais) {
+            if ($noteDeFrais->type == 1) {
+                $noteDeFraisArr['denree'] += $noteDeFrais->montantTtc;
+            }
+            if ($noteDeFrais->type == 2) {
+                $noteDeFraisArr['nonAlimentaire'] += $noteDeFrais->montantTtc;
+            }
+            if ($noteDeFrais->type == 3) {
+                $noteDeFraisArr['autreAchat'] += $noteDeFrais->montantTtc;
+            }
+        }
+    }
+    return $noteDeFraisArr;
+}
 
-    return $noteDeFrais;
+/**
+ * @param $siteId
+ * @param $year
+ * @param $month
+ * @return array
+ */
+function getIndemniteKm($siteId, $year, $month = '')
+{
+
+    $indemniteKm = 0;
+    $NoteIk = new \App\Plugin\AgapesHotes\NoteIk();
+    $NoteIk->setSiteId($siteId);
+    $NoteIk->setYear($year);
+    if (!empty($month)) {
+        $NoteIk->setMonth($month);
+    }
+    $allNotesFrais = $NoteIk->showByDate();
+
+    if ($allNotesFrais && !isArrayEmpty($allNotesFrais)) {
+        foreach ($allNotesFrais as $noteDeFrais) {
+            $indemniteKm += $noteDeFrais->montantHt;
+        }
+    }
+    return $indemniteKm;
 }
 
 /**

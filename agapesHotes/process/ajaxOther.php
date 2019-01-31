@@ -20,7 +20,7 @@ if (checkAjaxRequest()) {
             if (!empty($_POST['siteId']) && !empty($_POST['fournisseur'])
                 && !empty($_POST['date']) && !empty($_POST['total'])) {
 
-                $_POST['total'] = $_POST['total'] * 0.1;
+                $_POST['total'] = $_POST['total'] * 1.1;
                 $Achat = new \App\Plugin\AgapesHotes\Achat();
                 $Achat->feed($_POST);
 

@@ -213,11 +213,11 @@ endif; ?>
                                         <strong>Année</strong> <?= $start->format('Y'); ?>
                                     </p>
                                     <p class="my-1">
-                                        <strong>Total Notes de Frais TTC</strong>
+                                        <strong>Notes de Frais TTC</strong>
                                         &nbsp;<span id="totalNoteDeFraisInfo"></span>
                                     </p>
                                     <p id="totalNoteDeFraisCheckedContainer" class="my-1" style="display: none;">
-                                        <strong>Total sélectionnés TTC</strong>
+                                        <strong>Sélectionnés TTC</strong>
                                         &nbsp;<span id="totalNoteDeFraisCheckedInfo"></span>
                                     </p>
                                     <hr class="mx-5">
@@ -305,6 +305,7 @@ endif; ?>
                 $('.removeFromPrint', $dataTable).remove();
 
                 var html = '';
+                var commentaires = '';
                 var puissance = '', typeVehicule = '', taux = '';
 
                 $.each($dataTable, function () {
@@ -312,6 +313,7 @@ endif; ?>
                     typeVehicule = $(this).data('typevehicule');
                     puissance = $(this).data('puissance');
                     taux = $(this).data('taux');
+                    commentaires += $(this).data('commentaires').length ? $(this).data('commentaires') + '<br>' : '';
                 });
 
                 var form = $('<form action="' + url + '" method="post" target="_blank">' +
@@ -321,6 +323,7 @@ endif; ?>
                     '<input type="text" name="typeVehicule" value="' + typeVehicule + '" />' +
                     '<input type="text" name="puissance" value="' + puissance + '" />' +
                     '<input type="text" name="taux" value="' + taux + '" />' +
+                    '<input type="text" name="commentaires" value="' + commentaires + '" />' +
                     '<input type="text" name="indemniteKmTable" value="' + escapeHtml(html) + '" />' +
                     '<input type="text" name="total" value="' + total + '" />' +
                     '</form>');
