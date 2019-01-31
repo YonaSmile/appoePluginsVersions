@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Plugin\AgapesHotes;
-class NoteDeFrais
+class NoteIk
 {
 
     private $id;
@@ -10,15 +10,15 @@ class NoteDeFrais
     private $day;
     private $month;
     private $year;
-    private $type;
-    private $code;
-    private $nom;
-    private $motif;
+    private $typeVehicule;
+    private $puissance;
+    private $taux;
+    private $objetTrajet = null;
+    private $trajet;
+    private $km;
     private $affectation;
     private $commentaire = null;
     private $montantHt;
-    private $tva;
-    private $montantTtc;
     private $status = 1;
     private $userId;
     private $createdAt;
@@ -81,11 +81,11 @@ class NoteDeFrais
     }
 
     /**
-     * @param mixed $employe_id
+     * @param mixed $employeId
      */
-    public function setEmployeId($employe_id)
+    public function setEmployeId($employeId)
     {
-        $this->employeId = $employe_id;
+        $this->employeId = $employeId;
     }
 
     /**
@@ -139,65 +139,97 @@ class NoteDeFrais
     /**
      * @return mixed
      */
-    public function getType()
+    public function getTypeVehicule()
     {
-        return $this->type;
+        return $this->typeVehicule;
     }
 
     /**
-     * @param mixed $type
+     * @param mixed $typeVehicule
      */
-    public function setType($type)
+    public function setTypeVehicule($typeVehicule)
     {
-        $this->type = $type;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getCode()
-    {
-        return $this->code;
-    }
-
-    /**
-     * @param mixed $code
-     */
-    public function setCode($code)
-    {
-        $this->code = $code;
+        $this->typeVehicule = $typeVehicule;
     }
 
     /**
      * @return mixed
      */
-    public function getNom()
+    public function getPuissance()
     {
-        return $this->nom;
+        return $this->puissance;
     }
 
     /**
-     * @param mixed $nom
+     * @param mixed $puissance
      */
-    public function setNom($nom)
+    public function setPuissance($puissance)
     {
-        $this->nom = $nom;
+        $this->puissance = $puissance;
     }
 
     /**
      * @return mixed
      */
-    public function getMotif()
+    public function getTaux()
     {
-        return $this->motif;
+        return $this->taux;
     }
 
     /**
-     * @param mixed $motif
+     * @param mixed $taux
      */
-    public function setMotif($motif)
+    public function setTaux($taux)
     {
-        $this->motif = $motif;
+        $this->taux = $taux;
+    }
+
+    /**
+     * @return null
+     */
+    public function getObjetTrajet()
+    {
+        return $this->objetTrajet;
+    }
+
+    /**
+     * @param null $objetTrajet
+     */
+    public function setObjetTrajet($objetTrajet)
+    {
+        $this->objetTrajet = $objetTrajet;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTrajet()
+    {
+        return $this->trajet;
+    }
+
+    /**
+     * @param mixed $trajet
+     */
+    public function setTrajet($trajet)
+    {
+        $this->trajet = $trajet;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getKm()
+    {
+        return $this->km;
+    }
+
+    /**
+     * @param mixed $km
+     */
+    public function setKm($km)
+    {
+        $this->km = $km;
     }
 
     /**
@@ -246,38 +278,6 @@ class NoteDeFrais
     public function setMontantHt($montantHt)
     {
         $this->montantHt = $montantHt;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTva()
-    {
-        return $this->tva;
-    }
-
-    /**
-     * @param mixed $tva
-     */
-    public function setTva($tva)
-    {
-        $this->tva = $tva;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getMontantTtc()
-    {
-        return $this->montantTtc;
-    }
-
-    /**
-     * @param mixed $montantTtc
-     */
-    public function setMontantTtc($montantTtc)
-    {
-        $this->montantTtc = $montantTtc;
     }
 
     /**
@@ -344,10 +344,10 @@ class NoteDeFrais
         $this->updated_at = $updated_at;
     }
 
+
     public function createTable()
     {
-
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapesHotes_note_frais` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_agapesHotes_note_ik` (
   				`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   				PRIMARY KEY (`id`),
   				`site_id` int(11) UNSIGNED NOT NULL,
@@ -355,16 +355,16 @@ class NoteDeFrais
                 `day` varchar(2) NOT NULL,
                 `month` varchar(2) NOT NULL,
                 `year` varchar(4) NOT NULL,
-                `type` TINYINT(4) UNSIGNED NOT NULL,
-                `code` varchar(10) NOT NULL,
-                `nom` varchar(255) NOT NULL,
-                `motif` varchar(255) NOT NULL,
+                `type_vehicule` TINYINT(4) NOT NULL,
+                `puissance` varchar(10) NOT NULL,
+                `taux` decimal(5,3) UNSIGNED NOT NULL,
+                `objet_du_trajet` varchar(255) NULL DEFAULT NULL,
+                `trajet` varchar(255) NOT NULL,
+                `km` decimal(5,1) UNSIGNED NOT NULL,
                 `affectation` int(11) UNSIGNED NOT NULL,
                 `commentaire` varchar(255) NULL,
                 `montantHt` decimal(7,2) UNSIGNED NOT NULL,
-                `tva` decimal(4,2) UNSIGNED NOT NULL,
-                `montantTtc` decimal(7,2) UNSIGNED NOT NULL,
-                UNIQUE (`site_id`, `employe_id`, `type`, `nom`, `day`, `month`, `year`),
+                UNIQUE (`site_id`, `employe_id`, `day`, `month`, `year`, `puissance`, `trajet`),
                 `status` tinyint(4) UNSIGNED NOT NULL DEFAULT 1,
                 `userId` int(11) UNSIGNED NOT NULL,
                 `created_at` date NOT NULL,
@@ -387,7 +387,7 @@ class NoteDeFrais
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_note_frais WHERE id = :id';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_note_ik WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -419,8 +419,7 @@ class NoteDeFrais
     public function showAllBySite($countNoteDeFrais = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_note_frais 
-        WHERE site_id = :siteId AND status = :status ORDER BY created_at ASC';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_note_ik WHERE site_id = :siteId AND status = :status ORDER BY created_at ASC';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
@@ -443,7 +442,7 @@ class NoteDeFrais
     public function showByDate($countNoteDeFrais = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_note_frais 
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_note_ik 
         WHERE site_id = :siteId AND year = :year AND month = :month AND status = :status';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
@@ -468,7 +467,7 @@ class NoteDeFrais
     public function showByDateAndEmploye($countNoteDeFrais = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_note_frais 
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_note_ik 
         WHERE site_id = :siteId AND employe_id = :employeId AND year = :year AND month = :month AND status = :status';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
@@ -494,7 +493,7 @@ class NoteDeFrais
     public function showAll($countNoteDeFrais = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_note_frais 
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_note_ik 
         WHERE status = :status ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':status', $this->status);
@@ -515,23 +514,23 @@ class NoteDeFrais
     public function save()
     {
 
-        $sql = 'INSERT INTO appoe_plugin_agapesHotes_note_frais (site_id, employe_id, day, month, year, type, code, nom, motif, affectation, commentaire, montantHt, tva, montantTtc, status, userId, created_at) 
-                VALUES (:siteId, :employe_id, :day, :month, :year, :type, :code, :nom, :motif, :affectation, :commentaire, :montantHt, :tva, :montantTtc, :status, :userId, CURDATE())';
+        $sql = 'INSERT INTO appoe_plugin_agapesHotes_note_ik (site_id, employe_id, day, month, year, type_vehicule, puissance, taux, objet_du_trajet, trajet, km, affectation, commentaire, montantHt, status, userId, created_at) 
+                VALUES (:siteId, :employe_id, :day, :month, :year, :type_vehicule, :puissance, :taux, :objet_du_trajet, :trajet, :km, :affectation, :commentaire, :montantHt, :status, :userId, CURDATE())';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
         $stmt->bindParam(':employe_id', $this->employeId);
         $stmt->bindParam(':day', $this->day);
         $stmt->bindParam(':month', $this->month);
         $stmt->bindParam(':year', $this->year);
-        $stmt->bindParam(':type', $this->type);
-        $stmt->bindParam(':code', $this->code);
-        $stmt->bindParam(':nom', $this->nom);
-        $stmt->bindParam(':motif', $this->motif);
+        $stmt->bindParam(':type_vehicule', $this->typeVehicule);
+        $stmt->bindParam(':puissance', $this->puissance);
+        $stmt->bindParam(':taux', $this->taux);
+        $stmt->bindParam(':objet_du_trajet', $this->objetTrajet);
+        $stmt->bindParam(':trajet', $this->trajet);
+        $stmt->bindParam(':km', $this->km);
         $stmt->bindParam(':affectation', $this->affectation);
         $stmt->bindParam(':commentaire', $this->commentaire);
         $stmt->bindParam(':montantHt', $this->montantHt);
-        $stmt->bindParam(':tva', $this->tva);
-        $stmt->bindParam(':montantTtc', $this->montantTtc);
         $stmt->bindParam(':status', $this->status);
         $stmt->bindParam(':userId', $this->userId);
         $stmt->execute();
@@ -551,20 +550,21 @@ class NoteDeFrais
      */
     public function update()
     {
-        $sql = 'UPDATE appoe_plugin_agapesHotes_note_frais 
-        SET day = :day, type = :type, code = :code, nom = :nom, motif = :motif, affectation = :affectation, commentaire = :commentaire, montantHt = :montantHt, tva = :tva, montantTtc = :montantTtc, status = :status, userId = :userId WHERE id = :id';
+        $sql = 'UPDATE appoe_plugin_agapesHotes_note_ik 
+        SET day = :day, type_vehicule = :type_vehicule, puissance = :puissance, taux = :taux, objet_du_trajet = :objet_du_trajet, trajet = :trajet, km = :km, affectation = :affectation, commentaire = :commentaire, montantHt = :montantHt, status = :status, userId = :userId 
+        WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':day', $this->day);
-        $stmt->bindParam(':type', $this->type);
-        $stmt->bindParam(':code', $this->code);
-        $stmt->bindParam(':nom', $this->nom);
-        $stmt->bindParam(':motif', $this->motif);
+        $stmt->bindParam(':type_vehicule', $this->typeVehicule);
+        $stmt->bindParam(':puissance', $this->puissance);
+        $stmt->bindParam(':taux', $this->taux);
+        $stmt->bindParam(':objet_du_trajet', $this->objetTrajet);
+        $stmt->bindParam(':trajet', $this->trajet);
+        $stmt->bindParam(':km', $this->km);
         $stmt->bindParam(':affectation', $this->affectation);
         $stmt->bindParam(':commentaire', $this->commentaire);
         $stmt->bindParam(':montantHt', $this->montantHt);
-        $stmt->bindParam(':tva', $this->tva);
-        $stmt->bindParam(':montantTtc', $this->montantTtc);
         $stmt->bindParam(':status', $this->status);
         $stmt->bindParam(':userId', $this->userId);
         $stmt->bindParam(':id', $this->id);
@@ -585,7 +585,7 @@ class NoteDeFrais
     public function delete()
     {
 
-        $sql = 'DELETE FROM appoe_plugin_agapesHotes_note_frais WHERE id = :id';
+        $sql = 'DELETE FROM appoe_plugin_agapesHotes_note_ik WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -607,16 +607,16 @@ class NoteDeFrais
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_note_frais 
-        WHERE site_id = :siteId AND employe_id = :employe_id AND type = :type AND nom = :nom AND day = :day AND month = :month AND year = :year';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_note_ik 
+        WHERE site_id = :siteId AND employe_id = :employe_id AND day = :day AND month = :month AND year = :year AND puissance = :puissance AND trajet = :trajet';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
         $stmt->bindParam(':employe_id', $this->employeId);
-        $stmt->bindParam(':type', $this->type);
-        $stmt->bindParam(':nom', $this->nom);
         $stmt->bindParam(':day', $this->day);
         $stmt->bindParam(':month', $this->month);
         $stmt->bindParam(':year', $this->year);
+        $stmt->bindParam(':puissance', $this->puissance);
+        $stmt->bindParam(':trajet', $this->trajet);
         $stmt->execute();
 
         $count = $stmt->rowCount();

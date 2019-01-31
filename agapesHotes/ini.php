@@ -21,9 +21,64 @@ const PLUGIN_TABLES = array(
     'appoe_plugin_agapesHotes_planning',
     'appoe_plugin_agapesHotes_planning_plus',
     'appoe_plugin_agapesHotes_note_frais',
+    'appoe_plugin_agapesHotes_note_ik',
     'appoe_plugin_agapesHotes_budget',
     'appoe_plugin_agapesHotes_site_meta',
     'appoe_plugin_agapesHotes_achat'
+);
+
+const TYPES_VEHICULE = array(
+    1 => 'Voiture',
+    2 => 'Moto',
+    3 => 'Cyclomoteur'
+);
+
+const PUISSANCE_VEHICULE = array(
+    array(
+        'type' => 1,
+        'puissance' => '3CV et mois',
+        'taux' => '0.286',
+    ),
+    array(
+        'type' => 1,
+        'puissance' => '4CV',
+        'taux' => '0.332',
+    ),
+    array(
+        'type' => 1,
+        'puissance' => '5CV',
+        'taux' => '0.364',
+    ),
+    array(
+        'type' => 1,
+        'puissance' => '6CV',
+        'taux' => '0.382',
+    ),
+    array(
+        'type' => 1,
+        'puissance' => '7CV',
+        'taux' => '0.401',
+    ),
+    array(
+        'type' => 2,
+        'puissance' => '1-2CV',
+        'taux' => '0.211',
+    ),
+    array(
+        'type' => 2,
+        'puissance' => '3-4-5CV',
+        'taux' => '0.235',
+    ),
+    array(
+        'type' => 2,
+        'puissance' => '6-7CV',
+        'taux' => '0.292',
+    ),
+    array(
+        'type' => 3,
+        'puissance' => 'Toute puissance',
+        'taux' => '0.146',
+    ),
 );
 
 const TYPES_NOTE_FRAIS = array(

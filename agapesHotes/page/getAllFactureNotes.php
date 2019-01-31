@@ -8,6 +8,7 @@ $params = array(
     '{{date}}' => $_POST['date'],
     '{{commentaires}}' => $_POST['commentaires'],
     '{{notesDeFraisTable}}' => $_POST['notesDeFraisTable'],
-    '{{totalTTC}}' => $_POST['totalTTC']
+    '{{totalTTC}}' => $_POST['totalTTC'],
+    '{{totalIndemniteKm}}' => $_POST['totalIndemniteKm']
 );
-getPdf('noteDeFrais', $params, 'P', 'NoteDeFrais-' . slugify($_POST['employeName']) . '-' . slugify($_POST['date']));
+getPdf('allNotes', $params, 'P', 'TousLesNotesDeFrais-' . slugify($_POST['employeName']) . '-' . slugify($_POST['date']));
