@@ -176,9 +176,7 @@ endif; ?>
                                         <?= trans('Fermer'); ?></button>
                                 </div>
                             </form>
-                            <div id="noteDeFraisEmployeData">
-                                <i class="fas fa-circle-notch fa-spin"></i> Chargement
-                            </div>
+                            <div id="noteDeFraisEmployeData"></div>
                         </div>
                         <div class="col-12 col-lg-3 my-2 border-left">
                             <div>
@@ -246,7 +244,7 @@ endif; ?>
             var employeName = '';
 
             function loadNoteDeFraisEmployeData() {
-                $('#noteDeFraisEmployeData').load('<?= AGAPESHOTES_URL . 'page/getNoteDeFraisEmployeData.php'; ?>', {
+                $('#noteDeFraisEmployeData').html(loaderHtml() + ' Chargement...').load('<?= AGAPESHOTES_URL . 'page/getNoteDeFraisEmployeData.php'; ?>', {
                     site: '<?= $Site->getSlug(); ?>',
                     employeId: employeId,
                     annee: '<?= $start->format('Y'); ?>',
@@ -471,6 +469,8 @@ endif; ?>
                 $('input[name="employeId"]').val(employeId);
                 $('#modalGestionNotesDeFrais').data('employeid', employeId);
                 $('#modalGestionNotesDeFrais #modalNoteDeFraisTitle').html('Gestion des Notes de frais de ' + employeName);
+                $('#addNoteDeFraisForm').hide();
+                $('#addIndemniteKMForm').hide();
                 loadNoteDeFraisEmployeData();
             });
 

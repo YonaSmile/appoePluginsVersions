@@ -119,15 +119,15 @@ if ($Site->showBySlug()):
 
             function displayCountPrintData() {
                 var countCheckedData = countPrintData();
-                $('.deleteNoteDeFrais').hide();
+                $('body .deleteNoteDeFrais').hide();
 
                 if (countCheckedData === 0) {
                     countCheckedData = 'les notes de frais';
                 } else {
                     countCheckedData = countCheckedData + ' note' + (countCheckedData > 1 ? 's' : '') + ' de frais';
-                    $('.deleteNoteDeFrais').show();
+                    $('body .deleteNoteDeFrais').show();
                 }
-                $('.countPrintInfo').html(countCheckedData);
+                $('body .countPrintInfo').html(countCheckedData);
                 calculeTotalSelectedNoteDeFrais();
             }
 
@@ -170,6 +170,7 @@ if ($Site->showBySlug()):
             }
 
             calculeTotalNoteDeFrais();
+            displayCountPrintData();
             calculateTotalIndemniteKm();
 
             $('input[name="checkAllNotes"]').on('change', function () {

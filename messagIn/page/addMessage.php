@@ -23,11 +23,10 @@
                 </div>
 
                 <div class="col-12 col-lg-6">
-                    <?php global $ALLUSERS ?>
                     <div class="form-group">
                         <label for="toUser"><?= trans('destiné à'); ?></label>
                         <select class="form-control custom-select" id="toUser" name="toUser" required>
-                            <?php foreach ($ALLUSERS as $userId => $user): ?>
+                            <?php foreach (getAllUsers() as $userId => $user): ?>
                                 <?php if (getUserIdSession() != $user->id): ?>
                                     <option value="<?= $user->id; ?>"><?= $user->nom . ' ' . $user->prenom; ?></option>
                                 <?php endif; ?>

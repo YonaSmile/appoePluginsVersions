@@ -7,8 +7,7 @@ $mehoubarim = mehoubarim_connectedUsers();
 if ($mehoubarim && is_array($mehoubarim)): ?>
     <li class="pt-3 pl-2 pb-0 pr-2" style="font-size: 0.8em;"><strong><?= trans('Utilisateurs actifs'); ?></strong></li>
     <?php foreach ($mehoubarim as $connectedUserId => $connectedUserData): ?>
-        <?php
-        if (!isTechnicien(getUserRoleId($connectedUserId))): ?>
+        <?php if (getUserIdSession() != $connectedUserId): ?>
             <li class="list-inline-item p-0 pr-2 mr-0" style="font-size: 0.7em;">
                 <?php if (isTechnicien(getUserRoleId()) && $connectedUserData['status'] != 'Déconnecté'): ?>
                     <span class="logoutUser float-left linkBtn" data-userid="<?= $connectedUserId; ?>">
