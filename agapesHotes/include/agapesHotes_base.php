@@ -382,6 +382,7 @@ function getNoteDeFrais($siteId, $year, $month = '')
     $NoteDeFrais->setSiteId($siteId);
     $NoteDeFrais->setYear($year);
     if (!empty($month)) {
+        $month = ($month < 10 && strlen($month) == 1) ? '0' . $month : $month;
         $NoteDeFrais->setMonth($month);
     }
     $allNotesFrais = $NoteDeFrais->showByDate();
