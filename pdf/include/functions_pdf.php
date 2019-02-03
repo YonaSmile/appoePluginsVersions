@@ -1,6 +1,11 @@
 <?php
-require_once($_SERVER['DOCUMENT_ROOT'] . '/app/plugin/pdf/ini.php');
-
+require_once($_SERVER['DOCUMENT_ROOT'] . '/app/main.php');
+/**
+ * @param $templateSlug
+ * @param $params
+ * @param string $orientation
+ * @param string $pdfName
+ */
 function getPdf($templateSlug, $params, $orientation = 'P', $pdfName = 'appoe')
 {
     try {
@@ -14,6 +19,11 @@ function getPdf($templateSlug, $params, $orientation = 'P', $pdfName = 'appoe')
     }
 }
 
+/**
+ * @param $templateSlug
+ * @param $params
+ * @return false|string
+ */
 function getPdfContent($templateSlug, $params)
 {
     ob_start();
@@ -21,6 +31,10 @@ function getPdfContent($templateSlug, $params)
     return ob_get_clean();
 }
 
+/**
+ * @param $templateSlug
+ * @param $params
+ */
 function getPdfTemplate($templateSlug, $params)
 {
     if (defined('PDF_TEMPLATE_PATH')) {
@@ -40,12 +54,18 @@ function getPdfTemplate($templateSlug, $params)
             echo $templateContent;
 
         } else {
-            echo 'Le fichier désiré n\'existe pas.';
+            echo 'Le template n\'existe pas.';
         }
+    } else {
+        echo 'Aucun emplacement des templates pdf, n\'est défini.';
     }
 }
 
-function generatePdfTemplateTableData(array $params)
+/**
+ * @param array $params
+ * @return string
+ */
+function generateTableFromData(array $params)
 {
 
     $content = '';

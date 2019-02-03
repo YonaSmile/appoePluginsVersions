@@ -264,10 +264,10 @@ endif; ?>
 
                 if (countPrintData() === 0) {
                     $choisenTr = $('body #noteDeFraisTablesContainer table tr.noteDeFraisTR');
-                    total = financial($('body #totalNoteDeFraisInfo').text());
+                    total = financial(parseReelFloat($('body #totalNoteDeFraisInfo').text()));
                 } else {
                     $choisenTr = $('body input[type="checkbox"][name="checkNoteDeFrais"]:checked').closest('tr.noteDeFraisTR');
-                    total = financial($('body #totalNoteDeFraisCheckedInfo').text());
+                    total = financial(parseReelFloat($('body #totalNoteDeFraisCheckedInfo').text()));
                 }
 
                 var $dataTable = $choisenTr.clone();
@@ -297,7 +297,7 @@ endif; ?>
                 var url = '<?= AGAPESHOTES_URL; ?>page/getFactureIndemniteKm.php';
 
                 var $choisenTr = $('body #noteDeFraisTablesContainer table tr.indemniteKmTR');
-                var total = financial($('body #totalIndemniteCheckedInfo').text());
+                var total = financial(parseReelFloat($('body #totalIndemniteCheckedInfo').text()));
 
                 var $dataTable = $choisenTr.clone();
                 $('.removeFromPrint', $dataTable).remove();
@@ -332,16 +332,15 @@ endif; ?>
             function printAll() {
 
                 var url = '<?= AGAPESHOTES_URL; ?>page/getAllFactureNotes.php';
-
                 var $choisenTr;
                 var total;
 
                 if (countPrintData() === 0) {
                     $choisenTr = $('body #noteDeFraisTablesContainer table tr.noteDeFraisTR');
-                    total = financial($('body #totalNoteDeFraisInfo').text());
+                    total = financial(parseReelFloat($('body #totalNoteDeFraisInfo').text()));
                 } else {
                     $choisenTr = $('body input[type="checkbox"][name="checkNoteDeFrais"]:checked').closest('tr.noteDeFraisTR');
-                    total = financial($('body #totalNoteDeFraisCheckedInfo').text());
+                    total = financial(parseReelFloat($('body #totalNoteDeFraisCheckedInfo').text()));
                 }
 
                 var $dataTable = $choisenTr.clone();
@@ -354,17 +353,17 @@ endif; ?>
                     commentaires += $(this).data('commentaires').length ? $(this).data('commentaires') + '<br>' : '';
                 });
 
-                var form = $('<form action="' + url + '" method="post" target="_blank">' +
-                    '<input type="text" name="employeName" value="' + employeName + '" />' +
-                    '<input type="text" name="siteName" value="' + $('body #siteName').text() + '" />' +
-                    '<input type="text" name="date" value="' + '<?= $start->format('Y') . ' ' . ucfirst(strftime("%B", strtotime($start->format('Y-m-d')))); ?>' + '" />' +
-                    '<input type="text" name="commentaires" value="' + commentaires + '" />' +
-                    '<input type="text" name="notesDeFraisTable" value="' + escapeHtml(html) + '" />' +
-                    '<input type="text" name="totalTTC" value="' + total + '" />' +
-                    '<input type="text" name="totalIndemniteKm" value="' + financial($('body #totalIndemniteCheckedInfo').text()) + '" />' +
-                    '</form>');
-                $('body').append(form);
-                form.submit();
+                var data = {
+                    totalTTC: total,
+                    totalIndemniteKm: financial(parseReelFloat($('body #totalIndemniteCheckedInfo').text())),
+                    notesDeFraisTable: escapeHtml(html),
+                    commentaires: commentaires,
+                    date: '<?= $start->format('Y') . ' ' . ucfirst(strftime("%B", strtotime($start->format('Y-m-d')))); ?>',
+                    siteName: $('body #siteName').text(),
+                    employeName: employeName
+                };
+
+                pdfSend(url, data);
             }
 
             $('.addNoteFraisBtn').on('click', function () {
