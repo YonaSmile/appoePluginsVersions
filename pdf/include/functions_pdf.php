@@ -45,9 +45,13 @@ function getPdfTemplate($templateSlug, $params)
 
             $templateContent = getFileContent($file, false);
 
-            if ($params && !isArrayEmpty($params)) {
-                foreach ($params as $paramKey => $paramVal) {
-                    $templateContent = str_replace($paramKey, $paramVal, $templateContent);
+            if ($params && preg_match_all("/{{(.*?)}}/", $templateContent, $match)) {
+
+                foreach ($match[1] as $i => $zone) {
+
+                    //Set zones
+                    $templateContent = str_replace($match[0][$i], sprintf('%s', !empty($params[$zone]) ? $params[$zone] : ''), $templateContent);
+
                 }
             }
 

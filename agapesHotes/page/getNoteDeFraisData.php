@@ -242,6 +242,7 @@ endif; ?>
 
             var employeId = '';
             var employeName = '';
+            var dateNoteDeFrais = '<?= $start->format('Y') . ' ' . ucfirst(strftime("%B", strtotime($start->format('Y-m-d')))); ?>';
 
             function loadNoteDeFraisEmployeData() {
                 $('#noteDeFraisEmployeData').html(loaderHtml() + ' Chargement...').load('<?= AGAPESHOTES_URL . 'page/getNoteDeFraisEmployeData.php'; ?>', {
@@ -258,7 +259,6 @@ endif; ?>
 
             function printNoteDeFrais() {
 
-                var url = '<?= AGAPESHOTES_URL; ?>page/getFactureNoteDeFrais.php';
                 var $choisenTr;
                 var total;
 
@@ -280,21 +280,21 @@ endif; ?>
                     commentaires += $(this).data('commentaires').length ? $(this).data('commentaires') + '<br>' : '';
                 });
 
-                var form = $('<form action="' + url + '" method="post" target="_blank">' +
-                    '<input type="text" name="employeName" value="' + employeName + '" />' +
-                    '<input type="text" name="siteName" value="' + $('body #siteName').text() + '" />' +
-                    '<input type="text" name="date" value="' + '<?= $start->format('Y') . ' ' . ucfirst(strftime("%B", strtotime($start->format('Y-m-d')))); ?>' + '" />' +
-                    '<input type="text" name="commentaires" value="' + commentaires + '" />' +
-                    '<input type="text" name="notesDeFraisTable" value="' + escapeHtml(html) + '" />' +
-                    '<input type="text" name="totalTTC" value="' + total + '" />' +
-                    '</form>');
-                $('body').append(form);
-                form.submit();
+                var data = {
+                    notesDeFraisTable: escapeHtml(html),
+                    totalTTC: total,
+                    commentaires: commentaires,
+                    date: dateNoteDeFrais,
+                    siteName: $('body #siteName').text(),
+                    employeName: employeName,
+                    pdfTemplateFilename: 'noteDeFrais',
+                    pdfOutputName: 'NoteDeFrais-' + convertToSlug(employeName) + '-' + convertToSlug(dateNoteDeFrais)
+                };
+
+                pdfSend(data);
             }
 
             function printIndemniteKm() {
-
-                var url = '<?= AGAPESHOTES_URL; ?>page/getFactureIndemniteKm.php';
 
                 var $choisenTr = $('body #noteDeFraisTablesContainer table tr.indemniteKmTR');
                 var total = financial(parseReelFloat($('body #totalIndemniteCheckedInfo').text()));
@@ -314,24 +314,25 @@ endif; ?>
                     commentaires += $(this).data('commentaires').length ? $(this).data('commentaires') + '<br>' : '';
                 });
 
-                var form = $('<form action="' + url + '" method="post" target="_blank">' +
-                    '<input type="text" name="employeName" value="' + employeName + '" />' +
-                    '<input type="text" name="siteName" value="' + $('body #siteName').text() + '" />' +
-                    '<input type="text" name="date" value="' + '<?= $start->format('Y') . ' ' . ucfirst(strftime("%B", strtotime($start->format('Y-m-d')))); ?>' + '" />' +
-                    '<input type="text" name="typeVehicule" value="' + typeVehicule + '" />' +
-                    '<input type="text" name="puissance" value="' + puissance + '" />' +
-                    '<input type="text" name="taux" value="' + taux + '" />' +
-                    '<input type="text" name="commentaires" value="' + commentaires + '" />' +
-                    '<input type="text" name="indemniteKmTable" value="' + escapeHtml(html) + '" />' +
-                    '<input type="text" name="total" value="' + total + '" />' +
-                    '</form>');
-                $('body').append(form);
-                form.submit();
+                var data = {
+                    typeVehicule: typeVehicule,
+                    puissance: puissance,
+                    taux: taux,
+                    commentaires: commentaires,
+                    indemniteKmTable:  escapeHtml(html),
+                    total:  total,
+                    date: dateNoteDeFrais,
+                    siteName: $('body #siteName').text(),
+                    employeName: employeName,
+                    pdfTemplateFilename: 'indemniteKilometrique',
+                    pdfOutputName: 'indemniteKilometrique-' + convertToSlug(employeName) + '-' + convertToSlug(dateNoteDeFrais)
+                };
+
+                pdfSend(data);
             }
 
             function printAll() {
 
-                var url = '<?= AGAPESHOTES_URL; ?>page/getAllFactureNotes.php';
                 var $choisenTr;
                 var total;
 
@@ -358,12 +359,14 @@ endif; ?>
                     totalIndemniteKm: financial(parseReelFloat($('body #totalIndemniteCheckedInfo').text())),
                     notesDeFraisTable: escapeHtml(html),
                     commentaires: commentaires,
-                    date: '<?= $start->format('Y') . ' ' . ucfirst(strftime("%B", strtotime($start->format('Y-m-d')))); ?>',
+                    date: dateNoteDeFrais,
                     siteName: $('body #siteName').text(),
-                    employeName: employeName
+                    employeName: employeName,
+                    pdfTemplateFilename: 'allNotes',
+                    pdfOutputName: 'TousLesNotesDeFrais-' + convertToSlug(employeName) + '-' + convertToSlug(dateNoteDeFrais)
                 };
 
-                pdfSend(url, data);
+                pdfSend(data);
             }
 
             $('.addNoteFraisBtn').on('click', function () {
@@ -553,21 +556,18 @@ endif; ?>
             $('body').on('click', '.deleteIndemniteKilometrique', function (event) {
                 event.preventDefault();
 
-                if (confirm('Vous allez supprimer cette indemnité kilométrique')) {
-
-                    $.post(
-                        '<?= AGAPESHOTES_URL . 'process/ajaxProcess.php'; ?>',
-                        {
-                            DELETEINDEMNITEKM: 'OK',
-                            idIndemniteKm: $(this).data('idindemnitekm')
-                        },
-                        function (data) {
-                            if (data) {
-                                loadNoteDeFraisEmployeData();
-                            }
+                $.post(
+                    '<?= AGAPESHOTES_URL . 'process/ajaxProcess.php'; ?>',
+                    {
+                        DELETEINDEMNITEKM: 'OK',
+                        idIndemniteKm: $(this).data('idindemnitekm')
+                    },
+                    function (data) {
+                        if (data) {
+                            loadNoteDeFraisEmployeData();
                         }
-                    );
-                }
+                    }
+                );
             });
         });
     </script>
