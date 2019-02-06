@@ -1,18 +1,29 @@
 <?php
+/*
+ * $html2pdf->output($name, $dest);
+ * I: send the file inline to the browser (default). The plug-in is used if available. The name given by name is used when one selects the "Save as" option on the link generating the PDF.
+ * D: send to the browser and force a file download with the name given by name.
+ * F: save to a local server file with the name given by name.
+ * S: return the document as a string (name is ignored).
+ * FI: equivalent to F + I option
+ * FD: equivalent to F + D option
+ * E: return the document as base64 mime multi-part email attachment (RFC 2045)
+ */
 require_once($_SERVER['DOCUMENT_ROOT'] . '/app/main.php');
 /**
  * @param $templateSlug
  * @param $params
  * @param string $orientation
  * @param string $pdfName
+ * @param string $destination
  */
-function getPdf($templateSlug, $params, $orientation = 'P', $pdfName = 'appoe')
+function getPdf($templateSlug, $params, $orientation = 'P', $pdfName = 'appoe', $destination = 'I')
 {
     try {
         $html2pdf = new \App\Plugin\Pdf\Html2pdf($orientation, 'A4', 'fr', true, 'UTF-8', 12);
         $html2pdf->pdf->SetDisplayMode('fullpage');
         $html2pdf->writeHTML(getPdfContent($templateSlug, $params), isset($_GET['vuehtml']));
-        $html2pdf->Output($pdfName . '.pdf');
+        $html2pdf->Output($pdfName . '.pdf', $destination);
     } catch (Exception $e) {
         echo $e;
         exit;
