@@ -19,7 +19,7 @@ class Traduction
             $this->dbh = \App\DB::connect();
         }
 
-        if (!is_null($lang)) {
+        if (!is_null($lang) && !is_null($this->data)) {
             $this->lang = $lang;
             $this->showAll();
         }

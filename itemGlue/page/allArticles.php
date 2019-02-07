@@ -24,7 +24,7 @@
                             <?php foreach ($allArticles as $article): ?>
                                 <tr data-idarticle="<?= $article->id ?>">
                                     <td><?= $article->name ?></td>
-                                    <td><?= $Traduction->trans($article->slug) ?></td>
+                                    <td><?= $article->slug ?></td>
                                     <td><?= implode(', ', extractFromObjToSimpleArr(getCategoriesByArticle($article->id), 'name')); ?></td>
                                     <td><?= displayTimeStamp($article->updated_at) ?></td>
                                     <td>

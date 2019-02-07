@@ -52,7 +52,7 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                                 <td>
                                     <input class="text-center form-control inputSiteMeta sensibleField"
                                            name="<?= $meta; ?>" type="text" autocomplete="off"
-                                           style="padding: 5px 0 !important; <?= $c == date('n') ? 'background:#4fb99f;color:#fff;' : ''; ?>"
+                                           style="padding: 5px 0 !important; <?= $c == date('n') ? 'background:#4fb99f;color:#fff;' : ''; ?> min-width: 72px;"
                                            data-month="<?= $c; ?>"
                                            data-idsitemeta="<?= !empty($siteMeta[$meta]->id) ? $siteMeta[$meta]->id : ''; ?>"
                                            value="<?= !empty($siteMeta[$meta]->data) ? $siteMeta[$meta]->data : ''; ?>">

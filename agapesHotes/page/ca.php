@@ -21,7 +21,7 @@ $Budget = new \App\Plugin\AgapesHotes\Budget();
             <div class="col-12">
                 <div class="table-responsive">
                     <table id="syntheseSecteurTable"
-                           class="table table-striped tableNonEffect text-center fixed-header">
+                           class="table table-striped tableNonEffect text-center fixed-header table-hover">
                         <thead>
                         <tr>
                             <th><?= trans('Site'); ?></th>
@@ -36,7 +36,7 @@ $Budget = new \App\Plugin\AgapesHotes\Budget();
                         <?php foreach ($allSitesBySecteur as $secteurId => $allSites):
                             $Secteur->setId($secteurId);
                             if ($Secteur->show() && $Secteur->getId() > 0):
-                                if(!array_key_exists($secteurId, $secteurTotal)){
+                                if (!array_key_exists($secteurId, $secteurTotal)) {
                                     $secteurTotal[$secteurId] = array('budget' => array(), (date('Y') - 1) => array(), (date('Y')) => array());
                                 }
                                 ?>
@@ -66,13 +66,13 @@ $Budget = new \App\Plugin\AgapesHotes\Budget();
                                         $Budget->showBySite();
                                         $budgetCumulCurrent += !empty($Budget->getCa()) ? $Budget->getCa() : 0;
 
-                                        if(!array_key_exists($date->format('n'), $secteurTotal[$secteurId]['budget'])){
+                                        if (!array_key_exists($date->format('n'), $secteurTotal[$secteurId]['budget'])) {
                                             $secteurTotal[$secteurId]['budget'][$date->format('n')] = 0;
                                         }
                                         $secteurTotal[$secteurId]['budget'][$date->format('n')] += !empty($Budget->getCa()) ? $Budget->getCa() : 0;
                                         $budgetCumul[$date->format('n')] = $budgetCumulCurrent;
                                         ?>
-                                        <td><?= !empty($Budget->getCa()) ? $Budget->getCa() : 0; ?></td>
+                                        <td><?= !empty($Budget->getCa()) ? financial($Budget->getCa()) : 0; ?></td>
                                         <?php
                                         $Budget->clean();
                                     endforeach; ?>
@@ -91,13 +91,21 @@ $Budget = new \App\Plugin\AgapesHotes\Budget();
                                     </td>
                                     <?php foreach ($period as $key => $date):
                                         $facturation = 0.00;
-                                        $facturation = getFacturation($site->id, date('Y') - 1, $date->format('m'));
-                                        $siteMeta = getSiteMeta($site->id, date('Y') - 1, date('m'));
-                                        $facturation += $siteMeta['fraisFixes'];
+                                        if ((date('Y') - 1) > 2018) {
+                                            $facturation = getFacturation($site->id, date('Y') - 1, $date->format('m'));
+                                            $siteMeta = getSiteMeta($site->id, date('Y') - 1, date('m'));
+                                            $facturation += $siteMeta['fraisFixes'];
+                                        } else {
+                                            $json = getJsonContent(AGAPESHOTES_PATH . 'data/general.json');
+                                            $index = 'CA_Total' . $date->format('n');
+                                            if(array_key_exists($site->ref, $json)) {
+                                                $facturation = ($json[$site->ref][$index])*1000;
+                                            }
+                                        }
                                         $anneeAgoCurrent += $facturation;
                                         $anneeAgoCumul[$date->format('m')] = $anneeAgoCurrent;
 
-                                        if(!array_key_exists($date->format('n'), $secteurTotal[$secteurId][date('Y') - 1])){
+                                        if (!array_key_exists($date->format('n'), $secteurTotal[$secteurId][date('Y') - 1])) {
                                             $secteurTotal[$secteurId][date('Y') - 1][$date->format('n')] = 0.00;
                                         }
                                         $secteurTotal[$secteurId][date('Y') - 1][$date->format('n')] += $facturation;
@@ -125,7 +133,7 @@ $Budget = new \App\Plugin\AgapesHotes\Budget();
                                         $anneeCurrent += $facturation;
                                         $anneeCumul[$date->format('m')] = $anneeCurrent;
 
-                                        if(!array_key_exists($date->format('n'), $secteurTotal[$secteurId][date('Y')])){
+                                        if (!array_key_exists($date->format('n'), $secteurTotal[$secteurId][date('Y')])) {
                                             $secteurTotal[$secteurId][date('Y')][$date->format('n')] = 0.00;
                                         }
                                         $secteurTotal[$secteurId][date('Y')][$date->format('n')] += $facturation;

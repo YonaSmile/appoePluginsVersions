@@ -179,8 +179,7 @@ function getSpecificArticlesCategory($categoryId, $parentId = false, $favorite =
 function getSpecificArticlesDetailsBySlug($slug)
 {
     if (!empty($slug)) {
-        $Traduction = new \App\Plugin\Traduction\Traduction(LANG);
-        $slug = $Traduction->transToOrigin($slug);
+        $slug = trad($slug, true);
 
         //get article
         $Article = new \App\Plugin\ItemGlue\Article();

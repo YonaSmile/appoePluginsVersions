@@ -88,18 +88,27 @@ $period = new \DatePeriod($start, $interval, $end);
                                         <small><em><?= date('Y') - 1; ?></em></small>
                                     </td>
                                     <?php foreach ($period as $key => $date):
-                                        $fraisPerso = getSiteMeta($site->id, date('Y') - 1, $date->format('m'));
+                                        $fraisDePersonnels = 0;
+                                        if((date('Y') - 1) > 2018) {
+                                            $fraisPerso = getSiteMeta($site->id, date('Y') - 1, $date->format('m'));
+                                            $fraisDePersonnels = !empty($fraisPerso['fraisDePersonnels']) ? $fraisPerso['fraisDePersonnels'] : 0;
+                                        } else {
+                                            $json = getJsonContent(AGAPESHOTES_PATH . 'data/general.json');
+                                            $index = 'FP' . $date->format('n');
+                                            if(array_key_exists($site->ref, $json)) {
+                                                $fraisDePersonnels = ($json[$site->ref][$index])*1000;
+                                            }
+                                        }
 
-                                        $anneeAgoCurrent += !empty($fraisPerso['fraisDePersonnel']) ? $fraisPerso['fraisDePersonnel'] : 0;
+                                        $anneeAgoCurrent += $fraisDePersonnels;
                                         $anneeAgoCumul[$date->format('m')] = $anneeAgoCurrent;
 
                                         if (!array_key_exists($date->format('n'), $secteurTotal[$secteurId][date('Y') - 1])) {
                                             $secteurTotal[$secteurId][date('Y') - 1][$date->format('n')] = 0.00;
                                         }
-                                        $secteurTotal[$secteurId][date('Y') - 1][$date->format('n')] += $fraisPerso['fraisDePersonnel'];
+                                        $secteurTotal[$secteurId][date('Y') - 1][$date->format('n')] += $fraisDePersonnels;
                                         ?>
-                                        <td><?= !empty($fraisPerso['fraisDePersonnel']) ? financial($fraisPerso['fraisDePersonnel']) : 0; ?>
-                                        </td>
+                                        <td><?= financial($fraisDePersonnels); ?></td>
                                     <?php endforeach; ?>
                                 </tr>
                                 <tr data-siteid="<?= $site->id; ?>" data-name="siterowYearAgo">
