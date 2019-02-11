@@ -120,7 +120,7 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                                 data-totalcourseid="<?= $course->id ?>" data-total=""></td>
                             <?php foreach ($period as $key => $date):
                                 $vivreCrueId = '';
-                                $vivreCrueQuantite = '';
+                                $vivreCrueQuantite = 0;
                                 $vivreCrueTotalPrice = 0;
                                 if (array_key_exists($course->id, $allVivresCrue) && array_key_exists($date->format('Y-m-d'), $allVivresCrue[$course->id])) {
                                     $VivreCrue = $allVivresCrue[$course->id][$date->format('Y-m-d')];

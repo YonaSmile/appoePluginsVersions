@@ -96,7 +96,7 @@ function mehoubarim_jsonRead($file = MEHOUBARIM_JSON)
  */
 function mehoubarim_connecteUser()
 {
-    $userId = getUserIdSession();
+    $userId = \App\ShinouiKatan::Crypter(getUserIdSession());
 
     if (!empty($userId)) {
 
@@ -136,7 +136,7 @@ function mehoubarim_getConnectedStatut()
         //Get
         $parsed_json = mehoubarim_jsonRead();
 
-        return $parsed_json['users'][getUserIdSession()]['status'];
+        return $parsed_json['users'][\App\ShinouiKatan::Crypter(getUserIdSession())]['status'];
     }
 
     return false;
@@ -151,10 +151,11 @@ function mehoubarim_updateConnectedStatus($statut)
     //Get
     $parsed_json = mehoubarim_jsonRead();
 
-    if (getUserIdSession() > 0 && isset($parsed_json['users'][getUserIdSession()])) {
+    $user = \App\ShinouiKatan::Crypter(getUserIdSession());
+    if (getUserIdSession() > 0 && isset($parsed_json['users'][$user])) {
 
         //Edit
-        $parsed_json['users'][getUserIdSession()]['status'] = $statut;
+        $parsed_json['users'][$user]['status'] = $statut;
 
         //Write
         mehoubarim_jsonWrite($parsed_json);
@@ -170,6 +171,7 @@ function mehoubarim_logoutUser($user)
     //Get
     $parsed_json = mehoubarim_jsonRead();
 
+    $user = \App\ShinouiKatan::Crypter($user);
     if (getUserIdSession() > 0 && isset($parsed_json['users'][$user])) {
 
         //Edit
@@ -186,7 +188,7 @@ function mehoubarim_logoutUser($user)
  */
 function mehoubarim_pageFreeToChanges()
 {
-    $userSessionId = getUserIdSession();
+    $userSessionId = \App\ShinouiKatan::Crypter(getUserIdSession());
 
     if ($userSessionId > 0) {
 

@@ -485,7 +485,7 @@ $otherFournisseurs = array('BOULANGER' => 'BOULANGER', 'TRANSGOURMET' => 'TRANSG
             <div class="littleContainer"><span class="littleTitle colorPrimary">Frais généraux</span>
                 <span class="littleText"><?= $fraisGenerauxTotal; ?>€</span></div>
             <div class="littleContainer"><span class="littleTitle colorPrimary">Résultats bruts d'éxploitation</span>
-                <span class="littleText"><?= financial($facturation - ($consoReelDenrees + $FraisDePersonnels + $fraisGenerauxTotal)); ?>€</span>
+                <span class="littleText"><?= financial(($facturation + $siteMeta['fraisFixes']) - ($consoReelDenrees + $FraisDePersonnels + $fraisGenerauxTotal)); ?>€</span>
             </div>
         </div>
     </div>

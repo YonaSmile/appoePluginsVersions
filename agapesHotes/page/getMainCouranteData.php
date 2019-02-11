@@ -125,7 +125,7 @@ if (
                                 }
 
                                 $mainCourantId = '';
-                                $mainCourantQuantite = '';
+                                $mainCourantQuantite = 0;
                                 if (array_key_exists($prestation->id, $allMainCourante) && array_key_exists($date->format('Y-m-d'), $allMainCourante[$prestation->id])) {
                                     $MainCourante = $allMainCourante[$prestation->id][$date->format('Y-m-d')];
                                     $mainCourantId = $MainCourante->id;
