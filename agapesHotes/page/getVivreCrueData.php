@@ -125,7 +125,7 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                                 if (array_key_exists($course->id, $allVivresCrue) && array_key_exists($date->format('Y-m-d'), $allVivresCrue[$course->id])) {
                                     $VivreCrue = $allVivresCrue[$course->id][$date->format('Y-m-d')];
                                     $vivreCrueId = $VivreCrue->id;
-                                    $vivreCrueQuantite = $VivreCrue->quantite == 0 ? '' : $VivreCrue->quantite;
+                                    $vivreCrueQuantite = $VivreCrue->quantite == 0 ? 0 : $VivreCrue->quantite;
                                     $vivreCrueTotalPrice = $VivreCrue->total;
                                 }
                                 $vivreCrueQuantiteTotalDay += $vivreCrueQuantite;
