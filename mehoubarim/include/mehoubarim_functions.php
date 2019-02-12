@@ -4,10 +4,10 @@ define('VISITORS_JSON', WEB_PLUGIN_PATH . 'mehoubarim/visitors.json');
 define('GLOBAL_JSON', WEB_PLUGIN_PATH . 'mehoubarim/global.json');
 
 const STATUS_CONNECTED_USER = array(
-    'Actif' => 'success',
-    'En pause' => 'warning',
-    'Inactif' => 'secondary',
-    'Déconnecté' => 'danger'
+    1 => 'success',
+    2 => 'warning',
+    3 => 'secondary',
+    4 => 'danger'
 );
 
 /**
@@ -105,7 +105,7 @@ function mehoubarim_connecteUser()
 
         //Edit
         $parsed_json['users'][$userId]['lastConnect'] = time();
-        $parsed_json['users'][$userId]['status'] = 'Actif';
+        $parsed_json['users'][$userId]['status'] = 1;
         $parsed_json['users'][$userId]['pageConsulting'] = $_SERVER['REQUEST_URI'];
 
         //Write
@@ -175,7 +175,7 @@ function mehoubarim_logoutUser($user)
     if (getUserIdSession() > 0 && isset($parsed_json['users'][$user])) {
 
         //Edit
-        $parsed_json['users'][$user]['status'] = 'Déconnecté';
+        $parsed_json['users'][$user]['status'] = 4;
         $parsed_json['users'][$user]['pageConsulting'] = '';
 
         //Write
@@ -202,7 +202,7 @@ function mehoubarim_pageFreeToChanges()
                 if ($user != $userSessionId) {
                     if (isset($param['pageConsulting']) && $param['pageConsulting'] == $_SERVER['REQUEST_URI']) {
                         if (preg_match('/update/i', basename($_SERVER['PHP_SELF']))) {
-                            if ($param['status'] == 'Actif') {
+                            if ($param['status'] == 1) {
 
                                 //Edit
                                 $parsed_json['users'][$userSessionId]['pageConsulting'] = '';
@@ -238,9 +238,9 @@ function mehoubarim_connectedUserStatus()
 {
     $currentTime = time();
     $statutArray = array(
-        $currentTime - (60 * 30) => 'Actif',
-        $currentTime - (60 * 60 * 4) => 'En pause',
-        $currentTime - (60 * 60 * 12) => 'Inactif'
+        $currentTime - (60 * 30) => 1,
+        $currentTime - (60 * 60 * 4) => 2,
+        $currentTime - (60 * 60 * 12) => 3
     );
 
     //Get
@@ -253,14 +253,14 @@ function mehoubarim_connectedUserStatus()
             $lastConnect = $connectedUser['lastConnect'];
             $statut = $connectedUser['status'];
 
-            if ($statut != 'Déconnecté') {
+            if ($statut < 4) {
 
                 foreach ($statutArray as $timeArr => $statusArr) {
                     if ($lastConnect >= $timeArr) {
                         $statut = $statusArr;
                         break;
                     }
-                    $statut = 'Déconnecté';
+                    $statut = 4;
                 }
 
                 //Edit
