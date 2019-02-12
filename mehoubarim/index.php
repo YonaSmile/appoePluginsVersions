@@ -51,8 +51,7 @@ endif; ?>
                 '/app/plugin/mehoubarim/process/ajaxProcess.php',
                 {logoutUser: userId}
             );
-            $btn.next('small').next('span').removeClass().addClass('badge badge-danger').text('Déconnecté');
-            $btn.remove();
+            $btn.closest('li.list-inline-item').fadeOut(500).delay(100).remove();
         });
     });
 </script>

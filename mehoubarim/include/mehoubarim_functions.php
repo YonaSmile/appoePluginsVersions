@@ -5,8 +5,8 @@ define('GLOBAL_JSON', WEB_PLUGIN_PATH . 'mehoubarim/global.json');
 
 const STATUS_CONNECTED_USER = array(
     'Actif' => 'success',
-    'En pause' => 'secondary',
-    'Inactif' => 'warning',
+    'En pause' => 'warning',
+    'Inactif' => 'secondary',
     'Déconnecté' => 'danger'
 );
 
