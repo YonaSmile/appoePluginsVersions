@@ -40,11 +40,11 @@ $allSites = extractFromObjToSimpleArr(getSitesAccess(), 'id', 'nom');
                                             <td>
                                                 <span data-name="nom"><?= $etablissement->nom ?></span>
                                                 <small class="hiddenList">
-                                                    <a href="<?= AGAPESHOTES_URL; ?>page/allCourses/<?= $Secteur->getSlug(); ?>/<?= $Site->getSlug(); ?>/<?= $etablissement->slug; ?>/">
+                                                    <a href="<?= AGAPESHOTES_URL; ?>page/allCourses.php?secteur=<?= $Secteur->getSlug(); ?>&site=<?= $Site->getSlug(); ?>&etablissement=<?= $etablissement->slug; ?>">
                                                         Liste vivre cru</a>&nbsp;
                                                     <a href="<?= AGAPESHOTES_URL; ?>page/vivreCrue/<?= $Secteur->getSlug(); ?>/<?= $Site->getSlug(); ?>/">
                                                         Vivre cru</a>&nbsp;
-                                                    <a href="<?= AGAPESHOTES_URL; ?>page/allPrestations/<?= $Secteur->getSlug(); ?>/<?= $Site->getSlug(); ?>/<?= $etablissement->slug; ?>/">Liste
+                                                    <a href="<?= AGAPESHOTES_URL; ?>page/allPrestations.php?secteur=<?= $Secteur->getSlug(); ?>&site=<?= $Site->getSlug(); ?>&etablissement=<?= $etablissement->slug; ?>">Liste
                                                         des prestations</a>&nbsp;
                                                     <a href="<?= AGAPESHOTES_URL; ?>page/mainCourante/<?= $Secteur->getSlug(); ?>/<?= $Site->getSlug(); ?>/">
                                                         Main courante

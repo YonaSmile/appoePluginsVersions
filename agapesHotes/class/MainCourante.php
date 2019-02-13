@@ -457,12 +457,17 @@ class MainCourante
      */
     public function delete()
     {
+        $sql = 'DELETE FROM appoe_plugin_agapesHotes_main_courante WHERE id = :id';
 
-        $this->status = 0;
-        if ($this->update()) {
-            return true;
-        } else {
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':id', $this->id);
+        $stmt->execute();
+
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
             return false;
+        } else {
+            return true;
         }
     }
 

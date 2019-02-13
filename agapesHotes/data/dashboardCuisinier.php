@@ -7,7 +7,7 @@ $Site = $SiteAccess->showSiteByUser();
 $year = !empty($_POST['year']) ? $_POST['year'] : date('Y');
 $month = !empty($_POST['month']) ? $_POST['month'] : date('m');
 
-$date = $year . '-' . $month . '-'.date('d');
+$date = $year . '-' . $month . '-' . date('d');
 
 $dateNow = new \DateTime();
 $dateCurrent = new \DateTime($date);
@@ -371,8 +371,8 @@ $otherFournisseurs = array('BOULANGER' => 'BOULANGER', 'TRANSGOURMET' => 'TRANSG
                     <tr>
                         <th style="width: 200px;">Consommation réelle</th>
                         <?php
-                        $consoReelDenrees = ($totalRefraCommandDenree + $totalInventaireDenreeMonthAgo + $noteDeFrais['denree']) - $totalInventaireDenree;;
-                        $consoReelNonAlimentaires = ($totalRefraCommandUniqueEntretien + $totalInventaireUniqueEntretienMonthAgo + $noteDeFrais['nonAlimentaire']) - $totalInventaireUniqueEntretien;
+                        $consoReelDenrees = (($totalRefraCommandDenree + $totalInventaireDenreeMonthAgo + $noteDeFrais['denree']) - $totalInventaireDenree);
+                        $consoReelNonAlimentaires = (($totalRefraCommandUniqueEntretien + $totalInventaireUniqueEntretienMonthAgo + $noteDeFrais['nonAlimentaire']) - $totalInventaireUniqueEntretien);
                         ?>
                         <td style="text-align: center !important;"><?= financial($consoReelDenrees); ?>€
                         </td>
@@ -438,8 +438,8 @@ $otherFournisseurs = array('BOULANGER' => 'BOULANGER', 'TRANSGOURMET' => 'TRANSG
         $ParticipationTournante = $siteMeta['participationTournante'];
         $FraisDePersonnels = $siteMeta['fraisDePersonnel'];
         $indemniteKm = getIndemniteKm($Site->id, $dateCurrent->format('Y'), $dateCurrent->format('m'));
-        $fraisDeSiege = financial($facturation * 0.04);
-        $fraisGenerauxTotal = financial($ParticipationTournante + $fraisDeSiege + $consoReelNonAlimentaires + $noteDeFrais['autreAchat'] + $indemniteKm);
+        $fraisDeSiege = ($facturation * 0.04);
+        $fraisGenerauxTotal = ($ParticipationTournante + $fraisDeSiege + $consoReelNonAlimentaires + $noteDeFrais['autreAchat'] + $indemniteKm);
         ?>
         <div id="collapseFraisGener" class="collapse" aria-labelledby="headingFour"
              data-parent="#infosAgapes">
@@ -453,11 +453,11 @@ $otherFournisseurs = array('BOULANGER' => 'BOULANGER', 'TRANSGOURMET' => 'TRANSG
                 <span class="littleTitle colorPrimary">Note de frais indemnité kilométrique</span>
                 <span class="littleText"><?= financial($indemniteKm); ?>€</span></div>
             <div class="littleContainer"><span class="littleTitle colorPrimary">Frais de siège</span>
-                <span class="littleText"><?= $fraisDeSiege; ?>€</span></div>
+                <span class="littleText"><?= financial($fraisDeSiege); ?>€</span></div>
             <div class="littleContainer"><span class="littleTitle colorPrimary">Consommation produits d'entretien</span>
                 <span class="littleText"><?= financial($consoReelNonAlimentaires); ?>€</span></div>
             <div class="littleContainer"><span class="littleTitle colorPrimary">Total HT</span>
-                <span class="littleText"><?= $fraisGenerauxTotal; ?>€</span></div>
+                <span class="littleText"><?= financial($fraisGenerauxTotal); ?>€</span></div>
         </div>
     </div>
 
@@ -483,9 +483,9 @@ $otherFournisseurs = array('BOULANGER' => 'BOULANGER', 'TRANSGOURMET' => 'TRANSG
                         class="littleTitle colorPrimary">Frais de personnel</span>
                 <span class="littleText"><?= financial($FraisDePersonnels); ?>€</span></div>
             <div class="littleContainer"><span class="littleTitle colorPrimary">Frais généraux</span>
-                <span class="littleText"><?= $fraisGenerauxTotal; ?>€</span></div>
+                <span class="littleText"><?= financial($fraisGenerauxTotal); ?>€</span></div>
             <div class="littleContainer"><span class="littleTitle colorPrimary">Résultats bruts d'éxploitation</span>
-                <span class="littleText"><?= financial(($facturation + $siteMeta['fraisFixes']) - ($consoReelDenrees + $FraisDePersonnels + $fraisGenerauxTotal)); ?>€</span>
+                <span class="littleText"><?= financial((($facturation + $siteMeta['fraisFixes']) - ($consoReelDenrees + $FraisDePersonnels + $fraisGenerauxTotal))); ?>€</span>
             </div>
         </div>
     </div>
@@ -508,7 +508,7 @@ $otherFournisseurs = array('BOULANGER' => 'BOULANGER', 'TRANSGOURMET' => 'TRANSG
                             <?= \App\Form::select('Fournisseur', 'fournisseur', $otherFournisseurs, '', true); ?>
                         </div>
                         <div class="col-12 my-2">
-                            <?= \App\Form::text('Date de livraison', 'date', 'text', '', true, 10, '', '', 'datepicker'); ?>
+                            <?= \App\Form::text('Date de livraison', 'date', 'date', '', true, 10,'','', 'datepicker'); ?>
                         </div>
                         <div class="col-12 my-2">
                             <?= \App\Form::text('Total', 'total', 'text', '', true); ?>

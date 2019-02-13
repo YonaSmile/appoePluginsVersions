@@ -59,15 +59,16 @@ $period = new \DatePeriod($start, $interval, $end);
                                         $Budget->setSiteId($site->id);
                                         $Budget->setMonth($date->format('n'));
                                         $Budget->showBySite();
-                                        $budgetCumulCurrent += !empty($Budget->getConso()) ? $Budget->getConso() : 0;
+                                        $budgetFG = !empty($Budget->getFraisGeneraux()) ? $Budget->getFraisGeneraux() : 0;
+                                        $budgetCumulCurrent += $budgetFG;
                                         if (!array_key_exists($date->format('n'), $secteurTotal[$secteurId]['budget'])) {
                                             $secteurTotal[$secteurId]['budget'][$date->format('n')] = 0;
                                         }
-                                        $secteurTotal[$secteurId]['budget'][$date->format('n')] += !empty($Budget->getConso()) ? $Budget->getConso() : 0;
+                                        $secteurTotal[$secteurId]['budget'][$date->format('n')] += $budgetFG;
 
                                         $budgetCumul[$date->format('n')] = $budgetCumulCurrent;
                                         ?>
-                                        <td><?= !empty($Budget->getConso()) ? financial($Budget->getConso()) : 0; ?></td>
+                                        <td><?= $budgetFG; ?></td>
                                         <?php
                                         $Budget->clean();
                                     endforeach; ?>

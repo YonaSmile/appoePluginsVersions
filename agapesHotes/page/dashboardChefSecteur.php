@@ -56,8 +56,8 @@ if ($Secteur):
             ) - $allSitesData[$site->id]['inventaire']['nonAlimentaire']['total'];
 
 
-        $allSitesData[$site->id]['fraisDeSiege'] = financial($allSitesData[$site->id]['facturation'] * 0.04);
-        $allSitesData[$site->id]['fraisGeneraux'] = financial(
+        $allSitesData[$site->id]['fraisDeSiege'] = ($allSitesData[$site->id]['facturation'] * 0.04);
+        $allSitesData[$site->id]['fraisGeneraux'] = (
             $allSitesData[$site->id]['siteMeta']['participationTournante']
             + $allSitesData[$site->id]['fraisDeSiege']
             + $allSitesData[$site->id]['noteDeFrais']['autreAchat']

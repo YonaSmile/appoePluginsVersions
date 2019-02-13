@@ -32,11 +32,19 @@ if (
 
     $period = new \DatePeriod($start, $interval, $end);
     ?>
-    <div class="col-12 py-4">
-        <h5 class="mb-0"><?= ucfirst(strftime("%B", strtotime($start->format('Y-m-d')))); ?> <?= $start->format('Y'); ?></h5>
-        <small class="d-block">Commence le <?= $start->format('d/m/Y'); ?> et se termine
-            le <?= $start->format('t/m/Y'); ?></small>
-
+    <div class="col-12">
+        <div class="row py-2">
+            <div class="col-12 col-lg-11 my-2">
+                <h5 class="mb-0"><?= ucfirst(strftime("%B", strtotime($start->format('Y-m-d')))); ?> <?= $start->format('Y'); ?></h5>
+                <small class="d-block">Commence le <?= $start->format('d/m/Y'); ?> et se termine
+                    le <?= $start->format('t/m/Y'); ?></small>
+            </div>
+            <div class="col-12 col-lg-1 my-2">
+                <button type="button" class="printMainCourante btn bgColorPrimary">
+                    <i class="fas fa-print"></i> Imprimer
+                </button>
+            </div>
+        </div>
     </div>
     <div class="col-12 table-responsive">
         <table id="mainCouranteTable" class="table table-striped tableNonEffect fixed-header">
@@ -148,14 +156,15 @@ if (
                                            data-day="<?= $date->format('d'); ?>"
                                            class="text-center form-control mainCourantInput sensibleField"
                                            name="<?= $mainCourantId; ?>"
-                                           value="<?= $mainCourantQuantite; ?>"
+                                           value="<?= is_numeric($mainCourantQuantite) && $mainCourantQuantite > 0 ? $mainCourantQuantite : ''; ?>"
                                            style="padding: 5px 0 !important; <?= getDayColor($date, $Site->getAlsaceMoselle()); ?>">
                                     <small class="d-block text-center prestationPrice"
                                            data-day="<?= $date->format('j'); ?>"
                                            data-prixprestation="<?= $prixReel; ?>"
                                            data-etablissement="<?= $etablissement->id; ?>"><?= financial($prixReel * $mainCourantQuantite); ?>
                                     </small>
-                                    <small class="d-block text-center prestationPriceCumule" style="font-size: 0.65em;"
+                                    <small class="d-block text-center prestationPriceCumule"
+                                           style="font-size: 0.65em;"
                                            data-day="<?= $date->format('j'); ?>"
                                            data-prixprestation="<?= $prixReel; ?>"
                                            data-etablissement="<?= $etablissement->id; ?>"><?= financial($prixReel * $mainCouranteQuantiteTotalDay); ?>
@@ -473,6 +482,37 @@ if (
 
                 $('.totalContainer .totalCaHt').html(financial(totalVariable + totalFraisFixes) + '€');
             }
+            function printMainCourante() {
+
+                var $html = $('#mainCouranteTable');
+                var $table = $html.clone();
+
+                $('button', $table).remove();
+
+                $('input.mainCourantInput', $table).each(function (i) {
+                    var val = $.isNumeric($(this).val()) ? $(this).val() : 0;
+
+                    $(this).parent('td').prepend(val+'<br>');
+                    $(this).remove();
+                });
+
+                $('.prestationReelPrice', $table).removeAttr('style').prepend('<br>');
+                $('.prestationPrice', $table).append('<br>');
+
+                var data = {
+                    titre: 'Main Courante',
+                    table_lines: escapeHtml($table.prop('outerHTML')),
+                    pdfTemplateOrientation: 'L',
+                    pdfTemplateFilename: 'table',
+                    pdfOutputName: 'MainCourante'
+                };
+
+                pdfSend(data);
+            }
+
+            $('.printMainCourante').on('click', function () {
+                printMainCourante();
+            });
 
             $('.printFirstHalfMonthMainCouranteBtn').on('click', function () {
                 var etablissementid = $(this).data('etablissementid');

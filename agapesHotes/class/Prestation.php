@@ -7,6 +7,7 @@ class Prestation
     private $id;
     private $nom;
     private $etablissementId;
+    private $prestaOrder;
     private $status = 1;
     private $userId;
     private $createdAt;
@@ -146,6 +147,7 @@ class Prestation
                 `nom` varchar(255) NOT NULL,
                 `etablissement_id` int(11) UNSIGNED NOT NULL,
                 UNIQUE (`etablissement_id`,`nom`),
+                `prestaOrder` TINYINT(2) UNSIGNED NULL DEFAULT 99,
                 `status` tinyint(4) UNSIGNED NOT NULL DEFAULT 1,
                 `userId` int(11) UNSIGNED NOT NULL,
                 `created_at` date NOT NULL,
@@ -201,7 +203,7 @@ class Prestation
     public function showAll($minimumStatus = true, $countPrestations = false)
     {
         $sqlStatus = $minimumStatus ? 'status >= :status' : 'status = :status';
-        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_prestations WHERE etablissement_id = :etablissementId AND ' . $sqlStatus . ' ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_prestations WHERE etablissement_id = :etablissementId AND ' . $sqlStatus . ' ORDER BY prestaOrder ASC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':etablissementId', $this->etablissementId);
         $stmt->bindParam(':status', $this->status);
