@@ -18,13 +18,13 @@ require(ITEMGLUE_PATH . 'process/postProcess.php');
             <div class="col-12 col-lg-8">
                 <div class="row">
                     <div class="col-12 my-2">
-                        <?= \App\Form::text('Nom', 'name', 'text', !empty($_POST['name']) ? $_POST['name'] : '', true, 70); ?>
+                        <?= \App\Form::text('Nom', 'name', 'text', !empty($_POST['name']) ? $_POST['name'] : '', true); ?>
                     </div>
                     <div class="col-12 my-2">
-                        <?= \App\Form::text('Description', 'description', 'text', !empty($_POST['description']) ? $_POST['description'] : '', true, 160); ?>
+                        <?= \App\Form::text('Description', 'description', 'text', !empty($_POST['description']) ? $_POST['description'] : '', true); ?>
                     </div>
                     <div class="col-12 mt-2">
-                        <?= \App\Form::text('Nom du lien URL' . ' (slug)', 'slug', 'text', !empty($_POST['slug']) ? $_POST['slug'] : '', true, 100); ?>
+                        <?= \App\Form::text('Nom du lien URL' . ' (slug)', 'slug', 'text', !empty($_POST['slug']) ? $_POST['slug'] : '', true); ?>
                     </div>
                 </div>
             </div>
