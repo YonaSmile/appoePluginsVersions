@@ -46,7 +46,7 @@ if (!empty($_GET['id'])): ?>
                                 <?= \App\Form::text('Nom du lien URL' . ' (slug)', 'slug', 'text', $Article->getSlug(), true); ?>
                             </div>
                             <div class="col-12 col-lg-4 mt-2">
-                                <?= \App\Form::text('Date de création', 'createdAt', 'text', displayFrDate($Article->getCreatedAt()), true, 9, 'readonly', '', 'datepicker'); ?>
+                                <?= \App\Form::text('Date de création', 'createdAt', 'date', $Article->getCreatedAt(), true, 10); ?>
                             </div>
                         </div>
                     </div>
