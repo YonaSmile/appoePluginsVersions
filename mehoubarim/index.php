@@ -13,14 +13,14 @@ if ($mehoubarim && is_array($mehoubarim)): ?>
         && $connectedUserData['status'] < 4
         && isUserExist($connectedUserId)): ?>
         <li class="list-inline-item p-0 pr-2 mr-0" style="font-size: 0.7em;">
-            <?php if (isTechnicien(getUserRoleId())): ?>
-                <span class="logoutUser float-left linkBtn" data-userid="<?= $connectedUserId; ?>">
-                        <i class="fas fa-times"></i></span>
-            <?php endif; ?>
-            <span class="text-<?= STATUS_CONNECTED_USER[$connectedUserData['status']]; ?>"
+            <span class="pb-1 border-bottom border-<?= STATUS_CONNECTED_USER[$connectedUserData['status']]; ?>"
                     <?= isTechnicien(getUserRoleId()) ? 'title="Location: ' . $connectedUserData['pageConsulting'] . '"' : ''; ?>>
-                    <i class="fas fa-user"></i></span>
-            <?= getUserFirstName($connectedUserId) . ucfirst(substr(getUserName($connectedUserId), 0, 1)); ?>
+                <?php if (isTechnicien(getUserRoleId())): ?>
+                    <span class="logoutUser linkBtn mr-1" data-userid="<?= $connectedUserId; ?>">
+                        <i class="fas fa-times"></i></span>
+                <?php endif; ?>
+                <?= getUserFirstName($connectedUserId) . ucfirst(substr(getUserName($connectedUserId), 0, 1)); ?>
+            </span>
         </li>
     <?php endif; ?>
     <?php endforeach;
