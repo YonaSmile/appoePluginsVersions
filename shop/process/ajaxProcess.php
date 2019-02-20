@@ -105,11 +105,13 @@ if (checkAjaxRequest()) {
 
             //Add translation
             if (isset($_POST['addTradValue'])) {
-                $Traduction = new \App\Plugin\Traduction\Traduction();
-                $Traduction->setLang(LANG);
-                $Traduction->setMetaKey($ArticleMeta->getMetaValue());
-                $Traduction->setMetaValue($ArticleMeta->getMetaValue());
-                $Traduction->save();
+                if (class_exists('App\Plugin\Traduction\Traduction')) {
+                    $Traduction = new \App\Plugin\Traduction\Traduction();
+                    $Traduction->setLang(LANG);
+                    $Traduction->setMetaKey($ArticleMeta->getMetaValue());
+                    $Traduction->setMetaValue($ArticleMeta->getMetaValue());
+                    $Traduction->save();
+                }
             }
 
         }

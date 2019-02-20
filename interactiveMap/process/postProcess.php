@@ -27,11 +27,13 @@ if (checkPostAndTokenRequest()) {
 
                 interMap_writeMapFile($InteractiveMap->getData(), $InteractiveMap->getTitle());
 
-                $Traduction = new \App\Plugin\Traduction\Traduction();
-                $Traduction->setMetaKey($_POST['title']);
-                $Traduction->setMetaValue($Traduction->getMetaKey());
-                $Traduction->setLang(LANG);
-                $Traduction->save();
+                if (class_exists('App\Plugin\Traduction\Traduction')) {
+                    $Traduction = new \App\Plugin\Traduction\Traduction();
+                    $Traduction->setMetaKey($_POST['title']);
+                    $Traduction->setMetaValue($Traduction->getMetaKey());
+                    $Traduction->setLang(LANG);
+                    $Traduction->save();
+                }
 
                 //Delete post data
                 unset($_POST);

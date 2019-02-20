@@ -19,14 +19,16 @@ if (checkPostAndTokenRequest()) {
                 if ($Article->save()) {
 
                     //Add Translation
-                    $Traduction = new \App\Plugin\Traduction\Traduction();
-                    $Traduction->setLang(LANG);
-                    $Traduction->setMetaKey($Article->getName());
-                    $Traduction->setMetaValue($Article->getName());
-                    if ($Traduction->save()) {
-                        $Traduction->setMetaKey(slugify($Article->getSlug()));
-                        $Traduction->setMetaValue(slugify($Article->getSlug()));
-                        $Traduction->save();
+                    if (class_exists('App\Plugin\Traduction\Traduction')) {
+                        $Traduction = new \App\Plugin\Traduction\Traduction();
+                        $Traduction->setLang(LANG);
+                        $Traduction->setMetaKey($Article->getName());
+                        $Traduction->setMetaValue($Article->getName());
+                        if ($Traduction->save()) {
+                            $Traduction->setMetaKey(slugify($Article->getSlug()));
+                            $Traduction->setMetaValue(slugify($Article->getSlug()));
+                            $Traduction->save();
+                        }
                     }
 
                     //Delete post data

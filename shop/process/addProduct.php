@@ -34,11 +34,13 @@ if (checkPostAndTokenRequest()) {
                 }
 
                 //Add Translation
-                $Traduction = new \App\Plugin\Traduction\Traduction();
-                $Traduction->setLang(LANG);
-                $Traduction->setMetaKey($Product->getName());
-                $Traduction->setMetaValue($Product->getName());
-                $Traduction->save();
+                if (class_exists('App\Plugin\Traduction\Traduction')) {
+                    $Traduction = new \App\Plugin\Traduction\Traduction();
+                    $Traduction->setLang(LANG);
+                    $Traduction->setMetaKey($Product->getName());
+                    $Traduction->setMetaValue($Product->getName());
+                    $Traduction->save();
+                }
 
                 //Delete post data
                 unset($_POST);
