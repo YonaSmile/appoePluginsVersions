@@ -32,6 +32,7 @@ if (checkAjaxRequest()) {
             } else {
                 echo 'Un nom est attendu !';
             }
+            exit();
         }
 
         // UPDATE COURSES
@@ -58,6 +59,7 @@ if (checkAjaxRequest()) {
                     echo 'Cet article n\'existe pas !';
                 }
             }
+            exit();
         }
 
         // ARCHIVE COURSES
@@ -77,6 +79,7 @@ if (checkAjaxRequest()) {
                     echo 'Cet article n\'existe pas !';
                 }
             }
+            exit();
         }
 
         // RESTAURE COURSES
@@ -98,6 +101,7 @@ if (checkAjaxRequest()) {
                     echo 'Cet article n\'existe pas !';
                 }
             }
+            exit();
         }
 
     }

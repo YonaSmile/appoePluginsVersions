@@ -27,6 +27,7 @@ if (checkAjaxRequest()) {
             } else {
                 echo 'Tous les champs sont obligatoires !';
             }
+            exit();
         }
 
         //DELETE SITE ACCESS
@@ -36,6 +37,7 @@ if (checkAjaxRequest()) {
             if($SiteAccessProcess->delete()){
                 echo json_encode(true);
             }
+            exit();
         }
     }
 }

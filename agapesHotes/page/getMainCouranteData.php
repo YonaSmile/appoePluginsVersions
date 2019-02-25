@@ -35,7 +35,7 @@ if (
     <div class="col-12">
         <div class="row py-2">
             <div class="col-12 col-lg-11 my-2">
-                <h5 class="mb-0"><?= ucfirst(strftime("%B", strtotime($start->format('Y-m-d')))); ?> <?= $start->format('Y'); ?></h5>
+                <h5 class="mb-0 monthDate"><?= ucfirst(strftime("%B", strtotime($start->format('Y-m-d')))); ?> <?= $start->format('Y'); ?></h5>
                 <small class="d-block">Commence le <?= $start->format('d/m/Y'); ?> et se termine
                     le <?= $start->format('t/m/Y'); ?></small>
             </div>
@@ -50,13 +50,14 @@ if (
         <table id="mainCouranteTable" class="table table-striped tableNonEffect fixed-header">
             <thead style="z-index: 2">
             <tr style="text-align: center;">
-                <th><?= trans('Prestation'); ?></th>
+                <th class="prestationName"><?= trans('Prestation'); ?></th>
                 <?php foreach ($period as $key => $date): ?>
-                    <th style="<?= getDayColor($date, $Site->getAlsaceMoselle()); ?>">
+                    <th style="<?= getDayColor($date, $Site->getAlsaceMoselle()); ?>"
+                        data-printday="<?= $date->format('j'); ?>">
                         <?= $date->format('d'); ?></th>
                 <?php endforeach; ?>
-                <th><i class="fas fa-balance-scale"></i></th>
-                <th><?= trans('Prestation'); ?></th>
+                <th class="noForPrint"><i class="fas fa-balance-scale"></i></th>
+                <th class="noForPrint"><?= trans('Prestation'); ?></th>
             </tr>
             </thead>
             <?php foreach ($allEtablissements as $etablissement):
@@ -145,6 +146,7 @@ if (
                                 ?>
 
                                 <td style="padding: 4px !important; min-width: 45px;"
+                                    data-printday="<?= $date->format('j'); ?>"
                                     data-day="<?= $date->format('j'); ?>"
                                     data-tdposition="<?= $count; ?>"
                                     data-prixprestation="<?= $prixReel; ?>" class="mainCouranteTd"
@@ -172,7 +174,8 @@ if (
                                 </td>
                                 <?php $count++;
                             endforeach; ?>
-                            <td class="quantityTotalDay text-center" data-idprestation="<?= $prestation->id ?>"
+                            <td class="quantityTotalDay text-center noForPrint"
+                                data-idprestation="<?= $prestation->id ?>"
                                 style="padding: 4px !important; min-width: 45px;">
                                 <span><?= $mainCouranteQuantiteTotalDay; ?></span>
                                 <small class="d-block text-center prestationTotalPrice" style="font-size: 0.7em;"
@@ -181,13 +184,14 @@ if (
                                     <?= financial($prixReel * $mainCouranteQuantiteTotalDay); ?>
                                 </small>
                             </td>
-                            <th><?= $prestation->nom; ?></th>
+                            <th class="noForPrint"><?= $prestation->nom; ?></th>
                         </tr>
                     <?php endforeach; ?>
                     <tr>
                         <th><?= trans('Total'); ?></th>
                         <?php foreach ($period as $key => $date): ?>
                             <td style="font-size:0.65em !important; padding-left: 0.5px !important; padding-right: 0.5px !important; <?= getDayColor($date, $Site->getAlsaceMoselle()); ?>"
+                                data-printday="<?= $date->format('j'); ?>"
                                 class="totalDayPrestationPrice text-center" data-day="<?= $date->format('j'); ?>"
                                 data-etablissement="<?= $etablissement->id; ?>"></td>
                         <?php endforeach; ?>
@@ -300,7 +304,6 @@ if (
     <script type="text/javascript" src="/app/js/printThis.js"></script>
     <script>
         $(document).ready(function () {
-
             adaptResponsiveTable();
             $(window).resize(function () {
                 adaptResponsiveTable();
@@ -482,7 +485,15 @@ if (
 
                 $('.totalContainer .totalCaHt').html(financial(totalVariable + totalFraisFixes) + '€');
             }
+
             function printMainCourante() {
+
+                printMainCouranteFirstHalfMonth();
+                printMainCouranteLastHalfMonth();
+
+            }
+
+            function printMainCouranteFirstHalfMonth() {
 
                 var $html = $('#mainCouranteTable');
                 var $table = $html.clone();
@@ -490,21 +501,69 @@ if (
                 $('button', $table).remove();
 
                 $('input.mainCourantInput', $table).each(function (i) {
-                    var val = $.isNumeric($(this).val()) ? $(this).val() : 0;
+                    let val = $.isNumeric($(this).val()) ? $(this).val() : 0;
 
-                    $(this).parent('td').prepend(val+'<br>');
+                    $(this).parent('td').prepend(val + '<br>');
                     $(this).remove();
                 });
 
                 $('.prestationReelPrice', $table).removeAttr('style').prepend('<br>');
                 $('.prestationPrice', $table).append('<br>');
+                $('.quantityTotalDay span', $table).append('<br>');
+                $('.noForPrint', $table).remove();
+                $('th[data-name="prestationName"]', $table).css('width', '80');
+
+                $('[data-printday]', $table).each(function () {
+                    if ($(this).data('printday') > 15) {
+                        $(this).remove();
+                    }
+                });
 
                 var data = {
                     titre: 'Main Courante',
+                    monthDate: $('.monthDate').text(),
                     table_lines: escapeHtml($table.prop('outerHTML')),
                     pdfTemplateOrientation: 'L',
-                    pdfTemplateFilename: 'table',
-                    pdfOutputName: 'MainCourante'
+                    pdfTemplateFilename: 'mainCourante',
+                    pdfOutputName: 'MainCourante-' + $('.monthDate').text()
+                };
+
+                pdfSend(data);
+            }
+
+            function printMainCouranteLastHalfMonth() {
+
+                var $html = $('#mainCouranteTable');
+                var $table = $html.clone();
+
+                $('button', $table).remove();
+
+                $('input.mainCourantInput', $table).each(function (i) {
+                    let val = $.isNumeric($(this).val()) ? $(this).val() : 0;
+
+                    $(this).parent('td').prepend(val + '<br>');
+                    $(this).remove();
+                });
+
+                $('.prestationReelPrice', $table).removeAttr('style').prepend('<br>');
+                $('.prestationPrice', $table).append('<br>');
+                $('.quantityTotalDay span', $table).append('<br>');
+                $('.noForPrint', $table).remove();
+                $('th[data-name="prestationName"]', $table).css('width', '80');
+
+                $('[data-printday]', $table).each(function () {
+                    if ($(this).data('printday') < 16) {
+                        $(this).remove();
+                    }
+                });
+
+                var data = {
+                    titre: 'Main Courante',
+                    monthDate: $('.monthDate').text(),
+                    table_lines: escapeHtml($table.prop('outerHTML')),
+                    pdfTemplateOrientation: 'L',
+                    pdfTemplateFilename: 'mainCourante',
+                    pdfOutputName: 'MainCourante-' + $('.monthDate').text()
                 };
 
                 pdfSend(data);

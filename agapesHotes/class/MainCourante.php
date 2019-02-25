@@ -348,14 +348,19 @@ class MainCourante
      */
     public function showTotalMainCourante($siteId, $year, $month = '')
     {
+        $sqlAdd = ' ORDER BY PP.dateDebut DESC LIMIT 1 ';
+        if(!empty($month)){
+            $dateDebut = $year . '-' . $month . '-01';
+            $sqlAdd = ' AND MONTH(MC.date) = :mois AND PP.dateDebut <= "'.$dateDebut.'" ORDER BY PP.dateDebut DESC LIMIT 1 ';
+        }
 
-        $sqlAdd = !empty($month) ? ' AND MONTH(MC.date) = :mois ' : '';
-        $sql = 'SELECT ETB.site_id AS site_id, YEAR(MC.date) AS annee, MONTH(MC.date) AS mois, SUM(MC.total) AS totalHT
+        $sql = 'SELECT ETB.site_id AS site_id, YEAR(MC.date) AS annee, MONTH(MC.date) AS mois, SUM(MC.quantite * PP.prixHT) AS totalHT
         FROM appoe_plugin_agapesHotes_main_courante AS MC
         INNER JOIN appoe_plugin_agapesHotes_etablissements AS ETB
         ON(ETB.id = MC.etablissement_id)
-        WHERE site_id = :siteId AND YEAR(MC.date) = :annee ' . $sqlAdd . '
-        GROUP BY MONTH(MC.date)';
+        INNER JOIN appoe_plugin_agapesHotes_prix_prestations AS PP
+        ON(MC.prestation_id = PP.prestation_id AND PP.dateDebut <= MC.date)
+        WHERE ETB.site_id = :siteId AND YEAR(MC.date) = :annee ' . $sqlAdd;
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $siteId);
@@ -364,7 +369,6 @@ class MainCourante
             $stmt->bindParam(':mois', $month);
         }
         $stmt->execute();
-
         $error = $stmt->errorInfo();
         if ($error[0] != '00000') {
             return false;

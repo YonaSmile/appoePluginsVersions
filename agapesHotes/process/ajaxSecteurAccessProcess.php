@@ -27,6 +27,7 @@ if (checkAjaxRequest()) {
             } else {
                 echo 'Tous les champs sont obligatoires !';
             }
+            exit();
         }
 
         //DELETE SECTEUR ACCESS
@@ -36,6 +37,7 @@ if (checkAjaxRequest()) {
             if ($SecteurAccessProcess->delete()) {
                 echo json_encode(true);
             }
+            exit();
         }
     }
 }

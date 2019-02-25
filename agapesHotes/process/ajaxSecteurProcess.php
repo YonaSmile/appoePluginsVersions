@@ -26,6 +26,7 @@ if (checkAjaxRequest()) {
             } else {
                 echo 'Un nom est attendu !';
             }
+            exit();
         }
 
         // UPDATE SECTEUR
@@ -51,6 +52,7 @@ if (checkAjaxRequest()) {
                     echo 'Ce secteur n\'existe pas !';
                 }
             }
+            exit();
         }
 
         // ARCHIVE SECTEUR
@@ -70,6 +72,7 @@ if (checkAjaxRequest()) {
                     echo 'Ce secteur n\'existe pas !';
                 }
             }
+            exit();
         }
     }
 }

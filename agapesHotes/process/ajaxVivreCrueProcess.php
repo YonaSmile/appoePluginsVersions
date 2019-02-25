@@ -45,6 +45,7 @@ if (checkAjaxRequest()) {
             } else {
                 echo 'Tous les paramètres sont attendus !';
             }
+            exit();
         }
 
         //UPDATE PRODUCT PRICE
@@ -105,6 +106,7 @@ if (checkAjaxRequest()) {
         //GET PRODUCT PRICE
         if (!empty($_POST['GETPRODUCTPRICE'])) {
             echo file_get_contents(PRODUCTPRICE_JSON);
+            exit();
         }
     }
     unset($_POST);

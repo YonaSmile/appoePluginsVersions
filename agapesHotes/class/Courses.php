@@ -201,7 +201,7 @@ class Courses
     public function showAll($minimumStatus = true, $countCourses = false)
     {
         $sqlStatus = $minimumStatus ? 'status >= :status' : 'status = :status';
-        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_courses WHERE etablissement_id = :etablissementId AND ' . $sqlStatus . ' ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_courses WHERE etablissement_id = :etablissementId AND ' . $sqlStatus . ' ORDER BY id ASC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':etablissementId', $this->etablissementId);
         $stmt->bindParam(':status', $this->status);

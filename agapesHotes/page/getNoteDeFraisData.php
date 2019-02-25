@@ -79,6 +79,7 @@ endif; ?>
                                     </div>
                                     <div class="col-12 col-lg-5 my-2">
                                         <?= \App\Form::text('Nom du frais *', 'nom', '', '', true, 150, 'list="nomFraisList" autocomplete="off"'); ?>
+                                        <small class="text-secondary">Double clique pour la liste d'aide</small>
                                         <datalist id="nomFraisList"></datalist>
                                     </div>
                                     <div class="col-12 col-lg-2 my-2">

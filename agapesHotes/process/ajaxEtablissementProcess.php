@@ -29,6 +29,7 @@ if (checkAjaxRequest()) {
             } else {
                 echo 'Un nom est attendu !';
             }
+            exit();
         }
 
         // UPDATE ETABLISSEMENT
@@ -57,6 +58,7 @@ if (checkAjaxRequest()) {
                     echo 'Ce site n\'existe pas !';
                 }
             }
+            exit();
         }
 
         // ARCHIVE ETABLISSEMENT
@@ -76,6 +78,7 @@ if (checkAjaxRequest()) {
                     echo 'Ce site n\'existe pas !';
                 }
             }
+            exit();
         }
     }
 }

@@ -21,6 +21,7 @@ if (checkAjaxRequest()) {
             }
 
             echo $html;
+            exit();
         }
 
         //GET INPUT PUISSANCE DU VEHICULE
@@ -38,6 +39,7 @@ if (checkAjaxRequest()) {
             }
 
             echo $html;
+            exit();
         }
 
         //ADD NOTE DE FRAIS
@@ -45,8 +47,7 @@ if (checkAjaxRequest()) {
 
             if (!empty($_POST['siteId']) && !empty($_POST['employeId']) && !empty($_POST['year'])
                 && !empty($_POST['month']) && !empty($_POST['day']) && !empty($_POST['type'])
-                && !empty($_POST['nom']) && !empty($_POST['code'])
-                && !empty($_POST['montantHt']) && !empty($_POST['tva'])
+                && !empty($_POST['nom']) && !empty($_POST['montantHt']) && !empty($_POST['tva'])
                 && !empty($_POST['montantTtc']) && !empty($_POST['affectation'])) {
 
                 $NoteDeFrais = new \App\Plugin\AgapesHotes\NoteDeFrais();
@@ -64,6 +65,7 @@ if (checkAjaxRequest()) {
             } else {
                 echo 'Tous les champs accompagnés par un * sont obligatoires !';
             }
+            exit();
         }
 
         //ADD NOTE DE FRAIS
@@ -91,6 +93,7 @@ if (checkAjaxRequest()) {
             } else {
                 echo 'Tous les champs accompagnés par un * sont obligatoires !!!';
             }
+            exit();
         }
 
         //DELETE NOTE DE FRAIS
@@ -104,6 +107,7 @@ if (checkAjaxRequest()) {
                     echo json_encode(true);
                 }
             }
+            exit();
         }
 
         //DELETE INDEMNITE KILOMETRIQUE
@@ -115,9 +119,7 @@ if (checkAjaxRequest()) {
             if ($NoteIK->delete()) {
                 echo json_encode(true);
             }
-
+            exit();
         }
-
-
     }
 }

@@ -34,8 +34,9 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
         <small class="d-block">Commence le <?= $start->format('d/m/Y'); ?> et se termine
             le <?= $start->format('t/m/Y'); ?></small>
     </div>
-    <div id="responsiveTable" class="col-12 table-responsive">
-        <table class="table table-striped tableNonEffect fixed-header">
+    <div id="loaderVivreCrue"><i class="fas fa-circle-notch fa-spin"></i> Chargement...</div>
+    <div id="responsiveTable" class="col-12 table-responsive" style="display: none;">
+        <table class="table table-striped tableNonEffect fixed-header" id="vivreCrueTable">
             <thead style="z-index: 2">
             <tr>
                 <th><?= trans('Produit'); ?></th>
@@ -128,7 +129,7 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                                     $vivreCrueQuantite = $VivreCrue->quantite == 0 ? 0 : $VivreCrue->quantite;
                                     $vivreCrueTotalPrice = $VivreCrue->total;
                                 }
-                                $vivreCrueQuantiteTotalDay += $vivreCrueQuantite;
+                                $vivreCrueQuantiteTotalDay += $vivreCrueQuantite == '' ? 0 : $vivreCrueQuantite;
                                 ?>
                                 <td style="padding: 4px !important; min-width: 45px;" data-tdposition="<?= $count; ?>">
                                     <input type="tel" data-idcourse="<?= $course->id; ?>"
@@ -137,7 +138,7 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                                            data-totalprice="<?= $vivreCrueTotalPrice; ?>"
                                            class="text-center form-control vivreCrueInput sensibleField"
                                            name="<?= $vivreCrueId; ?>"
-                                           value="<?= $vivreCrueQuantite; ?>"
+                                           value="<?= $vivreCrueQuantite > 0 ? $vivreCrueQuantite : ''; ?>"
                                            style="padding: 5px 0 !important; <?= getDayColor($date, $Site->getAlsaceMoselle()); ?>">
                                 </td>
                                 <?php $count++;
@@ -265,16 +266,6 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                         }
                         break;
                 }
-            });
-
-            adaptResponsiveTable();
-            $(window).resize(function () {
-                adaptResponsiveTable();
-            });
-            $('.sidebarCollapse').on('click', function () {
-                setTimeout(function () {
-                    adaptResponsiveTable();
-                }, 300);
             });
 
             function prepareTotalFacture(etablissementid) {
@@ -614,6 +605,20 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                     $Input.val('');
                     alert('Veuillez fournir le prix/unité HT et le taux de TVA');
                 }
+            });
+
+            $('#loaderVivreCrue').fadeOut(400, function () {
+                $('#responsiveTable').show();
+                adaptResponsiveTable();
+            });
+
+            $(window).resize(function () {
+                adaptResponsiveTable();
+            });
+            $('.sidebarCollapse').on('click', function () {
+                setTimeout(function () {
+                    adaptResponsiveTable();
+                }, 300);
             });
         });
     </script>

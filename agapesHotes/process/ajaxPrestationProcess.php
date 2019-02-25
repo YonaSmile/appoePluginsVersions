@@ -32,6 +32,7 @@ if (checkAjaxRequest()) {
             } else {
                 echo 'Un nom est attendu !';
             }
+            exit();
         }
 
         // UPDATE PRESTATION
@@ -58,6 +59,7 @@ if (checkAjaxRequest()) {
                     echo 'Cette prestation n\'existe pas !';
                 }
             }
+            exit();
         }
 
         // ARCHIVE PRESTATION
@@ -77,6 +79,7 @@ if (checkAjaxRequest()) {
                     echo 'Cette prestation n\'existe pas !';
                 }
             }
+            exit();
         }
 
         // RESTAURE PRESTATION
@@ -98,6 +101,7 @@ if (checkAjaxRequest()) {
                     echo 'Cet prestation n\'existe pas !';
                 }
             }
+            exit();
         }
 
         // UPDATE | CREATE PRESTATION PRICE
@@ -145,6 +149,7 @@ if (checkAjaxRequest()) {
                     echo 'Cette date n\'existe pas !';
                 }
             }
+            exit();
         }
     }
 }

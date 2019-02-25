@@ -43,8 +43,7 @@ if (checkAjaxRequest()) {
             } else {
                 echo 'Une donnée est attendu !';
             }
-
-
+            exit();
         }
     }
 }

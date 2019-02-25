@@ -24,7 +24,6 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
         <script>
             $(document).ready(function () {
 
-
                 var today = new Date();
                 var day = '01'; //today.getDate();
                 var month = today.getMonth() + 1;
@@ -33,12 +32,14 @@ if (!empty($_GET['secteur']) && !empty($_GET['site'])):
                 if (month < 10) {
                     month = '0' + month
                 }
-
-                $('#vivreCrueContainer').load('<?= AGAPESHOTES_URL . 'page/getVivreCrueData.php'; ?>', {
-                    secteur: '<?= $Secteur->getSlug(); ?>',
-                    site: '<?= $Site->getSlug(); ?>',
-                    startDate: year + '-' + month + '-' + day
-                });
+                $('#vivreCrueContainer').html(loaderHtml());
+                setTimeout(function () {
+                    $('#vivreCrueContainer').load('<?= AGAPESHOTES_URL . 'page/getVivreCrueData.php'; ?>', {
+                        secteur: '<?= $Secteur->getSlug(); ?>',
+                        site: '<?= $Site->getSlug(); ?>',
+                        startDate: year + '-' + month + '-' + day
+                    });
+                },300);
 
                 $('.seeMonthBefore').on('click', function () {
                     if (month > 1) {

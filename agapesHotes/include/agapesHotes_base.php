@@ -66,7 +66,7 @@ function getAllEmployeHasContratInSite($idSite, $year, $month = '')
 
         //Get Employe Contrat
         $EmployeContrat = new \App\Plugin\AgapesHotes\EmployeContrat();
-        $EmployeContrat->setDateDebut($dateContrat->format('Y-m-d'));
+        $EmployeContrat->setDateDebut($dateContrat->format('Y-m-t'));
         $EmployeContrat->setSiteId($idSite);
         $allContratsDates = $EmployeContrat->showAllReelDateEmployesContrats();
 
@@ -96,7 +96,7 @@ function getEmployeContrats($idEmploye)
 
     if ($allSites) {
         foreach ($allSites as $id => $siteName) {
-            $EmployeContrat->setDateDebut(date('Y-m-d'));
+            $EmployeContrat->setDateDebut(date('Y-m-t'));
             $EmployeContrat->setSiteId($id);
             if ($EmployeContrat->showReelContrat()) {
                 $allReelContrats[$EmployeContrat->getId()] = array(
@@ -456,7 +456,6 @@ function getFacturation($siteId, $year, $month = '')
     foreach ($allFacturationHC as $facturationHC) {
         $totalFacturation += $facturationHC->totalHT;
     }
-
 
     return $totalFacturation;
 }

@@ -69,6 +69,7 @@ if (checkAjaxRequest()) {
             } else {
                 echo 'Tous les champs avec un * sont obligatoires !';
             }
+            exit();
         }
 
         // UPDATE MAIN SUPPLEMENTAIRE
@@ -145,6 +146,7 @@ if (checkAjaxRequest()) {
             } else {
                 echo 'Tous les champs avec un * sont obligatoires !';
             }
+            exit();
         }
 
         if (!empty($_POST['DELETEACHAT']) && !empty($_POST['idAchat'])) {
@@ -163,6 +165,7 @@ if (checkAjaxRequest()) {
             } else {
                 echo 'Un problème est survenue lors de la suppression du produit !';
             }
+            exit();
         }
 
         if (!empty($_POST['SENDFACTUREBYEMAIL']) && !empty($_POST['data'])) {
@@ -181,6 +184,7 @@ if (checkAjaxRequest()) {
             } else {
                 echo 'Un problème est survenue lors de l\'envoi de la facture !';
             }
+            exit();
         }
 
     }

@@ -13,6 +13,7 @@ if (checkAjaxRequest()) {
             if ($Achat->delete()) {
                 echo json_encode(true);
             }
+            exit();
         }
 
         if (!empty($_POST['ADDOTHERACHAT'])) {
@@ -37,6 +38,7 @@ if (checkAjaxRequest()) {
             } else {
                 echo 'Tous les champs sont obligatoires !';
             }
+            exit();
         }
     }
 }

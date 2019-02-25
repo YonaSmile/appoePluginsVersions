@@ -203,7 +203,7 @@ class Prestation
     public function showAll($minimumStatus = true, $countPrestations = false)
     {
         $sqlStatus = $minimumStatus ? 'status >= :status' : 'status = :status';
-        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_prestations WHERE etablissement_id = :etablissementId AND ' . $sqlStatus . ' ORDER BY prestaOrder ASC';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_prestations WHERE etablissement_id = :etablissementId AND ' . $sqlStatus . ' ORDER BY id ASC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':etablissementId', $this->etablissementId);
         $stmt->bindParam(':status', $this->status);

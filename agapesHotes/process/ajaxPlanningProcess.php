@@ -49,6 +49,7 @@ if (checkAjaxRequest()) {
             } else {
                 echo 'Un motif d\'absence ou un nombre d\'heures est attendu !';
             }
+            exit();
         }
 
         // UPDATE | CREATE PLANNING PLUS
@@ -88,8 +89,7 @@ if (checkAjaxRequest()) {
             } else {
                 echo 'Certains éléments manquent !';
             }
+            exit();
         }
-
-
     }
 }

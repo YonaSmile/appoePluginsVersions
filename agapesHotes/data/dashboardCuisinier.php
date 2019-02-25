@@ -20,7 +20,7 @@ if ($dateMonthLater->format('n') < $dateNow->format('n')) {
 
 $dateMonthAgo = new \DateTime($dateCurrent->format('Y-m-d'));
 $dateMonthAgo->sub(new \DateInterval('P1M'));
-
+/*
 $inventaireUrl = 'https://serventest.fr/pro/liaison_appoe/getInventaireServentest.php';
 $commandesUrl = 'https://serventest.fr/pro/liaison_appoe/getCommandServentest.php';
 $refacturationUrl = 'https://serventest.fr/pro/liaison_appoe/getRefacturationServentest.php';
@@ -37,13 +37,56 @@ $paramsMonthAgo = array(
     'dateDebut' => $dateMonthAgo->format('Y-m') . '-01',
     'dateFin' => $dateMonthAgo->format('Y-m-t')
 );
+*/
+$dbc = mysqli_connect('db504799960.db.1and1.com', 'dbo504799960', 'mdp_commandes', 'db504799960');
+$array_inventaire_now = array();
+$array_inventaire_ago = array();
+$array_refacturation = array();
+$array_commande = array();
 
-$inventaireRequest = json_decode(postHttpRequest($inventaireUrl, $paramsMonthNow), true);
-$inventaireRequestMonthAgo = json_decode(postHttpRequest($inventaireUrl, $paramsMonthAgo), true);
-$commandesRequest = json_decode(postHttpRequest($commandesUrl, $paramsMonthNow), true);
-$refacturationRequest = json_decode(postHttpRequest($refacturationUrl, $paramsMonthNow), true);
+$query_liste_com_now = "SELECT ref, date, total_avec_marge AS total, fournisseur  FROM siteInventaireS
+			WHERE ref = '".$Site->ref."' AND id_fournisseur IS NOT NULL AND date >= '".$dateCurrent->format('Y-m-01')."' AND date <= '".$dateCurrent->format('Y-m-t')."'";
+$data_memo_now = mysqli_query($dbc, $query_liste_com_now) or die("Error: " . mysqli_error($dbc));
+
+while ($donnees_memo_now = mysqli_fetch_array($data_memo_now, MYSQLI_ASSOC)) {
+    $array_inventaire_now[] = $donnees_memo_now;
+}
+
+$query_liste_com_ago = "SELECT ref, date, total_avec_marge AS total, fournisseur  FROM siteInventaireS
+			WHERE ref = '".$Site->ref."' AND id_fournisseur IS NOT NULL AND date >= '".$dateMonthAgo->format('Y-m') . '-01'."' AND date <= '".$dateMonthAgo->format('Y-m-t')."'";
+$data_memo_ago = mysqli_query($dbc, $query_liste_com_ago) or die("Error: " . mysqli_error($dbc));
+
+while ($donnees_memo_ago = mysqli_fetch_array($data_memo_ago, MYSQLI_ASSOC)) {
+    $array_inventaire_ago[] = $donnees_memo_ago;
+}
+
+$query_liste_com_refacturation = "SELECT ref, total_avec_marge AS total, fournisseur, date_facturation FROM c_refacturation_total
+			WHERE STR_TO_DATE(date_facturation,'%d/%m/%Y') >= '".$dateCurrent->format('Y-m-01')."' AND STR_TO_DATE(date_facturation,'%d/%m/%Y') <= '".$dateCurrent->format('Y-m-t')."' AND ref = '".$Site->ref."'
+			ORDER BY STR_TO_DATE(date_facturation,'%d/%m/%Y') ASC";
+$data_memo_refacturation = mysqli_query($dbc, $query_liste_com_refacturation)or die("Error: ".mysqli_error($dbc));
+while ($donnees_memo_refacturation = mysqli_fetch_array($data_memo_refacturation, MYSQLI_ASSOC)) {
+    $array_refacturation[] = $donnees_memo_refacturation;
+}
+
+$query_liste_com_commande = "SELECT ref, site, total_avec_marge AS total, fournisseur, date_livraison
+			FROM siteCommandeS
+			WHERE STR_TO_DATE(date_livraison,'%d/%m/%Y') >= '".$dateCurrent->format('Y-m-01')."' AND STR_TO_DATE(date_livraison,'%d/%m/%Y') <= '".$dateCurrent->format('Y-m-t')."' AND ref = '".$Site->ref."'
+			ORDER BY STR_TO_DATE(date_livraison,'%d/%m/%Y') ASC";
+$data_memo_commande = mysqli_query($dbc, $query_liste_com_commande)or die("Error: ".mysqli_error($dbc));
+while ($donnees_memo_commande = mysqli_fetch_array($data_memo_commande, MYSQLI_ASSOC)) {
+    $array_commande[] = $donnees_memo_commande;
+
+}
+
+//$inventaireRequest = json_decode(postHttpRequest($inventaireUrl, $paramsMonthNow), true);
+//$inventaireRequestMonthAgo = json_decode(postHttpRequest($inventaireUrl, $paramsMonthAgo), true);
+//$commandesRequest = json_decode(postHttpRequest($commandesUrl, $paramsMonthNow), true);
+//$refacturationRequest = json_decode(postHttpRequest($refacturationUrl, $paramsMonthNow), true);
+$inventaireRequest = $array_inventaire_now;
+$inventaireRequestMonthAgo = $array_inventaire_ago;
+$refacturationRequest = $array_refacturation;
+$commandesRequest = $array_commande;
 $View = new \App\Plugin\AgapesHotes\View();
-
 $otherFournisseurs = array('BOULANGER' => 'BOULANGER', 'TRANSGOURMET' => 'TRANSGOURMET');
 ?>
 <div class="accordion" id="infosAgapes">
@@ -474,6 +517,9 @@ $otherFournisseurs = array('BOULANGER' => 'BOULANGER', 'TRANSGOURMET' => 'TRANSG
 
         <div id="collapseResultats" class="collapse" aria-labelledby="headingFive"
              data-parent="#infosAgapes">
+            <div class="littleContainer"><span class="littleTitle colorPrimary">Frais Fixes</span>
+                <span class="littleText"><?= financial($siteMeta['fraisFixes']); ?>€</span>
+            </div>
             <div class="littleContainer"><span class="littleTitle colorPrimary">CA</span>
                 <span class="littleText"><?= financial($facturation + $siteMeta['fraisFixes']); ?>€</span>
             </div>
@@ -508,7 +554,7 @@ $otherFournisseurs = array('BOULANGER' => 'BOULANGER', 'TRANSGOURMET' => 'TRANSG
                             <?= \App\Form::select('Fournisseur', 'fournisseur', $otherFournisseurs, '', true); ?>
                         </div>
                         <div class="col-12 my-2">
-                            <?= \App\Form::text('Date de livraison', 'date', 'date', '', true, 10,'','', 'datepicker'); ?>
+                            <?= \App\Form::text('Date de livraison', 'date', 'date', '', true, 10, '', '', 'datepicker'); ?>
                         </div>
                         <div class="col-12 my-2">
                             <?= \App\Form::text('Total', 'total', 'text', '', true); ?>

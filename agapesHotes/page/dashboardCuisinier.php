@@ -35,11 +35,11 @@ $dateMonthAgo->sub(new \DateInterval('P1M'));
                             <small class="littleTitle colorPrimary mt-3"><?= $etablissement->nom; ?></small>
                             <div class="row">
                                 <div class="col-12 col-md-6">
-                                    <a href="<?= AGAPESHOTES_URL; ?>page/allPrestations/<?= $Site->secteurSlug; ?>/<?= $Site->slug; ?>/<?= $etablissement->slug; ?>/"
+                                    <a href="<?= AGAPESHOTES_URL; ?>page/allPrestations.php?secteur=<?= $Site->secteurSlug; ?>&site=<?= $Site->slug; ?>&etablissement=<?= $etablissement->slug; ?>"
                                        class="btn btn-outline-dark btn-block my-2">Liste prestations</a>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <a href="<?= AGAPESHOTES_URL; ?>page/allCourses/<?= $Site->secteurSlug; ?>/<?= $Site->slug; ?>/<?= $etablissement->slug; ?>/"
+                                    <a href="<?= AGAPESHOTES_URL; ?>page/allCourses.php?secteur=<?= $Site->secteurSlug; ?>&site=<?= $Site->slug; ?>&etablissement=<?= $etablissement->slug; ?>"
                                        class="btn btn-outline-dark btn-block my-2">Liste vivre cru</a>
                                 </div>
                             </div>

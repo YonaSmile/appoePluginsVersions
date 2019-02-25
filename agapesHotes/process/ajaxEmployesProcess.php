@@ -28,6 +28,7 @@ if (checkAjaxRequest()) {
             } else {
                 echo 'Tous les champs sont obligatoires !';
             }
+            exit();
         }
 
         // UPDATE EMPLOYE
@@ -57,6 +58,7 @@ if (checkAjaxRequest()) {
                     echo 'Cet employé n\'existe pas !';
                 }
             }
+            exit();
         }
 
         // ARCHIVE EMPLOYE
@@ -76,6 +78,7 @@ if (checkAjaxRequest()) {
                     echo 'Cet employé n\'existe pas !';
                 }
             }
+            exit();
         }
 
         // ADD, UPDATE EMPLOYE CONTRAT
@@ -95,8 +98,7 @@ if (checkAjaxRequest()) {
                     } else {
                         echo 'Impossible d\'enregistrer ce contrat !';
                     }
-                }
-                if ($EmployeContratProcess->getStatus() == 0) {
+                } elseif ($EmployeContratProcess->getStatus() == 0) {
                     echo 'Ce contrat est archivée. Voulez vous le restaurer ?' .
                         '<button type="button" data-restaurecontratid="' . $EmployeContratProcess->getId() . '" class="btn btn-sm btn-link restaureContrat">Oui</button>';
                 } else {
@@ -105,6 +107,7 @@ if (checkAjaxRequest()) {
             } else {
                 echo 'Tous les champs sont obligatoires !';
             }
+            exit();
         }
 
         // ARCHIVE EMPLOYE CONTRAT
@@ -122,7 +125,7 @@ if (checkAjaxRequest()) {
             } else {
                 echo 'Ce contrat n\'existe pas !';
             }
-
+            exit();
         }
 
         // RESTAURE EMPLOYE CONTRAT
@@ -146,6 +149,7 @@ if (checkAjaxRequest()) {
                     echo 'Ce contrat n\'existe pas !';
                 }
             }
+            exit();
         }
 
     }

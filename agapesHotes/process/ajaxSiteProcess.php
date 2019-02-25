@@ -39,6 +39,7 @@ if (checkAjaxRequest()) {
             } else {
                 echo 'Un nom et un secteur sont attendus !';
             }
+            exit();
         }
 
         // UPDATE SITE
@@ -72,6 +73,7 @@ if (checkAjaxRequest()) {
             } else {
                 echo 'Tous les champs sont obligatoires !';
             }
+            exit();
         }
 
         // ARCHIVE SITE
@@ -91,6 +93,7 @@ if (checkAjaxRequest()) {
                     echo 'Ce site n\'existe pas !';
                 }
             }
+            exit();
         }
     }
 }

@@ -46,9 +46,8 @@ if (checkAjaxRequest()) {
             } else {
                 echo 'Certains paramètres ne sont pas renseignés ou inexactes !';
             }
+            exit();
         }
-
-
     }
     unset($_POST);
 }
