@@ -190,7 +190,7 @@ function mehoubarim_pageFreeToChanges()
 {
     $userSessionId = \App\ShinouiKatan::Crypter(getUserIdSession());
 
-    if ($userSessionId > 0) {
+    if ($userSessionId) {
 
         //Get
         $parsed_json = mehoubarim_jsonRead();
