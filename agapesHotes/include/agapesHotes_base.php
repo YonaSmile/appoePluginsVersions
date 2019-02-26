@@ -287,12 +287,13 @@ function getCommandesServentest($allCommandes)
 
     if (!isArrayEmpty($allCommandes)) {
         foreach ($allCommandes as $key => $allDenree) {
-            if (isNotUniqueEntretien($allDenree['fournisseur'])) {
-                $commandServentest['denree']['total'] += $allDenree['total'];
-                $commandServentest['denree'][] = $allDenree;
-            } else {
+            if (!$allDenree['fournisseur'] || isUniqueEntretien($allDenree['fournisseur'])) {
                 $commandServentest['nonAlimentaire']['total'] += $allDenree['total'];
                 $commandServentest['nonAlimentaire'][] = $allDenree;
+            } else {
+
+                $commandServentest['denree']['total'] += $allDenree['total'];
+                $commandServentest['denree'][] = $allDenree;
             }
 
         }
@@ -315,12 +316,13 @@ function getInventaireServentest($allInventaire)
 
     if (!isArrayEmpty($allInventaire)) {
         foreach ($allInventaire as $key => $allDenree) {
-            if (trim($allDenree['fournisseur']) != 'C2M') {
-                $inventaireServentest['denree']['total'] += $allDenree['total'];
-                //$inventaireServentest['denree'][] = $allDenree;
-            } else {
+            if (!$allDenree['fournisseur'] || isUniqueEntretien($allDenree['fournisseur'])) {
                 $inventaireServentest['nonAlimentaire']['total'] += $allDenree['total'];
-                //$inventaireServentest['nonAlimentaire'][] = $allDenree;
+                $inventaireServentest['nonAlimentaire'][] = $allDenree;
+
+            } else {
+                $inventaireServentest['denree']['total'] += $allDenree['total'];
+                $inventaireServentest['denree'][] = $allDenree;
             }
 
         }

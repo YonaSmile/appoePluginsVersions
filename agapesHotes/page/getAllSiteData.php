@@ -117,7 +117,7 @@ if (!empty($_POST['siteId']) && !empty($_POST['year'])) {
 
                 $inventaireNowAddedSql = 'YEAR(date) >= ' . $dateNowDebut . ' AND YEAR(date) <= ' . $dateNowFin;
                 $inventaireAgoAddedSql = 'YEAR(date) >= ' . $dateAgoDebut . ' AND YEAR(date) <= ' . $dateAgoFin;
-                $facturationAgoAddedSql = "YEAR(STR_TO_DATE(date_facturation,'%d/%m/%Y')) >= '" . $dateNowDebut . "' AND YEAR(STR_TO_DATE(date_facturation,'%d/%m/%Y')) <= '" . $dateNowFin . "'";
+                $facturationAgoAddedSql = " (YEAR(STR_TO_DATE(date_facturation,'%d/%m/%Y')) BETWEEN '" . $dateNowDebut . "' AND '" . $dateNowFin . "') ";
 
             } else {
 
@@ -132,7 +132,7 @@ if (!empty($_POST['siteId']) && !empty($_POST['year'])) {
 
                 $inventaireNowAddedSql = 'date >= ' . $dateNowDebut . ' AND date <= ' . $dateNowFin;
                 $inventaireAgoAddedSql = 'date >= ' . $dateAgoDebut . ' AND date <= ' . $dateAgoFin;
-                $facturationAgoAddedSql = "STR_TO_DATE(date_facturation,'%d/%m/%Y') >= '" . $dateNowDebut . "' AND STR_TO_DATE(date_facturation,'%d/%m/%Y') <= '" . $dateNowFin . "'";
+                $facturationAgoAddedSql = " (STR_TO_DATE(date_facturation,'%d/%m/%Y') BETWEEN '" . $dateNowDebut . "' AND '" . $dateNowFin . "') ";
             }
 
             $query_liste_com_now = "SELECT ref, date, total_avec_marge AS total, fournisseur  FROM siteInventaireS
@@ -164,12 +164,11 @@ if (!empty($_POST['siteId']) && !empty($_POST['year'])) {
             //$allSitesData[$Secteur->getId()][$Site->getId()]['inventaireRequest'] = json_decode(postHttpRequest($inventaireUrl, $paramsNow), true);
             //$allSitesData[$Secteur->getId()][$Site->getId()]['inventaireRequestMonthAgo'] = json_decode(postHttpRequest($inventaireUrl, $paramsAgo), true);
             //$allSitesData[$Secteur->getId()][$Site->getId()]['commandesRequest'] = json_decode(postHttpRequest($commandesUrl, $paramsNow), true);
-            $allSitesData[$Secteur->getId()][$Site->getId()]['inventaireRequest'] = $array_inventaire_now;
-            $allSitesData[$Secteur->getId()][$Site->getId()]['inventaireRequestMonthAgo'] = $array_inventaire_ago;
             $allSitesData[$Secteur->getId()][$Site->getId()]['commandesRequest'] = $array_refacturation;
-            $allSitesData[$Secteur->getId()][$Site->getId()]['commandes'] = getCommandesServentest(array_merge($allSitesData[$Secteur->getId()][$Site->getId()]['commandesRequest'], getAllCommandes($Site->getId(), $year, $month)));
-            $allSitesData[$Secteur->getId()][$Site->getId()]['inventaire'] = getInventaireServentest($allSitesData[$Secteur->getId()][$Site->getId()]['inventaireRequest']);
-            $allSitesData[$Secteur->getId()][$Site->getId()]['inventaireMonthAgo'] = getInventaireServentest($allSitesData[$Secteur->getId()][$Site->getId()]['inventaireRequestMonthAgo']);
+            //$allSitesData[$Secteur->getId()][$Site->getId()]['commandes'] = getCommandesServentest(array_merge($allSitesData[$Secteur->getId()][$Site->getId()]['commandesRequest'], getAllCommandes($Site->getId(), $year, $month)));
+            $allSitesData[$Secteur->getId()][$Site->getId()]['commandes'] = getCommandesServentest($array_refacturation);
+            $allSitesData[$Secteur->getId()][$Site->getId()]['inventaire'] = getInventaireServentest($array_inventaire_now);
+            $allSitesData[$Secteur->getId()][$Site->getId()]['inventaireMonthAgo'] = getInventaireServentest($array_inventaire_ago);
             $allSitesData[$Secteur->getId()][$Site->getId()]['noteDeFrais'] = getNoteDeFrais($Site->getId(), $year, $month);
             $allSitesData[$Secteur->getId()][$Site->getId()]['indemniteKm'] = getIndemniteKm($Site->getId(), $year, $month);
             $allSitesData[$Secteur->getId()][$Site->getId()]['siteMeta'] = getSiteMeta($Site->getId(), $year, $month);
