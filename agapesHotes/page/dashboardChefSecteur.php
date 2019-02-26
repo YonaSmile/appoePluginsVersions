@@ -34,7 +34,7 @@ if ($Secteur):
         $allSitesData[$site->id]['inventaireRequest'] = json_decode(postHttpRequest($inventaireUrl, $paramsMonthNow), true);
         $allSitesData[$site->id]['inventaireRequestMonthAgo'] = json_decode(postHttpRequest($inventaireUrl, $paramsMonthAgo), true);
         $allSitesData[$site->id]['commandesRequest'] = json_decode(postHttpRequest($commandesUrl, $paramsMonthNow), true);
-        $allSitesData[$site->id]['commandes'] = getCommandesServentest(array_merge($allSitesData[$site->id]['commandesRequest'], getAllCommandes($Site->getId(), date('Y'))));
+        $allSitesData[$site->id]['commandes'] = getCommandesServentest($allSitesData[$site->id]['commandesRequest']);
         $allSitesData[$site->id]['inventaire'] = getInventaireServentest($allSitesData[$site->id]['inventaireRequest']);
         $allSitesData[$site->id]['inventaireMonthAgo'] = getInventaireServentest($allSitesData[$site->id]['inventaireRequestMonthAgo']);
         $allSitesData[$site->id]['noteDeFrais'] = getNoteDeFrais($site->id, date('Y'));

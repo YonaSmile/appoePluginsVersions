@@ -287,11 +287,10 @@ function getCommandesServentest($allCommandes)
 
     if (!isArrayEmpty($allCommandes)) {
         foreach ($allCommandes as $key => $allDenree) {
-            if (!$allDenree['fournisseur'] || isUniqueEntretien($allDenree['fournisseur'])) {
+            if (isUniqueEntretien($allDenree['fournisseur'])) {
                 $commandServentest['nonAlimentaire']['total'] += $allDenree['total'];
                 $commandServentest['nonAlimentaire'][] = $allDenree;
             } else {
-
                 $commandServentest['denree']['total'] += $allDenree['total'];
                 $commandServentest['denree'][] = $allDenree;
             }
@@ -316,7 +315,7 @@ function getInventaireServentest($allInventaire)
 
     if (!isArrayEmpty($allInventaire)) {
         foreach ($allInventaire as $key => $allDenree) {
-            if (!$allDenree['fournisseur'] || isUniqueEntretien($allDenree['fournisseur'])) {
+            if (isUniqueEntretien($allDenree['fournisseur'])) {
                 $inventaireServentest['nonAlimentaire']['total'] += $allDenree['total'];
                 $inventaireServentest['nonAlimentaire'][] = $allDenree;
 
@@ -616,8 +615,9 @@ function getDayColor($date, $alsaceMoselle = false)
  */
 function isNotUniqueEntretien($fournisseur)
 {
-
+    if(empty($fournisseur)) return true;
     $fournisseur = trim($fournisseur);
+
     $uniqueEntretien = array('C2M', 'SILLIKER', 'EUROFINS', 'AGRIVALOR');
     return !in_array($fournisseur, $uniqueEntretien);
 }
@@ -628,8 +628,9 @@ function isNotUniqueEntretien($fournisseur)
  */
 function isUniqueEntretien($fournisseur)
 {
-
+    if(empty($fournisseur)) return false;
     $fournisseur = trim($fournisseur);
+
     $uniqueEntretien = array('C2M', 'SILLIKER', 'EUROFINS', 'AGRIVALOR');
     return in_array($fournisseur, $uniqueEntretien);
 }

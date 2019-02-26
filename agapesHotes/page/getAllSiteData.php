@@ -117,43 +117,45 @@ if (!empty($_POST['siteId']) && !empty($_POST['year'])) {
 
                 $inventaireNowAddedSql = 'YEAR(date) >= ' . $dateNowDebut . ' AND YEAR(date) <= ' . $dateNowFin;
                 $inventaireAgoAddedSql = 'YEAR(date) >= ' . $dateAgoDebut . ' AND YEAR(date) <= ' . $dateAgoFin;
-                $facturationAgoAddedSql = " (YEAR(STR_TO_DATE(date_facturation,'%d/%m/%Y')) BETWEEN '" . $dateNowDebut . "' AND '" . $dateNowFin . "') ";
+                $facturationAgoAddedSql = " (YEAR(STR_TO_DATE(date_facturation,'%d/%m/%Y')) = '" . $dateNowDebut . "') ";
 
             } else {
+                $month = strlen($month) < 2 ? '0' . $month : $month;
 
-                $dateNowDebut = date($year . '-' . $month . '-01');
-                $dateNowFin = date($year . '-' . $month . '-t');
+                $date = new \DateTime($year . '-' . $month . '-01');
+                $dateNowDebut = $date->format('Y-m-d');
+                $dateNowFin = $date->format('Y-m-t');
 
-                $dateMonthAgo = new \DateTime(date($year . '-' . $month . '-01'));
+                $dateMonthAgo = new \DateTime($date->format('Y-m-d'));
                 $dateMonthAgo->sub(new \DateInterval('P1M'));
 
-                $dateAgoDebut = $dateMonthAgo->format('Y-m') . '-01';
+                $dateAgoDebut = $dateMonthAgo->format('Y-m-01');
                 $dateAgoFin = $dateMonthAgo->format('Y-m-t');
 
-                $inventaireNowAddedSql = 'date >= ' . $dateNowDebut . ' AND date <= ' . $dateNowFin;
-                $inventaireAgoAddedSql = 'date >= ' . $dateAgoDebut . ' AND date <= ' . $dateAgoFin;
-                $facturationAgoAddedSql = " (STR_TO_DATE(date_facturation,'%d/%m/%Y') BETWEEN '" . $dateNowDebut . "' AND '" . $dateNowFin . "') ";
+                $inventaireNowAddedSql = 'date >= "' . $dateNowDebut . '" AND date <= "' . $dateNowFin . '"';
+                $inventaireAgoAddedSql = 'date >= "' . $dateAgoDebut . '" AND date <= "' . $dateAgoFin . '"';
+                $facturationAgoAddedSql = ' (STR_TO_DATE(date_facturation,"%d/%m/%Y") BETWEEN "' . $dateNowDebut . '" AND "' . $dateNowFin . '") ';
             }
 
-            $query_liste_com_now = "SELECT ref, date, total_avec_marge AS total, fournisseur  FROM siteInventaireS
-			WHERE ref = '" . $Site->getRef() . "' AND id_fournisseur IS NOT NULL AND " . $inventaireNowAddedSql;
+            $query_liste_com_now = 'SELECT ref, date, total_avec_marge AS total, fournisseur  FROM siteInventaireS
+			WHERE ref = "' . $Site->getRef() . '" AND ' . $inventaireNowAddedSql;
             $data_memo_now = mysqli_query($dbc, $query_liste_com_now) or die("Error: " . mysqli_error($dbc));
 
             while ($donnees_memo_now = mysqli_fetch_array($data_memo_now, MYSQLI_ASSOC)) {
                 $array_inventaire_now[] = $donnees_memo_now;
             }
 
-            $query_liste_com_ago = "SELECT ref, date, total_avec_marge AS total, fournisseur  FROM siteInventaireS
-			WHERE ref = '" . $Site->getRef() . "' AND id_fournisseur IS NOT NULL AND " . $inventaireAgoAddedSql;
+            $query_liste_com_ago = 'SELECT ref, date, total_avec_marge AS total, fournisseur  FROM siteInventaireS
+			WHERE ref = "' . $Site->getRef() . '" AND ' . $inventaireAgoAddedSql;
             $data_memo_ago = mysqli_query($dbc, $query_liste_com_ago) or die("Error: " . mysqli_error($dbc));
 
             while ($donnees_memo_ago = mysqli_fetch_array($data_memo_ago, MYSQLI_ASSOC)) {
                 $array_inventaire_ago[] = $donnees_memo_ago;
             }
 
-            $query_liste_com_refacturation = "SELECT ref, total_avec_marge AS total, fournisseur, date_facturation FROM c_refacturation_total
-			WHERE " . $facturationAgoAddedSql . " AND ref = '" . $Site->getRef() . "'
-			ORDER BY STR_TO_DATE(date_facturation,'%d/%m/%Y') ASC";
+            $query_liste_com_refacturation = 'SELECT ref, total_avec_marge AS total, fournisseur, date_facturation FROM c_refacturation_total
+			WHERE ' . $facturationAgoAddedSql . ' AND ref = "' . $Site->getRef() . '"
+			ORDER BY STR_TO_DATE(date_facturation,"%d/%m/%Y") ASC';
             $data_memo_refacturation = mysqli_query($dbc, $query_liste_com_refacturation) or die("Error: " . mysqli_error($dbc));
             while ($donnees_memo_refacturation = mysqli_fetch_array($data_memo_refacturation, MYSQLI_ASSOC)) {
                 $array_refacturation[] = $donnees_memo_refacturation;

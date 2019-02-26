@@ -45,7 +45,7 @@ $array_refacturation = array();
 $array_commande = array();
 
 $query_liste_com_now = "SELECT ref, date, total_avec_marge AS total, fournisseur  FROM siteInventaireS
-			WHERE ref = '".$Site->ref."' AND id_fournisseur IS NOT NULL AND date >= '".$dateCurrent->format('Y-m-01')."' AND date <= '".$dateCurrent->format('Y-m-t')."'";
+			WHERE ref = '" . $Site->ref . "' AND date >= '" . $dateCurrent->format('Y-m-01') . "' AND date <= '" . $dateCurrent->format('Y-m-t') . "'";
 $data_memo_now = mysqli_query($dbc, $query_liste_com_now) or die("Error: " . mysqli_error($dbc));
 
 while ($donnees_memo_now = mysqli_fetch_array($data_memo_now, MYSQLI_ASSOC)) {
@@ -53,7 +53,7 @@ while ($donnees_memo_now = mysqli_fetch_array($data_memo_now, MYSQLI_ASSOC)) {
 }
 
 $query_liste_com_ago = "SELECT ref, date, total_avec_marge AS total, fournisseur  FROM siteInventaireS
-			WHERE ref = '".$Site->ref."' AND id_fournisseur IS NOT NULL AND date >= '".$dateMonthAgo->format('Y-m') . '-01'."' AND date <= '".$dateMonthAgo->format('Y-m-t')."'";
+			WHERE ref = '" . $Site->ref . "' AND date >= '" . $dateMonthAgo->format('Y-m-01') . "' AND date <= '" . $dateMonthAgo->format('Y-m-t') . "'";
 $data_memo_ago = mysqli_query($dbc, $query_liste_com_ago) or die("Error: " . mysqli_error($dbc));
 
 while ($donnees_memo_ago = mysqli_fetch_array($data_memo_ago, MYSQLI_ASSOC)) {
@@ -61,18 +61,18 @@ while ($donnees_memo_ago = mysqli_fetch_array($data_memo_ago, MYSQLI_ASSOC)) {
 }
 
 $query_liste_com_refacturation = "SELECT ref, total_avec_marge AS total, fournisseur, date_facturation FROM c_refacturation_total
-			WHERE STR_TO_DATE(date_facturation,'%d/%m/%Y') >= '".$dateCurrent->format('Y-m-01')."' AND STR_TO_DATE(date_facturation,'%d/%m/%Y') <= '".$dateCurrent->format('Y-m-t')."' AND ref = '".$Site->ref."'
+			WHERE (STR_TO_DATE(date_facturation,'%d/%m/%Y') BETWEEN '" . $dateCurrent->format('Y-m-01') . "' AND '" . $dateCurrent->format('Y-m-t') . "') AND ref = '" . $Site->ref . "'
 			ORDER BY STR_TO_DATE(date_facturation,'%d/%m/%Y') ASC";
-$data_memo_refacturation = mysqli_query($dbc, $query_liste_com_refacturation)or die("Error: ".mysqli_error($dbc));
+$data_memo_refacturation = mysqli_query($dbc, $query_liste_com_refacturation) or die("Error: " . mysqli_error($dbc));
 while ($donnees_memo_refacturation = mysqli_fetch_array($data_memo_refacturation, MYSQLI_ASSOC)) {
     $array_refacturation[] = $donnees_memo_refacturation;
 }
 
 $query_liste_com_commande = "SELECT ref, site, total_avec_marge AS total, fournisseur, date_livraison
 			FROM siteCommandeS
-			WHERE STR_TO_DATE(date_livraison,'%d/%m/%Y') >= '".$dateCurrent->format('Y-m-01')."' AND STR_TO_DATE(date_livraison,'%d/%m/%Y') <= '".$dateCurrent->format('Y-m-t')."' AND ref = '".$Site->ref."'
+			WHERE (STR_TO_DATE(date_livraison,'%d/%m/%Y') BETWEEN '" . $dateCurrent->format('Y-m-01') . "' AND '" . $dateCurrent->format('Y-m-t') . "') AND ref = '" . $Site->ref . "'
 			ORDER BY STR_TO_DATE(date_livraison,'%d/%m/%Y') ASC";
-$data_memo_commande = mysqli_query($dbc, $query_liste_com_commande)or die("Error: ".mysqli_error($dbc));
+$data_memo_commande = mysqli_query($dbc, $query_liste_com_commande) or die("Error: " . mysqli_error($dbc));
 while ($donnees_memo_commande = mysqli_fetch_array($data_memo_commande, MYSQLI_ASSOC)) {
     $array_commande[] = $donnees_memo_commande;
 
@@ -295,8 +295,7 @@ $otherFournisseurs = array('BOULANGER' => 'BOULANGER', 'TRANSGOURMET' => 'TRANSG
                                 <th><?= financial($totalRefraCommandUniqueEntretien); ?>€</th>
                             </tr>
                             <tr>
-                                <th colspan="3"
-                                    style="text-align:center !important; background:#b96d36;color:#fff;">
+                                <th colspan="3" style="text-align:center !important; background:#b96d36;color:#fff;">
                                     Total <?= financial($totalRefraCommandUniqueEntretien + $totalRefraCommandDenree); ?>
                                     €
                                 </th>
@@ -481,7 +480,7 @@ $otherFournisseurs = array('BOULANGER' => 'BOULANGER', 'TRANSGOURMET' => 'TRANSG
         $ParticipationTournante = $siteMeta['participationTournante'];
         $FraisDePersonnels = $siteMeta['fraisDePersonnel'];
         $indemniteKm = getIndemniteKm($Site->id, $dateCurrent->format('Y'), $dateCurrent->format('m'));
-        $fraisDeSiege = ($facturation * 0.04);
+        $fraisDeSiege = (($facturation+$siteMeta['fraisFixes']) * 0.04);
         $fraisGenerauxTotal = ($ParticipationTournante + $fraisDeSiege + $consoReelNonAlimentaires + $noteDeFrais['autreAchat'] + $indemniteKm);
         ?>
         <div id="collapseFraisGener" class="collapse" aria-labelledby="headingFour"
@@ -594,6 +593,22 @@ $otherFournisseurs = array('BOULANGER' => 'BOULANGER', 'TRANSGOURMET' => 'TRANSG
     }
 
     $(document).ready(function () {
+
+        $.post(
+            '<?= AGAPESHOTES_URL . 'page/getAllSiteData.php'; ?>',
+            {
+                siteId: 2,
+                year: '2019',
+                month: '2'
+            },
+            function (data) {
+                if (data) {
+                    var parsedData = jQuery.parseJSON(data);
+                    console.log(parsedData);
+                }
+
+            }
+        );
 
         $('form#addOtherAchatForm').on('submit', function (event) {
             event.preventDefault();
