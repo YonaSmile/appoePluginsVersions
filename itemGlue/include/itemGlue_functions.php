@@ -84,7 +84,11 @@ function getSimilarArticles($articleId, $categories, $length = false)
 {
     $relatedArticles = array();
     $allArticles = array();
-    if ($categories) {
+
+    if (is_numeric($categories)) {
+        $relatedArticles[$categories] = unsetSameKeyInArr(extractFromObjArr(getArticlesByCategory($categories, true), 'id'), $articleId);
+
+    } elseif (is_array($categories)) {
         foreach ($categories as $key => $category) {
             $relatedArticles[$key] = unsetSameKeyInArr(extractFromObjArr(getArticlesByCategory($key, true), 'id'), $articleId);
         }
