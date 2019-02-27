@@ -255,7 +255,8 @@ class SiteMeta
     public function showBySite()
     {
         if (empty($this->month)) {
-            $sqlAdd = '';
+            $this->month = date('m');
+            $sqlAdd = 'AND month <= :month';
         } else {
             $sqlAdd = ' AND month = :month ';
         }
@@ -263,9 +264,7 @@ class SiteMeta
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':siteId', $this->siteId);
         $stmt->bindParam(':year', $this->year);
-        if (!empty($this->month)) {
-            $stmt->bindParam(':month', $this->month);
-        }
+        $stmt->bindParam(':month', $this->month);
         $stmt->bindParam(':status', $this->status);
         $stmt->execute();
 
