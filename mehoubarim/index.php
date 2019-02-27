@@ -13,10 +13,12 @@ if ($mehoubarim && is_array($mehoubarim)): ?>
         && $connectedUserData['status'] < 4
         && isUserExist($connectedUserId)): ?>
         <li class="list-inline-item p-0 pr-2 mr-0" style="font-size: 0.7em;">
-            <span class="pb-1 border-bottom border-<?= STATUS_CONNECTED_USER[$connectedUserData['status']]; ?>"
+            <span class="activeUser pb-1 border-bottom border-<?= STATUS_CONNECTED_USER[$connectedUserData['status']]; ?>"
+                  style="position: relative;"
                     <?= isTechnicien(getUserRoleId()) ? 'title="Location: ' . $connectedUserData['pageConsulting'] . '"' : ''; ?>>
                 <?php if (isTechnicien(getUserRoleId())): ?>
-                    <span class="logoutUser linkBtn mr-1" data-userid="<?= $connectedUserId; ?>">
+                    <span class="logoutUser linkBtn" data-userid="<?= $connectedUserId; ?>"
+                          style="display: none;position: absolute; right: -2px;top:-7px;">
                         <i class="fas fa-times"></i></span>
                 <?php endif; ?>
                 <?= getUserFirstName($connectedUserId) . ucfirst(substr(getUserName($connectedUserId), 0, 1)); ?>
@@ -37,9 +39,15 @@ endif; ?>
         }
     });
 
-    jQuery(document).ready(function () {
+    jQuery(document).ready(function ($) {
 
-        jQuery('#sidebar span.logoutUser').on('click', function (event) {
+        $('span.activeUser').hover(function () {
+            $(this).find('span.logoutUser').stop().fadeIn(200);
+        }, function () {
+            $(this).find('span.logoutUser').stop().fadeOut(200);
+        });
+
+        $('#sidebar span.logoutUser').on('click', function (event) {
             event.preventDefault();
             event.stopPropagation();
 
