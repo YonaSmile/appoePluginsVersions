@@ -338,7 +338,7 @@ function getInventaireServentest($allInventaire)
  */
 function getSiteMeta($siteId, $year, $month = '')
 {
-
+    $allSiteMetas = array();
     $siteMeta = array(
         'participationTournante' => 0,
         'fraisDePersonnel' => 0,
@@ -347,21 +347,38 @@ function getSiteMeta($siteId, $year, $month = '')
 
     $SiteMeta = new \App\Plugin\AgapesHotes\SiteMeta();
     $SiteMeta->setSiteId($siteId);
-    if (!empty($month)) {
-        $SiteMeta->setMonth($month);
-    }
     $SiteMeta->setYear($year);
 
-    $allSiteMetas = extractFromObjArr($SiteMeta->showBySite(), 'dataName');
+    if (!empty($month)) {
 
-    if (!isArrayEmpty($allSiteMetas)) {
-        $siteMeta['participationTournante'] = array_key_exists('Participation tournant', $allSiteMetas) ? $allSiteMetas['Participation tournant']->data : 0;
-        $siteMeta['fraisDePersonnel'] = array_key_exists('Frais de personnel', $allSiteMetas) ? $allSiteMetas['Frais de personnel']->data : 0;
-        $siteMeta['fraisFixes'] = array_key_exists('Frais fixes', $allSiteMetas) ? $allSiteMetas['Frais fixes']->data : 0;
+        $SiteMeta->setMonth($month);
+        $allSiteMetas = extractFromObjArr($SiteMeta->showBySite(), 'dataName');
+
+        if (!isArrayEmpty($allSiteMetas)) {
+            $siteMeta['participationTournante'] = array_key_exists('Participation tournant', $allSiteMetas) ? $allSiteMetas['Participation tournant']->data : 0;
+            $siteMeta['fraisDePersonnel'] = array_key_exists('Frais de personnel', $allSiteMetas) ? $allSiteMetas['Frais de personnel']->data : 0;
+            $siteMeta['fraisFixes'] = array_key_exists('Frais fixes', $allSiteMetas) ? $allSiteMetas['Frais fixes']->data : 0;
+        }
+
+
+    } else {
+
+        $countMonth = $year == date('Y') ? date('n') : 12;
+
+        for ($generateMonth = 1; $generateMonth <= $countMonth; $generateMonth++) {
+
+            $SiteMeta->setMonth((strlen($generateMonth) == 1 ? '0' . $generateMonth : $generateMonth));
+            $allSiteMetas = extractFromObjArr($SiteMeta->showBySite(), 'dataName');
+
+            if (!isArrayEmpty($allSiteMetas)) {
+                $siteMeta['participationTournante'] += array_key_exists('Participation tournant', $allSiteMetas) ? $allSiteMetas['Participation tournant']->data : 0;
+                $siteMeta['fraisDePersonnel'] += array_key_exists('Frais de personnel', $allSiteMetas) ? $allSiteMetas['Frais de personnel']->data : 0;
+                $siteMeta['fraisFixes'] += array_key_exists('Frais fixes', $allSiteMetas) ? $allSiteMetas['Frais fixes']->data : 0;
+            }
+        }
     }
 
     return $siteMeta;
-
 }
 
 /**
@@ -443,17 +460,32 @@ function getFacturation($siteId, $year, $month = '')
     $VivreCru = new \App\Plugin\AgapesHotes\VivreCrue();
     $MainSupp = new \App\Plugin\AgapesHotes\MainSupplementaire();
 
-    $allMainCourant = $MainCourant->showTotalMainCourante($siteId, $year, $month);
+    $allMainCourant = array();
+    if (empty($month)) {
+
+        $countMonth = $year == date('Y') ? date('n') : 12;
+
+        for ($generateMonth = 1; $generateMonth <= $countMonth; $generateMonth++) {
+            $allMainCourant[] = $MainCourant->showTotalMainCourante($siteId, $year, (strlen($generateMonth) == 1 ? '0' . $generateMonth : $generateMonth));
+        }
+    } else {
+        $allMainCourant[] = $MainCourant->showTotalMainCourante($siteId, $year, $month);
+    }
+
     $allVivreCru = $VivreCru->showTotalVivreCru($siteId, $year, $month);
     $allFacturationHC = $MainSupp->showTotalFacturationHC($siteId, $year, $month);
 
     $totalFacturation = 0;
-    foreach ($allMainCourant as $mainCourant) {
-        $totalFacturation += $mainCourant->totalHT;
+    foreach ($allMainCourant as $mainCourants) {
+        foreach ($mainCourants as $mainCourant) {
+            $totalFacturation += $mainCourant->totalHT;
+        }
     }
+
     foreach ($allVivreCru as $vivreCrue) {
         $totalFacturation += $vivreCrue->totalHT;
     }
+
     foreach ($allFacturationHC as $facturationHC) {
         $totalFacturation += $facturationHC->totalHT;
     }
@@ -615,7 +647,7 @@ function getDayColor($date, $alsaceMoselle = false)
  */
 function isNotUniqueEntretien($fournisseur)
 {
-    if(empty($fournisseur)) return true;
+    if (empty($fournisseur)) return true;
     $fournisseur = trim($fournisseur);
 
     $uniqueEntretien = array('C2M', 'SILLIKER', 'EUROFINS', 'AGRIVALOR');
@@ -628,7 +660,7 @@ function isNotUniqueEntretien($fournisseur)
  */
 function isUniqueEntretien($fournisseur)
 {
-    if(empty($fournisseur)) return false;
+    if (empty($fournisseur)) return false;
     $fournisseur = trim($fournisseur);
 
     $uniqueEntretien = array('C2M', 'SILLIKER', 'EUROFINS', 'AGRIVALOR');

@@ -597,9 +597,8 @@ $otherFournisseurs = array('BOULANGER' => 'BOULANGER', 'TRANSGOURMET' => 'TRANSG
         $.post(
             '<?= AGAPESHOTES_URL . 'page/getAllSiteData.php'; ?>',
             {
-                siteId: 2,
-                year: '2019',
-                month: '2'
+                siteId: 16,
+                year: '2019'
             },
             function (data) {
                 if (data) {

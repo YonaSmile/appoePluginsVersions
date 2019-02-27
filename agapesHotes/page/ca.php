@@ -93,7 +93,7 @@ $Budget = new \App\Plugin\AgapesHotes\Budget();
                                         $facturation = 0.00;
                                         if ((date('Y') - 1) > 2018) {
                                             $facturation = getFacturation($site->id, date('Y') - 1, $date->format('m'));
-                                            $siteMeta = getSiteMeta($site->id, date('Y') - 1, date('m'));
+                                            $siteMeta = getSiteMeta($site->id, date('Y') - 1, $date->format('m'));
                                             $facturation += $siteMeta['fraisFixes'];
                                         } else {
                                             $json = getJsonContent(AGAPESHOTES_PATH . 'data/general.json');
@@ -128,7 +128,7 @@ $Budget = new \App\Plugin\AgapesHotes\Budget();
                                     <?php foreach ($period as $key => $date):
                                         $facturation = 0;
                                         $facturation = getFacturation($site->id, date('Y'), $date->format('m'));
-                                        $siteMeta = getSiteMeta($site->id, date('Y'), date('m'));
+                                        $siteMeta = getSiteMeta($site->id, date('Y'), $date->format('m'));
                                         $facturation += $siteMeta['fraisFixes'];
                                         $anneeCurrent += $facturation;
                                         $anneeCumul[$date->format('m')] = $anneeCurrent;
