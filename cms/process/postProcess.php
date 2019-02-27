@@ -103,7 +103,7 @@ if (checkPostAndTokenRequest()) {
         if (!empty($_POST['name']) && !empty($_POST['parentId']) && !empty($_POST['location'])) {
 
             if (!empty($_POST['idArticle']) && !empty($_POST['slugArticlePage'])) {
-                $_POST['idCms'] = WEB_DIR_URL . $_POST['slugArticlePage'] . DIRECTORY_SEPARATOR . $_POST['idArticle'];
+                $_POST['idCms'] = $_POST['slugArticlePage'] . DIRECTORY_SEPARATOR . $_POST['idArticle'];
             }
 
             if (!empty($_POST['idCms'])) {
