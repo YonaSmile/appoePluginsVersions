@@ -43,32 +43,50 @@ if ($Secteur):
         $allSitesData[$site->id]['facturation'] = getFacturation($site->id, date('Y')) + $allSitesData[$site->id]['siteMeta']['fraisFixes'];
         $allSitesData[$site->id]['budget'] = getBudget($site->id, date('Y'));
 
-        $allSitesData[$site->id]['consoReel']['denree'] = (
+        $allSitesData[$site->id]['consoReel']['denree'] = financial(((
                 $allSitesData[$site->id]['commandes']['denree']['total']
                 + $allSitesData[$site->id]['inventaireMonthAgo']['denree']['total']
                 + $allSitesData[$site->id]['noteDeFrais']['denree']
-            ) - $allSitesData[$site->id]['inventaire']['denree']['total'];
+            ) - $allSitesData[$site->id]['inventaire']['denree']['total']), true);
 
-        $allSitesData[$site->id]['consoReel']['nonAlimentaire'] = (
+        $allSitesData[$site->id]['consoReel']['nonAlimentaire'] = financial(((
                 $allSitesData[$site->id]['commandes']['nonAlimentaire']['total']
                 + $allSitesData[$site->id]['inventaireMonthAgo']['nonAlimentaire']['total']
                 + $allSitesData[$site->id]['noteDeFrais']['nonAlimentaire']
-            ) - $allSitesData[$site->id]['inventaire']['nonAlimentaire']['total'];
+            ) - $allSitesData[$site->id]['inventaire']['nonAlimentaire']['total']), true);
 
 
-        $allSitesData[$site->id]['fraisDeSiege'] = ($allSitesData[$site->id]['facturation'] * 0.04);
-        $allSitesData[$site->id]['fraisGeneraux'] = (
-            $allSitesData[$site->id]['siteMeta']['participationTournante']
-            + $allSitesData[$site->id]['fraisDeSiege']
-            + $allSitesData[$site->id]['noteDeFrais']['autreAchat']
-            + $allSitesData[$site->id]['indemniteKm']
-            + $allSitesData[$site->id]['consoReel']['nonAlimentaire']
-        );
+        $allSitesData[$site->id]['fraisDeSiege'] =
+            financial(($allSitesData[$site->id]['facturation'] * 0.04), true);
 
-        $allSitesData[$site->id]['resultatExploitation'] = $allSitesData[$site->id]['facturation'] - ($allSitesData[$site->id]['consoReel']['denree'] + $allSitesData[$site->id]['siteMeta']['fraisDePersonnel'] + $allSitesData[$site->id]['fraisGeneraux']);
-        $allSitesData[$site->id]['retourAchat'] = $allSitesData[$site->id]['consoReel']['denree'] * 0.065;
-        $allSitesData[$site->id]['resultats'] = $allSitesData[$site->id]['resultatExploitation'] + $allSitesData[$site->id]['retourAchat'] + $allSitesData[$site->id]['fraisDeSiege'];
-    }
+        $allSitesData[$site->id]['fraisGeneraux'] =
+            financial(($allSitesData[$site->id]['siteMeta']['participationTournante']
+                + $allSitesData[$site->id]['fraisDeSiege']
+                + $allSitesData[$site->id]['noteDeFrais']['autreAchat']
+                + $allSitesData[$site->id]['indemniteKm']
+                + $allSitesData[$site->id]['consoReel']['nonAlimentaire']), true);
+
+        $allSitesData[$site->id]['resultatExploitation'] =
+            financial(($allSitesData[$site->id]['facturation']
+                - ($allSitesData[$site->id]['consoReel']['denree']
+                    + $allSitesData[$site->id]['siteMeta']['fraisDePersonnel']
+                    + $allSitesData[$site->id]['fraisGeneraux'])), true);
+
+        $allSitesData[$site->id]['retourAchat'] =
+            financial(($allSitesData[$site->id]['consoReel']['denree'] * 0.065), true);
+
+        $allSitesData[$site->id]['resultats'] =
+            financial(($allSitesData[$site->id]['resultatExploitation']
+                + $allSitesData[$site->id]['retourAchat']
+                + $allSitesData[$site->id]['fraisDeSiege']), true);
+
+        $allSitesData[$site->id]['pourcentagesDeRentabilite'] =
+            financial($allSitesData[$site->id]['facturation'] > 0
+                ? $allSitesData[$site->id]['resultats'] / $allSitesData[$site->id]['facturation']
+                : 0, true);
+
+
+        }
     ?>
     <h4>Synthèse (en €)</h4>
     <div class="row mb-3">
@@ -104,7 +122,7 @@ if ($Secteur):
                                 <td><?= financial($allSitesData[$site->id]['budget']->getPersonnel()); ?></td>
                                 <td><?= financial($allSitesData[$site->id]['budget']->getFraisGeneraux()); ?></td>
                                 <td><?= financial($allSitesData[$site->id]['budget']->getResultatExploitation()); ?></td>
-                                <td><?= financial($allSitesData[$site->id]['budget']->getRetourAchat()); ?>%</td>
+                                <td><?= financial($allSitesData[$site->id]['budget']->getRetourAchat()); ?></td>
                                 <td><?= financial($allSitesData[$site->id]['budget']->getRetourFraisSiege()); ?></td>
                                 <td><?= financial($allSitesData[$site->id]['budget']->getResultats()); ?></td>
                                 <td style="text-align:center !important;">
@@ -117,14 +135,14 @@ if ($Secteur):
                                 <td style="text-align:left !important;">
                                     <small><em><?= date('Y'); ?></em></small>
                                 </td>
-                                <td><?= $allSitesData[$site->id]['facturation']; ?></td>
-                                <td><?= $allSitesData[$site->id]['consoReel']['denree']; ?></td>
-                                <td><?= $allSitesData[$site->id]['siteMeta']['fraisDePersonnel']; ?></td>
-                                <td><?= $allSitesData[$site->id]['fraisGeneraux']; ?></td>
-                                <td><?= $allSitesData[$site->id]['resultatExploitation']; ?></td>
-                                <td><?= $allSitesData[$site->id]['retourAchat']; ?>%</td>
-                                <td><?= $allSitesData[$site->id]['fraisDeSiege']; ?></td>
-                                <td><?= $allSitesData[$site->id]['resultats']; ?></td>
+                                <td><?= financial($allSitesData[$site->id]['facturation']); ?></td>
+                                <td><?= financial($allSitesData[$site->id]['consoReel']['denree']); ?></td>
+                                <td><?= financial($allSitesData[$site->id]['siteMeta']['fraisDePersonnel']); ?></td>
+                                <td><?= financial($allSitesData[$site->id]['fraisGeneraux']); ?></td>
+                                <td><?= financial($allSitesData[$site->id]['resultatExploitation']); ?></td>
+                                <td><?= financial($allSitesData[$site->id]['retourAchat']); ?></td>
+                                <td><?= financial($allSitesData[$site->id]['fraisDeSiege']); ?></td>
+                                <td><?= financial($allSitesData[$site->id]['resultats']); ?></td>
                                 <td style="text-align:center !important;">
                                     <?php if ($allSitesData[$site->id]['facturation'] > 0) {
                                         echo financial($allSitesData[$site->id]['resultats'] / $allSitesData[$site->id]['facturation']) . '%';
@@ -159,14 +177,14 @@ if ($Secteur):
                                 $resultats += $allSitesData[$site->id]['budget']->getResultats();
                                 ?>
                             <?php endforeach; ?>
-                            <td><?= $facturation ?></td>
-                            <td><?= $denree ?></td>
-                            <td><?= $fraisDePersonnel ?></td>
-                            <td><?= $fraisGeneraux ?></td>
-                            <td><?= $resultatExploitation ?></td>
-                            <td><?= $retourAchat ?>%</td>
-                            <td><?= $fraisDeSiege ?></td>
-                            <td><?= $resultats ?></td>
+                            <td><?= financial($facturation) ?></td>
+                            <td><?= financial($denree) ?></td>
+                            <td><?= financial($fraisDePersonnel) ?></td>
+                            <td><?= financial($fraisGeneraux) ?></td>
+                            <td><?= financial($resultatExploitation) ?></td>
+                            <td><?= financial($retourAchat) ?></td>
+                            <td><?= financial($fraisDeSiege) ?></td>
+                            <td><?= financial($resultats) ?></td>
                             <td></td>
                         </tr>
                         <tr>
@@ -193,14 +211,14 @@ if ($Secteur):
                                 $resultats += $allSitesData[$site->id]['resultats'];
                                 ?>
                             <?php endforeach; ?>
-                            <td><?= $facturation ?></td>
-                            <td><?= $denree ?></td>
-                            <td><?= $fraisDePersonnel ?></td>
-                            <td><?= $fraisGeneraux ?></td>
-                            <td><?= $resultatExploitation ?></td>
-                            <td><?= $retourAchat ?>%</td>
-                            <td><?= $fraisDeSiege ?></td>
-                            <td><?= $resultats ?></td>
+                            <td><?= financial($facturation) ?></td>
+                            <td><?= financial($denree) ?></td>
+                            <td><?= financial($fraisDePersonnel) ?></td>
+                            <td><?= financial($fraisGeneraux) ?></td>
+                            <td><?= financial($resultatExploitation) ?></td>
+                            <td><?= financial($retourAchat) ?></td>
+                            <td><?= financial($fraisDeSiege) ?></td>
+                            <td><?= financial($resultats) ?></td>
                             <td></td>
                         </tr>
                     <?php endif; ?>

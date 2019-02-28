@@ -468,6 +468,34 @@ class NoteDeFrais
      * @param bool $countNoteDeFrais
      * @return array|int|bool
      */
+    public function showByDateAndAffectation($countNoteDeFrais = false)
+    {
+
+        $addSql = !empty($this->month) ? ' AND month = :month ' : '';
+        $sql = 'SELECT * FROM appoe_plugin_agapesHotes_note_frais 
+        WHERE affectation  = :affectation AND year = :year ' . $addSql . ' AND status = :status';
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':affectation ', $this->affectation);
+        $stmt->bindParam(':year', $this->year);
+        if (!empty($this->month)) {
+            $stmt->bindParam(':month', $this->month);
+        }
+        $stmt->bindParam(':status', $this->status);
+        $stmt->execute();
+
+        $count = $stmt->rowCount();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            return !$countNoteDeFrais ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
+        }
+    }
+
+    /**
+     * @param bool $countNoteDeFrais
+     * @return array|int|bool
+     */
     public function showByDateAndEmploye($countNoteDeFrais = false)
     {
 

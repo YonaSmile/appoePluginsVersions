@@ -397,13 +397,13 @@ function getNoteDeFrais($siteId, $year, $month = '')
     );
 
     $NoteDeFrais = new \App\Plugin\AgapesHotes\NoteDeFrais();
-    $NoteDeFrais->setSiteId($siteId);
+    $NoteDeFrais->setAffectation($siteId);
     $NoteDeFrais->setYear($year);
     if (!empty($month)) {
         $month = ($month < 10 && strlen($month) == 1) ? '0' . $month : $month;
         $NoteDeFrais->setMonth($month);
     }
-    $allNotesFrais = $NoteDeFrais->showByDate();
+    $allNotesFrais = $NoteDeFrais->showByDateAndAffectation();
 
     if ($allNotesFrais && !isArrayEmpty($allNotesFrais)) {
         foreach ($allNotesFrais as $noteDeFrais) {

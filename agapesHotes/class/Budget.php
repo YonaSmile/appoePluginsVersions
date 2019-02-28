@@ -419,7 +419,7 @@ class Budget
 
                     $row = $stmt->fetch(\PDO::FETCH_OBJ);
                     $this->feed($row);
-                    $this->retourAchat = $this->conso * 0.08;
+                    $this->retourAchat = $this->conso * 0.065;
                     $this->retourFraisSiege = $this->ca * 0.04;
                     $this->resultatExploitation = $this->ca - ($this->conso + $this->personnel + $this->fraisGeneraux);
                     $this->resultats = $this->resultatExploitation + $this->retourAchat + $this->retourFraisSiege;
@@ -439,7 +439,7 @@ class Budget
                     /*$this->retourAchat += $row->retourAchat;
                     $this->retourFraisSiege += $row->retourFraisSiege;*/
                 }
-                $this->retourAchat = $this->conso * 0.08;
+                $this->retourAchat = $this->conso * 0.065;
                 $this->retourFraisSiege = $this->ca * 0.04;
                 $this->resultatExploitation = $this->ca - ($this->conso + $this->personnel + $this->fraisGeneraux);
                 $this->resultats = $this->resultatExploitation + $this->retourAchat + $this->retourFraisSiege;
