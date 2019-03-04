@@ -230,7 +230,7 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
             </div>
         </div>
     </div>
-    <script type="text/javascript" src="<?= AGAPESHOTES_URL; ?>js/footer.js"></script>
+    <script type="text/javascript" src="<?= AGAPESHOTES_URL; ?>jsApp/footer.js"></script>
     <script type="text/javascript" src="/app/js/printThis.js"></script>
     <script>
         $(document).ready(function () {

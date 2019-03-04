@@ -185,5 +185,5 @@ $Budget = new \App\Plugin\AgapesHotes\Budget();
             </div>
         </div>
     </div>
-    <script type="text/javascript" src="<?= AGAPESHOTES_URL; ?>js/footer.js"></script>
+
 <?php require('footer.php'); ?>

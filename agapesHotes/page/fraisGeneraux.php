@@ -166,7 +166,7 @@ $period = new \DatePeriod($start, $interval, $end);
             </div>
         </div>
     </div>
-    <script type="text/javascript" src="<?= AGAPESHOTES_URL; ?>js/footer.js"></script>
+
     <script type="text/javascript">
         $(document).ready(function () {
 

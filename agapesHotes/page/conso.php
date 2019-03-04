@@ -172,7 +172,7 @@ $secteurTotal = array();
             </div>
         </div>
     </div>
-    <script type="text/javascript" src="<?= AGAPESHOTES_URL; ?>js/footer.js"></script>
+
     <script type="text/javascript">
         $(document).ready(function () {
             var consoreelDenree = [];

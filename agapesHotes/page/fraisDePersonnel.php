@@ -181,5 +181,5 @@ $period = new \DatePeriod($start, $interval, $end);
             </div>
         </div>
     </div>
-    <script type="text/javascript" src="<?= AGAPESHOTES_URL; ?>js/footer.js"></script>
+
 <?php require('footer.php'); ?>
