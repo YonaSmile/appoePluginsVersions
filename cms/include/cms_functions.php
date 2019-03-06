@@ -15,10 +15,10 @@ function loadPage($slug = 'home')
 
     //Check if Page exist and accessible
     if ((!$existPage && pageName() == 'Non définie') || $Cms->getStatut() != 1) {
-        if (false === include_once(WEB_PUBLIC_PATH . 'html/' . $slug . '.php')) {
+        if (false === @include_once(WEB_PUBLIC_PATH . 'html/' . $slug . '.php')) {
             return 'Cette page n\'existe pas.';
         }
-        exit();
+        return true;
     }
 
     $CmsContent = new \App\Plugin\Cms\CmsContent($Cms->getId(), LANG);
