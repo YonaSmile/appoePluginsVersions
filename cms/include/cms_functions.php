@@ -18,6 +18,7 @@ function loadPage($slug = 'home')
         if (false === include_once(WEB_PUBLIC_PATH . 'html/' . $slug . '.php')) {
             return 'Cette page n\'existe pas.';
         }
+        exit();
     }
 
     $CmsContent = new \App\Plugin\Cms\CmsContent($Cms->getId(), LANG);
