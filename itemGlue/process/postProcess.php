@@ -21,7 +21,7 @@ if (checkPostAndTokenRequest()) {
                     //Add Translation
                     if (class_exists('App\Plugin\Traduction\Traduction')) {
                         $Traduction = new \App\Plugin\Traduction\Traduction();
-                        $Traduction->setLang(LANG);
+                        $Traduction->setLang(APP_LANG);
                         $Traduction->setMetaKey($Article->getName());
                         $Traduction->setMetaValue($Article->getName());
                         if ($Traduction->save()) {
@@ -100,7 +100,7 @@ if (checkPostAndTokenRequest()) {
 
         if (!empty($_POST['articleContent']) && !empty($_POST['articleId'])) {
 
-            $ArticleContent = new \App\Plugin\ItemGlue\ArticleContent($_POST['articleId'], LANG);
+            $ArticleContent = new \App\Plugin\ItemGlue\ArticleContent($_POST['articleId'], APP_LANG);
             $ArticleContent->setContent($_POST['articleContent']);
             if (!empty($ArticleContent->getId())) {
                 if ($ArticleContent->update()) {

@@ -248,9 +248,10 @@ class Article
      * @param $idCategory
      * @param bool $parentId
      * @param bool $countArticles
+     * @param bool $lang
      * @return bool|array
      */
-    public function showByCategory($idCategory, $parentId = false, $countArticles = false)
+    public function showByCategory($idCategory, $parentId = false, $countArticles = false, $lang = LANG)
     {
         $categorySQL = ' AND C.id = :idCategory ';
         if (true === $parentId) {
@@ -271,7 +272,7 @@ class Article
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':idCategory', $idCategory);
-        $stmt->bindValue(':lang', LANG);
+        $stmt->bindValue(':lang', $lang);
         $stmt->execute();
 
         $count = $stmt->rowCount();
@@ -286,9 +287,10 @@ class Article
     /**
      * @param bool $countArticles
      * @param bool $length
+     * @param bool $lang
      * @return array|bool
      */
-    public function showAll($countArticles = false, $length = false)
+    public function showAll($countArticles = false, $length = false, $lang = LANG)
     {
         $limit = $length ? ' LIMIT ' . $length . ' OFFSET 0' : '';
         $featured = $this->statut == 1 ? ' ART.statut >= 1' : ' ART.statut = ' . $this->statut . ' ';
@@ -296,20 +298,19 @@ class Article
         $sql = 'SELECT ART.*, AC.content AS content FROM appoe_plugin_itemGlue_articles AS ART
         LEFT JOIN appoe_plugin_itemGlue_articles_content AS AC
         ON(AC.idArticle = ART.id)
-        WHERE ' . $featured . ' AND (AC.lang IS NULL OR AC.lang = :lang) ORDER BY ART.statut DESC, AC.updated_at DESC ' . $limit;
+        WHERE ' . $featured . ' AND (AC.lang IS NULL OR AC.lang = :lang) ORDER BY ART.statut DESC, ART.created_at DESC ' . $limit;
 
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindValue(':lang', LANG);
+        $stmt->bindValue(':lang', $lang);
         $stmt->execute();
 
         $count = $stmt->rowCount();
         $error = $stmt->errorInfo();
+
         if ($error[0] != '00000') {
             return false;
         } else {
-            $data = $stmt->fetchAll(\PDO::FETCH_OBJ);
-
-            return (!$countArticles) ? $data : $count;
+            return (!$countArticles) ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
         }
     }
 
@@ -317,9 +318,10 @@ class Article
      * @param int $year
      * @param bool|int $month
      * @param bool $length
+     * @param bool $lang
      * @return array|bool
      */
-    public function showArchives($year, $month = false, $length = false)
+    public function showArchives($year, $month = false, $length = false, $lang = LANG)
     {
         if (!is_numeric($year) || strlen($year) != 4) {
             $year = date('Y');
@@ -337,10 +339,10 @@ class Article
         $sql = 'SELECT ART.*, AC.content AS content FROM appoe_plugin_itemGlue_articles AS ART
         LEFT JOIN appoe_plugin_itemGlue_articles_content AS AC
         ON(AC.idArticle = ART.id)
-        WHERE ' . $featured . ' AND (AC.lang IS NULL OR AC.lang = :lang) ' . $sqlArchives . ' ORDER BY ART.statut DESC, AC.updated_at DESC ' . $limit;
+        WHERE ' . $featured . ' AND (AC.lang IS NULL OR AC.lang = :lang) ' . $sqlArchives . ' ORDER BY ART.statut DESC,  ART.created_at DESC ' . $limit;
 
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindValue(':lang', LANG);
+        $stmt->bindValue(':lang', $lang);
         $stmt->bindValue(':year', $year);
         if ($month) {
             $stmt->bindValue(':month', $month);
@@ -358,19 +360,20 @@ class Article
 
     /**
      * @param string $searching
+     * @param string $lang
      * @return array|bool
      */
-    public function searchFor($searching)
+    public function searchFor($searching, $lang = LANG)
     {
         $featured = $this->statut == 1 ? ' ART.statut >= 1' : ' ART.statut = ' . $this->statut . ' ';
 
         $sql = 'SELECT ART.*, AC.content AS content FROM appoe_plugin_itemGlue_articles AS ART
         INNER JOIN appoe_plugin_itemGlue_articles_content AS AC
         ON(AC.idArticle = ART.id)
-        WHERE ' . $featured . ' AND (ART.name LIKE ? OR AC.content LIKE ?) AND AC.lang = ? ORDER BY ART.statut DESC, AC.updated_at DESC ';
+        WHERE ' . $featured . ' AND (ART.name LIKE ? OR AC.content LIKE ?) AND AC.lang = ? ORDER BY ART.statut DESC, ART.created_at DESC ';
 
         $stmt = $this->dbh->prepare($sql);
-        $stmt->execute(array('%' . $searching . '%', '%' . $searching . '%', LANG));
+        $stmt->execute(array('%' . $searching . '%', '%' . $searching . '%', $lang));
 
         $error = $stmt->errorInfo();
         if ($error[0] != '00000') {

@@ -10,9 +10,10 @@ function shop_financial($amount)
 
 /**
  * @param $slug
+ * @param $lang
  * @return \App\Plugin\Shop\Product|bool
  */
-function shop_getProductDetailsFromSlug($slug)
+function shop_getProductDetailsFromSlug($slug, $lang = LANG)
 {
 
     $Product = new \App\Plugin\Shop\Product();
@@ -20,7 +21,7 @@ function shop_getProductDetailsFromSlug($slug)
 
     if ($Product->showBySlug()) {
 
-        $ProductContent = new \App\Plugin\Shop\ProductContent($Product->getId(), LANG);
+        $ProductContent = new \App\Plugin\Shop\ProductContent($Product->getId(), $lang);
         $ProductMeta = new \App\Plugin\Shop\ProductMeta($Product->getId());
         $ProductMedia = new \App\Plugin\Shop\ShopMedia($Product->getId());
         $CategoryRelation = new \App\CategoryRelations('SHOP', $Product->getId());
@@ -38,9 +39,10 @@ function shop_getProductDetailsFromSlug($slug)
 
 /**
  * @param null $idProduct
+ * @param $lang
  * @return \App\Plugin\Shop\Product|array|Product
  */
-function shop_getProductDetails($idProduct = null)
+function shop_getProductDetails($idProduct = null, $lang = LANG)
 {
     //clear incomplet commandes
     $Commande = new \App\Plugin\Shop\Commande();
@@ -48,7 +50,7 @@ function shop_getProductDetails($idProduct = null)
 
     //get necessarily product infos
     $Product = new \App\Plugin\Shop\Product();
-    $ProductContent = new \App\Plugin\Shop\ProductContent(null, LANG);
+    $ProductContent = new \App\Plugin\Shop\ProductContent(null, $lang);
     $ProductMeta = new \App\Plugin\Shop\ProductMeta();
     $ProductMedia = new \App\Plugin\Shop\ShopMedia();
 
@@ -62,7 +64,7 @@ function shop_getProductDetails($idProduct = null)
 
             $ProductMeta->setProductId($Product->getId());
             $ProductMeta->show();
-            if(!isArrayEmpty($ProductMeta->getData())) {
+            if (!isArrayEmpty($ProductMeta->getData())) {
                 $Product->meta = extractFromObjToSimpleArr($ProductMeta->getData(), 'meta_key', 'meta_value');
             }
 

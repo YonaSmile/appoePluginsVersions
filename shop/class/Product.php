@@ -324,7 +324,7 @@ class Product
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':idCategory', $idCategory);
-        $stmt->bindValue(':lang', LANG);
+        $stmt->bindValue(':lang', APP_LANG);
         $stmt->execute();
 
         $count = $stmt->rowCount();

@@ -23,7 +23,7 @@ if (checkPostAndTokenRequest()) {
                     //Add Translation
                     if (class_exists('App\Plugin\Traduction\Traduction')) {
                         $Traduction = new \App\Plugin\Traduction\Traduction();
-                        $Traduction->setLang(LANG);
+                        $Traduction->setLang(APP_LANG);
                         $Traduction->setMetaKey($Cms->getName());
                         $Traduction->setMetaValue($Cms->getName());
                         if ($Traduction->save()) {

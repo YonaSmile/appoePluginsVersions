@@ -9,7 +9,7 @@ if (!empty($_GET['id'])):
         $ProductBrowse->setStatus(1);
         $allProduct = $ProductBrowse->showAll();
 
-        $ProductContent = new \App\Plugin\Shop\ProductContent($Product->getId(), LANG);
+        $ProductContent = new \App\Plugin\Shop\ProductContent($Product->getId(), APP_LANG);
 
         $ProductMedia = new \App\Plugin\Shop\ShopMedia($Product->getId());
         $allProductMedias = $ProductMedia->showFiles();

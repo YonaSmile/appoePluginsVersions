@@ -12,7 +12,7 @@ if (checkPostAndTokenRequest()) {
             $Traduction = new \App\Plugin\Traduction\Traduction();
             $Traduction->setMetaKey($_POST['metaKeySingle']);
             $Traduction->setMetaValue($Traduction->getMetaKey());
-            $Traduction->setLang(LANG);
+            $Traduction->setLang(APP_LANG);
             if ($Traduction->save()) {
 
                 //Delete post data

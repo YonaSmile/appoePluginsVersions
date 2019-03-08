@@ -10,7 +10,7 @@ if (checkAjaxRequest()) {
 
             $Traduction = new \App\Plugin\Traduction\Traduction();
             $Traduction->feed($_POST);
-            $Traduction->setLang(LANG);
+            $Traduction->setLang(APP_LANG);
 
             if ($Traduction->update()) {
                 echo 'true';

@@ -142,7 +142,7 @@ class CmsMenu
     public function createTable()
     {
         $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_cms_menu` (
-                `id` INT(11) NOT NULL  AUTO_INCREMENT,
+                `id` INT(11) NOT NULL AUTO_INCREMENT,
                 PRIMARY KEY (`id`),
                 `idCms` VARCHAR(255) NOT NULL,
                 `name` VARCHAR(100) NOT NULL,

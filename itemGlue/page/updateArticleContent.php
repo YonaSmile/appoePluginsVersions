@@ -7,11 +7,9 @@ if (!empty($_GET['id'])): ?>
     $Article->setId($_GET['id']);
     if ($Article->show()) : ?>
         <?php
-        $ArticlesBrowse = new \App\Plugin\ItemGlue\Article();
-        $ArticlesBrowse->setStatut(1);
-        $allArticles = $ArticlesBrowse->showAll();
+        $allArticles = $Article->showAll();
 
-        $ArticleContent = new \App\Plugin\ItemGlue\ArticleContent($Article->getId(), LANG);
+        $ArticleContent = new \App\Plugin\ItemGlue\ArticleContent($Article->getId(), APP_LANG);
 
         $Category = new \App\Category();
         $Category->setType('ITEMGLUE');

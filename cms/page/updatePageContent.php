@@ -7,7 +7,7 @@ if (!empty($_GET['id'])):
     if ($Cms->show()):
 
         $CmsMenu = new \App\Plugin\Cms\CmsMenu();
-        $CmsContent = new \App\Plugin\Cms\CmsContent($Cms->getId(), LANG);
+        $CmsContent = new \App\Plugin\Cms\CmsContent($Cms->getId(), APP_LANG);
 
         //check if is a page operated by content CMS
         $menuPages = $CmsMenu->showAll();

@@ -11,7 +11,7 @@ if (checkPostAndTokenRequest()) {
 
         if (!empty($_POST['productContent']) && !empty($_POST['productId'])) {
 
-            $ProductContent = new \App\Plugin\Shop\ProductContent($_POST['productId'], LANG);
+            $ProductContent = new \App\Plugin\Shop\ProductContent($_POST['productId'], APP_LANG);
             $ProductContent->setContent($_POST['productContent']);
             $ProductContent->setResume(!empty($_POST['resume']) ? $_POST['resume'] : null);
 

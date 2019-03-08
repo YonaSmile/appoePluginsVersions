@@ -3,9 +3,10 @@
  * Load page as include
  *
  * @param string $slug
+ * @param string $lang
  * @return mixed|string
  */
-function loadPage($slug = 'home')
+function loadPage($slug = 'home', $lang = LANG)
 {
     $Cms = new \App\Plugin\Cms\Cms();
 
@@ -21,7 +22,7 @@ function loadPage($slug = 'home')
         return true;
     }
 
-    $CmsContent = new \App\Plugin\Cms\CmsContent($Cms->getId(), LANG);
+    $CmsContent = new \App\Plugin\Cms\CmsContent($Cms->getId(), $lang);
 
     //Get page content in template
     $Template = new \App\Template(TEMPLATES_PATH . $Cms->getSlug() . '.php', $CmsContent->getData(), true);

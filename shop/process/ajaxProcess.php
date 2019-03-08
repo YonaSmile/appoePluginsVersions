@@ -107,7 +107,7 @@ if (checkAjaxRequest()) {
             if (isset($_POST['addTradValue'])) {
                 if (class_exists('App\Plugin\Traduction\Traduction')) {
                     $Traduction = new \App\Plugin\Traduction\Traduction();
-                    $Traduction->setLang(LANG);
+                    $Traduction->setLang(APP_LANG);
                     $Traduction->setMetaKey($ArticleMeta->getMetaValue());
                     $Traduction->setMetaValue($ArticleMeta->getMetaValue());
                     $Traduction->save();

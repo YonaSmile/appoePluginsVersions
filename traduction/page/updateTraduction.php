@@ -1,7 +1,7 @@
 <?php
 require('header.php');
 require(TRADUCTION_PATH . 'process/postProcess.php');
-$Traduction = new \App\Plugin\Traduction\Traduction(LANG);
+$Traduction = new \App\Plugin\Traduction\Traduction(APP_LANG);
 $allContent = $Traduction->getDbData();
 ?>
 <?= getTitle($Page->getName(), $Page->getSlug()); ?>

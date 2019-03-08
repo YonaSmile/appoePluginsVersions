@@ -31,7 +31,7 @@ if (checkPostAndTokenRequest()) {
                     $Traduction = new \App\Plugin\Traduction\Traduction();
                     $Traduction->setMetaKey($_POST['title']);
                     $Traduction->setMetaValue($Traduction->getMetaKey());
-                    $Traduction->setLang(LANG);
+                    $Traduction->setLang(APP_LANG);
                     $Traduction->save();
                 }
 

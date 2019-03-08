@@ -36,7 +36,7 @@ if (checkAjaxRequest()) {
 
             $CmsContent = new \App\Plugin\Cms\CmsContent();
             $CmsContent->feed($_POST);
-            $CmsContent->setLang(LANG);
+            $CmsContent->setLang(APP_LANG);
 
             if ($CmsContent->notExist()) {
                 if ($CmsContent->save()) {
