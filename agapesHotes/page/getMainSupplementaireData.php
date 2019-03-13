@@ -170,19 +170,19 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
                                                     <?php endif; ?>
                                                 </div>
                                                 <div class="col-1 my-1">
-                                                    <?= \App\Form::text('Qté', 'quantite_' . $c, 'number', $achat->quantite, false, 255, '', '', 'form-control-sm quantiteField', 'Quantité'); ?>
+                                                    <?= \App\Form::text('Qté', 'quantite_' . $c, 'text', $achat->quantite, false, 10, '', '', 'form-control-sm quantiteField', 'Qnté'); ?>
                                                 </div>
                                                 <div class="col-2 my-1">
-                                                    <?= \App\Form::text('Prix/unité HT', 'prixHTunite_' . $c, 'text', $achat->prixHTunite, false, 255, '', '', 'form-control-sm prixUnitaireField', 'Prix unitaire HT'); ?>
+                                                    <?= \App\Form::text('Prix/unité HT', 'prixHTunite_' . $c, 'text', $achat->prixHTunite, false, 10, '', '', 'form-control-sm prixUnitaireField', 'Prix unitaire HT'); ?>
                                                 </div>
                                                 <div class="col-2 my-1">
-                                                    <?= \App\Form::text('Total HT', 'total_' . $c, 'text', $achat->total, false, 255, 'readonly', '', 'form-control-sm totalField', 'Total HT'); ?>
+                                                    <?= \App\Form::text('Total HT', 'total_' . $c, 'text', $achat->total, false, 10, 'readonly', '', 'form-control-sm totalField', 'Total HT'); ?>
                                                 </div>
                                                 <div class="col-2 my-1">
-                                                    <?= \App\Form::text('TVA', 'tauxTVA_' . $c, 'text', $achat->tauxTVA, false, 255, '', '', 'form-control-sm tvaField', 'TVA (%)'); ?>
+                                                    <?= \App\Form::text('TVA', 'tauxTVA_' . $c, 'text', $achat->tauxTVA, false, 5, '', '', 'form-control-sm tvaField', 'TVA (%)'); ?>
                                                 </div>
                                                 <div class="col-2 my-1">
-                                                    <?= \App\Form::text('Total TTC', 'totalTtc_' . $c, 'text', financial($achat->total + $taxe), false, 255, 'readonly', '', 'form-control-sm totalTtcField', 'Total TTC'); ?>
+                                                    <?= \App\Form::text('Total TTC', 'totalTtc_' . $c, 'text', financial($achat->total + $taxe), false, 10, 'readonly', '', 'form-control-sm totalTtcField', 'Total TTC'); ?>
                                                 </div>
                                                 <hr class="mx-auto my-1 w-25 d-md-block d-lg-none">
                                             </div>
@@ -295,19 +295,19 @@ endif; ?>
                                                 <?php endif; ?>
                                             </div>
                                             <div class="col-12 col-lg-1 my-1">
-                                                <?= \App\Form::text('Quantité', 'quantite_' . $c, 'number', '', false, 255, '', '', 'form-control-sm quantiteField', 'Quantité'); ?>
+                                                <?= \App\Form::text('Quantité', 'quantite_' . $c, 'text', '', false, 10, '', '', 'form-control-sm quantiteField', 'Qnté'); ?>
                                             </div>
                                             <div class="col-12 col-lg-2 my-1">
-                                                <?= \App\Form::text('Prix unitaire HT', 'prixHTunite_' . $c, 'text', '', false, 255, '', '', 'form-control-sm prixUnitaireField', 'Prix unitaire HT'); ?>
+                                                <?= \App\Form::text('Prix unitaire HT', 'prixHTunite_' . $c, 'text', '', false, 10, '', '', 'form-control-sm prixUnitaireField', 'Prix unitaire HT'); ?>
                                             </div>
                                             <div class="col-12 col-lg-2 my-1">
-                                                <?= \App\Form::text('Total HT', 'total_' . $c, 'text', '', false, 255, 'readonly', '', 'form-control-sm totalField', 'Total HT'); ?>
+                                                <?= \App\Form::text('Total HT', 'total_' . $c, 'text', '', false, 10, 'readonly', '', 'form-control-sm totalField', 'Total HT'); ?>
                                             </div>
                                             <div class="col-12 col-lg-2 my-1">
-                                                <?= \App\Form::text('TVA (%)', 'tauxTVA_' . $c, 'text', '', false, 255, '', '', 'form-control-sm tvaField', 'TVA (%)'); ?>
+                                                <?= \App\Form::text('TVA (%)', 'tauxTVA_' . $c, 'text', '', false, 5, '', '', 'form-control-sm tvaField', 'TVA (%)'); ?>
                                             </div>
                                             <div class="col-12 col-lg-2 my-1">
-                                                <?= \App\Form::text('Total TTC', 'totalTtc_' . $c, 'text', '', false, 255, 'readonly', '', 'form-control-sm totalTtcField', 'Total TTC'); ?>
+                                                <?= \App\Form::text('Total TTC', 'totalTtc_' . $c, 'text', '', false, 10, 'readonly', '', 'form-control-sm totalTtcField', 'Total TTC'); ?>
                                             </div>
                                             <hr class="mx-auto my-1 w-25 d-md-block d-lg-none">
                                         </div>
@@ -343,7 +343,7 @@ endif; ?>
                     var quantite = parseReelFloat($parent.find('input.quantiteField').val());
                     var prixUnitaire = parseReelFloat($parent.find('input.prixUnitaireField').val());
 
-                    if (quantite > 0 && prixUnitaire > 0) {
+                    if ($.isNumeric(quantite) && $.isNumeric(prixUnitaire)) {
                         var totalHT = parseReelFloat(quantite * prixUnitaire);
                         $parent.find('input.totalField').val(financial(totalHT));
 

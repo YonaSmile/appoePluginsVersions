@@ -417,7 +417,7 @@ endif; ?>
                 var km = parseReelFloat($('#km').val());
 
                 if (taux > 0 && km > 0) {
-                    var montantHT = (km * (1 + taux));
+                    var montantHT = (km * taux);
                     $('#addIndemniteKMForm #montantHt').val(financial(montantHT, false));
                 }
             });

@@ -9,6 +9,9 @@ $allEtablissements = $Etablissement->showAllBySite();
 
 $dateMonthAgo = new \DateTime();
 $dateMonthAgo->sub(new \DateInterval('P1M'));
+
+$dateMonthLater = new DateTime();
+$dateMonthLater->add(new \DateInterval('P1M'));
 ?>
 <div class="row mb-3">
     <div class="d-flex col-12 col-lg-4">
@@ -52,23 +55,13 @@ $dateMonthAgo->sub(new \DateInterval('P1M'));
     <div class="d-flex col-12 col-lg-8">
         <div class="card border-0 w-100">
             <div class="card-header bg-white pb-0 border-0 boardBlock2Title">
-                <h5 class="m-0 pl-4 colorSecondary"><?= trans('Infos'); ?> <span class="currentMonth">
+                <h5 class="m-0 pl-4 colorSecondary"><span class="currentMonth"><?= trans('Infos'); ?>
                         <?= ucfirst(strftime("%B", strtotime(date('Y-m-d')))); ?> <?= date('Y'); ?></span>
-                    <button type="button" class="btn btn-sm btn-info float-right changeDashboard"
-                            data-month="<?= $dateMonthAgo->format('m'); ?>"
-                            data-year="<?= $dateMonthAgo->format('Y'); ?>"
-                            data-current="<?= ucfirst(strftime("%B", strtotime($dateMonthAgo->format('Y-m-d')))); ?> <?= $dateMonthAgo->format('Y'); ?>">
-                        <i class="fas fa-arrow-left"></i>
-                        Voir <?= ucfirst(strftime("%B", strtotime($dateMonthAgo->format('Y-m-d')))); ?> <?= $dateMonthAgo->format('Y'); ?>
-                    </button>
-
-                    <button type="button" class="btn btn-sm btn-info float-right changeDashboard" style="display: none;"
-                            data-month="<?= date('m'); ?>"
-                            data-year="<?= date('Y'); ?>"
-                            data-current="<?= ucfirst(strftime("%B", strtotime(date('Y-m-d')))); ?> <?= date('Y'); ?>">
-                        Voir <?= ucfirst(strftime("%B", strtotime(date('Y-m-d')))); ?> <?= date('Y'); ?>
-                        <i class="fas fa-arrow-right"></i>
-                    </button>
+                    <div class="float-right">
+                        <button type="button" class="btn btn-sm btn-info seeMonthBefore">Mois précédent</button>
+                        <button type="button" class="btn btn-sm btn-info seeMonthNow">Mois courant</button>
+                        <button type="button" class="btn btn-sm btn-info seeMonthAfter">Mois Prochain</button>
+                    </div>
                 </h5>
                 <hr class="mx-4">
             </div>
@@ -79,28 +72,58 @@ $dateMonthAgo->sub(new \DateInterval('P1M'));
 <script>
     $(document).ready(function () {
 
-        var year = '';
-        var month = '';
+        var today = new Date();
+        var month = today.getMonth() + 1;
+        var year = today.getFullYear();
+
+        if (month < 10) {
+            month = '0' + month
+        }
 
         function changeDashboard(year, month) {
 
+            busyApp();
             $('#cuisinierDashboardData').html(loaderHtml()).load('<?= AGAPESHOTES_URL; ?>data/dashboardCuisinier.php', {
                 year: year,
                 month: month
+            }, function (data) {
+                availableApp();
             });
         }
 
         changeDashboard(year, month);
 
-        $('.changeDashboard').on('click', function () {
-            year = $(this).data('year');
-            month = $(this).data('month');
+        $('.seeMonthNow').on('click', function () {
+
+            month = today.getMonth() + 1;
+            year = today.getFullYear();
+
+            if (month < 10) {
+                month = '0' + month
+            }
 
             changeDashboard(year, month);
+        });
 
-            $('.currentMonth').html($(this).data('current'));
-            $('.changeDashboard:hidden').delay(400).fadeIn();
-            $(this).fadeOut(400);
+        $('.seeMonthBefore').on('click', function () {
+            if (month > 1) {
+                month = parseFloat(month) - 1;
+            } else {
+                month = '12';
+                year = parseFloat(year) - 1;
+            }
+
+            changeDashboard(year, month);
+        });
+
+        $('.seeMonthAfter').on('click', function () {
+            if (month < 12) {
+                month = parseFloat(month) + 1;
+            } else {
+                month = '01';
+                year = parseFloat(year) + 1;
+            }
+            changeDashboard(year, month);
         });
     });
 </script>

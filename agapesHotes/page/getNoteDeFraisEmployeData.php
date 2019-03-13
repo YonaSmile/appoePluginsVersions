@@ -72,9 +72,12 @@ if ($Site->showBySlug()):
 
         <?php if (!isArrayEmpty($allIndemniteKm)): ?>
             <div id="indemniteKmContainer">
-                <?php foreach ($allIndemniteKm as $typeVehicule => $indemnitesKm) : ?>
+                <?php foreach ($allIndemniteKm as $typeVehicule => $indemnitesKm) :
+                    $totalIndem = 0;
+                    $totalKm = 0; ?>
                     <h6>Indemnité kilométrique pour
-                        <em><?= TYPES_VEHICULE[$typeVehicule]; ?></em>&nbsp;<span id="indemniteKmVehiculeInfos"></span></h6>
+                        <em><?= TYPES_VEHICULE[$typeVehicule]; ?></em>&nbsp;<span id="indemniteKmVehiculeInfos"></span>
+                    </h6>
                     <table class="table table-sm table-striped tableNonEffect tableNoteDeFrais">
                         <thead>
                         <tr>
@@ -87,7 +90,9 @@ if ($Site->showBySlug()):
                         </tr>
                         </thead>
                         <tbody>
-                        <?php foreach ($indemnitesKm as $indemniteKm) : ?>
+                        <?php foreach ($indemnitesKm as $indemniteKm) :
+                            $totalIndem += $indemniteKm->montantHt;
+                            $totalKm += $indemniteKm->km; ?>
                             <tr class="indemniteKmTR" data-totalindemnitekm="<?= $indemniteKm->montantHt; ?>"
                                 data-commentaires="<?= $indemniteKm->commentaire; ?>"
                                 data-typevehicule="<?= TYPES_VEHICULE[$typeVehicule]; ?>"
@@ -104,6 +109,11 @@ if ($Site->showBySlug()):
                                 </td>
                             </tr>
                         <?php endforeach; ?>
+                        <tr>
+                            <td colspan="3"></td>
+                            <td style="text-align: center"><?= $totalKm; ?></td>
+                            <td colspan="2"></td>
+                        </tr>
                         </tbody>
                     </table>
                 <?php endforeach; ?>

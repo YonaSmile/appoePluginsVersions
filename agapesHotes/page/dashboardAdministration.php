@@ -320,10 +320,17 @@ $Secteur = new \App\Plugin\AgapesHotes\Secteur();
 
         var interval = setInterval(function () {
             if (countSites == confirmedSites) {
-                $('html').css('overflow', 'scroll');
+                $('html').css('overflow', 'auto');
                 clearInterval(interval);
             }
         }, 500);
+
+        setTimeout(function () {
+            if (countSites != confirmedSites) {
+                $('html').css('overflow', 'auto');
+                clearInterval(interval);
+            }
+        }, 30000);
 
         function printSynthese() {
             var url = '<?= AGAPESHOTES_URL; ?>page/getFactures.php';

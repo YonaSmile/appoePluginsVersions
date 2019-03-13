@@ -1,7 +1,10 @@
-$('.table-responsive').on('scroll', function () {
-    fixeTableHeader(parseInt($(this).offset().top));
-});
+if ($.isFunction(window.fixeTableHeader)) {
 
-$(window).scroll(function () {
-    fixeTableHeader(this.scrollY + $('#navbarUser').innerHeight());
-});
+    $('.table-responsive').on('scroll', function () {
+        fixeTableHeader(parseInt($(this).offset().top));
+    });
+
+    $(window).scroll(function () {
+        fixeTableHeader(this.scrollY + $('#navbarUser').innerHeight());
+    });
+}

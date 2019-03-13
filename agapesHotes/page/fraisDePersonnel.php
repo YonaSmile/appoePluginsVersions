@@ -68,7 +68,7 @@ $period = new \DatePeriod($start, $interval, $end);
                                         if (!array_key_exists($date->format('n'), $secteurTotal[$secteurId]['budget'])) {
                                             $secteurTotal[$secteurId]['budget'][$date->format('n')] = 0;
                                         }
-                                        $secteurTotal[$secteurId]['budget'][$date->format('n')] += !empty($Budget->getCa()) ? $Budget->getCa() : 0;
+                                        $secteurTotal[$secteurId]['budget'][$date->format('n')] += !empty($Budget->getPersonnel()) ? $Budget->getPersonnel() : 0;
                                         ?>
                                         <td><?= !empty($Budget->getPersonnel()) ? financial($Budget->getPersonnel()) : 0; ?></td>
                                         <?php

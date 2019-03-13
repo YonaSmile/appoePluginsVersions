@@ -7,16 +7,17 @@ $Site = $SiteAccess->showSiteByUser();
 $year = !empty($_POST['year']) ? $_POST['year'] : date('Y');
 $month = !empty($_POST['month']) ? $_POST['month'] : date('m');
 
-$date = $year . '-' . $month . '-' . date('d');
+$date = $year . '-' . $month . '-01';
 
 $dateNow = new \DateTime();
 $dateCurrent = new \DateTime($date);
-$dateMonthLater = new DateTime($date);
+
+/*$dateMonthLater = new DateTime($date);
 $dateMonthLater->add(new \DateInterval('P1M'));
 
 if ($dateMonthLater->format('n') < $dateNow->format('n')) {
     $dateCurrent = new \DateTime(date('Y-m-d'));
-}
+}*/
 
 $dateMonthAgo = new \DateTime($dateCurrent->format('Y-m-d'));
 $dateMonthAgo->sub(new \DateInterval('P1M'));
@@ -45,7 +46,7 @@ $array_refacturation = array();
 $array_commande = array();
 
 $query_liste_com_now = "SELECT ref, date, total_avec_marge AS total, fournisseur  FROM siteInventaireS
-			WHERE ref = '" . $Site->ref . "' AND date >= '" . $dateCurrent->format('Y-m-01') . "' AND date <= '" . $dateCurrent->format('Y-m-t') . "'";
+			WHERE ref = '" . $Site->ref . "' AND date >= '" . $dateCurrent->format('Y-m-d') . "' AND date <= '" . $dateCurrent->format('Y-m-t') . "'";
 $data_memo_now = mysqli_query($dbc, $query_liste_com_now) or die("Error: " . mysqli_error($dbc));
 
 while ($donnees_memo_now = mysqli_fetch_array($data_memo_now, MYSQLI_ASSOC)) {
@@ -61,7 +62,7 @@ while ($donnees_memo_ago = mysqli_fetch_array($data_memo_ago, MYSQLI_ASSOC)) {
 }
 
 $query_liste_com_refacturation = "SELECT ref, total_avec_marge AS total, fournisseur, date_facturation FROM c_refacturation_total
-			WHERE (STR_TO_DATE(date_facturation,'%d/%m/%Y') BETWEEN '" . $dateCurrent->format('Y-m-01') . "' AND '" . $dateCurrent->format('Y-m-t') . "') AND ref = '" . $Site->ref . "'
+			WHERE (STR_TO_DATE(date_facturation,'%d/%m/%Y') BETWEEN '" . $dateCurrent->format('Y-m-d') . "' AND '" . $dateCurrent->format('Y-m-t') . "') AND ref = '" . $Site->ref . "'
 			ORDER BY STR_TO_DATE(date_facturation,'%d/%m/%Y') ASC";
 $data_memo_refacturation = mysqli_query($dbc, $query_liste_com_refacturation) or die("Error: " . mysqli_error($dbc));
 while ($donnees_memo_refacturation = mysqli_fetch_array($data_memo_refacturation, MYSQLI_ASSOC)) {
@@ -70,7 +71,7 @@ while ($donnees_memo_refacturation = mysqli_fetch_array($data_memo_refacturation
 
 $query_liste_com_commande = "SELECT ref, site, total_avec_marge AS total, fournisseur, date_livraison
 			FROM siteCommandeS
-			WHERE (STR_TO_DATE(date_livraison,'%d/%m/%Y') BETWEEN '" . $dateCurrent->format('Y-m-01') . "' AND '" . $dateCurrent->format('Y-m-t') . "') AND ref = '" . $Site->ref . "'
+			WHERE (STR_TO_DATE(date_livraison,'%d/%m/%Y') BETWEEN '" . $dateCurrent->format('Y-m-d') . "' AND '" . $dateCurrent->format('Y-m-t') . "') AND ref = '" . $Site->ref . "'
 			ORDER BY STR_TO_DATE(date_livraison,'%d/%m/%Y') ASC";
 $data_memo_commande = mysqli_query($dbc, $query_liste_com_commande) or die("Error: " . mysqli_error($dbc));
 while ($donnees_memo_commande = mysqli_fetch_array($data_memo_commande, MYSQLI_ASSOC)) {
@@ -97,12 +98,14 @@ $otherFournisseurs = array('BOULANGER' => 'BOULANGER', 'TRANSGOURMET' => 'TRANSG
                         data-target="#collapseAchat" aria-expanded="true" aria-controls="collapseAchat">
                     Achats
                 </button>
+                <?php if($dateNow->format('Y-m') == $dateCurrent->format('Y-m')): ?>
                 <span class="float-right">
                     <button type="button" class="btn btn-link btn-sm" data-toggle="modal"
                             data-target="#modalAddOtherAchat">
                         <i class="fas fa-plus"></i>
                     </button>
                 </span>
+                <?php endif; ?>
             </h5>
         </div>
 
@@ -480,7 +483,7 @@ $otherFournisseurs = array('BOULANGER' => 'BOULANGER', 'TRANSGOURMET' => 'TRANSG
         $ParticipationTournante = $siteMeta['participationTournante'];
         $FraisDePersonnels = $siteMeta['fraisDePersonnel'];
         $indemniteKm = getIndemniteKm($Site->id, $dateCurrent->format('Y'), $dateCurrent->format('m'));
-        $fraisDeSiege = (($facturation+$siteMeta['fraisFixes']) * 0.04);
+        $fraisDeSiege = (($facturation + $siteMeta['fraisFixes']) * 0.04);
         $fraisGenerauxTotal = ($ParticipationTournante + $fraisDeSiege + $consoReelNonAlimentaires + $noteDeFrais['autreAchat'] + $indemniteKm);
         ?>
         <div id="collapseFraisGener" class="collapse" aria-labelledby="headingFour"
@@ -594,20 +597,7 @@ $otherFournisseurs = array('BOULANGER' => 'BOULANGER', 'TRANSGOURMET' => 'TRANSG
 
     $(document).ready(function () {
 
-        $.post(
-            '<?= AGAPESHOTES_URL . 'page/getAllSiteData.php'; ?>',
-            {
-                siteId: 16,
-                year: '2019'
-            },
-            function (data) {
-                if (data) {
-                    var parsedData = jQuery.parseJSON(data);
-                    console.log(parsedData);
-                }
-
-            }
-        );
+        $('.currentMonth').text('Infos <?= ucfirst(strftime("%B", strtotime($dateCurrent->format('Y-m-d')))); ?> <?= $dateCurrent->format('Y'); ?>');
 
         $('form#addOtherAchatForm').on('submit', function (event) {
             event.preventDefault();

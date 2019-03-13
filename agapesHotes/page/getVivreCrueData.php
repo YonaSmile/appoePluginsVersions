@@ -34,7 +34,9 @@ if ($Secteur->showBySlug() && $Site->showBySlug() && $Site->getSecteurId() == $S
         <small class="d-block">Commence le <?= $start->format('d/m/Y'); ?> et se termine
             le <?= $start->format('t/m/Y'); ?></small>
     </div>
-    <div id="loaderVivreCrue"><i class="fas fa-circle-notch fa-spin"></i> Chargement...</div>
+    <div id="loaderVivreCrue"><i class="fas fa-circle-notch fa-spin"></i> Chargement...<br>
+        <small>Veuillez patienter jusqu'à l'affichage complet de la page</small>
+    </div>
     <div id="responsiveTable" class="col-12 table-responsive" style="display: none;">
         <table class="table table-striped tableNonEffect fixed-header" id="vivreCrueTable">
             <thead style="z-index: 2">
