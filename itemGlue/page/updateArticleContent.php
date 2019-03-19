@@ -1,14 +1,15 @@
 <?php
 require('header.php');
-if (!empty($_GET['id'])): ?>
-    <?php
+if (!empty($_GET['id'])):
+
     require(ITEMGLUE_PATH . 'process/postProcess.php');
     $Article = new \App\Plugin\ItemGlue\Article();
     $Article->setId($_GET['id']);
-    if ($Article->show()) : ?>
-        <?php
-        $allArticles = $Article->showAll();
 
+    if ($Article->show()) :
+
+        $Article->setStatut(1);
+        $allArticles = $Article->showAll();
         $ArticleContent = new \App\Plugin\ItemGlue\ArticleContent($Article->getId(), APP_LANG);
 
         $Category = new \App\Category();
@@ -20,8 +21,8 @@ if (!empty($_GET['id'])): ?>
 
         $ArticleMedia = new \App\Plugin\ItemGlue\ArticleMedia($Article->getId());
         $allArticleMedias = $ArticleMedia->showFiles();
-        ?>
-        <?= getTitle($Article->getName(), $Page->getSlug()); ?>
+
+        echo getTitle($Article->getName(), $Page->getSlug()); ?>
         <div class="container">
             <?php if (isset($Response)): ?>
                 <div class="row">
@@ -68,13 +69,13 @@ if (!empty($_GET['id'])): ?>
                                     <option selected="selected" disabled><?= trans('Parcourir les autres articles'); ?>
                                         ...
                                     </option>
-                                    <?php if ($allArticles): ?>
-                                        <?php foreach ($allArticles as $article): ?>
-                                            <?php if ($Article->getId() != $article->id): ?>
+                                    <?php if ($allArticles):
+                                        foreach ($allArticles as $article):
+                                            if ($Article->getId() != $article->id): ?>
                                                 <option data-href="<?= getPluginUrl('itemGlue/page/articleContent/', $article->id); ?>"><?= $article->name; ?></option>
-                                            <?php endif; ?>
-                                        <?php endforeach; ?>
-                                    <?php endif; ?>
+                                            <?php endif;
+                                        endforeach;
+                                    endif; ?>
                                 </select>
                             </div>
                         </div>
