@@ -5,6 +5,10 @@ function liveMessages() {
     return jQuery.get('/app/plugin/messagIn/syncMessages.php');
 }
 
+function checkUserSessionExit() {
+    return $.post('/app/ajax/plugin.php', {checkUserSession: 'OK'});
+}
+
 function getLiveMessage() {
     liveMessages().done(function (data) {
         if ($.isNumeric(data) || data === 0) {
@@ -22,11 +26,14 @@ function badgeMessageCheck(data) {
 }
 
 jQuery(document).ready(function () {
+    checkUserSessionExit().done(function (data) {
+        if (data == 'true') {
+            getLiveMessage();
 
-    getLiveMessage();
-
-    //Start Cron
-    var msgCron = setInterval(function () {
-        getLiveMessage();
-    }, 15000);
+            //Start Cron
+            var msgCron = setInterval(function () {
+                getLiveMessage();
+            }, 15000);
+        }
+    });
 });

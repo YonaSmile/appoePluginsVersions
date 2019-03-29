@@ -1,3 +1,7 @@
+function checkUserSessionExit() {
+    return $.post('/app/ajax/plugin.php', {checkUserSession: 'OK'});
+}
+
 function getUserStatus() {
     jQuery('#usersStatsSubMenu').load('/app/plugin/mehoubarim/index.php');
 
@@ -22,10 +26,12 @@ function getUserStatus() {
 
 jQuery(document).ready(function () {
 
-    getUserStatus();
-    setInterval(function () {
-        getUserStatus();
-    }, 15000);
+    checkUserSessionExit().done(function (data) {
+        if (data == 'true') {
+            getUserStatus();
+            setInterval(function () {
+                getUserStatus();
+            }, 15000);
+        }
+    });
 });
-
-
