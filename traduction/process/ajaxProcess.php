@@ -15,6 +15,25 @@ if (checkAjaxRequest()) {
             if ($Traduction->update()) {
                 echo 'true';
             }
+            exit();
+        }
+
+        if (isset($_POST['web_itemGlue_traduction']) && !empty($_POST['metaKey']) && isset($_POST['metaValue'])) {
+
+            $Traduction = new \App\Plugin\Traduction\Traduction();
+            $Traduction->feed($_POST);
+            $Traduction->setLang(APP_LANG);
+
+            if ($Traduction->notExist()) {
+                if ($Traduction->save()) {
+                    echo 'true';
+                }
+            } else {
+                if ($Traduction->updateByMeta()) {
+                    echo 'true';
+                }
+            }
+            exit();
         }
 
         if (isset($_POST['deleteTrad']) && !empty($_POST['keytrad'])) {
@@ -24,6 +43,7 @@ if (checkAjaxRequest()) {
             if ($Traduction->deleteByKey()) {
                 echo 'true';
             }
+            exit();
         }
     }
 }

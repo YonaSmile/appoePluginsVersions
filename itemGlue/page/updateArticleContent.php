@@ -9,7 +9,7 @@ if (!empty($_GET['id'])):
     if ($Article->show()) :
 
         $Article->setStatut(1);
-        $allArticles = $Article->showAll();
+        $allArticles = $Article->showAll(false, false, 'fr');
         $ArticleContent = new \App\Plugin\ItemGlue\ArticleContent($Article->getId(), APP_LANG);
 
         $Category = new \App\Category();
@@ -43,12 +43,17 @@ if (!empty($_GET['id'])):
                     <a class="nav-item nav-link <?= !empty($Response->MediaTabactive) ? 'active' : ''; ?>"
                        id="nav-newFiles-tab" data-toggle="tab" href="#nav-newFiles" role="tab"
                        aria-controls="nav-newFiles" aria-selected="false"><?= trans('Les médias'); ?></a>
+                    <?php if (class_exists('App\Plugin\Traduction\Traduction')): ?>
+                        <a class="nav-item nav-link"
+                           id="nav-traductions-tab" data-toggle="tab" href="#nav-traduction" role="tab"
+                           aria-controls="nav-traduction" aria-selected="false"><?= trans('Traductions'); ?></a>
+                    <?php endif; ?>
                 </div>
             </nav>
             <div class="tab-content border-top-0 bg-white py-3" id="nav-mediaTabContent">
                 <div class="tab-pane fade <?= empty($Response->MediaTabactive) ? 'active show' : ''; ?>"
                      id="nav-allLibraries" role="tabpanel"
-                     aria-labelledby="nav-home-tab">
+                     aria-labelledby="nav-allLibraries-tab">
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-12">
@@ -104,7 +109,7 @@ if (!empty($_GET['id'])):
                     </div>
                 </div>
                 <div class="tab-pane fade <?= !empty($Response->MediaTabactive) ? 'active show' : ''; ?>"
-                     id="nav-newFiles" role="tabpanel" aria-labelledby="nav-profile-tab">
+                     id="nav-newFiles" role="tabpanel" aria-labelledby="nav-newFiles-tab">
                     <div class="container-fluid">
                         <form class="row" id="galleryArticleForm" action="" method="post" enctype="multipart/form-data">
                             <?= getTokenField(); ?>
@@ -173,6 +178,27 @@ if (!empty($_GET['id'])):
                         <?php endif; ?>
                     </div>
                 </div>
+                <?php if (class_exists('App\Plugin\Traduction\Traduction')): ?>
+                    <div class="tab-pane fade" id="nav-traduction" role="tabpanel"
+                         aria-labelledby="nav-traductions-tab">
+                        <div class="container-fluid">
+                            <form action="" method="post" class="positionRelative pb-2" id="pageContentManageForm">
+                                <small class="categoryIdFloatContenaire">Enregistré</small>
+                                <div class="row" id="tradContainer">
+                                    <div class="col-12 fileContent bg_grey_hover tradContent my-2">
+                                        <?= \App\Form::text($Article->getName(), $Article->getName(), 'text', trad($Article->getName(), false, APP_LANG), false, 250); ?>
+                                    </div>
+                                    <div class="col-12 fileContent bg_grey_hover tradContent my-2">
+                                        <?= \App\Form::text($Article->getDescription(), $Article->getDescription(), 'text', trad($Article->getDescription(), false, APP_LANG), false, 250); ?>
+                                    </div>
+                                    <div class="col-12 fileContent bg_grey_hover tradContent my-2">
+                                        <?= \App\Form::text($Article->getSlug(), $Article->getSlug(), 'text', trad($Article->getSlug(), false, APP_LANG), false, 250); ?>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                <?php endif; ?>
             </div>
             <div class="my-4"></div>
         </div>
@@ -443,6 +469,31 @@ if (!empty($_GET['id'])):
                     $('.copyLinkOnClick').text(textDefaultCopyFile);
                     copyToClipboard($(this).parent().data('src'));
                     $(this).text('<?= trans('copié'); ?>');
+                });
+
+                $('.categoryIdFloatContenaire').hide();
+                $('form#pageContentManageForm').on('blur', 'input', function (event) {
+                    event.preventDefault();
+
+                    var $input = $(this);
+                    var metaKey = $input.attr('name');
+                    var metaValue = $input.val();
+
+                    busyApp();
+                    $.post(
+                        '/app/plugin/traduction/process/ajaxProcess.php',
+                        {
+                            web_itemGlue_traduction: 'OK',
+                            metaKey: metaKey,
+                            metaValue: metaValue
+                        },
+                        function (data) {
+                            if (data === true || data == 'true') {
+                                $('.categoryIdFloatContenaire').stop().fadeIn().delay(2000).fadeOut();
+                                availableApp();
+                            }
+                        }
+                    )
                 });
             });
         </script>

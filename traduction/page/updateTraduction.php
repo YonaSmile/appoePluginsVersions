@@ -51,7 +51,7 @@ $allContent = $Traduction->getDbData();
                 <div class="row" id="tradContainer">
                     <?php foreach ($allContent as $metaKey => $content): ?>
                         <div class="col-12 fileContent bg_grey_hover tradContent my-2">
-                            <?= \App\Form::text($metaKey, $metaKey, 'text', $content['metaValue'], false, 250, 'data-idtrad="' . $content['id'] . '"'); ?>
+                            <?= \App\Form::text($metaKey, $metaKey, 'text', $content['metaValue'], false, 250, 'data-idtrad="' . $content['id'] . '" autocomplet="off"'); ?>
                             <button type="button" class="deleteTraduction btn btn-sm"
                                     style="position: absolute; bottom: 0; right: 0;"
                                     data-keytrad="<?= $metaKey; ?>">

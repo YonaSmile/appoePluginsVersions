@@ -311,6 +311,29 @@ class Traduction
     /**
      * @return bool
      */
+    public function updateByMeta()
+    {
+
+        $sql = 'UPDATE appoe_plugin_traduction SET metaValue = :metaValue WHERE metaKey = :metaKey AND lang = :lang';
+
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':metaValue', $this->metaValue);
+        $stmt->bindParam(':metaKey', $this->metaKey);
+        $stmt->bindParam(':lang', $this->lang);
+
+        $stmt->execute();
+
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * @return bool
+     */
     public function delete()
     {
 

@@ -295,10 +295,12 @@ class Article
         $limit = $length ? ' LIMIT ' . $length . ' OFFSET 0' : '';
         $featured = $this->statut == 1 ? ' ART.statut >= 1' : ' ART.statut = ' . $this->statut . ' ';
 
-        $sql = 'SELECT ART.*, AC.content AS content FROM appoe_plugin_itemGlue_articles AS ART
+        $sql = 'SELECT ART.*, AC.content AS content 
+        FROM appoe_plugin_itemGlue_articles AS ART
         LEFT JOIN appoe_plugin_itemGlue_articles_content AS AC
         ON(AC.idArticle = ART.id)
-        WHERE ' . $featured . ' AND (AC.lang IS NULL OR AC.lang = :lang) ORDER BY ART.statut DESC, ART.created_at DESC ' . $limit;
+        WHERE ' . $featured . ' AND (AC.lang IS NULL OR AC.lang = :lang) 
+        ORDER BY ART.statut DESC, ART.created_at DESC ' . $limit;
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindValue(':lang', $lang);
