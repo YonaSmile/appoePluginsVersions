@@ -3,7 +3,7 @@
     <div class="container-fluid">
         <?php $Article = new \App\Plugin\ItemGlue\Article();
         $Article->setStatut(0);
-        $allArticles = $Article->showAll(false, false, 'fr');
+        $allArticles = $Article->showAll();
         ?>
         <div class="row">
             <div class="col-12">

@@ -2,7 +2,7 @@
 <?= getTitle($Page->getName(), $Page->getSlug()); ?>
     <div class="container-fluid">
         <?php $Article = new \App\Plugin\ItemGlue\Article();
-        $allArticles = $Article->showAll(false, false, 'fr');
+        $allArticles = $Article->showAll();
         ?>
         <div class="row">
             <div class="col-12">

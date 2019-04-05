@@ -31,7 +31,7 @@ function getArticlesByCategory($categoryId, $parent = false, $length = false)
 function getRecentArticles($length = false)
 {
     $Article = new \App\Plugin\ItemGlue\Article();
-    $allArticles = $Article->showAll(false, $length);
+    $allArticles = $Article->showAllByLang(false, $length);
 
     if ($allArticles) {
         foreach ($allArticles as &$article) {

@@ -287,10 +287,36 @@ class Article
     /**
      * @param bool $countArticles
      * @param bool $length
+     * @return array|bool
+     */
+    public function showAll($countArticles = false, $length = false)
+    {
+        $limit = $length ? ' LIMIT ' . $length . ' OFFSET 0' : '';
+        $featured = $this->statut == 1 ? ' statut >= 1' : ' statut = ' . $this->statut . ' ';
+
+        $sql = 'SELECT * FROM appoe_plugin_itemGlue_articles 
+        WHERE ' . $featured . ' ORDER BY statut DESC, created_at DESC ' . $limit;
+
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->execute();
+
+        $count = $stmt->rowCount();
+        $error = $stmt->errorInfo();
+
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            return (!$countArticles) ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
+        }
+    }
+
+    /**
+     * @param bool $countArticles
+     * @param bool $length
      * @param bool $lang
      * @return array|bool
      */
-    public function showAll($countArticles = false, $length = false, $lang = LANG)
+    public function showAllByLang($countArticles = false, $length = false, $lang = LANG)
     {
         $limit = $length ? ' LIMIT ' . $length . ' OFFSET 0' : '';
         $featured = $this->statut == 1 ? ' ART.statut >= 1' : ' ART.statut = ' . $this->statut . ' ';
