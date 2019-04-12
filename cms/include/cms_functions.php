@@ -25,7 +25,7 @@ function loadPage($slug = 'home', $lang = LANG)
     $CmsContent = new \App\Plugin\Cms\CmsContent($Cms->getId(), $lang);
 
     //Get page content in template
-    $Template = new \App\Template(TEMPLATES_PATH . $Cms->getSlug() . '.php', $CmsContent->getData(), true);
+    $Template = new \App\Template(WEB_PATH . $Cms->getSlug() . '.php', $CmsContent->getData(), true);
     return $Template->get();
 }
 

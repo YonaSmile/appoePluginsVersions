@@ -49,6 +49,7 @@
     height: 15px;
     width: 15px;
 }
+
 .icon-allRating > *:first-child:before {
     content: '\f5c0';
 }

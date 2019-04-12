@@ -18,10 +18,10 @@ function getLiveMessage() {
 }
 
 function badgeMessageCheck(data) {
-    if (!$('a#navbarDropdownMessageMenu > span.badge').length) {
-        $('a#navbarDropdownMessageMenu').append(' <span class="badge badge-pill badge-pill-messagIn badge-danger ml-1">' + data + '</span>');
+    if (!$('a#navbarDropdownMessageMenu > span.countMsg').length) {
+        $('a#navbarDropdownMessageMenu').append(' <span class="countMsg">' + data + '</span>');
     } else {
-        $('a#navbarDropdownMessageMenu span.badge').html(data);
+        $('a#navbarDropdownMessageMenu span.countMsg').html(data);
     }
 }
 

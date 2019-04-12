@@ -50,11 +50,11 @@ if (!empty($_GET['id'])):
                     <h2 class="subTitle text-uppercase"><?= trans('Contenu de la page'); ?></h2>
                 </div>
             </div>
-            <?php if (file_exists(TEMPLATES_PATH . $Cms->getSlug() . '.php')): ?>
+            <?php if (file_exists(WEB_PATH . $Cms->getSlug() . '.php')): ?>
                 <form action="" method="post" id="pageContentManageForm">
                     <div class="row">
                         <?php
-                        $Template = new \App\Template(TEMPLATES_PATH . $Cms->getSlug() . '.php', $CmsContent->getData());
+                        $Template = new \App\Template(WEB_PATH . $Cms->getSlug() . '.php', $CmsContent->getData());
                         $Template->show();
                         ?>
                     </div>
