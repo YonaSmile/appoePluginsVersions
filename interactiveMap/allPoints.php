@@ -38,11 +38,19 @@ if (!empty($_GET['id']) && !empty($_GET['level']) && isset($_GET['location'])): 
                             </div>
                             <?= \App\Form::text('Photo', 'thumbnail[]', 'file', '', false, 350, '', '', 'form-control-sm mb-2'); ?>
                             <?= \App\Form::select('Catégorie', 'category', $allCategories, $location['category'], false); ?>
-                            <div style="position: relative" class="my-2">
-                                <?= \App\Form::text('Couleur de remplissage', 'fill', 'color', !empty($location['fill']) ? $location['fill'] : '', false, 50, '', '', 'form-control-sm mb-2'); ?>
-                                <button type="button" style="position: absolute; right: 0;top:50%;"
-                                        class="btn btn-danger btn-sm cleanColor">
-                                    <i class="fas fa-times"></i></button>
+
+
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input"
+                                    <?= !empty($location['fill']) && $location['fill'] != '' ? 'checked' : ''; ?>
+                                       id="checkFill">
+                                <label class="custom-control-label"
+                                       for="checkFill"><?= trans('Choix de remplissage'); ?></label>
+                            </div>
+                            <div style="<?= empty($location['fill']) ? 'display: none;' : ''; ?>" id="fillChois" class="form-group my-2">
+                                <input type="color" class="form-control form-control-sm mb-2 inputColorChoise" id="" name=""
+                                       value="<?= !empty($location['fill']) ? $location['fill'] : ''; ?>">
+                                <input type="hidden" id="" class="inputColorHidden" name="" value="">
                             </div>
                             <input type="hidden" id="pin" name="pin"
                                    value="<?= !empty($location['pin']) ? $location['pin'] : 'hidden'; ?>">
@@ -60,7 +68,7 @@ if (!empty($_GET['id']) && !empty($_GET['level']) && isset($_GET['location'])): 
                                     <?php foreach (INTERACTIVE_MAP_PINS as $key => $pin): ?>
                                         <?php if (file_exists(INTERACTIVE_MAP_PATH . 'images/' . $pin)): ?>
                                             <button type="button"
-                                                    class="btn <?= !empty($location['pin']) && $location['pin'] == $key ? 'bg-info' : ''; ?> btn-light markerChoiseBtn p-2"
+                                                    class="btn <?= !empty($location['pin']) && $location['pin'] == $key ? 'bg-info' : ''; ?> btn-light markerChoiseBtn p-2 sidebarLink"
                                                     data-pinchoise="<?= $key; ?>">
                                                 <img src="<?= INTERACTIVE_MAP_URL . 'images/' . $pin; ?>">
                                             </button>
@@ -127,8 +135,7 @@ if (!empty($_GET['id']) && !empty($_GET['level']) && isset($_GET['location'])): 
                                             if (typeof data.error === 'undefined') {
                                                 $('input[type=file]').addClass('is-valid');
                                                 availableApp();
-                                            }
-                                            else {
+                                            } else {
                                                 // Handle errors here
                                                 //console.log('ERRORS RESPONSE: ' + data.error);
                                             }
@@ -144,7 +151,26 @@ if (!empty($_GET['id']) && !empty($_GET['level']) && isset($_GET['location'])): 
                                     event.stopPropagation();
                                     event.preventDefault();
 
-                                    $('input#fill').val('#343F4B').trigger('change');
+                                    $(this).remove();
+
+                                    var parent = $('input#fill').closest('div');
+                                    parent.children().remove();
+                                    parent.append('<input id="fill" name="fill" value="" type="hidden">');
+                                    $('#fill').trigger('change');
+                                });
+
+                                $('#checkFill').change(function (event) {
+                                    if ($(this).is(':checked')) {
+                                        event.stopPropagation();
+                                        event.preventDefault();
+                                        $('#fillChois').slideDown('fast');
+                                        $('.inputColorChoise').attr('id', 'fill').attr('name', 'fill').show();
+                                        $('.inputColorHidden').attr('id', '').attr('name', '').hide();
+                                    } else {
+                                        $('#fillChois').slideUp('fast');
+                                        $('.inputColorChoise').attr('id', '').attr('name', '').hide();
+                                        $('.inputColorHidden').attr('id', 'fill').attr('name', 'fill').show();
+                                    }
                                 });
 
                                 $('#checkMarker').change(function (event) {
@@ -158,6 +184,7 @@ if (!empty($_GET['id']) && !empty($_GET['level']) && isset($_GET['location'])): 
                                         $('input#pin').val('hidden');
                                     }
                                 });
+
 
                                 $('button.markerChoiseBtn').on('click', function () {
                                     var $btn = $(this);
