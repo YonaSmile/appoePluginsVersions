@@ -16,62 +16,52 @@ if (!empty($_GET['id'])):
         //get all pages for navigations
         $allCmsPages = $Cms->showAllPages();
 
-        echo getTitle($Cms->getName(), $Page->getSlug()); ?>
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <?php if ($Menu->checkUserPermission(getUserRoleId(), 'updatePage')): ?>
-                        <a id="updatePageBtn"
-                           href="<?= getPluginUrl('cms/page/update/', $Cms->getId()); ?>"
-                           class="btn btn-warning btn-sm">
-                            <span class="fas fa-cog"></span> <?= trans('Modifier la page'); ?>
-                        </a>
-                    <?php endif; ?>
-                    <?php if (array_key_exists($Cms->getSlug(), $allMenuPages)): ?>
-                        <a href="<?= webUrl($Cms->getSlug() . '/'); ?>"
-                           class="btn btn-info btn-sm" target="_blank">
-                            <span class="fas fa-external-link-alt"></span> <?= trans('Visualiser la page'); ?>
-                        </a>
-                    <?php endif; ?>
-                    <select class="custom-select otherPagesSelect otherProjetSelect notPrint float-right"
-                            title="<?= trans('Parcourir les pages'); ?>...">
-                        <option selected="selected" disabled><?= trans('Parcourir les pages'); ?>...</option>
-                        <?php foreach ($allCmsPages as $pageSelect): ?>
-                            <?php if ($Cms->getId() != $pageSelect->id): ?>
-                                <option data-href="<?= getPluginUrl('cms/page/pageContent/', $pageSelect->id); ?>"><?= $pageSelect->name; ?></option>
-                            <?php endif; ?>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
+        echo getTitle(trans('Contenu de la page') . '<strong> ' . $Cms->getName() . '</strong>', $Page->getSlug()); ?>
+        <div class="row my-2">
+            <div class="col-12">
+                <?php if ($Menu->checkUserPermission(getUserRoleId(), 'updatePage')): ?>
+                    <a id="updatePageBtn"
+                       href="<?= getPluginUrl('cms/page/update/', $Cms->getId()); ?>"
+                       class="btn btn-warning btn-sm">
+                        <span class="fas fa-cog"></span> <?= trans('Modifier la page'); ?>
+                    </a>
+                <?php endif; ?>
+                <?php if (array_key_exists($Cms->getSlug(), $allMenuPages)): ?>
+                    <a href="<?= webUrl($Cms->getSlug() . '/'); ?>"
+                       class="btn btn-info btn-sm" target="_blank">
+                        <span class="fas fa-external-link-alt"></span> <?= trans('Visualiser la page'); ?>
+                    </a>
+                <?php endif; ?>
+                <select class="custom-select otherPagesSelect otherProjetSelect notPrint float-right"
+                        title="<?= trans('Parcourir les pages'); ?>...">
+                    <option selected="selected" disabled><?= trans('Parcourir les pages'); ?>...</option>
+                    <?php foreach ($allCmsPages as $pageSelect): ?>
+                        <?php if ($Cms->getId() != $pageSelect->id): ?>
+                            <option data-href="<?= getPluginUrl('cms/page/pageContent/', $pageSelect->id); ?>"><?= $pageSelect->name; ?></option>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </select>
             </div>
-            <div class="my-2"></div>
-            <div class="row">
-                <div class="col-12">
-                    <h2 class="subTitle text-uppercase"><?= trans('Contenu de la page'); ?></h2>
-                </div>
-            </div>
-            <?php if (file_exists(WEB_PATH . $Cms->getSlug() . '.php')): ?>
-                <form action="" method="post" id="pageContentManageForm">
-                    <div class="row">
-                        <?php
-                        $Template = new \App\Template(WEB_PATH . $Cms->getSlug() . '.php', $CmsContent->getData());
-                        $Template->show();
-                        ?>
-                    </div>
-                    <div class="my-2"></div>
-                    <div class="row">
-                        <div class="col-12">
-                            <button type="button" class="btn btn-outline-primary btn-block btn-lg">
-                                <?= trans('Enregistrer'); ?>
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            <?php else: ?>
-                <p><?= trans('Model manquant'); ?></p>
-            <?php endif; ?>
         </div>
-        <div class="my-4"></div>
+        <?php if (file_exists(WEB_PATH . $Cms->getSlug() . '.php')): ?>
+        <form action="" method="post" id="pageContentManageForm">
+            <div class="row my-2">
+                <?php
+                $Template = new \App\Template(WEB_PATH . $Cms->getSlug() . '.php', $CmsContent->getData());
+                $Template->show();
+                ?>
+            </div>
+            <div class="row my-2">
+                <div class="col-12">
+                    <button type="button" class="btn btn-outline-primary btn-block btn-lg">
+                        <?= trans('Enregistrer'); ?>
+                    </button>
+                </div>
+            </div>
+        </form>
+    <?php else: ?>
+        <p><?= trans('Model manquant'); ?></p>
+    <?php endif; ?>
         <?= getAsset('mediaLibrary'); ?>
         <script type="text/javascript">
 

@@ -10,16 +10,30 @@ const STATUS_CONNECTED_USER = array(
     4 => 'danger'
 );
 
+
 /**
  * check and create necessarily files
+ * @param null $file
+ * @return bool
  */
-function checkExistingFiles()
+function mehoubarim_checkExistingFiles($file = null)
 {
+
+    //Create files
+    if (!is_null($file)) {
+        if (!file_exists($file)) {
+            if (false === fopen($file, 'w+')) {
+                return mehoubarim_checkExistingFiles($file);
+            }
+        }
+
+        return true;
+    }
 
     //Connected Users File
     if (!file_exists(MEHOUBARIM_JSON)) {
         if (false === fopen(MEHOUBARIM_JSON, 'w+')) {
-            return checkExistingFiles();
+            return mehoubarim_checkExistingFiles(MEHOUBARIM_JSON);
         }
 
         //Edit
@@ -32,7 +46,7 @@ function checkExistingFiles()
     //Visitor File
     if (!file_exists(VISITORS_JSON)) {
         if (false === fopen(VISITORS_JSON, 'w+')) {
-            return checkExistingFiles();
+            return mehoubarim_checkExistingFiles(VISITORS_JSON);
         }
 
         //Edit
@@ -46,7 +60,7 @@ function checkExistingFiles()
     //Global File
     if (!file_exists(GLOBAL_JSON)) {
         if (false === fopen(GLOBAL_JSON, 'w+')) {
-            return checkExistingFiles();
+            return mehoubarim_checkExistingFiles(GLOBAL_JSON);
         }
 
         //Edit
@@ -64,10 +78,11 @@ function checkExistingFiles()
  *
  * @param $data
  * @param $file
+ * @param $writingMode
  */
-function mehoubarim_jsonWrite($data, $file = MEHOUBARIM_JSON)
+function mehoubarim_jsonWrite($data, $file = MEHOUBARIM_JSON, $writingMode = 'w')
 {
-    $json_file = fopen($file, 'w');
+    $json_file = fopen($file, $writingMode);
     fwrite($json_file, json_encode($data));
     fclose($json_file);
 }
@@ -82,14 +97,13 @@ function mehoubarim_jsonRead($file = MEHOUBARIM_JSON)
 {
     $parsed_json = array();
 
-    if (checkExistingFiles()) {
+    if (mehoubarim_checkExistingFiles($file)) {
         $json = file_get_contents($file);
         $parsed_json = json_decode($json, true);
     }
 
     return $parsed_json;
 }
-
 
 /**
  * edit user statut to actif

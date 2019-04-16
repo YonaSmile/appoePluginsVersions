@@ -76,3 +76,25 @@
     -webkit-transform: scaleX(1.03);
     transform: scaleX(1.03);
 }
+
+#pageContentManageForm label {
+    font-size: 1.2em;
+    color: #7386d5;
+    font-weight: 700;
+}
+
+#pageContentManageForm input,
+#pageContentManageForm select,
+#pageContentManageForm textarea,
+#pageContentManageForm div[id^="cke"] {
+    box-shadow: 3px 3px 10px 1px #dedede;
+}
+
+#pageContentManageForm input,
+#pageContentManageForm select,
+#pageContentManageForm textarea {
+    border-bottom: 0;
+    border-top: 0;
+    border-left: 2px solid #7386d5;
+    border-right: 0;
+}

@@ -1,11 +1,10 @@
 function checkUserSessionExit() {
-    return $.post('/app/ajax/plugin.php', {checkUserSession: 'OK'});
+    return jQuery.post('/app/ajax/plugin.php', {checkUserSession: 'OK'});
 }
 
 function getUserStatus() {
     jQuery('#usersStatsSubMenu').load('/app/plugin/mehoubarim/index.php');
 
-    var start = new Date(jQuery.now());
     jQuery('#visitorsStats').load('/app/plugin/mehoubarim/visites.php', function () {
 
         jQuery('#visitorsStats #visitsLoader')

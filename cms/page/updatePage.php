@@ -6,7 +6,6 @@ if (!empty($_GET['id'])): ?>
     if ($Cms->show()) : ?>
         <?php require(CMS_PATH . 'process/postProcess.php'); ?>
         <?= getTitle($Page->getName(), $Page->getSlug()); ?>
-        <div class="container">
             <div class="row">
                 <div class="col-12">
                     <a href="<?= getPluginUrl('cms/page/pageContent/', $Cms->getId()) ?>"
@@ -33,7 +32,7 @@ if (!empty($_GET['id'])): ?>
             <form action="" method="post" id="updatePageForm">
                 <?= getTokenField(); ?>
                 <input type="hidden" name="id" value="<?= $Cms->getId(); ?>">
-                <div class="row d-flex align-items-end">
+                <div class="row d-flex align-items-end my-2">
                     <div class="col-12 col-lg-8">
                         <div class="row">
                             <div class="col-12 my-2">
@@ -60,8 +59,6 @@ if (!empty($_GET['id'])): ?>
                     </div>
                 </div>
             </form>
-            <div class="my-4"></div>
-        </div>
         <script>
             $(document).ready(function () {
                 $('#updateSlugAuto').on('change', function () {
