@@ -23,184 +23,181 @@ if (!empty($_GET['id'])):
         $allArticleMedias = $ArticleMedia->showFiles();
 
         echo getTitle($Article->getName(), $Page->getSlug()); ?>
-        <div class="container">
-            <?php if (isset($Response)): ?>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="alert alert-<?= $Response->display()->status ?>" role="alert">
-                            <?= $Response->display()->error_msg; ?>
+        <?php if (isset($Response)): ?>
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-<?= $Response->display()->status ?>" role="alert">
+                    <?= $Response->display()->error_msg; ?>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <a class="nav-item nav-link colorPrimary <?= empty($Response->MediaTabactive) ? 'active' : ''; ?>"
+                   id="nav-allLibraries-tab" data-toggle="tab"
+                   href="#nav-allLibraries"
+                   role="tab" aria-controls="nav-allLibraries"
+                   aria-selected="true"><?= trans('Contenu de l\'article'); ?></a>
+                <a class="nav-item nav-link colorPrimary <?= !empty($Response->MediaTabactive) ? 'active' : ''; ?>"
+                   id="nav-newFiles-tab" data-toggle="tab" href="#nav-newFiles" role="tab"
+                   aria-controls="nav-newFiles" aria-selected="false"><?= trans('Les médias'); ?></a>
+                <?php if (class_exists('App\Plugin\Traduction\Traduction')): ?>
+                    <a class="nav-item nav-link colorPrimary"
+                       id="nav-traductions-tab" data-toggle="tab" href="#nav-traduction" role="tab"
+                       aria-controls="nav-traduction" aria-selected="false"><?= trans('Traductions'); ?></a>
+                <?php endif; ?>
+            </div>
+        </nav>
+        <div class="tab-content border border-top-0 bg-white py-3 mb-2" id="nav-mediaTabContent">
+            <div class="tab-pane fade <?= empty($Response->MediaTabactive) ? 'active show' : ''; ?>"
+                 id="nav-allLibraries" role="tabpanel"
+                 aria-labelledby="nav-allLibraries-tab">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <?php if ($Menu->checkUserPermission(getUserRoleId(), 'updateArticle')): ?>
+                                <a id="updateArticleBtn"
+                                   href="<?= getPluginUrl('itemGlue/page/update/', $Article->getId()); ?>"
+                                   class="btn btn-warning btn-sm">
+                                    <span class="fas fa-wrench"></span> <?= trans('Modifier les en-têtes'); ?>
+                                </a>
+                            <?php endif; ?>
+                            <button id="addMetaArticleBtn" type="button" class="btn btn-info btn-sm"
+                                    data-toggle="modal"
+                                    data-target="#modalAddArticleMeta">
+                                <i class="fas fa-list"></i> <?= trans('Données complémentaires'); ?>
+                            </button>
+                            <select class="custom-select otherArticlesSelect otherProjetSelect notPrint float-right"
+                                    title="<?= trans('Parcourir les autres articles'); ?>...">
+                                <option selected="selected" disabled><?= trans('Parcourir les autres articles'); ?>
+                                    ...
+                                </option>
+                                <?php if ($allArticles):
+                                    foreach ($allArticles as $article):
+                                        if ($Article->getId() != $article->id): ?>
+                                            <option data-href="<?= getPluginUrl('itemGlue/page/articleContent/', $article->id); ?>"><?= $article->name; ?></option>
+                                        <?php endif;
+                                    endforeach;
+                                endif; ?>
+                            </select>
                         </div>
                     </div>
-                </div>
-            <?php endif; ?>
-            <nav>
-                <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                    <a class="nav-item nav-link <?= empty($Response->MediaTabactive) ? 'active' : ''; ?>"
-                       id="nav-allLibraries-tab" data-toggle="tab"
-                       href="#nav-allLibraries"
-                       role="tab" aria-controls="nav-allLibraries"
-                       aria-selected="true"><?= trans('Contenu de l\'article'); ?></a>
-                    <a class="nav-item nav-link <?= !empty($Response->MediaTabactive) ? 'active' : ''; ?>"
-                       id="nav-newFiles-tab" data-toggle="tab" href="#nav-newFiles" role="tab"
-                       aria-controls="nav-newFiles" aria-selected="false"><?= trans('Les médias'); ?></a>
-                    <?php if (class_exists('App\Plugin\Traduction\Traduction')): ?>
-                        <a class="nav-item nav-link"
-                           id="nav-traductions-tab" data-toggle="tab" href="#nav-traduction" role="tab"
-                           aria-controls="nav-traduction" aria-selected="false"><?= trans('Traductions'); ?></a>
-                    <?php endif; ?>
-                </div>
-            </nav>
-            <div class="tab-content border-top-0 bg-white py-3" id="nav-mediaTabContent">
-                <div class="tab-pane fade <?= empty($Response->MediaTabactive) ? 'active show' : ''; ?>"
-                     id="nav-allLibraries" role="tabpanel"
-                     aria-labelledby="nav-allLibraries-tab">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-12">
-                                <?php if ($Menu->checkUserPermission(getUserRoleId(), 'updateArticle')): ?>
-                                    <a id="updateArticleBtn"
-                                       href="<?= getPluginUrl('itemGlue/page/update/', $Article->getId()); ?>"
-                                       class="btn btn-warning btn-sm">
-                                        <span class="fas fa-wrench"></span> <?= trans('Modifier les en-têtes'); ?>
-                                    </a>
-                                <?php endif; ?>
-                                <button id="addMetaArticleBtn" type="button" class="btn btn-info btn-sm"
-                                        data-toggle="modal"
-                                        data-target="#modalAddArticleMeta">
-                                    <i class="fas fa-list"></i> <?= trans('Données complémentaires'); ?>
-                                </button>
-                                <select class="custom-select otherArticlesSelect otherProjetSelect notPrint float-right"
-                                        title="<?= trans('Parcourir les autres articles'); ?>...">
-                                    <option selected="selected" disabled><?= trans('Parcourir les autres articles'); ?>
-                                        ...
-                                    </option>
-                                    <?php if ($allArticles):
-                                        foreach ($allArticles as $article):
-                                            if ($Article->getId() != $article->id): ?>
-                                                <option data-href="<?= getPluginUrl('itemGlue/page/articleContent/', $article->id); ?>"><?= $article->name; ?></option>
-                                            <?php endif;
-                                        endforeach;
-                                    endif; ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="my-2"></div>
+                    <div class="my-2"></div>
 
-                        <div class="row">
-                            <div class="col-12">
-                                <form action="" id="contentArticleManage" class="row" method="post">
-                                    <?= getTokenField(); ?>
-                                    <input type="hidden" name="articleId" value="<?= $Article->getId(); ?>">
-                                    <div class="col-12">
+                    <div class="row">
+                        <div class="col-12">
+                            <form action="" id="contentArticleManage" class="row" method="post">
+                                <?= getTokenField(); ?>
+                                <input type="hidden" name="articleId" value="<?= $Article->getId(); ?>">
+                                <div class="col-12">
                                         <textarea name="articleContent" id="articleContent"
                                                   class="ckeditor"><?= html_entity_decode($ArticleContent->getContent()); ?></textarea>
-                                    </div>
-                                    <div class="my-2"></div>
-                                    <div class="col-12">
-                                        <?= \App\Form::checkbox('Catégories', 'categories', $listCatgories, $allCategoryRelations, 'checkCategories'); ?>
-                                    </div>
-                                    <div class="col-12">
-                                        <?= \App\Form::target('SAVEARTICLECONTENT'); ?>
-                                        <?= \App\Form::submit('Enregistrer', 'SAVEARTICLECONTENTSUBMIT'); ?>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="tab-pane fade <?= !empty($Response->MediaTabactive) ? 'active show' : ''; ?>"
-                     id="nav-newFiles" role="tabpanel" aria-labelledby="nav-newFiles-tab">
-                    <div class="container-fluid">
-                        <form class="row" id="galleryArticleForm" action="" method="post" enctype="multipart/form-data">
-                            <?= getTokenField(); ?>
-                            <input type="hidden" name="articleId" value="<?= $Article->getId(); ?>">
-                            <div class="col-12 col-lg-6 my-2">
-                                <?= \App\Form::text('Importer des médias', 'inputFile[]', 'file', '', false, 800, 'multiple'); ?>
-                            </div>
-                            <div class="col-12 col-lg-6 my-2">
-                                <textarea name="textareaSelectedFile" id="textareaSelectedFile"
-                                          class="d-none"></textarea>
-                                <?= \App\Form::text('Choisissez des médias', 'inputSelectFiles', 'text', '0 fichiers', false, 300, 'readonly data-toggle="modal" data-target="#allMediasModal"'); ?>
-                            </div>
-                            <div class="col-12">
-                                <?= \App\Form::target('ADDIMAGESTOARTICLE'); ?>
-                                <?= \App\Form::submit('Enregistrer', 'ADDIMAGESTOARTICLESUBMIT'); ?>
-                            </div>
-                        </form>
-                        <?php
-                        if ($allArticleMedias): ?>
-                            <hr class="my-4 mx-5">
-                            <div class="card-columns" style="column-count:3">
-                                <?php foreach ($allArticleMedias as $file): ?>
-                                    <div class="card bg-none border-0 my-1">
-                                        <?php if (isImage(FILE_DIR_PATH . $file->name)): ?>
-                                            <img src="<?= getThumb($file->name, 370); ?>"
-                                                 alt="<?= $file->description; ?>"
-                                                 data-originsrc="<?= WEB_DIR_INCLUDE . $file->name; ?>"
-                                                 data-filename="<?= $file->name; ?>"
-                                                 class="img-fluid img-thumbnail seeOnOverlay seeDataOnHover">
-                                        <?php else: ?>
-                                            <a href="<?= WEB_DIR_INCLUDE . $file->name; ?>" target="_blank">
-                                                <img src="<?= getImgAccordingExtension(getFileExtension($file->name)); ?>">
-                                            </a>
-                                            <small class="fileLink" data-src="<?= WEB_DIR_INCLUDE . $file->name; ?>">
-                                                <button class="btn btn-sm btn-outline-info btn-block copyLinkOnClick">
-                                                    <?= trans('Copier le lien du média'); ?>
-                                                </button>
-                                            </small>
-                                        <?php endif; ?>
-                                        <form method="post" data-imageid="<?= $file->id; ?>">
-                                            <input type="hidden" class="typeId" name="typeId"
-                                                   value="<?= $file->typeId; ?>">
-                                            <?= \App\Form::text('Description', 'description', 'text', $file->description, false, 300, '', '', 'form-control-sm imageDescription', 'Description'); ?>
-                                            <?= \App\Form::text('Lien', 'link', 'url', $file->link, false, 300, '', '', 'form-control-sm imagelink', 'Lien'); ?>
-                                            <?= \App\Form::text('Position', 'position', 'text', $file->position, false, 300, '', '', 'form-control-sm imagePosition', 'Position'); ?>
-                                            <select class="custom-select custom-select-sm templatePosition form-control-sm"
-                                                    name="templatePosition">
-                                                <?php if (!getSerializedOptions($file->options, 'templatePosition')): ?>
-                                                    <option selected value=""><?= trans('Zone du thème'); ?></option>
-                                                <?php endif;
-                                                foreach (FILE_TEMPLATE_POSITIONS as $filePositionId => $name): ?>
-                                                    <option value="<?= $filePositionId; ?>" <?= $filePositionId == getSerializedOptions($file->options, 'templatePosition') ? 'selected' : ''; ?>><?= $name; ?></option>
-                                                <?php endforeach; ?>
-                                            </select>
-                                            <small class="infosMedia"></small>
-                                        </form>
-                                        <button type="button" class="deleteImage btn btn-danger btn-sm"
-                                                data-imageid="<?= $file->id; ?>"
-                                                style="position: absolute; top: 0; right: 0;">
-                                            <i class="fas fa-times"></i>
-                                        </button>
-                                    </div>
-                                <?php endforeach; ?>
-                            </div>
-                            <hr class="mt-2 mt-3 mb-1 mx-5">
-                        <?php endif; ?>
-                    </div>
-                </div>
-                <?php if (class_exists('App\Plugin\Traduction\Traduction')): ?>
-                    <div class="tab-pane fade" id="nav-traduction" role="tabpanel"
-                         aria-labelledby="nav-traductions-tab">
-                        <div class="container-fluid">
-                            <form action="" method="post" class="positionRelative pb-2" id="pageContentManageForm">
-                                <small class="categoryIdFloatContenaire">Enregistré</small>
-                                <div class="row" id="tradContainer">
-                                    <div class="col-12 fileContent bg_grey_hover tradContent my-2">
-                                        <?= \App\Form::text($Article->getName(), $Article->getName(), 'text', trad($Article->getName(), false, APP_LANG), false, 250); ?>
-                                    </div>
-                                    <div class="col-12 fileContent bg_grey_hover tradContent my-2">
-                                        <?= \App\Form::text($Article->getDescription(), $Article->getDescription(), 'text', trad($Article->getDescription(), false, APP_LANG), false, 250); ?>
-                                    </div>
-                                    <div class="col-12 fileContent bg_grey_hover tradContent my-2">
-                                        <?= \App\Form::text($Article->getSlug(), $Article->getSlug(), 'text', trad($Article->getSlug(), false, APP_LANG), false, 250); ?>
-                                    </div>
+                                </div>
+                                <div class="my-2"></div>
+                                <div class="col-12">
+                                    <?= \App\Form::checkbox('Catégories', 'categories', $listCatgories, $allCategoryRelations, 'checkCategories'); ?>
+                                </div>
+                                <div class="col-12">
+                                    <?= \App\Form::target('SAVEARTICLECONTENT'); ?>
+                                    <?= \App\Form::submit('Enregistrer', 'SAVEARTICLECONTENTSUBMIT'); ?>
                                 </div>
                             </form>
                         </div>
                     </div>
-                <?php endif; ?>
+                </div>
             </div>
-            <div class="my-4"></div>
+            <div class="tab-pane fade <?= !empty($Response->MediaTabactive) ? 'active show' : ''; ?>"
+                 id="nav-newFiles" role="tabpanel" aria-labelledby="nav-newFiles-tab">
+                <div class="container-fluid">
+                    <form class="row" id="galleryArticleForm" action="" method="post" enctype="multipart/form-data">
+                        <?= getTokenField(); ?>
+                        <input type="hidden" name="articleId" value="<?= $Article->getId(); ?>">
+                        <div class="col-12 col-lg-6 my-2">
+                            <?= \App\Form::text('Importer des médias', 'inputFile[]', 'file', '', false, 800, 'multiple'); ?>
+                        </div>
+                        <div class="col-12 col-lg-6 my-2">
+                                <textarea name="textareaSelectedFile" id="textareaSelectedFile"
+                                          class="d-none"></textarea>
+                            <?= \App\Form::text('Choisissez des médias', 'inputSelectFiles', 'text', '0 fichiers', false, 300, 'readonly data-toggle="modal" data-target="#allMediasModal"'); ?>
+                        </div>
+                        <div class="col-12">
+                            <?= \App\Form::target('ADDIMAGESTOARTICLE'); ?>
+                            <?= \App\Form::submit('Enregistrer', 'ADDIMAGESTOARTICLESUBMIT'); ?>
+                        </div>
+                    </form>
+                    <?php
+                    if ($allArticleMedias): ?>
+                        <hr class="my-4 mx-5">
+                        <div class="card-columns" style="column-count:3">
+                            <?php foreach ($allArticleMedias as $file): ?>
+                                <div class="card bg-none border-0 my-1">
+                                    <?php if (isImage(FILE_DIR_PATH . $file->name)): ?>
+                                        <img src="<?= getThumb($file->name, 370); ?>"
+                                             alt="<?= $file->description; ?>"
+                                             data-originsrc="<?= WEB_DIR_INCLUDE . $file->name; ?>"
+                                             data-filename="<?= $file->name; ?>"
+                                             class="img-fluid img-thumbnail seeOnOverlay seeDataOnHover">
+                                    <?php else: ?>
+                                        <a href="<?= WEB_DIR_INCLUDE . $file->name; ?>" target="_blank">
+                                            <img src="<?= getImgAccordingExtension(getFileExtension($file->name)); ?>">
+                                        </a>
+                                        <small class="fileLink" data-src="<?= WEB_DIR_INCLUDE . $file->name; ?>">
+                                            <button class="btn btn-sm btn-outline-info btn-block copyLinkOnClick">
+                                                <?= trans('Copier le lien du média'); ?>
+                                            </button>
+                                        </small>
+                                    <?php endif; ?>
+                                    <form method="post" data-imageid="<?= $file->id; ?>">
+                                        <input type="hidden" class="typeId" name="typeId"
+                                               value="<?= $file->typeId; ?>">
+                                        <?= \App\Form::text('Description', 'description', 'text', $file->description, false, 300, '', '', 'form-control-sm imageDescription', 'Description'); ?>
+                                        <?= \App\Form::text('Lien', 'link', 'url', $file->link, false, 300, '', '', 'form-control-sm imagelink', 'Lien'); ?>
+                                        <?= \App\Form::text('Position', 'position', 'text', $file->position, false, 300, '', '', 'form-control-sm imagePosition', 'Position'); ?>
+                                        <select class="custom-select custom-select-sm templatePosition form-control-sm"
+                                                name="templatePosition">
+                                            <?php if (!getSerializedOptions($file->options, 'templatePosition')): ?>
+                                                <option selected value=""><?= trans('Zone du thème'); ?></option>
+                                            <?php endif;
+                                            foreach (FILE_TEMPLATE_POSITIONS as $filePositionId => $name): ?>
+                                                <option value="<?= $filePositionId; ?>" <?= $filePositionId == getSerializedOptions($file->options, 'templatePosition') ? 'selected' : ''; ?>><?= $name; ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                        <small class="infosMedia"></small>
+                                    </form>
+                                    <button type="button" class="deleteImage btn btn-danger btn-sm"
+                                            data-imageid="<?= $file->id; ?>"
+                                            style="position: absolute; top: 0; right: 0;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                        <hr class="mt-2 mt-3 mb-1 mx-5">
+                    <?php endif; ?>
+                </div>
+            </div>
+            <?php if (class_exists('App\Plugin\Traduction\Traduction')): ?>
+                <div class="tab-pane fade" id="nav-traduction" role="tabpanel"
+                     aria-labelledby="nav-traductions-tab">
+                    <div class="container-fluid">
+                        <form action="" method="post" class="positionRelative pb-2" id="pageContentManageForm">
+                            <small class="categoryIdFloatContenaire">Enregistré</small>
+                            <div class="row" id="tradContainer">
+                                <div class="col-12 fileContent bg_grey_hover tradContent my-2">
+                                    <?= \App\Form::text($Article->getName(), $Article->getName(), 'text', trad($Article->getName(), false, APP_LANG), false, 250); ?>
+                                </div>
+                                <div class="col-12 fileContent bg_grey_hover tradContent my-2">
+                                    <?= \App\Form::text($Article->getDescription(), $Article->getDescription(), 'text', trad($Article->getDescription(), false, APP_LANG), false, 250); ?>
+                                </div>
+                                <div class="col-12 fileContent bg_grey_hover tradContent my-2">
+                                    <?= \App\Form::text($Article->getSlug(), $Article->getSlug(), 'text', trad($Article->getSlug(), false, APP_LANG), false, 250); ?>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            <?php endif; ?>
         </div>
         <div class="modal fade" id="allMediasModal" tabindex="-1" role="dialog" aria-labelledby="allMediasModalLabel"
              aria-hidden="true">
