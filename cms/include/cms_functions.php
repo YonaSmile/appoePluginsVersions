@@ -15,7 +15,7 @@ function loadPage($slug = 'home', $lang = LANG)
     $existPage = $Cms->showBySlug();
 
     //Check if Page exist and accessible
-    if ((!$existPage && pageName() == 'Non définie') || $Cms->getStatut() != 1) {
+    if (!$existPage || $Cms->getStatut() != 1) {
         if (false === @include_once(WEB_PUBLIC_PATH . 'html/' . $slug . '.php')) {
             return 'Cette page n\'existe pas.';
         }
