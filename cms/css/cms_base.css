@@ -77,6 +77,10 @@
     transform: scaleX(1.03);
 }
 
+.templateZoneInput div.form-group {
+    position: relative;
+}
+
 #pageContentManageForm label {
     font-size: 1.2em;
     color: #7386d5;
