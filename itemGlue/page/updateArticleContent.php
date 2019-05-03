@@ -22,16 +22,16 @@ if (!empty($_GET['id'])):
         $ArticleMedia = new \App\Plugin\ItemGlue\ArticleMedia($Article->getId());
         $allArticleMedias = $ArticleMedia->showFiles();
 
-        echo getTitle($Article->getName(), $Page->getSlug()); ?>
-        <?php if (isset($Response)): ?>
-        <div class="row">
-            <div class="col-12">
-                <div class="alert alert-<?= $Response->display()->status ?>" role="alert">
-                    <?= $Response->display()->error_msg; ?>
+        echo getTitle($Article->getName(), $Page->getSlug());
+        if (isset($Response)): ?>
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-<?= $Response->display()->status ?>" role="alert">
+                        <?= $Response->display()->error_msg; ?>
+                    </div>
                 </div>
             </div>
-        </div>
-    <?php endif; ?>
+        <?php endif; ?>
         <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
                 <a class="nav-item nav-link colorPrimary <?= empty($Response->MediaTabactive) ? 'active' : ''; ?>"
@@ -68,6 +68,12 @@ if (!empty($_GET['id'])):
                                     data-target="#modalAddArticleMeta">
                                 <i class="fas fa-list"></i> <?= trans('Données complémentaires'); ?>
                             </button>
+                            <?php if (defined('DEFAULT_ARTICLES_PAGE')): ?>
+                                <a href="<?= webUrl(DEFAULT_ARTICLES_PAGE . '/', $Article->getSlug()); ?>"
+                                   class="btn btn-primary btn-sm" target="_blank">
+                                    <span class="fas fa-external-link-alt"></span> <?= trans('Visualiser l\'article'); ?>
+                                </a>
+                            <?php endif; ?>
                             <select class="custom-select otherArticlesSelect otherProjetSelect notPrint float-right"
                                     title="<?= trans('Parcourir les autres articles'); ?>...">
                                 <option selected="selected" disabled><?= trans('Parcourir les autres articles'); ?>
@@ -126,8 +132,7 @@ if (!empty($_GET['id'])):
                             <?= \App\Form::submit('Enregistrer', 'ADDIMAGESTOARTICLESUBMIT'); ?>
                         </div>
                     </form>
-                    <?php
-                    if ($allArticleMedias): ?>
+                    <?php if ($allArticleMedias): ?>
                         <hr class="my-4 mx-5">
                         <div class="card-columns" style="column-count:3">
                             <?php foreach ($allArticleMedias as $file): ?>
