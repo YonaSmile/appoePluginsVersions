@@ -73,8 +73,16 @@ if (!empty($_GET['id'])):
                                    class="btn btn-primary btn-sm" target="_blank">
                                     <span class="fas fa-external-link-alt"></span> <?= trans('Visualiser l\'article'); ?>
                                 </a>
+                            <?php endif;
+                            if (pluginExist('twitter')): ?>
+                                <button type="button" class="btn btn-primary btn-sm notPrint float-right ml-1"
+                                        id="articleTwitterShareButton"
+                                        data-toggle="modal" data-target="#modalTwitterManager"
+                                        data-share-link="<?= $Article->getSlug(); ?>">
+                                    <i class="fab fa-twitter"></i>
+                                </button>
                             <?php endif; ?>
-                            <select class="custom-select otherArticlesSelect otherProjetSelect notPrint float-right"
+                            <select class="custom-select custom-select-sm otherArticlesSelect otherProjetSelect notPrint float-right"
                                     title="<?= trans('Parcourir les autres articles'); ?>...">
                                 <option selected="selected" disabled><?= trans('Parcourir les autres articles'); ?>
                                     ...
@@ -499,10 +507,10 @@ if (!empty($_GET['id'])):
                 });
             });
         </script>
-    <?php else: ?>
-        <?= getContainerErrorMsg(trans('Cette page n\'existe pas')); ?>
-    <?php endif; ?>
-<?php else: ?>
-    <?= trans('Cette page n\'existe pas'); ?>
-<?php endif; ?>
-<?php require('footer.php'); ?>
+    <?php else:
+        echo getContainerErrorMsg(trans('Cette page n\'existe pas'));
+    endif;
+else:
+    echo trans('Cette page n\'existe pas');
+endif;
+require('footer.php'); ?>
