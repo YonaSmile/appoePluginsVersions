@@ -42,12 +42,14 @@
 
         $('body').on('click', '#submitTwitterGroup', function () {
 
-            if ($('#twitterGroup input[type=checkbox]:checked').length) {
-
+            if ($('#twitterGroup input[type=checkbox]:checked').length && $('#twitterGroup textarea#message').val().length) {
                 busyApp();
-                $('#twitterInfo').html('');
 
+                var $btn = $(this);
+                $btn.html(loaderHtml() + ' partage en cours...');
+                $('#twitterInfo').html('');
                 var checkedListsName = [];
+
                 $.each($('#twitterGroup input[type=checkbox]:checked'), function () {
                     checkedListsName.push($(this).data('list-name'));
                 });
@@ -57,6 +59,7 @@
                     {
                         sendMessageToLists: 'OK',
                         lists: checkedListsName,
+                        message: $('#twitterGroup textarea#message').val(),
                         url: shareLink
                     }
                 ).done(function (data) {
@@ -64,10 +67,13 @@
                     if (data != 'false' && data !== false) {
                         $('#twitterGroup').html(data);
                     } else {
+                        $btn.html('Partager');
                         $('#twitterInfo').html(data);
                     }
                     availableApp();
                 });
+            } else {
+                $('#twitterInfo').html('Veuillez choisir au moins un group et renseigner un message !');
             }
         });
     });

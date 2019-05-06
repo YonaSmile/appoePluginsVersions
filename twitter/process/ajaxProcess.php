@@ -9,10 +9,10 @@ if (checkAjaxRequest()) {
 
         if (!empty($_POST['sendMessageToLists'])) {
 
-            if (!empty($_POST['lists']) && !empty($_POST['url'])) {
+            if (!empty($_POST['lists']) && !empty($_POST['message']) && !empty($_POST['url'])) {
 
                 $url = WEB_DIR_URL . DEFAULT_ARTICLES_PAGE . DIRECTORY_SEPARATOR . $_POST['url'];
-                $message = 'Bonjour cher membre, voici quelque chose qui peut t\'intéresser : ' . $url;
+                $message = $_POST['message'] . ' ' . $url;
 
                 if (twitter_send_message_to_lists($_POST['lists'], $message)) {
 

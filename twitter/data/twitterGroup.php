@@ -25,7 +25,8 @@ if (twitter_is_active()):
                     </label>
                 </div>
             <?php endforeach; ?>
-            <button type="button" class="btn btn-sm bgColorPrimary"
+            <?= \App\Form::textarea('Message', 'message', '', 3, true); ?>
+            <button type="button" class="btn btn-sm bgColorPrimary mt-2"
                     id="submitTwitterGroup">
                 <i class="fas fa-share"></i> <?= trans('Partager'); ?>
             </button>
