@@ -1,6 +1,5 @@
 <?php
 require_once('../main.php');
-require_once('../includeApp/twitter_functions.php');
 
 if (checkAjaxRequest()) {
 

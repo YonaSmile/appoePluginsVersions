@@ -8,7 +8,7 @@ class Manager
 
     public function __construct()
     {
-        if (is_null($this->connection) && defined('TWITTER_CONSUMER_KEY')) {
+        if (is_null($this->connection) && twitter_is_active()) {
             $this->connection = new TwitterOAuth(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_TOKEN_SECRET);
         }
     }

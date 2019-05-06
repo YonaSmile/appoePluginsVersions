@@ -73,15 +73,15 @@ if (!empty($_GET['id'])):
                                    class="btn btn-primary btn-sm" target="_blank">
                                     <span class="fas fa-external-link-alt"></span> <?= trans('Visualiser l\'article'); ?>
                                 </a>
-                            <?php endif;
-                            if (pluginExist('twitter')): ?>
-                                <button type="button" class="btn btn-primary btn-sm notPrint float-right ml-1"
-                                        id="articleTwitterShareButton"
-                                        data-toggle="modal" data-target="#modalTwitterManager"
-                                        data-share-link="<?= $Article->getSlug(); ?>">
-                                    <i class="fab fa-twitter"></i>
-                                </button>
-                            <?php endif; ?>
+                                <?php if (pluginExist('twitter')): ?>
+                                    <button type="button" class="btn btn-primary btn-sm notPrint float-right ml-1"
+                                            id="articleTwitterShareButton"
+                                            data-toggle="modal" data-target="#modalTwitterManager"
+                                            data-share-link="<?= $Article->getSlug(); ?>">
+                                        <i class="fab fa-twitter"></i>
+                                    </button>
+                                <?php endif;
+                            endif; ?>
                             <select class="custom-select custom-select-sm otherArticlesSelect otherProjetSelect notPrint float-right"
                                     title="<?= trans('Parcourir les autres articles'); ?>...">
                                 <option selected="selected" disabled><?= trans('Parcourir les autres articles'); ?>
