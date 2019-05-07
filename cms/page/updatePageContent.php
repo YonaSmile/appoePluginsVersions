@@ -25,8 +25,8 @@ if (!empty($_GET['id'])):
                        class="btn btn-warning btn-sm">
                         <span class="fas fa-cog"></span> <?= trans('Modifier la page'); ?>
                     </a>
-                <?php endif; ?>
-                <?php if (array_key_exists($Cms->getSlug(), $allMenuPages)): ?>
+                <?php endif;
+                if (array_key_exists($Cms->getSlug(), $allMenuPages)): ?>
                     <a href="<?= webUrl($Cms->getSlug() . '/'); ?>"
                        class="btn btn-info btn-sm" target="_blank">
                         <span class="fas fa-external-link-alt"></span> <?= trans('Visualiser la page'); ?>
@@ -35,11 +35,11 @@ if (!empty($_GET['id'])):
                 <select class="custom-select otherPagesSelect otherProjetSelect notPrint float-right"
                         title="<?= trans('Parcourir les pages'); ?>...">
                     <option selected="selected" disabled><?= trans('Parcourir les pages'); ?>...</option>
-                    <?php foreach ($allCmsPages as $pageSelect): ?>
-                        <?php if ($Cms->getId() != $pageSelect->id): ?>
+                    <?php foreach ($allCmsPages as $pageSelect):
+                        if ($Cms->getId() != $pageSelect->id): ?>
                             <option data-href="<?= getPluginUrl('cms/page/pageContent/', $pageSelect->id); ?>"><?= $pageSelect->name; ?></option>
-                        <?php endif; ?>
-                    <?php endforeach; ?>
+                        <?php endif;
+                    endforeach; ?>
                 </select>
             </div>
         </div>
@@ -61,8 +61,8 @@ if (!empty($_GET['id'])):
         </form>
     <?php else: ?>
         <p><?= trans('Model manquant'); ?></p>
-    <?php endif; ?>
-        <?= getAsset('mediaLibrary'); ?>
+    <?php endif;
+        echo getAsset('mediaLibrary'); ?>
         <script type="text/javascript">
 
             function updateCmsContent($input, metaValue) {
