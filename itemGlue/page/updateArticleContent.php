@@ -128,7 +128,7 @@ if (!empty($_GET['id'])):
                         <?= getTokenField(); ?>
                         <input type="hidden" name="articleId" value="<?= $Article->getId(); ?>">
                         <div class="col-12 col-lg-6 my-2">
-                            <?= \App\Form::text('Importer des médias', 'inputFile[]', 'file', '', false, 800, 'multiple'); ?>
+                            <?= \App\Form::file('Importer des médias', 'inputFile[]', false, 'multiple'); ?>
                         </div>
                         <div class="col-12 col-lg-6 my-2">
                                 <textarea name="textareaSelectedFile" id="textareaSelectedFile"
