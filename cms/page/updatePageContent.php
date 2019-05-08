@@ -113,6 +113,7 @@ if (!empty($_GET['id'])):
                     clearTimeout($.data(this, 'scrollTimer'));
                     $.data(this, 'scrollTimer', setTimeout(function () {
                         if ($('#headerLinks a:hover').length == 0) {
+                            $('#headerLinks a').blur();
                             $('#headerLinks').css('transform', 'translateX(100%)');
                         }
                     }, 3000));
