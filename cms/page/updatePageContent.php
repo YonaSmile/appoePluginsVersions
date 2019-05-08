@@ -45,7 +45,7 @@ if (!empty($_GET['id'])):
         </div>
         <?php if (file_exists(WEB_PATH . $Cms->getSlug() . '.php')): ?>
         <form action="" method="post" id="pageContentManageForm">
-            <div class="row my-2">
+            <div class="row my-2" data-spy="scroll" data-target="#headerLinks" style="position: relative;">
                 <?php
                 $Template = new \App\Template(WEB_PATH . $Cms->getSlug() . '.php', $CmsContent->getData());
                 $Template->show();
@@ -59,7 +59,7 @@ if (!empty($_GET['id'])):
                 </div>
             </div>
         </form>
-        <div id="headerLinks" class="btn-group-vertical"></div>
+        <nav id="headerLinks" class="btn-group-vertical"></nav>
     <?php else: ?>
         <p><?= trans('Model manquant'); ?></p>
     <?php endif;
@@ -104,6 +104,18 @@ if (!empty($_GET['id'])):
                     var id = Math.random().toString(36).substr(2, 9);
                     $('<div id="' + id + '" style="position: relative;top: -40px;"></div>').insertBefore($(this));
                     $('#headerLinks').append('<a class="btn btn-sm btn-outline-info" href="#' + id + '">' + $(this).text() + '</a>');
+                });
+
+                $(window).scroll(function () {
+
+                    $('#headerLinks').css('transform', 'translateX(0)');
+
+                    clearTimeout($.data(this, 'scrollTimer'));
+                    $.data(this, 'scrollTimer', setTimeout(function () {
+                        if ($('#headerLinks a:hover').length == 0) {
+                            $('#headerLinks').css('transform', 'translateX(100%)');
+                        }
+                    }, 1000));
                 });
 
                 $('input[rel=cms-img-popover]').popover({
