@@ -102,7 +102,7 @@ if (!empty($_GET['id'])):
 
                 $.each($('.templateZoneTitle'), function () {
                     var id = Math.random().toString(36).substr(2, 9);
-                    $('<div id="' + id + '" style="position: relative;top: -40px;"></div>').insertBefore($(this));
+                    $(this).attr('id', id);
                     $('#headerLinks').append('<a class="btn btn-sm btn-outline-info" href="#' + id + '">' + $(this).text() + '</a>');
                 });
 
