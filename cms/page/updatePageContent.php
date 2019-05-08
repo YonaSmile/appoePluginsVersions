@@ -45,7 +45,7 @@ if (!empty($_GET['id'])):
         </div>
         <?php if (file_exists(WEB_PATH . $Cms->getSlug() . '.php')): ?>
         <form action="" method="post" id="pageContentManageForm">
-            <div class="row my-2" data-spy="scroll" data-target="#headerLinks" style="position: relative;">
+            <div class="row my-2">
                 <?php
                 $Template = new \App\Template(WEB_PATH . $Cms->getSlug() . '.php', $CmsContent->getData());
                 $Template->show();
