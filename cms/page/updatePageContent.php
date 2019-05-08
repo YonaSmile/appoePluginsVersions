@@ -59,6 +59,7 @@ if (!empty($_GET['id'])):
                 </div>
             </div>
         </form>
+        <div id="headerLinks" class="btn-group-vertical"></div>
     <?php else: ?>
         <p><?= trans('Model manquant'); ?></p>
     <?php endif;
@@ -99,9 +100,17 @@ if (!empty($_GET['id'])):
 
             $(document).ready(function () {
 
+                $.each($('.templateZoneTitle'), function () {
+                    var id = Math.random().toString(36).substr(2, 9);
+                    $('<div id="' + id + '" style="position: relative;top: -40px;"></div>').insertBefore($(this));
+                    $('#headerLinks').append('<a class="btn btn-sm btn-outline-info" href="#' + id + '">' + $(this).text() + '</a>');
+                });
+
                 $('input[rel=cms-img-popover]').popover({
+                    container: 'body',
                     html: true,
                     trigger: 'hover',
+                    delay: 200,
                     placement: 'top',
                     content: function () {
                         return '<img src="' + $(this).val() + '" />';
@@ -112,6 +121,7 @@ if (!empty($_GET['id'])):
                     event.stopPropagation();
                     event.preventDefault();
 
+                    $('input[rel=cms-img-popover]').popover('hide');
                     var idInput = $(this).attr('id');
                     $('#libraryModal').data('inputid', idInput);
                     $('#libraryModal').modal('show');
