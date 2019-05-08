@@ -115,7 +115,7 @@ if (!empty($_GET['id'])):
                         if ($('#headerLinks a:hover').length == 0) {
                             $('#headerLinks').css('transform', 'translateX(100%)');
                         }
-                    }, 1000));
+                    }, 3000));
                 });
 
                 $('input[rel=cms-img-popover]').popover({
