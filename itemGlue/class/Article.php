@@ -259,7 +259,7 @@ class Article
         }
 
         $sql = 'SELECT DISTINCT ART.id, ART.name, ART.description, ART.slug, ART.userId, ART.created_at, ART.updated_at, ART.statut, 
-        C.id AS idCategory, C.name AS categoryName, AC.content AS content
+        GROUP_CONCAT(DISTINCT C.id SEPARATOR ";") AS categoryIds, GROUP_CONCAT(DISTINCT C.name SEPARATOR ";") AS categoryNames, AC.content AS content
         FROM appoe_categoryRelations AS CR 
         RIGHT JOIN appoe_plugin_itemGlue_articles AS ART 
         ON(CR.typeId = ART.id) 

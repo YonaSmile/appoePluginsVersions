@@ -230,3 +230,17 @@ function getCategoriesByArticle($id)
     $CategoryRelation = new \App\CategoryRelations('ITEMGLUE', $Article->getId());
     return $CategoryRelation->getData();
 }
+
+function getAllCategoriesInArticles($articles)
+{
+    $categories = array();
+
+    if ($articles) {
+        foreach ($articles as $article) {
+            $cat = (false !== strpos($article->categoryNames, ';')) ? explode(';', $article->categoryNames) : $article->categoryNames;
+            array_push($categories, $cat);
+            $categories = array_unique(flatten($categories));
+        }
+    }
+    return $categories;
+}
