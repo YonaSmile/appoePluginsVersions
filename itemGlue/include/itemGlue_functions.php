@@ -239,8 +239,8 @@ function getAllCategoriesInArticles($articles)
         foreach ($articles as $article) {
             $cat = (false !== strpos($article->categoryNames, ';')) ? explode(';', $article->categoryNames) : $article->categoryNames;
             array_push($categories, $cat);
-            $categories = array_unique(flatten($categories));
         }
+        $categories = array_unique(flatten($categories));
     }
     return $categories;
 }
