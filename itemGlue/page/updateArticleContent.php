@@ -254,7 +254,7 @@ if (!empty($_GET['id'])):
                                 <div class="row">
                                     <div class="col-12 my-2">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" name="addMetaData"
+                                            <input type="checkbox" class="custom-control-input" checked="checked" name="addMetaData"
                                                    id="metaDataAvailable">
                                             <label class="custom-control-label"
                                                    for="metaDataAvailable"><?= trans('Activer métadonnée'); ?></label>

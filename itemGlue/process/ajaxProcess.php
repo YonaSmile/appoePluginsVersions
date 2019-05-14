@@ -64,7 +64,7 @@ if (checkAjaxRequest()) {
         if (isset($_POST['ADDARTICLEMETA'])
             && !empty($_POST['idArticle'])
             && !empty($_POST['metaKey'])
-            && !empty($_POST['metaValue'])) {
+            && isset($_POST['metaValue'])) {
 
             $ArticleMeta = new \App\Plugin\ItemGlue\ArticleMeta();
             $ArticleMeta->feed($_POST);

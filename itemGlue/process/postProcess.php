@@ -31,6 +31,17 @@ if (checkPostAndTokenRequest()) {
                         }
                     }
 
+                    //Add Meta
+                    if (defined('ARTICLE_META') && is_array(ARTICLE_META)) {
+                        $ArticleMeta = new \App\Plugin\ItemGlue\ArticleMeta();
+                        foreach (ARTICLE_META as $metaKey => $metaValue) {
+                            $ArticleMeta->setIdArticle($Article->getId());
+                            $ArticleMeta->setMetaKey($metaKey);
+                            $ArticleMeta->setMetaValue($metaValue);
+                            $ArticleMeta->save();
+                        }
+                    }
+
                     //Delete post data
                     unset($_POST);
 
