@@ -142,12 +142,12 @@ if (!empty($_GET['id'])):
                     </form>
                     <?php if ($allArticleMedias): ?>
                         <hr class="my-4 mx-5">
-                        <div class="card-columns" style="column-count:3">
+                        <div class="card-columns">
                             <?php foreach ($allArticleMedias as $file): ?>
                                 <div class="card bg-none border-0 my-1">
                                     <?php if (isImage(FILE_DIR_PATH . $file->name)): ?>
                                         <img src="<?= getThumb($file->name, 370); ?>"
-                                             alt="<?= $file->description; ?>"
+                                             alt="<?= $file->title; ?>"
                                              data-originsrc="<?= WEB_DIR_INCLUDE . $file->name; ?>"
                                              data-filename="<?= $file->name; ?>"
                                              class="img-fluid img-thumbnail seeOnOverlay seeDataOnHover">
@@ -164,10 +164,11 @@ if (!empty($_GET['id'])):
                                     <form method="post" data-imageid="<?= $file->id; ?>">
                                         <input type="hidden" class="typeId" name="typeId"
                                                value="<?= $file->typeId; ?>">
-                                        <?= \App\Form::text('Description', 'description', 'text', $file->description, false, 300, '', '', 'form-control-sm imageDescription', 'Description'); ?>
-                                        <?= \App\Form::text('Lien', 'link', 'url', $file->link, false, 300, '', '', 'form-control-sm imagelink', 'Lien'); ?>
-                                        <?= \App\Form::text('Position', 'position', 'text', $file->position, false, 300, '', '', 'form-control-sm imagePosition', 'Position'); ?>
-                                        <select class="custom-select custom-select-sm templatePosition form-control-sm"
+                                        <?= \App\Form::text('Titre', 'title', 'text', $file->title, false, 255, '', '', 'form-control-sm imageTitle upImgForm', 'Titre'); ?>
+                                        <?= \App\Form::textarea('Description', 'description', $file->description, 1, false, '', 'form-control-sm imageDescription upImgForm', 'Description'); ?>
+                                        <?= \App\Form::text('Lien', 'link', 'url', $file->link, false, 255, '', '', 'form-control-sm imagelink upImgForm', 'Lien'); ?>
+                                        <?= \App\Form::text('Position', 'position', 'text', $file->position, false, 5, '', '', 'form-control-sm imagePosition upImgForm', 'Position'); ?>
+                                        <select class="custom-select custom-select-sm templatePosition form-control-sm upImgForm"
                                                 name="templatePosition">
                                             <?php if (!getSerializedOptions($file->options, 'templatePosition')): ?>
                                                 <option selected value=""><?= trans('Zone du thème'); ?></option>
@@ -254,7 +255,8 @@ if (!empty($_GET['id'])):
                                 <div class="row">
                                     <div class="col-12 my-2">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" checked="checked" name="addMetaData"
+                                            <input type="checkbox" class="custom-control-input" checked="checked"
+                                                   name="addMetaData"
                                                    id="metaDataAvailable">
                                             <label class="custom-control-label"
                                                    for="metaDataAvailable"><?= trans('Activer métadonnée'); ?></label>
@@ -327,13 +329,24 @@ if (!empty($_GET['id'])):
                     .addClass('d-flex flex-row justify-content-start flex-wrap my-3')
                     .children('strong.inputLabel').addClass('w-100');
 
-                $('input.imageDescription, input.imagelink, input.imagePosition, select.templatePosition').on('keyup change', function () {
+                var delay = (function () {
+                    var timer = 0;
+                    return function (callback, ms) {
+                        clearTimeout(timer);
+                        timer = setTimeout(callback, ms);
+                    };
+                })();
+
+                $('.upImgForm').on('input', function () {
+
                     busyApp();
+
                     $('small.infosMedia').hide().html('');
                     var $input = $(this);
                     var $form = $input.closest('form');
                     var idImage = $form.data('imageid');
-                    var description = $form.find('input.imageDescription').val();
+                    var title = $form.find('input.imageTitle').val();
+                    var description = $form.find('textarea.imageDescription').val();
                     var link = $form.find('input.imagelink').val();
                     var position = $form.find('input.imagePosition').val();
                     var typeId = $form.find('input.typeId').val();
@@ -341,24 +354,27 @@ if (!empty($_GET['id'])):
                     var $info = $form.find('small.infosMedia');
                     $info.html('');
 
-                    $.post(
-                        '<?= WEB_DIR; ?>app/ajax/media.php',
-                        {
-                            updateDetailsImg: 'OK',
-                            idImage: idImage,
-                            description: description,
-                            link: link,
-                            position: position,
-                            templatePosition: templatePosition,
-                            typeId: typeId
-                        },
-                        function (data) {
-                            if (data && (data == 'true' || data === true)) {
-                                $info.html('<?= trans('Enregistré'); ?>').show();
-                                availableApp();
+                    delay(function () {
+                        $.post(
+                            '/app/ajax/media.php',
+                            {
+                                updateDetailsImg: 'OK',
+                                idImage: idImage,
+                                title: title,
+                                description: description,
+                                link: link,
+                                position: position,
+                                templatePosition: templatePosition,
+                                typeId: typeId
+                            },
+                            function (data) {
+                                if (data && (data == 'true' || data === true)) {
+                                    $info.html('<?= trans('Enregistré'); ?>').show();
+                                    availableApp();
+                                }
                             }
-                        }
-                    )
+                        );
+                    }, 1000);
                 });
 
                 $('.deleteImage').on('click', function () {
