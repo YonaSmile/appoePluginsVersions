@@ -374,7 +374,7 @@ if (!empty($_GET['id'])):
                                 }
                             }
                         );
-                    }, 1000);
+                    }, 300);
                 });
 
                 $('.deleteImage').on('click', function () {
