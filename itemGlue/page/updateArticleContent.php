@@ -329,14 +329,6 @@ if (!empty($_GET['id'])):
                     .addClass('d-flex flex-row justify-content-start flex-wrap my-3')
                     .children('strong.inputLabel').addClass('w-100');
 
-                var delay = (function () {
-                    var timer = 0;
-                    return function (callback, ms) {
-                        clearTimeout(timer);
-                        timer = setTimeout(callback, ms);
-                    };
-                })();
-
                 $('.upImgForm').on('input', function () {
 
                     busyApp();
@@ -498,7 +490,7 @@ if (!empty($_GET['id'])):
                 });
 
                 $('.categoryIdFloatContenaire').hide();
-                $('form#pageContentManageForm').on('blur', 'input', function (event) {
+                $('form#pageContentManageForm').on('input', 'input', function (event) {
                     event.preventDefault();
 
                     var $input = $(this);
@@ -506,20 +498,22 @@ if (!empty($_GET['id'])):
                     var metaValue = $input.val();
 
                     busyApp();
-                    $.post(
-                        '/app/plugin/traduction/process/ajaxProcess.php',
-                        {
-                            web_itemGlue_traduction: 'OK',
-                            metaKey: metaKey,
-                            metaValue: metaValue
-                        },
-                        function (data) {
-                            if (data === true || data == 'true') {
-                                $('.categoryIdFloatContenaire').stop().fadeIn().delay(2000).fadeOut();
-                                availableApp();
+                    delay(function () {
+                        $.post(
+                            '/app/plugin/traduction/process/ajaxProcess.php',
+                            {
+                                web_itemGlue_traduction: 'OK',
+                                metaKey: metaKey,
+                                metaValue: metaValue
+                            },
+                            function (data) {
+                                if (data === true || data == 'true') {
+                                    $('.categoryIdFloatContenaire').stop().fadeIn().delay(2000).fadeOut();
+                                    availableApp();
+                                }
                             }
-                        }
-                    )
+                        );
+                    }, 300);
                 });
             });
         </script>

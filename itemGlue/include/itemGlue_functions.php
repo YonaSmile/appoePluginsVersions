@@ -231,6 +231,10 @@ function getCategoriesByArticle($id)
     return $CategoryRelation->getData();
 }
 
+/**
+ * @param $articles
+ * @return array
+ */
 function getAllCategoriesInArticles($articles)
 {
     $categories = array();
@@ -243,4 +247,25 @@ function getAllCategoriesInArticles($articles)
         $categories = array_unique(flatten($categories));
     }
     return $categories;
+}
+
+/**
+ * @param stdClass $Article
+ * @param string $meta
+ * @param string $page
+ * @return string
+ */
+function getArticleUrl(stdClass $Article, $meta = 'link', $page = '')
+{
+
+    if (!empty($Article->metas[$meta])) {
+        return (false !== strpos($Article->metas[$meta], 'http'))
+            ? $Article->metas[$meta] : webUrl($Article->metas[$meta] . DIRECTORY_SEPARATOR);
+    }
+
+    if (empty($page) && defined('DEFAULT_ARTICLES_PAGE')) {
+        $page = DEFAULT_ARTICLES_PAGE . DIRECTORY_SEPARATOR;
+    }
+
+    return articleUrl($Article->slug, $page);
 }

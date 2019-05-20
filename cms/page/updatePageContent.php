@@ -74,27 +74,29 @@ if (!empty($_GET['id'])):
                 var idCmsContent = $input.data('idcmscontent');
                 var metaKey = $input.attr('id');
 
-                $.post(
-                    '<?= CMS_URL; ?>process/ajaxProcess.php',
-                    {
-                        id: idCmsContent,
-                        idCms: idCms,
-                        metaKey: metaKey,
-                        metaValue: metaValue
-                    },
-                    function (data) {
-                        if (data) {
-                            if ($.isNumeric(data)) {
-                                $input.data('idcmscontent', data);
-                            }
+                delay(function () {
+                    $.post(
+                        '<?= CMS_URL; ?>process/ajaxProcess.php',
+                        {
+                            id: idCmsContent,
+                            idCms: idCms,
+                            metaKey: metaKey,
+                            metaValue: metaValue
+                        },
+                        function (data) {
+                            if (data) {
+                                if ($.isNumeric(data)) {
+                                    $input.data('idcmscontent', data);
+                                }
 
-                            $('small.categoryIdFloatContenaire').stop().fadeOut(function () {
-                                $('small.' + metaKey).html('<?= trans('Enregistré'); ?>').stop().fadeIn();
-                            });
-                            availableApp();
+                                $('small.categoryIdFloatContenaire').stop().fadeOut(function () {
+                                    $('small.' + metaKey).html('<?= trans('Enregistré'); ?>').stop().fadeIn();
+                                });
+                                availableApp();
+                            }
                         }
-                    }
-                )
+                    );
+                }, 300);
             }
 
 
@@ -144,7 +146,7 @@ if (!empty($_GET['id'])):
                     e.preventDefault();
 
                     var src = $(this).parent().data('src');
-                    $('input#' + $('#libraryModal').data('inputid')).val(src).trigger('focus');
+                    $('input#' + $('#libraryModal').data('inputid')).val(src).trigger('input');
                     $('#libraryModal').modal('hide');
                 });
 
@@ -169,7 +171,7 @@ if (!empty($_GET['id'])):
 
                 }
 
-                $('form#pageContentManageForm').on('blur', 'input, textarea, select', function (event) {
+                $('form#pageContentManageForm').on('input', 'input, textarea, select', function (event) {
                     event.preventDefault();
                     var $input = $(this);
                     var metaValue = $input.val();

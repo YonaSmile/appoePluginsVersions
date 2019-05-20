@@ -275,14 +275,6 @@ if (!empty($_GET['id'])):
                     .addClass('d-flex flex-row justify-content-start flex-wrap my-3')
                     .children('strong.inputLabel').addClass('w-100');
 
-                var delay = (function () {
-                    var timer = 0;
-                    return function (callback, ms) {
-                        clearTimeout(timer);
-                        timer = setTimeout(callback, ms);
-                    };
-                })();
-
                 $('.upImgForm').on('input', function () {
 
                     busyApp();

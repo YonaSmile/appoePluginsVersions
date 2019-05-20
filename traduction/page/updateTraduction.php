@@ -133,7 +133,7 @@ $allContent = $Traduction->getDbData();
                 $('input#metaValue-fr').val($('#metaKeySingle').val());
             });
 
-            $('form#pageContentManageForm').on('blur', 'input', function (event) {
+            $('form#pageContentManageForm').on('input', 'input', function (event) {
                 event.preventDefault();
                 var $input = $(this);
                 var idContent = $input.data('idtrad');
@@ -141,21 +141,23 @@ $allContent = $Traduction->getDbData();
                 var metaValue = $input.val();
 
                 busyApp();
-                $.post(
-                    '<?= TRADUCTION_URL; ?>process/ajaxProcess.php',
-                    {
-                        id: idContent,
-                        web_traduction: 'OK',
-                        metaKey: metaKey,
-                        metaValue: metaValue
-                    },
-                    function (data) {
-                        if (data === true || data == 'true') {
-                            $('small.trad' + idContent).html('<?= trans('Enregistré'); ?>');
-                            availableApp();
+                delay(function () {
+                    $.post(
+                        '<?= TRADUCTION_URL; ?>process/ajaxProcess.php',
+                        {
+                            id: idContent,
+                            web_traduction: 'OK',
+                            metaKey: metaKey,
+                            metaValue: metaValue
+                        },
+                        function (data) {
+                            if (data === true || data == 'true') {
+                                $('small.trad' + idContent).html('<?= trans('Enregistré'); ?>');
+                                availableApp();
+                            }
                         }
-                    }
-                )
+                    )
+                }, 300);
             });
 
             $('form#pageContentManageForm').on('click', '.deleteTraduction', function (event) {
