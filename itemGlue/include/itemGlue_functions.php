@@ -1,4 +1,12 @@
 <?php
+
+use App\Category;
+use App\CategoryRelations;
+use App\Plugin\ItemGlue\Article;
+use App\Plugin\ItemGlue\ArticleContent;
+use App\Plugin\ItemGlue\ArticleMedia;
+use App\Plugin\ItemGlue\ArticleMeta;
+
 /**
  * @param $categoryId
  * @param bool $parent
@@ -7,17 +15,17 @@
  */
 function getArticlesByCategory($categoryId, $parent = false, $length = false)
 {
-    $Article = new \App\Plugin\ItemGlue\Article();
+    $Article = new Article();
     $allArticles = $Article->showByCategory($categoryId, $parent);
 
     foreach ($allArticles as &$article) {
 
         //Get Media
-        $ArticleMedia = new \App\Plugin\ItemGlue\ArticleMedia($article->id);
+        $ArticleMedia = new ArticleMedia($article->id);
         $article->medias = $ArticleMedia->showFiles();
 
         //Get Metas
-        $ArticleMeta = new \App\Plugin\ItemGlue\ArticleMeta($article->id);
+        $ArticleMeta = new ArticleMeta($article->id);
         $article->metas = extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue');
     }
 
@@ -30,18 +38,18 @@ function getArticlesByCategory($categoryId, $parent = false, $length = false)
  */
 function getRecentArticles($length = false)
 {
-    $Article = new \App\Plugin\ItemGlue\Article();
+    $Article = new Article();
     $allArticles = $Article->showAllByLang(false, $length);
 
     if ($allArticles) {
         foreach ($allArticles as &$article) {
 
             //Get Media
-            $ArticleMedia = new \App\Plugin\ItemGlue\ArticleMedia($article->id);
+            $ArticleMedia = new ArticleMedia($article->id);
             $article->medias = $ArticleMedia->showFiles();
 
             //Get Metas
-            $ArticleMeta = new \App\Plugin\ItemGlue\ArticleMeta($article->id);
+            $ArticleMeta = new ArticleMeta($article->id);
             $article->metas = extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue');
         }
     }
@@ -56,18 +64,18 @@ function getSearchingArticles($searching)
 {
     $searching = cleanData($searching);
 
-    $Article = new \App\Plugin\ItemGlue\Article();
+    $Article = new Article();
     $allArticles = $Article->searchFor($searching);
 
     if ($allArticles) {
         foreach ($allArticles as &$article) {
 
             //Get Media
-            $ArticleMedia = new \App\Plugin\ItemGlue\ArticleMedia($article->id);
+            $ArticleMedia = new ArticleMedia($article->id);
             $article->medias = $ArticleMedia->showFiles();
 
             //Get Metas
-            $ArticleMeta = new \App\Plugin\ItemGlue\ArticleMeta($article->id);
+            $ArticleMeta = new ArticleMeta($article->id);
             $article->metas = extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue');
         }
     }
@@ -105,6 +113,44 @@ function getSimilarArticles($articleId, $categories, $length = false)
 }
 
 /**
+ * @param $id
+ * @return Article|bool
+ */
+function getNextArticle($id)
+{
+
+    if (is_numeric($id)) {
+
+        $Article = new Article();
+        $Article->setId($id);
+        if ($Article->showNextArticle()) {
+            return $Article;
+        }
+    }
+
+    return false;
+}
+
+/**
+ * @param $id
+ * @return Article|bool
+ */
+function getPreviousArticle($id)
+{
+
+    if (is_numeric($id)) {
+
+        $Article = new Article();
+        $Article->setId($id);
+        if ($Article->showPreviousArticle()) {
+            return $Article;
+        }
+    }
+
+    return false;
+}
+
+/**
  * @param $categoryId
  * @param bool $parentId
  * @param int $favorite
@@ -114,17 +160,17 @@ function getSimilarArticles($articleId, $categories, $length = false)
 function getSpecificArticlesCategory($categoryId, $parentId = false, $favorite = 1, $archives = false)
 {
     //get all articles categories
-    $Category = new \App\Category();
+    $Category = new Category();
     $Category->setType('ITEMGLUE');
     $allCategories = extractFromObjArr($Category->showByType(), 'id');
 
     //get all articles
-    $Article = new \App\Plugin\ItemGlue\Article();
+    $Article = new Article();
     $Article->setStatut($favorite);
     $allArticles = !$archives ? extractFromObjArr($Article->showAll(), 'id') : extractFromObjArr($Article->showArchives($archives['year'], $archives['month']), 'id');
 
     //get all categories in relation with all articles
-    $CategoryRelation = new \App\CategoryRelations();
+    $CategoryRelation = new CategoryRelations();
     $CategoryRelation->setType('ITEMGLUE');
     $allCategoriesRelations = extractFromObjArr($CategoryRelation->showAll(), 'id');
 
@@ -186,23 +232,23 @@ function getSpecificArticlesDetailsBySlug($slug)
         $slug = trad($slug, true);
 
         //get article
-        $Article = new \App\Plugin\ItemGlue\Article();
+        $Article = new Article();
         $Article->setSlug($slug);
         if ($Article->showBySlug()) {
 
             //get article content
-            $ArticleContent = new \App\Plugin\ItemGlue\ArticleContent($Article->getId(), LANG);
+            $ArticleContent = new ArticleContent($Article->getId(), LANG);
 
             //get all categories in relation with article
-            $CategoryRelation = new \App\CategoryRelations('ITEMGLUE', $Article->getId());
+            $CategoryRelation = new CategoryRelations('ITEMGLUE', $Article->getId());
             $allCategoriesRelations = $CategoryRelation->getData();
 
             //get article metas
-            $ArticleMeta = new \App\Plugin\ItemGlue\ArticleMeta($Article->getId());
+            $ArticleMeta = new ArticleMeta($Article->getId());
             $allArticleMeta = $ArticleMeta->getData();
 
             //get article medias
-            $ArticleMedia = new \App\Plugin\ItemGlue\ArticleMedia($Article->getId());
+            $ArticleMedia = new ArticleMedia($Article->getId());
             $allArticleMedia = $ArticleMedia->showFiles();
 
             $all['article'] = $Article;
@@ -224,10 +270,10 @@ function getSpecificArticlesDetailsBySlug($slug)
 function getCategoriesByArticle($id)
 {
     //get article
-    $Article = new \App\Plugin\ItemGlue\Article($id);
+    $Article = new Article($id);
 
     //get all categories in relation with article
-    $CategoryRelation = new \App\CategoryRelations('ITEMGLUE', $Article->getId());
+    $CategoryRelation = new CategoryRelations('ITEMGLUE', $Article->getId());
     return $CategoryRelation->getData();
 }
 
@@ -259,8 +305,7 @@ function getArticleUrl(stdClass $Article, $meta = 'link', $page = '')
 {
 
     if (!empty($Article->metas[$meta])) {
-        return (false !== strpos($Article->metas[$meta], 'http'))
-            ? $Article->metas[$meta] : webUrl($Article->metas[$meta] . DIRECTORY_SEPARATOR);
+        return false !== strpos($Article->metas[$meta], 'http') ? $Article->metas[$meta] : webUrl($Article->metas[$meta] . DIRECTORY_SEPARATOR);
     }
 
     if (empty($page) && defined('DEFAULT_ARTICLES_PAGE')) {

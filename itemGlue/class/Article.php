@@ -387,6 +387,90 @@ class Article
     }
 
     /**
+     * @param $lang
+     * @return bool
+     */
+    public function showNextArticle($lang = LANG)
+    {
+
+        $sql = 'SELECT ART.*, AC.content AS content 
+        FROM appoe_plugin_itemGlue_articles AS ART
+        INNER JOIN appoe_plugin_itemGlue_articles_content AS AC
+        ON(ART.id = AC.idArticle)
+        WHERE ART.id = (
+        SELECT MIN(ART.id) FROM appoe_plugin_itemGlue_articles AS ART 
+        INNER JOIN appoe_plugin_itemGlue_articles_content AS AC
+        ON(ART.id = AC.idArticle)
+        WHERE ART.id > :id AND statut >= 1 AND AC.lang = :lang)
+        AND AC.lang = :lang';
+
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':id', $this->id);
+        $stmt->bindValue(':lang', $lang);
+        $stmt->execute();
+
+        $count = $stmt->rowCount();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            if ($count == 1) {
+
+                $row = $stmt->fetch(\PDO::FETCH_OBJ);
+                $this->feed($row);
+
+                return true;
+
+            } else {
+
+                return false;
+            }
+        }
+    }
+
+    /**
+     * @param $lang
+     * @return bool
+     */
+    public function showPreviousArticle($lang = LANG)
+    {
+
+        $sql = 'SELECT ART.*, AC.content AS content 
+        FROM appoe_plugin_itemGlue_articles AS ART
+        INNER JOIN appoe_plugin_itemGlue_articles_content AS AC
+        ON(ART.id = AC.idArticle)
+        WHERE ART.id = (
+        SELECT MAX(ART.id) FROM appoe_plugin_itemGlue_articles AS ART 
+        INNER JOIN appoe_plugin_itemGlue_articles_content AS AC
+        ON(ART.id = AC.idArticle)
+        WHERE ART.id < :id AND statut >= 1 AND AC.lang = :lang)
+        AND AC.lang = :lang';
+
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':id', $this->id);
+        $stmt->bindValue(':lang', $lang);
+        $stmt->execute();
+
+        $count = $stmt->rowCount();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            if ($count == 1) {
+
+                $row = $stmt->fetch(\PDO::FETCH_OBJ);
+                $this->feed($row);
+
+                return true;
+
+            } else {
+
+                return false;
+            }
+        }
+    }
+
+    /**
      * @param string $searching
      * @param string $lang
      * @return array|bool
