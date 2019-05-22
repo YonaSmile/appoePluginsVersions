@@ -8,6 +8,34 @@ use App\Plugin\ItemGlue\ArticleMedia;
 use App\Plugin\ItemGlue\ArticleMeta;
 
 /**
+ * @param $articleId
+ * @return Article|bool
+ */
+function getArticlesDataById($articleId)
+{
+    if (is_numeric($articleId)) {
+
+        $Article = new Article($articleId);
+
+        if ($Article) {
+
+            //Get Media
+            $ArticleMedia = new ArticleMedia($Article->getId());
+            $Article->medias = $ArticleMedia->showFiles();
+
+            //Get Metas
+            $ArticleMeta = new ArticleMeta($Article->getId());
+            if ($ArticleMeta->getData()) {
+                $Article->metas = extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue');
+            }
+
+            return $Article;
+        }
+    }
+    return false;
+}
+
+/**
  * @param $categoryId
  * @param bool $parent
  * @param bool $length
@@ -26,7 +54,9 @@ function getArticlesByCategory($categoryId, $parent = false, $length = false)
 
         //Get Metas
         $ArticleMeta = new ArticleMeta($article->id);
-        $article->metas = extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue');
+        if ($ArticleMeta->getData()) {
+            $article->metas = extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue');
+        }
     }
 
     return $length ? array_slice($allArticles, 0, $length, true) : $allArticles;
@@ -50,7 +80,9 @@ function getRecentArticles($length = false)
 
             //Get Metas
             $ArticleMeta = new ArticleMeta($article->id);
-            $article->metas = extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue');
+            if ($ArticleMeta->getData()) {
+                $article->metas = extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue');
+            }
         }
     }
     return $allArticles;
@@ -76,7 +108,9 @@ function getSearchingArticles($searching)
 
             //Get Metas
             $ArticleMeta = new ArticleMeta($article->id);
-            $article->metas = extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue');
+            if ($ArticleMeta->getData()) {
+                $article->metas = extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue');
+            }
         }
     }
     return $allArticles;
@@ -114,17 +148,19 @@ function getSimilarArticles($articleId, $categories, $length = false)
 
 /**
  * @param $id
+ * @param $idCategory
+ * @param $parent
  * @return Article|bool
  */
-function getNextArticle($id)
+function getNextArticle($id, $idCategory = false, $parent = false)
 {
 
     if (is_numeric($id)) {
 
         $Article = new Article();
         $Article->setId($id);
-        if ($Article->showNextArticle()) {
-            return $Article;
+        if ($Article->showNextArticle(LANG, $idCategory, $parent)) {
+            return getArticlesDataById($Article->getId());
         }
     }
 
@@ -133,17 +169,19 @@ function getNextArticle($id)
 
 /**
  * @param $id
+ * @param $idCategory
+ * @param $parent
  * @return Article|bool
  */
-function getPreviousArticle($id)
+function getPreviousArticle($id, $idCategory = false, $parent = false)
 {
 
     if (is_numeric($id)) {
 
         $Article = new Article();
         $Article->setId($id);
-        if ($Article->showPreviousArticle()) {
-            return $Article;
+        if ($Article->showPreviousArticle(LANG, $idCategory, $parent)) {
+            return getArticlesDataById($Article->getId());
         }
     }
 

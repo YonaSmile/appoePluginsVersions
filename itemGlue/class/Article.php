@@ -388,25 +388,46 @@ class Article
 
     /**
      * @param $lang
+     * @param $idCategory
+     * @param $parent
      * @return bool
      */
-    public function showNextArticle($lang = LANG)
+    public function showNextArticle($lang = LANG, $idCategory = false, $parent = false)
     {
+        $addSql = '';
+        if (false !== $idCategory) {
+            $addSql = ' AND C.id = :idCategory ';
+            if (true === $parent) {
+                $addSql = ' AND (C.id = :idCategory OR C.parentId = :idCategory) ';
+            }
+        }
 
-        $sql = 'SELECT ART.*, AC.content AS content 
+        $sql = 'SELECT ART.*, AC.content AS content,
+        GROUP_CONCAT(DISTINCT C.id SEPARATOR ";") AS categoryIds, GROUP_CONCAT(DISTINCT C.name SEPARATOR ";") AS categoryNames 
         FROM appoe_plugin_itemGlue_articles AS ART
         INNER JOIN appoe_plugin_itemGlue_articles_content AS AC
         ON(ART.id = AC.idArticle)
+        INNER JOIN appoe_categoryRelations AS CR 
+        ON(CR.typeId = ART.id) 
+        INNER JOIN appoe_categories AS C
+        ON(C.id = CR.categoryId)
         WHERE ART.id = (
         SELECT MIN(ART.id) FROM appoe_plugin_itemGlue_articles AS ART 
         INNER JOIN appoe_plugin_itemGlue_articles_content AS AC
         ON(ART.id = AC.idArticle)
-        WHERE ART.id > :id AND statut >= 1 AND AC.lang = :lang)
+        INNER JOIN appoe_categoryRelations AS CR 
+        ON(CR.typeId = ART.id) 
+        INNER JOIN appoe_categories AS C
+        ON(C.id = CR.categoryId)
+        WHERE ART.id > :id AND CR.type = "ITEMGLUE" AND ART.statut >= 1 AND C.status > 0 AND AC.lang = :lang ' . $addSql . ')
         AND AC.lang = :lang';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
         $stmt->bindValue(':lang', $lang);
+        if (false !== $idCategory) {
+            $stmt->bindParam(':idCategory', $idCategory);
+        }
         $stmt->execute();
 
         $count = $stmt->rowCount();
@@ -430,25 +451,46 @@ class Article
 
     /**
      * @param $lang
+     * @param $idCategory
+     * @param $parent
      * @return bool
      */
-    public function showPreviousArticle($lang = LANG)
+    public function showPreviousArticle($lang = LANG, $idCategory = false, $parent = false)
     {
+        $addSql = '';
+        if (false !== $idCategory) {
+            $addSql = ' AND C.id = :idCategory ';
+            if (true === $parent) {
+                $addSql = ' AND (C.id = :idCategory OR C.parentId = :idCategory) ';
+            }
+        }
 
-        $sql = 'SELECT ART.*, AC.content AS content 
+        $sql = 'SELECT ART.*, AC.content AS content,
+        GROUP_CONCAT(DISTINCT C.id SEPARATOR ";") AS categoryIds, GROUP_CONCAT(DISTINCT C.name SEPARATOR ";") AS categoryNames 
         FROM appoe_plugin_itemGlue_articles AS ART
         INNER JOIN appoe_plugin_itemGlue_articles_content AS AC
         ON(ART.id = AC.idArticle)
+        INNER JOIN appoe_categoryRelations AS CR 
+        ON(CR.typeId = ART.id) 
+        INNER JOIN appoe_categories AS C
+        ON(C.id = CR.categoryId)
         WHERE ART.id = (
         SELECT MAX(ART.id) FROM appoe_plugin_itemGlue_articles AS ART 
         INNER JOIN appoe_plugin_itemGlue_articles_content AS AC
         ON(ART.id = AC.idArticle)
-        WHERE ART.id < :id AND statut >= 1 AND AC.lang = :lang)
+        INNER JOIN appoe_categoryRelations AS CR 
+        ON(CR.typeId = ART.id) 
+        INNER JOIN appoe_categories AS C
+        ON(C.id = CR.categoryId)
+        WHERE ART.id < :id AND CR.type = "ITEMGLUE" AND ART.statut >= 1 AND C.status > 0 AND AC.lang = :lang ' . $addSql . ')
         AND AC.lang = :lang';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
         $stmt->bindValue(':lang', $lang);
+        if (false !== $idCategory) {
+            $stmt->bindParam(':idCategory', $idCategory);
+        }
         $stmt->execute();
 
         $count = $stmt->rowCount();
