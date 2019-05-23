@@ -343,10 +343,19 @@ function getArticleUrl(stdClass $Article, $meta = 'link', $page = '')
 {
 
     if (!empty($Article->metas[$meta])) {
+
+        /*
+         * If (meta "link" contains "http") return "link"
+         * Else return the website url with "link"
+         */
         return false !== strpos($Article->metas[$meta], 'http') ? $Article->metas[$meta] : webUrl($Article->metas[$meta] . DIRECTORY_SEPARATOR);
     }
 
     if (empty($page) && defined('DEFAULT_ARTICLES_PAGE')) {
+
+        /*
+         * Put Article in default articles page
+         */
         $page = DEFAULT_ARTICLES_PAGE . DIRECTORY_SEPARATOR;
     }
 
