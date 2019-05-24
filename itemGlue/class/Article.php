@@ -295,7 +295,7 @@ class Article
         $featured = $this->statut == 1 ? ' statut >= 1' : ' statut = ' . $this->statut . ' ';
 
         $sql = 'SELECT * FROM appoe_plugin_itemGlue_articles 
-        WHERE ' . $featured . ' ORDER BY statut DESC, created_at DESC ' . $limit;
+        WHERE ' . $featured . ' ORDER BY statut DESC, name ASC ' . $limit;
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();
@@ -367,7 +367,7 @@ class Article
         $sql = 'SELECT ART.*, AC.content AS content FROM appoe_plugin_itemGlue_articles AS ART
         LEFT JOIN appoe_plugin_itemGlue_articles_content AS AC
         ON(AC.idArticle = ART.id)
-        WHERE ' . $featured . ' AND (AC.lang IS NULL OR AC.lang = :lang) ' . $sqlArchives . ' ORDER BY ART.statut DESC,  ART.created_at DESC ' . $limit;
+        WHERE ' . $featured . ' AND (AC.lang IS NULL OR AC.lang = :lang) ' . $sqlArchives . ' ORDER BY ART.statut DESC, ART.name ASC ' . $limit;
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindValue(':lang', $lang);

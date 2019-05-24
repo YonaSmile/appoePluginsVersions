@@ -256,7 +256,7 @@ class Cms
     public function showAllPages($countPage = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_cms WHERE type = "PAGE" AND statut = :statut ORDER BY created_at ASC';
+        $sql = 'SELECT * FROM appoe_plugin_cms WHERE type = "PAGE" AND statut = :statut ORDER BY name ASC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':statut', $this->statut);
         $stmt->execute();

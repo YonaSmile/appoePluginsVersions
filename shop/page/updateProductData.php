@@ -1,9 +1,11 @@
 <?php
 require('header.php');
 if (!empty($_GET['id'])):
+
     require(SHOP_PATH . 'process/postProcess.php');
     $Product = new \App\Plugin\Shop\Product();
     $Product->setId($_GET['id']);
+
     if ($Product->show()) :
         $ProductBrowse = new \App\Plugin\Shop\Product();
         $ProductBrowse->setStatus(1);
@@ -12,20 +14,19 @@ if (!empty($_GET['id'])):
         $ProductContent = new \App\Plugin\Shop\ProductContent($Product->getId(), APP_LANG);
 
         $ProductMedia = new \App\Plugin\Shop\ShopMedia($Product->getId());
+        $ProductMedia->setLang(APP_LANG);;
         $allProductMedias = $ProductMedia->showFiles();
 
-        ?>
-        <?= getTitle($Product->getName(), $Page->getSlug()); ?>
-
-        <?php if (isset($Response)): ?>
-        <div class="row">
-            <div class="col-12">
-                <div class="alert alert-<?= $Response->display()->status ?>" role="alert">
-                    <?= $Response->display()->error_msg; ?>
+        echo getTitle($Product->getName(), $Page->getSlug());
+        if (isset($Response)): ?>
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-<?= $Response->display()->status ?>" role="alert">
+                        <?= $Response->display()->error_msg; ?>
+                    </div>
                 </div>
             </div>
-        </div>
-    <?php endif; ?>
+        <?php endif; ?>
         <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
                 <a class="nav-item nav-link <?= empty($Response->MediaTabactive) ? 'active' : ''; ?>"
@@ -60,13 +61,13 @@ if (!empty($_GET['id'])):
                                     title="<?= trans('Parcourir les produits'); ?>...">
                                 <option selected="selected" disabled><?= trans('Parcourir les produits'); ?>...
                                 </option>
-                                <?php if ($allProduct): ?>
-                                    <?php foreach ($allProduct as $product): ?>
-                                        <?php if ($Product->getId() != $product->id): ?>
+                                <?php if ($allProduct):
+                                    foreach ($allProduct as $product):
+                                        if ($Product->getId() != $product->id): ?>
                                             <option data-href="<?= getPluginUrl('shop/page/updateProductData/', $product->id); ?>"><?= $product->name; ?></option>
-                                        <?php endif; ?>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
+                                        <?php endif;
+                                    endforeach;
+                                endif; ?>
                             </select>
                         </div>
                     </div>
@@ -113,8 +114,7 @@ if (!empty($_GET['id'])):
                             <?= \App\Form::submit('Enregistrer', 'ADDIMAGESTOPRODUCTSUBMIT'); ?>
                         </div>
                     </form>
-                    <?php
-                    if ($allProductMedias): ?>
+                    <?php if ($allProductMedias): ?>
                         <hr class="my-4 mx-5">
                         <div class="card-columns">
                             <?php foreach ($allProductMedias as $file): ?>
@@ -434,10 +434,10 @@ if (!empty($_GET['id'])):
                 });
             });
         </script>
-    <?php else: ?>
-        <?= getContainerErrorMsg(trans('Cette page n\'existe pas')); ?>
-    <?php endif; ?>
-<?php else: ?>
-    <?= trans('Cette page n\'existe pas'); ?>
-<?php endif; ?>
-<?php require('footer.php'); ?>
+    <?php else:
+        echo getContainerErrorMsg(trans('Cette page n\'existe pas'));
+    endif;
+else:
+    echo trans('Cette page n\'existe pas');
+endif;
+require('footer.php'); ?>

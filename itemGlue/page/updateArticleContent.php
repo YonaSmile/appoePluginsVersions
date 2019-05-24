@@ -20,6 +20,7 @@ if (!empty($_GET['id'])):
         $allCategoryRelations = extractFromObjToSimpleArr($CategoryRelation->getData(), 'categoryId', 'name');
 
         $ArticleMedia = new \App\Plugin\ItemGlue\ArticleMedia($Article->getId());
+        $ArticleMedia->setLang(APP_LANG);
         $allArticleMedias = $ArticleMedia->showFiles();
 
         echo getTitle($Article->getName(), $Page->getSlug());
