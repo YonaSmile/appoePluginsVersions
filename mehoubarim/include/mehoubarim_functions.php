@@ -151,7 +151,7 @@ function mehoubarim_getConnectedStatut()
         $parsed_json = mehoubarim_jsonRead();
 
         $userId = \App\ShinouiKatan::Crypter(getUserIdSession());
-        if (array_key_exists($userId, $parsed_json['users'])) {
+        if (!isArrayEmpty($parsed_json['users']) && array_key_exists($userId, $parsed_json['users'])) {
             return $parsed_json['users'][$userId]['status'];
         }
     }
