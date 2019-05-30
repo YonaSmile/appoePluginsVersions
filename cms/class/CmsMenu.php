@@ -209,7 +209,7 @@ class CmsMenu
         FROM appoe_plugin_cms_menu AS acm 
         LEFT JOIN appoe_plugin_cms AS ac 
         ON (acm.idCms = ac.id) 
-        WHERE (ac.statut = 1 OR acm.idCms like "http%" OR acm.idCms REGEXP "^[a-zA-Z0-9/-]+$")' . $locationCondition . ' 
+        WHERE (ac.statut = 1 OR acm.idCms like "http%" OR acm.idCms like "%#%" OR acm.idCms REGEXP "^[a-zA-Z0-9/-]+$")' . $locationCondition . ' 
         ORDER BY acm.parentId ASC, acm.position ASC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();
