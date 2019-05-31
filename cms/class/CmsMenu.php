@@ -15,7 +15,7 @@ class CmsMenu
 
     public function __construct($id = null)
     {
-        if(is_null($this->dbh)) {
+        if (is_null($this->dbh)) {
             $this->dbh = \App\DB::connect();
         }
 
@@ -248,7 +248,7 @@ class CmsMenu
             return false;
         } else {
             $this->setId($cmsId);
-
+            appLog('Creating page menu -> idCms: ' . $this->idCms . ' name: ' . $this->name . ' position: ' . $this->position . ' parentId: ' . $this->parentId . ' location: ' . $this->location);
             return true;
         }
     }
@@ -276,6 +276,7 @@ class CmsMenu
         if ($error[0] != '00000') {
             return false;
         } else {
+            appLog('Updating page menu -> id: ' . $this->id . 'idCms: ' . $this->idCms . ' name: ' . $this->name . ' position: ' . $this->position . ' parentId: ' . $this->parentId . ' location: ' . $this->location . ' statut: ' . $this->statut);
             return true;
         }
     }
@@ -296,6 +297,7 @@ class CmsMenu
         if ($error[0] != '00000') {
             return false;
         } else {
+            appLog('Deleting page menu -> id: ' . $this->id);
             return true;
         }
     }

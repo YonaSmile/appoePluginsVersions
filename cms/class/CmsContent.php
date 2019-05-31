@@ -220,7 +220,7 @@ class CmsContent
             return false;
         } else {
             $this->id = $id;
-
+            appLog('Creating page content -> idCms: ' . $this->idCms . ' metaKey: ' . $this->metaKey . ' metaValue: ' . $this->metaValue . ' lang: ' . $this->lang);
             return true;
         }
     }
@@ -244,6 +244,7 @@ class CmsContent
         if ($error[0] != '00000') {
             return false;
         } else {
+            appLog('Updating page content -> id: ' . $this->id . ' metaKey: ' . $this->metaKey . ' metaValue: ' . $this->metaValue);
             return true;
         }
     }
@@ -265,6 +266,7 @@ class CmsContent
         if ($error[0] != '00000') {
             return false;
         } else {
+            appLog('Delete page content -> idCms: ' . $this->idCms);
             return true;
         }
     }

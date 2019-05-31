@@ -294,7 +294,7 @@ class Cms
         if ($error[0] != '00000') {
             return false;
         } else {
-
+            appLog('Creating page -> type: ' . $this->type . ' name: ' . $this->name . ' description: ' . $this->description . ' slug: ' . $this->slug);
             return true;
         }
     }
@@ -321,6 +321,7 @@ class Cms
         if ($error[0] != '00000') {
             return false;
         } else {
+            appLog('Updating page -> id: ' . $this->id . ' type: ' . $this->type . ' name: ' . $this->name . ' description: ' . $this->description . ' slug: ' . $this->slug.' statut: '.$this->statut);
             return true;
         }
     }
@@ -342,6 +343,7 @@ class Cms
         if ($error[0] != '00000') {
             return false;
         } else {
+            appLog('Delete page -> id: ' . $this->id);
             return true;
         }
     }
