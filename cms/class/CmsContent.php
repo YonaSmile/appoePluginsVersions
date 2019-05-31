@@ -220,7 +220,7 @@ class CmsContent
             return false;
         } else {
             $this->id = $id;
-            appLog('Creating page content -> idCms: ' . $this->idCms . ' metaKey: ' . $this->metaKey . ' metaValue: ' . $this->metaValue . ' lang: ' . $this->lang);
+            appLog('Creating page content -> idCms: ' . $this->idCms . ' metaKey: ' . $this->metaKey . ' lang: ' . $this->lang);
             return true;
         }
     }
