@@ -244,7 +244,7 @@ class CmsContent
         if ($error[0] != '00000') {
             return false;
         } else {
-            appLog('Updating page content -> id: ' . $this->id . ' metaKey: ' . $this->metaKey . ' metaValue: ' . $this->metaValue);
+            appLog('Updating page content -> id: ' . $this->id . ' metaKey: ' . $this->metaKey);
             return true;
         }
     }
