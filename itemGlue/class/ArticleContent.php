@@ -162,7 +162,7 @@ class ArticleContent
             return false;
         } else {
             $this->id = $id;
-
+            appLog('Creating Article content -> idArticle: ' . $this->idArticle . ' lang: ' . $this->lang);
             return true;
         }
     }
@@ -185,6 +185,7 @@ class ArticleContent
         if ($error[0] != '00000') {
             return false;
         } else {
+            appLog('Updating Article content -> id: ' . $this->id);
             return true;
         }
     }
@@ -206,6 +207,7 @@ class ArticleContent
         if ($error[0] != '00000') {
             return false;
         } else {
+            appLog('Deleting Article content -> idArticle: ' . $this->idArticle);
             return true;
         }
     }

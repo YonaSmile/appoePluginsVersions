@@ -561,7 +561,7 @@ class Article
             return false;
         } else {
             $this->setId($this->id);
-
+            appLog('Creating Article -> name: ' . $this->name . ' description: ' . $this->description . ' slug: ' . $this->slug . ' statut: ' . $this->statut);
             return true;
         }
     }
@@ -589,6 +589,7 @@ class Article
         if ($error[0] != '00000') {
             return false;
         } else {
+            appLog('Updating Article -> id: ' . $this->id . ' name: ' . $this->name . ' description: ' . $this->description . ' slug: ' . $this->slug . ' statut: ' . $this->statut);
             return true;
         }
     }
@@ -621,6 +622,7 @@ class Article
         if ($error[0] != '00000') {
             return false;
         } else {
+            appLog('Deleting Article -> id: ' . $this->id);
             return true;
         }
     }
