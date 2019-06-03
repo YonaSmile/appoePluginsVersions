@@ -521,10 +521,17 @@ class Article
     {
         $featured = $this->statut == 1 ? ' ART.statut >= 1' : ' ART.statut = ' . $this->statut . ' ';
 
-        $sql = 'SELECT ART.*, AC.content AS content FROM appoe_plugin_itemGlue_articles AS ART
+        $sql = 'SELECT DISTINCT ART.id, ART.name, ART.description, ART.slug, ART.userId, ART.created_at, ART.updated_at, ART.statut, 
+        GROUP_CONCAT(DISTINCT C.id SEPARATOR ";") AS categoryIds, GROUP_CONCAT(DISTINCT C.name SEPARATOR ";") AS categoryNames, AC.content AS content
+        FROM appoe_categoryRelations AS CR 
+        RIGHT JOIN appoe_plugin_itemGlue_articles AS ART 
+        ON(CR.typeId = ART.id) 
+        INNER JOIN appoe_categories AS C
+        ON(C.id = CR.categoryId)
         INNER JOIN appoe_plugin_itemGlue_articles_content AS AC
         ON(AC.idArticle = ART.id)
-        WHERE ' . $featured . ' AND (ART.name LIKE ? OR AC.content LIKE ?) AND AC.lang = ? ORDER BY ART.statut DESC, ART.created_at DESC ';
+        WHERE ' . $featured . ' AND CR.type = "ITEMGLUE" AND C.status > 0 AND (ART.name LIKE ? OR AC.content LIKE ?) 
+        AND AC.lang = ? GROUP BY ART.id ORDER BY ART.statut DESC, ART.created_at DESC ';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute(array('%' . $searching . '%', '%' . $searching . '%', $lang));
