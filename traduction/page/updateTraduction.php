@@ -1,8 +1,10 @@
 <?php
 require('header.php');
 require(TRADUCTION_PATH . 'process/postProcess.php');
-$Traduction = new \App\Plugin\Traduction\Traduction(APP_LANG);
-$allContent = $Traduction->getDbData();
+if (APP_LANG != "fr") {
+    $Traduction = new \App\Plugin\Traduction\Traduction(APP_LANG);
+    $allContent = $Traduction->getDbData();
+}
 ?>
 <?= getTitle($Page->getName(), $Page->getSlug()); ?>
     <div class="container-fluid">
@@ -46,7 +48,7 @@ $allContent = $Traduction->getDbData();
             </div>
         </div>
         <div class="my-4"></div>
-        <?php if ($allContent): ?>
+        <?php if (!empty($allContent)): ?>
             <form action="" method="post" id="pageContentManageForm">
                 <div class="row" id="tradContainer">
                     <?php foreach ($allContent as $metaKey => $content): ?>
@@ -67,6 +69,8 @@ $allContent = $Traduction->getDbData();
                     </div>
                 </div>
             </form>
+        <?php else: ?>
+            <p><?= trans('Pour traduire vous devez changer de langue'); ?></p>
         <?php endif; ?>
     </div>
     <div class="my-4"></div>
