@@ -17,18 +17,19 @@ if (!isVisitor()):
             && isUserExist($connectedUserId)): ?>
             <li class="list-inline-item p-0 pr-2 mr-0" style="font-size: 0.7em;">
             <span class="activeUser pb-1 border-bottom border-<?= STATUS_CONNECTED_USER[$connectedUserData['status']]; ?>"
-                  style="position: relative;"
-                    <?= isTechnicien(getUserRoleId()) ? 'title="Location: ' . $connectedUserData['pageConsulting'] . '"' : ''; ?>>
+                  style="position: relative;" data-page-consulting="<?= $connectedUserData['pageConsulting']; ?>"
+                  data-user-name="<?= getUserEntitled($connectedUserId); ?>"
+                  data-user-status="<?= $connectedUserData['status']; ?>">
                 <?php if (isTechnicien(getUserRoleId())): ?>
                     <span class="logoutUser linkBtn" data-userid="<?= $connectedUserId; ?>"
                           style="display: none;position: absolute; right: -2px;top:-7px;">
                         <i class="fas fa-times"></i></span>
-                <?php endif; ?>
-                <?= getUserFirstName($connectedUserId) . ucfirst(substr(getUserName($connectedUserId), 0, 1)); ?>
+                <?php endif;
+                echo getUserFirstName($connectedUserId) . ucfirst(substr(getUserName($connectedUserId), 0, 1)); ?>
             </span>
             </li>
-        <?php endif; ?>
-        <?php endforeach;
+        <?php endif;
+        endforeach;
     endif; ?>
     <script>
 
@@ -48,6 +49,13 @@ if (!isVisitor()):
                 $(this).find('span.logoutUser').stop().fadeIn(200);
             }, function () {
                 $(this).find('span.logoutUser').stop().fadeOut(200);
+            });
+
+            $('span.activeUser').on('dblclick', function () {
+                var $user = $(this);
+                $('#modalInfo #modalTitle').html($user.data('user-name'));
+                $('#modalInfo #modalBody').html('<p><strong>Location: </strong>' + $user.data('page-consulting') + '</p>');
+                $('#modalInfo').modal('show');
             });
 
             $('#sidebar span.logoutUser').on('click', function (event) {

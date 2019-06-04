@@ -2,6 +2,7 @@
 require_once($_SERVER['DOCUMENT_ROOT'] . '/app/main.php');
 require_once(WEB_PLUGIN_PATH . 'mehoubarim/include/mehoubarim_functions.php');
 $mehoubarim_url_parts = explode('/', $_SERVER['PHP_SELF']);
+
 if (in_array('app', $mehoubarim_url_parts) && in_array('page', $mehoubarim_url_parts)) {
     mehoubarim_connecteUser();
     $mehoubarim = mehoubarim_pageFreeToChanges();
