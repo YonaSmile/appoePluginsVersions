@@ -43,7 +43,7 @@ if (!empty($_GET['id'])):
                 <a class="nav-item nav-link colorPrimary <?= !empty($Response->MediaTabactive) ? 'active' : ''; ?>"
                    id="nav-newFiles-tab" data-toggle="tab" href="#nav-newFiles" role="tab"
                    aria-controls="nav-newFiles" aria-selected="false"><?= trans('Les médias'); ?></a>
-                <?php if (class_exists('App\Plugin\Traduction\Traduction')): ?>
+                <?php if (class_exists('App\Plugin\Traduction\Traduction') && APP_LANG != "fr"): ?>
                     <a class="nav-item nav-link colorPrimary"
                        id="nav-traductions-tab" data-toggle="tab" href="#nav-traduction" role="tab"
                        aria-controls="nav-traduction" aria-selected="false"><?= trans('Traductions'); ?></a>
@@ -192,21 +192,26 @@ if (!empty($_GET['id'])):
                     <?php endif; ?>
                 </div>
             </div>
-            <?php if (class_exists('App\Plugin\Traduction\Traduction')): ?>
+            <?php if (class_exists('App\Plugin\Traduction\Traduction') && APP_LANG != "fr"): ?>
                 <div class="tab-pane fade" id="nav-traduction" role="tabpanel"
                      aria-labelledby="nav-traductions-tab">
                     <div class="container-fluid">
+                        <div class="custom-control custom-checkbox my-3">
+                            <input type="checkbox" class="custom-control-input" id="updateSlugAuto">
+                            <label class="custom-control-label"
+                                   for="updateSlugAuto"><?= trans('Mettre à jour le lien de l\'article automatiquement'); ?></label>
+                        </div>
                         <form action="" method="post" class="positionRelative pb-2" id="pageContentManageForm">
                             <small class="categoryIdFloatContenaire">Enregistré</small>
                             <div class="row" id="tradContainer">
                                 <div class="col-12 fileContent bg_grey_hover tradContent my-2">
-                                    <?= \App\Form::text($Article->getName(), $Article->getName(), 'text', trad($Article->getName(), false, APP_LANG), false, 250); ?>
+                                    <?= \App\Form::text($Article->getName(), $Article->getName(), 'text', trad($Article->getName(), false, APP_LANG), false, 250, '', '', 'articleName'); ?>
                                 </div>
                                 <div class="col-12 fileContent bg_grey_hover tradContent my-2">
-                                    <?= \App\Form::text($Article->getDescription(), $Article->getDescription(), 'text', trad($Article->getDescription(), false, APP_LANG), false, 250); ?>
+                                    <?= \App\Form::text($Article->getDescription(), $Article->getDescription(), 'text', trad($Article->getDescription(), false, APP_LANG), false, 250, '', '', 'articleDescription'); ?>
                                 </div>
                                 <div class="col-12 fileContent bg_grey_hover tradContent my-2">
-                                    <?= \App\Form::text($Article->getSlug(), $Article->getSlug(), 'text', trad($Article->getSlug(), false, APP_LANG), false, 250); ?>
+                                    <?= \App\Form::text($Article->getSlug(), $Article->getSlug(), 'text', trad($Article->getSlug(), false, APP_LANG), false, 250, '', '', 'articleSlug'); ?>
                                 </div>
                             </div>
                         </form>
@@ -315,6 +320,16 @@ if (!empty($_GET['id'])):
             $(document).ready(function () {
 
                 $('#allMediaModalContainer').load('/app/ajax/media.php?getAllMedia');
+
+                $('#updateSlugAuto').on('change', function () {
+                    $('input.articleSlug').val(convertToSlug($('input.articleName').val()));
+                });
+
+                $('input.articleName').keyup(function () {
+                    if ($('#updateSlugAuto').is(':checked')) {
+                        $('input.articleSlug').val(convertToSlug($(this).val()));
+                    }
+                });
 
                 $('form#galleryArticleForm').submit(function () {
                     $('#loader').fadeIn('fast');
