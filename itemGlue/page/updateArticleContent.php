@@ -196,25 +196,25 @@ if (!empty($_GET['id'])):
                 <div class="tab-pane fade" id="nav-traduction" role="tabpanel"
                      aria-labelledby="nav-traductions-tab">
                     <div class="container-fluid">
-                        <div class="custom-control custom-checkbox my-3">
-                            <input type="checkbox" class="custom-control-input" id="updateSlugAuto">
-                            <label class="custom-control-label"
-                                   for="updateSlugAuto"><?= trans('Mettre à jour le lien de l\'article automatiquement'); ?></label>
-                        </div>
-                        <form action="" method="post" class="positionRelative pb-2" id="pageContentManageForm">
+                        <form action="" method="post" class="positionRelative pb-2" id="articleTraductionForm">
                             <small class="categoryIdFloatContenaire">Enregistré</small>
-                            <div class="row" id="tradContainer">
-                                <div class="col-12 fileContent bg_grey_hover tradContent my-2">
-                                    <?= \App\Form::text($Article->getName(), $Article->getName(), 'text', trad($Article->getName(), false, APP_LANG), false, 250, '', '', 'articleName'); ?>
+                            <div class="row">
+                                <div class="col-12 my-2">
+                                    <?= \App\Form::text('Nom', $Article->getName(), 'text', trad($Article->getName(), false, APP_LANG), false, 250, '', '', 'articleName'); ?>
                                 </div>
-                                <div class="col-12 fileContent bg_grey_hover tradContent my-2">
-                                    <?= \App\Form::text($Article->getDescription(), $Article->getDescription(), 'text', trad($Article->getDescription(), false, APP_LANG), false, 250, '', '', 'articleDescription'); ?>
+                                <div class="col-12 my-2">
+                                    <?= \App\Form::text('Description', $Article->getDescription(), 'text', trad($Article->getDescription(), false, APP_LANG), false, 250, '', '', 'articleDescription'); ?>
                                 </div>
-                                <div class="col-12 fileContent bg_grey_hover tradContent my-2">
-                                    <?= \App\Form::text($Article->getSlug(), $Article->getSlug(), 'text', trad($Article->getSlug(), false, APP_LANG), false, 250, '', '', 'articleSlug'); ?>
+                                <div class="col-12 my-2">
+                                    <?= \App\Form::text('Nom du lien URL (slug)', $Article->getSlug(), 'text', trad($Article->getSlug(), false, APP_LANG), false, 250, '', '', 'articleSlug'); ?>
                                 </div>
                             </div>
                         </form>
+                        <div class="text-right my-2">
+                            <button id="updateSlugAuto" class="btn btn-sm btn-outline-dark">
+                                <?= trans('Mettre à jour le lien de l\'article'); ?>
+                            </button>
+                        </div>
                     </div>
                 </div>
             <?php endif; ?>
@@ -320,16 +320,6 @@ if (!empty($_GET['id'])):
             $(document).ready(function () {
 
                 $('#allMediaModalContainer').load('/app/ajax/media.php?getAllMedia');
-
-                $('#updateSlugAuto').on('change', function () {
-                    $('input.articleSlug').val(convertToSlug($('input.articleName').val()));
-                });
-
-                $('input.articleName').keyup(function () {
-                    if ($('#updateSlugAuto').is(':checked')) {
-                        $('input.articleSlug').val(convertToSlug($(this).val()));
-                    }
-                });
 
                 $('form#galleryArticleForm').submit(function () {
                     $('#loader').fadeIn('fast');
@@ -505,8 +495,12 @@ if (!empty($_GET['id'])):
                     $(this).text('<?= trans('copié'); ?>');
                 });
 
+                $('#updateSlugAuto').on('click', function () {
+                    $('input.articleSlug').val(convertToSlug($('input.articleName').val())).trigger('input');
+                });
+
                 $('.categoryIdFloatContenaire').hide();
-                $('form#pageContentManageForm').on('input', 'input', function (event) {
+                $('form#articleTraductionForm').on('input', 'input', function (event) {
                     event.preventDefault();
 
                     var $input = $(this);
