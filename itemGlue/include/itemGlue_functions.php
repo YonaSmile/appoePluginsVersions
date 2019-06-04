@@ -57,6 +57,12 @@ function getArticlesByCategory($categoryId, $parent = false, $length = false)
         if ($ArticleMeta->getData()) {
             $article->metas = extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue');
         }
+
+        //Get Traduction
+        if (LANG != "fr") {
+            $article->name = trad($article->name);
+            $article->slug = trad($article->slug);
+        }
     }
 
     return $length ? array_slice($allArticles, 0, $length, true) : $allArticles;
@@ -261,13 +267,26 @@ function getSpecificArticlesCategory($categoryId, $parentId = false, $favorite =
 }
 
 /**
+ * Obsolète function
  * @param $slug
  * @return bool
  */
 function getSpecificArticlesDetailsBySlug($slug)
 {
+    return getArticlesBySlug($slug);
+}
+
+/**
+ * @param $slug
+ * @return bool
+ */
+function getArticlesBySlug($slug)
+{
     if (!empty($slug)) {
-        $slug = trad($slug, true);
+
+        if (LANG != 'fr') {
+            $slug = trad($slug, true);
+        }
 
         //get article
         $Article = new Article();
