@@ -67,5 +67,5 @@ function interMap_getOptionJSON($optionsJSON)
     }
 
     unset($optionsJSON['checkbox']);
-    return json_encode(array_merge($dataJSON, $optionsJSON));
+    return json_encode(array_merge($dataJSON, is_array($optionsJSON) ? $optionsJSON : array()));
 }

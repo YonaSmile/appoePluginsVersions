@@ -315,10 +315,10 @@ if (!empty($_GET['id'])): ?>
                                     <?= App\Form::text('ID', 'id', 'text', !empty($_POST['id']) ? $_POST['id'] : '', true, 150); ?>
                                 </div>
                                 <div class="col-12 my-2">
-                                    <?= App\Form::text('Map (SVG,JPG)', 'map[]', 'file'); ?>
+                                    <?= App\Form::file('Map (SVG,JPG)', 'map[]', true); ?>
                                 </div>
                                 <div class="col-12 my-2">
-                                    <?= App\Form::text('Mini Map (JPG)', 'minimap[]', 'file'); ?>
+                                    <?= App\Form::file('Mini Map (JPG)', 'minimap[]', false); ?>
                                 </div>
                             </div>
                             <div id="addInterMapLevelError"></div>

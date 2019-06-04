@@ -146,7 +146,7 @@ class InteractiveMap
                     `title` varchar(250) NOT NULL,
                     UNIQUE (`title`),
                     `data` mediumtext NOT NULL,
-                    `options` TEXT NULL DEFAULT NULL
+                    `options` TEXT NULL DEFAULT NULL,
                     `width` smallint(6) NOT NULL DEFAULT 0,
                     `height` smallint(6) NOT NULL DEFAULT 0,
                     `status` tinyint(4) NOT NULL DEFAULT 1,

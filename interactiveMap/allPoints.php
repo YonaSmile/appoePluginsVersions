@@ -36,9 +36,12 @@ if (!empty($_GET['id']) && !empty($_GET['level']) && isset($_GET['location'])): 
                             <div class="mb-2">
                                 <?= \App\Form::textarea('description', 'ckeditDescription', $location['description'], 5, false, '', 'ckeditorBasic'); ?>
                             </div>
-                            <?= \App\Form::text('Photo', 'thumbnail[]', 'file', '', false, 350, '', '', 'form-control-sm mb-2'); ?>
-                            <?= \App\Form::select('Catégorie', 'category', $allCategories, $location['category'], false); ?>
-
+                            <div class="mb-2">
+                                <?= \App\Form::file('Photo', 'thumbnail[]', false, '', 'form-control-sm'); ?>
+                            </div>
+                            <div class="mb-2">
+                                <?= \App\Form::select('Catégorie', 'category', $allCategories, $location['category'], false); ?>
+                            </div>
 
                             <div class="custom-control custom-checkbox">
                                 <input type="checkbox" class="custom-control-input"
@@ -47,8 +50,10 @@ if (!empty($_GET['id']) && !empty($_GET['level']) && isset($_GET['location'])): 
                                 <label class="custom-control-label"
                                        for="checkFill"><?= trans('Choix de remplissage'); ?></label>
                             </div>
-                            <div style="<?= empty($location['fill']) ? 'display: none;' : ''; ?>" id="fillChois" class="form-group my-2">
-                                <input type="color" class="form-control form-control-sm mb-2 inputColorChoise" id="" name=""
+                            <div style="<?= empty($location['fill']) ? 'display: none;' : ''; ?>" id="fillChois"
+                                 class="form-group my-2">
+                                <input type="color" class="form-control form-control-sm mb-2 inputColorChoise" id=""
+                                       name=""
                                        value="<?= !empty($location['fill']) ? $location['fill'] : ''; ?>">
                                 <input type="hidden" id="" class="inputColorHidden" name="" value="">
                             </div>
@@ -112,7 +117,7 @@ if (!empty($_GET['id']) && !empty($_GET['level']) && isset($_GET['location'])): 
 
                                 function uploadFiles() {
 
-                                    busyApp();
+                                    busyApp(false);
 
                                     // Create a formdata object and add the files
                                     var data = new FormData();
@@ -217,7 +222,7 @@ if (!empty($_GET['id']) && !empty($_GET['level']) && isset($_GET['location'])): 
 
 
                             function updateInterMapData(input) {
-                                busyApp();
+                                busyApp(false);
                                 $.post(
                                     '<?= INTERACTIVE_MAP_URL; ?>process/ajaxProcess.php',
                                     $('form.locationForm').serialize(),
