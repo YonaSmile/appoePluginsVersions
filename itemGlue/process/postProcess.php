@@ -13,8 +13,14 @@ if (checkPostAndTokenRequest()) {
 
             $Article = new \App\Plugin\ItemGlue\Article();
 
+            $lastCharSlug = substr($_POST['slug'], -1);
+            if ($lastCharSlug == '-') {
+                $_POST['slug'] = substr($_POST['slug'], 0, -1);
+            }
+
             //Add Article
             $Article->feed($_POST);
+
             if ($Article->notExist()) {
                 if ($Article->save()) {
 
@@ -75,6 +81,11 @@ if (checkPostAndTokenRequest()) {
         ) {
 
             $Article = new \App\Plugin\ItemGlue\Article($_POST['id']);
+
+            $lastCharSlug = substr($_POST['slug'], -1);
+            if ($lastCharSlug == '-') {
+                $_POST['slug'] = substr($_POST['slug'], 0, -1);
+            }
 
             //Update Article
             $Article->feed($_POST);
