@@ -144,7 +144,15 @@ function getSimilarArticles($articleId, $categories, $length = false)
 
     foreach ($relatedArticles as $categoryId => $articles) {
         foreach ($articles as $articleId => $article) {
-            $allArticles[] = $article;
+
+            if (LANG != 'fr') {
+                $article->name = trad($article->name);
+                $article->slug = trad($article->slug);
+            }
+
+            if (!array_key_exists($articleId, $allArticles)) {
+                $allArticles[$articleId] = $article;
+            }
         }
     }
 
@@ -273,15 +281,6 @@ function getSpecificArticlesCategory($categoryId, $parentId = false, $favorite =
  */
 function getSpecificArticlesDetailsBySlug($slug)
 {
-    return getArticlesBySlug($slug);
-}
-
-/**
- * @param $slug
- * @return bool
- */
-function getArticlesBySlug($slug)
-{
     if (!empty($slug)) {
 
         if (LANG != 'fr') {
@@ -320,17 +319,60 @@ function getArticlesBySlug($slug)
     return false;
 }
 
+
 /**
- * @param $id
+ * @param $slug
+ * @return Article|bool
+ */
+function getArticlesBySlug($slug)
+{
+    if (!empty($slug)) {
+
+        if (LANG != 'fr') {
+            $slug = trad($slug, true);
+        }
+
+        //get article
+        $Article = new Article();
+        $Article->setSlug($slug);
+        if ($Article->showBySlug()) {
+
+            //get article content
+            $ArticleContent = new ArticleContent($Article->getId(), LANG);
+            $Article->content = htmlSpeCharDecode($ArticleContent->getContent());
+
+            //get all categories in relation with article
+            $Article->categories = extractFromObjToSimpleArr(getCategoriesByArticle($Article->getId()), 'categoryId', 'name');
+
+            //get article metas
+            $ArticleMeta = new ArticleMeta($Article->getId());
+            $Article->metas = extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue');
+
+            //get article medias
+            $ArticleMedia = new ArticleMedia($Article->getId());
+            $Article->medias = $ArticleMedia->showFiles();
+
+            //traduction
+            if (LANG != 'fr') {
+                $Article->setName(trad($Article->getName()));
+                $Article->setSlug(trad($Article->getSlug()));
+            }
+
+            return $Article;
+        }
+    }
+    return false;
+}
+
+/**
+ * @param $articleId
  * @return null
  */
-function getCategoriesByArticle($id)
+function getCategoriesByArticle($articleId)
 {
-    //get article
-    $Article = new Article($id);
 
     //get all categories in relation with article
-    $CategoryRelation = new CategoryRelations('ITEMGLUE', $Article->getId());
+    $CategoryRelation = new CategoryRelations('ITEMGLUE', $articleId);
     return $CategoryRelation->getData();
 }
 
