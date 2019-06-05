@@ -19,6 +19,10 @@ function getArticlesDataById($articleId)
 
         if ($Article) {
 
+            //get article content
+            $ArticleContent = new ArticleContent($Article->getId(), LANG);
+            $Article->content = htmlSpeCharDecode($ArticleContent->getContent());
+
             //Get Media
             $ArticleMedia = new ArticleMedia($Article->getId());
             $Article->medias = $ArticleMedia->showFiles();
@@ -29,10 +33,43 @@ function getArticlesDataById($articleId)
                 $Article->metas = extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue');
             }
 
+            //get all categories in relation with article
+            $Article->categories = extractFromObjToSimpleArr(getCategoriesByArticle($Article->getId()), 'categoryId', 'name');
+
+            //Get Traduction
+            if (LANG != "fr") {
+                $Article->setName(trad($Article->getName()));
+                $Article->setDescription(trad($Article->getDescription()));
+                $Article->setSlug(trad($Article->getSlug()));
+            }
+
             return $Article;
         }
     }
     return false;
+}
+
+function getArticleData(stdClass $article)
+{
+
+    //Get Media
+    $ArticleMedia = new ArticleMedia($article->id);
+    $article->medias = $ArticleMedia->showFiles();
+
+    //Get Metas
+    $ArticleMeta = new ArticleMeta($article->id);
+    if ($ArticleMeta->getData()) {
+        $article->metas = extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue');
+    }
+
+    //Get Traduction
+    if (LANG != "fr") {
+        $article->name = trad($article->name);
+        $article->description = trad($article->description);
+        $article->slug = trad($article->slug);
+    }
+
+    return $article;
 }
 
 /**
@@ -47,26 +84,12 @@ function getArticlesByCategory($categoryId, $parent = false, $length = false)
     $allArticles = $Article->showByCategory($categoryId, $parent);
 
     foreach ($allArticles as &$article) {
-
-        //Get Media
-        $ArticleMedia = new ArticleMedia($article->id);
-        $article->medias = $ArticleMedia->showFiles();
-
-        //Get Metas
-        $ArticleMeta = new ArticleMeta($article->id);
-        if ($ArticleMeta->getData()) {
-            $article->metas = extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue');
-        }
-
-        //Get Traduction
-        if (LANG != "fr") {
-            $article->name = trad($article->name);
-            $article->slug = trad($article->slug);
-        }
+        $article = getArticleData($article);
     }
 
     return $length ? array_slice($allArticles, 0, $length, true) : $allArticles;
 }
+
 
 /**
  * @param bool $length
@@ -79,16 +102,7 @@ function getRecentArticles($length = false)
 
     if ($allArticles) {
         foreach ($allArticles as &$article) {
-
-            //Get Media
-            $ArticleMedia = new ArticleMedia($article->id);
-            $article->medias = $ArticleMedia->showFiles();
-
-            //Get Metas
-            $ArticleMeta = new ArticleMeta($article->id);
-            if ($ArticleMeta->getData()) {
-                $article->metas = extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue');
-            }
+            $article = getArticleData($article);
         }
     }
     return $allArticles;
@@ -107,16 +121,7 @@ function getSearchingArticles($searching)
 
     if ($allArticles) {
         foreach ($allArticles as &$article) {
-
-            //Get Media
-            $ArticleMedia = new ArticleMedia($article->id);
-            $article->medias = $ArticleMedia->showFiles();
-
-            //Get Metas
-            $ArticleMeta = new ArticleMeta($article->id);
-            if ($ArticleMeta->getData()) {
-                $article->metas = extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue');
-            }
+            $article = getArticleData($article);
         }
     }
     return $allArticles;
@@ -144,11 +149,6 @@ function getSimilarArticles($articleId, $categories, $length = false)
 
     foreach ($relatedArticles as $categoryId => $articles) {
         foreach ($articles as $articleId => $article) {
-
-            if (LANG != 'fr') {
-                $article->name = trad($article->name);
-                $article->slug = trad($article->slug);
-            }
 
             if (!array_key_exists($articleId, $allArticles)) {
                 $allArticles[$articleId] = $article;
@@ -337,28 +337,7 @@ function getArticlesBySlug($slug)
         $Article->setSlug($slug);
         if ($Article->showBySlug()) {
 
-            //get article content
-            $ArticleContent = new ArticleContent($Article->getId(), LANG);
-            $Article->content = htmlSpeCharDecode($ArticleContent->getContent());
-
-            //get all categories in relation with article
-            $Article->categories = extractFromObjToSimpleArr(getCategoriesByArticle($Article->getId()), 'categoryId', 'name');
-
-            //get article metas
-            $ArticleMeta = new ArticleMeta($Article->getId());
-            $Article->metas = extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue');
-
-            //get article medias
-            $ArticleMedia = new ArticleMedia($Article->getId());
-            $Article->medias = $ArticleMedia->showFiles();
-
-            //traduction
-            if (LANG != 'fr') {
-                $Article->setName(trad($Article->getName()));
-                $Article->setSlug(trad($Article->getSlug()));
-            }
-
-            return $Article;
+            return getArticlesDataById($Article->getId());
         }
     }
     return false;
