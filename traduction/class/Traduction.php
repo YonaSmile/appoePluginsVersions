@@ -156,6 +156,16 @@ class Traduction
 
             if (in_array($trans, $langArray)) {
                 $trad = array_search($trans, $langArray);
+            } else {
+                foreach (getLangs() as $minLang => $largeLang) {
+                    if ($minLang != $this->lang) {
+                        $this->metaValue = $trans;
+                        if ($this->showByValue()) {
+                            return $this->metaKey;
+                        }
+
+                    }
+                }
             }
         }
 
@@ -194,6 +204,38 @@ class Traduction
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
+        $stmt->execute();
+
+        $count = $stmt->rowCount();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            if ($count == 1) {
+
+                $row = $stmt->fetch(\PDO::FETCH_OBJ);
+                $this->feed($row);
+
+                return true;
+
+            } else {
+
+                return false;
+            }
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function showByValue()
+    {
+
+        $sql = 'SELECT * FROM appoe_plugin_traduction WHERE metaValue = :metaValue AND lang != :lang';
+
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':metaValue', $this->metaValue);
+        $stmt->bindParam(':lang', $this->lang);
         $stmt->execute();
 
         $count = $stmt->rowCount();

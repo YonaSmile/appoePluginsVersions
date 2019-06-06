@@ -328,9 +328,7 @@ function getArticlesBySlug($slug)
 {
     if (!empty($slug)) {
 
-        if (LANG != 'fr') {
-            $slug = trad($slug, true);
-        }
+        $slug = trad($slug, true);
 
         //get article
         $Article = new Article();
