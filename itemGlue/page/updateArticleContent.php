@@ -1,25 +1,32 @@
 <?php
+
+use App\Category;
+use App\CategoryRelations;
+use App\Plugin\ItemGlue\Article;
+use App\Plugin\ItemGlue\ArticleContent;
+use App\Plugin\ItemGlue\ArticleMedia;
+
 require('header.php');
 if (!empty($_GET['id'])):
 
     require(ITEMGLUE_PATH . 'process/postProcess.php');
-    $Article = new \App\Plugin\ItemGlue\Article();
+    $Article = new Article();
     $Article->setId($_GET['id']);
 
     if ($Article->show()) :
 
         $Article->setStatut(1);
         $allArticles = $Article->showAll(false, false, 'fr');
-        $ArticleContent = new \App\Plugin\ItemGlue\ArticleContent($Article->getId(), APP_LANG);
+        $ArticleContent = new ArticleContent($Article->getId(), APP_LANG);
 
-        $Category = new \App\Category();
+        $Category = new Category();
         $Category->setType('ITEMGLUE');
         $listCatgories = extractFromObjToArrForList($Category->showByType(), 'id');
 
-        $CategoryRelation = new \App\CategoryRelations('ITEMGLUE', $Article->getId());
+        $CategoryRelation = new CategoryRelations('ITEMGLUE', $Article->getId());
         $allCategoryRelations = extractFromObjToSimpleArr($CategoryRelation->getData(), 'categoryId', 'name');
 
-        $ArticleMedia = new \App\Plugin\ItemGlue\ArticleMedia($Article->getId());
+        $ArticleMedia = new ArticleMedia($Article->getId());
         $ArticleMedia->setLang(APP_LANG);
         $allArticleMedias = $ArticleMedia->showFiles();
 
@@ -43,7 +50,7 @@ if (!empty($_GET['id'])):
                 <a class="nav-item nav-link colorPrimary <?= !empty($Response->MediaTabactive) ? 'active' : ''; ?>"
                    id="nav-newFiles-tab" data-toggle="tab" href="#nav-newFiles" role="tab"
                    aria-controls="nav-newFiles" aria-selected="false"><?= trans('Les médias'); ?></a>
-                <?php if (class_exists('App\Plugin\Traduction\Traduction') && APP_LANG != "fr"): ?>
+                <?php if (class_exists('App\Plugin\Traduction\Traduction')): ?>
                     <a class="nav-item nav-link colorPrimary"
                        id="nav-traductions-tab" data-toggle="tab" href="#nav-traduction" role="tab"
                        aria-controls="nav-traduction" aria-selected="false"><?= trans('Traductions'); ?></a>
@@ -192,29 +199,33 @@ if (!empty($_GET['id'])):
                     <?php endif; ?>
                 </div>
             </div>
-            <?php if (class_exists('App\Plugin\Traduction\Traduction') && APP_LANG != "fr"): ?>
+            <?php if (class_exists('App\Plugin\Traduction\Traduction')): ?>
                 <div class="tab-pane fade" id="nav-traduction" role="tabpanel"
                      aria-labelledby="nav-traductions-tab">
                     <div class="container-fluid">
-                        <form action="" method="post" class="positionRelative pb-2" id="articleTraductionForm">
-                            <small class="categoryIdFloatContenaire">Enregistré</small>
-                            <div class="row">
-                                <div class="col-12 my-2">
-                                    <?= \App\Form::text('Nom', $Article->getName(), 'text', trad($Article->getName(), false, APP_LANG), false, 250, '', '', 'articleName'); ?>
+                        <?php if (APP_LANG != 'fr'): ?>
+                            <form action="" method="post" class="positionRelative pb-2" id="articleTraductionForm">
+                                <small class="categoryIdFloatContenaire">Enregistré</small>
+                                <div class="row">
+                                    <div class="col-12 my-2">
+                                        <?= \App\Form::text('Nom', $Article->getName(), 'text', trad($Article->getName(), false, APP_LANG), false, 250, '', '', 'articleName'); ?>
+                                    </div>
+                                    <div class="col-12 my-2">
+                                        <?= \App\Form::text('Description', $Article->getDescription(), 'text', trad($Article->getDescription(), false, APP_LANG), false, 250, '', '', 'articleDescription'); ?>
+                                    </div>
+                                    <div class="col-12 my-2">
+                                        <?= \App\Form::text('Nom du lien URL (slug)', $Article->getSlug(), 'text', trad($Article->getSlug(), false, APP_LANG), false, 250, '', '', 'articleSlug'); ?>
+                                    </div>
                                 </div>
-                                <div class="col-12 my-2">
-                                    <?= \App\Form::text('Description', $Article->getDescription(), 'text', trad($Article->getDescription(), false, APP_LANG), false, 250, '', '', 'articleDescription'); ?>
-                                </div>
-                                <div class="col-12 my-2">
-                                    <?= \App\Form::text('Nom du lien URL (slug)', $Article->getSlug(), 'text', trad($Article->getSlug(), false, APP_LANG), false, 250, '', '', 'articleSlug'); ?>
-                                </div>
+                            </form>
+                            <div class="text-right my-2">
+                                <button id="updateSlugAuto" class="btn btn-sm btn-outline-dark">
+                                    <?= trans('Mettre à jour le lien de l\'article'); ?>
+                                </button>
                             </div>
-                        </form>
-                        <div class="text-right my-2">
-                            <button id="updateSlugAuto" class="btn btn-sm btn-outline-dark">
-                                <?= trans('Mettre à jour le lien de l\'article'); ?>
-                            </button>
-                        </div>
+                        <?php else: ?>
+                            <p><?= trans('Pour traduire vous devez changer de langue'); ?></p>
+                        <?php endif; ?>
                     </div>
                 </div>
             <?php endif; ?>
