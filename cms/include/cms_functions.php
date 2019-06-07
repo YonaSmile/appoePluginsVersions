@@ -1,14 +1,20 @@
 <?php
+
+use App\Plugin\Cms\Cms;
+use App\Plugin\Cms\CmsContent;
+use App\Template;
+
 /**
  * Load page as include
  *
  * @param string $slug
+ * @param string $folder
  * @param string $lang
  * @return mixed|string
  */
-function loadPage($slug = 'home', $lang = LANG)
+function loadPage($slug = 'home', $folder = 'html', $lang = LANG)
 {
-    $Cms = new \App\Plugin\Cms\Cms();
+    $Cms = new Cms();
 
     //Get Page parameters
     $Cms->setSlug($slug);
@@ -16,17 +22,29 @@ function loadPage($slug = 'home', $lang = LANG)
 
     //Check if Page exist and accessible
     if (!$existPage || $Cms->getStatut() != 1) {
-        if (false === @include_once(WEB_PUBLIC_PATH . 'html/' . $slug . '.php')) {
+        if (false === @include_once(WEB_PUBLIC_PATH . $folder . DIRECTORY_SEPARATOR . $slug . '.php')) {
             return 'Cette page n\'existe pas.';
         }
         return '';
     }
 
-    $CmsContent = new \App\Plugin\Cms\CmsContent($Cms->getId(), $lang);
+    $CmsContent = new CmsContent($Cms->getId(), $lang);
 
     //Get page content in template
-    $Template = new \App\Template(WEB_PATH . $Cms->getSlug() . '.php', $CmsContent->getData(), true);
+    $Template = new Template(WEB_PATH . $Cms->getSlug() . '.php', $CmsContent->getData(), true);
     return $Template->get();
+}
+
+/**
+ * Load plugin page with "loadPage"
+ *
+ * @param string $slug
+ * @param string $lang
+ * @return mixed|string
+ */
+function getPluginPage($slug = 'home', $lang = LANG)
+{
+    return loadPage($slug, 'plugins', $lang);
 }
 
 /**
@@ -35,7 +53,7 @@ function loadPage($slug = 'home', $lang = LANG)
  */
 function breadcrumb($otherParentSlug = false)
 {
-    $Cms = new \App\Plugin\Cms\Cms();
+    $Cms = new Cms();
 
     $currentUrl = $_SERVER['REQUEST_URI'];
     $currentUrlSlug = basename($currentUrl);
