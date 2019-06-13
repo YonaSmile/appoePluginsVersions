@@ -1,13 +1,23 @@
-<?php require('header.php');
+<?php
+require('header.php');
+
+use App\Plugin\Cms\Cms;
+use App\Plugin\Cms\CmsContent;
+use App\Plugin\Cms\CmsMenu;
+use App\Template;
+
+require(CMS_PATH . 'process/postProcess.php');
+
 if (!empty($_GET['id'])):
 
-    $Cms = new \App\Plugin\Cms\Cms();
+    $Cms = new Cms();
     $Cms->setId($_GET['id']);
+    $Cms->setLang(APP_LANG);
 
     if ($Cms->show()):
 
-        $CmsMenu = new \App\Plugin\Cms\CmsMenu();
-        $CmsContent = new \App\Plugin\Cms\CmsContent($Cms->getId(), APP_LANG);
+        $CmsMenu = new CmsMenu();
+        $CmsContent = new CmsContent($Cms->getId(), APP_LANG);
 
         //check if is a page operated by content CMS
         $menuPages = $CmsMenu->showAll();
@@ -16,54 +26,143 @@ if (!empty($_GET['id'])):
         //get all pages for navigations
         $allCmsPages = $Cms->showAllPages();
 
+        //get all html files
+        $files = getFilesFromDir(WEB_PUBLIC_PATH . 'html/', true, 'php', true);
+
         echo getTitle(trans('Contenu de la page') . '<strong> ' . $Cms->getName() . '</strong>', $Page->getSlug()); ?>
         <div class="row my-2">
+
             <div class="col-12">
-                <?php if ($Menu->checkUserPermission(getUserRoleId(), 'updatePage')): ?>
-                    <a id="updatePageBtn"
-                       href="<?= getPluginUrl('cms/page/update/', $Cms->getId()); ?>"
-                       class="btn btn-warning btn-sm">
-                        <span class="fas fa-cog"></span> <?= trans('Modifier la page'); ?>
-                    </a>
-                <?php endif;
-                if (array_key_exists($Cms->getSlug(), $allMenuPages)): ?>
-                    <a href="<?= webUrl($Cms->getSlug() . '/'); ?>"
-                       class="btn btn-info btn-sm" target="_blank">
-                        <span class="fas fa-external-link-alt"></span> <?= trans('Visualiser la page'); ?>
-                    </a>
-                <?php endif; ?>
-                <select class="custom-select otherPagesSelect otherProjetSelect notPrint float-right"
-                        title="<?= trans('Parcourir les pages'); ?>...">
-                    <option selected="selected" disabled><?= trans('Parcourir les pages'); ?>...</option>
-                    <?php foreach ($allCmsPages as $pageSelect):
-                        if ($Cms->getId() != $pageSelect->id): ?>
-                            <option data-href="<?= getPluginUrl('cms/page/pageContent/', $pageSelect->id); ?>"><?= $pageSelect->name; ?></option>
-                        <?php endif;
-                    endforeach; ?>
-                </select>
-            </div>
-        </div>
-        <?php if (file_exists(WEB_PATH . $Cms->getSlug() . '.php')): ?>
-        <form action="" method="post" id="pageContentManageForm">
-            <div class="row my-2">
-                <?php
-                $Template = new \App\Template(WEB_PATH . $Cms->getSlug() . '.php', $CmsContent->getData());
-                $Template->show();
-                ?>
-            </div>
-            <div class="row my-2">
-                <div class="col-12">
-                    <button type="button" class="btn btn-outline-primary btn-block btn-lg">
-                        <?= trans('Enregistrer'); ?>
-                    </button>
+                <div class="row my-3">
+                    <div class="col-12 col-md-6 col-lg-1">
+                        <strong>ID</strong><br><?= $Cms->getId(); ?></div>
+                    <div class="col-12 col-md-6 col-lg-2">
+                        <strong><?= trans('Fichier'); ?></strong><br><?= $Cms->getFilename(); ?>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-2">
+                        <strong><?= trans('Slug'); ?></strong>
+                        <br>
+                        <span><?= $Cms->getSlug(); ?></span>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <strong><?= trans('Nom'); ?></strong>
+                        <br>
+                        <span><?= $Cms->getName(); ?></span>
+                    </div>
+                    <div class="col-12 col-md-12 col-lg-4">
+                        <strong><?= trans('Description'); ?></strong>
+                        <br>
+                        <span><?= $Cms->getDescription(); ?></span>
+                    </div>
                 </div>
             </div>
-        </form>
-        <nav id="headerLinks" class="btn-group-vertical"></nav>
-    <?php else: ?>
-        <p><?= trans('Model manquant'); ?></p>
+            <div class="col-12">
+                <div class="row my-3">
+                    <div class="col-12 col-lg-8 my-2">
+                        <?php if ($Menu->checkUserPermission(getUserRoleId(), 'updatePage')): ?>
+                            <button id="updatePageBtn" data-toggle="modal" data-target="#updatePageModal"
+                                    class="btn btn-outline-warning btn-sm">
+                                <i class="fas fa-wrench"></i> <?= trans('Modifier les en têtes'); ?>
+                            </button>
+                        <?php endif;
+                        if (array_key_exists($Cms->getSlug(), $allMenuPages)): ?>
+                            <a href="<?= webUrl($Cms->getSlug() . '/'); ?>"
+                               class="btn btn-outline-info btn-sm" target="_blank">
+                                <i class="fas fa-external-link-alt"></i> <?= trans('Visualiser la page'); ?>
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                    <div class="col-12 col-lg-4 my-2 text-right">
+                        <select class="custom-select custom-select-sm"
+                                title="<?= trans('Parcourir les pages'); ?>...">
+                            <option selected="selected" disabled><?= trans('Parcourir les pages'); ?>...</option>
+                            <?php foreach ($allCmsPages as $pageSelect):
+                                if ($Cms->getId() != $pageSelect->id): ?>
+                                    <option data-href="<?= getPluginUrl('cms/page/pageContent/', $pageSelect->id); ?>"><?= $pageSelect->name; ?></option>
+                                <?php endif;
+                            endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php if (isset($Response)): ?>
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-<?= $Response->display()->status ?>" role="alert">
+                    <?= $Response->display()->error_msg; ?>
+                </div>
+            </div>
+        </div>
     <?php endif;
-        echo getAsset('mediaLibrary'); ?>
+        if (file_exists(WEB_PATH . $Cms->getFilename() . '.php')): ?>
+            <form action="" method="post" id="pageContentManageForm">
+                <div class="row my-2">
+                    <?php
+                    $Template = new Template(WEB_PATH . $Cms->getFilename() . '.php', $CmsContent->getData());
+                    $Template->show();
+                    ?>
+                </div>
+                <div class="row my-2">
+                    <div class="col-12">
+                        <button type="button" class="btn btn-outline-primary btn-block btn-lg">
+                            <?= trans('Enregistrer'); ?>
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <nav id="headerLinks" class="btn-group-vertical"></nav>
+        <?php else: ?>
+            <p><?= trans('Model manquant'); ?></p>
+        <?php endif;
+        echo getAsset('mediaLibrary', true); ?>
+        <div class="modal fade" id="updatePageModal" tabindex="-1" role="dialog"
+             aria-labelledby="updatePageModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form action="" method="post" id="updatePageForm">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="updatePageModalLabel">Modifier les en têtes</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="custom-control custom-checkbox my-3">
+                                <input type="checkbox" class="custom-control-input" id="updateSlugAuto">
+                                <label class="custom-control-label"
+                                       for="updateSlugAuto"><?= trans('Mettre à jour le lien de la page automatiquement'); ?></label>
+                            </div>
+
+                            <?= getTokenField(); ?>
+                            <input type="hidden" name="id" value="<?= $Cms->getId(); ?>">
+                            <div class="row my-2">
+                                <div class="col-12 my-2">
+                                    <?= \App\Form::text('Nom', 'name', 'text', $Cms->getName(), true, 70); ?>
+                                </div>
+                                <div class="col-12 my-2">
+                                    <?= \App\Form::text('Description', 'description', 'text', $Cms->getDescription(), true, 300); ?>
+                                </div>
+                                <div class="col-12 mt-2">
+                                    <?= \App\Form::text('Nom du lien URL' . ' (slug)', 'slug', 'text', $Cms->getSlug(), true, 100); ?>
+                                </div>
+
+                                <?php if(APP_LANG == "fr"): ?>
+                                    <div class="col-12 mt-2">
+                                        <?= \App\Form::select('Fichier', 'filename', array_combine($files, $files), $Cms->getFilename(), true); ?>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <?= \App\Form::target('UPDATEPAGE'); ?>
+                            <button type="submit" name="UPDATEPAGESUBMIT"
+                                    class="btn btn-outline-info"><?= trans('Enregistrer'); ?></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
         <script type="text/javascript">
 
             function updateCmsContent($input, metaValue) {
@@ -101,6 +200,16 @@ if (!empty($_GET['id'])):
 
 
             $(document).ready(function () {
+
+                $('#updateSlugAuto').on('change', function () {
+                    $('form#updatePageForm input#slug').val(convertToSlug($('form#updatePageForm input#name').val()));
+                });
+
+                $('form#updatePageForm input#name').on('input', function () {
+                    if ($('form#updatePageForm #updateSlugAuto').is(':checked')) {
+                        $('form#updatePageForm input#slug').val(convertToSlug($(this).val()));
+                    }
+                });
 
                 $.each($('.templateZoneTitle'), function () {
                     var id = Math.random().toString(36).substr(2, 9);

@@ -1,6 +1,10 @@
 <?php
+
 namespace App\Plugin\ItemGlue;
-class ArticleMedia extends \App\File
+
+use App\File;
+
+class ArticleMedia extends File
 {
     function __construct($idArticle = null)
     {

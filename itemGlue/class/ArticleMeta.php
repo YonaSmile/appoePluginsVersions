@@ -1,6 +1,10 @@
 <?php
 
 namespace App\Plugin\ItemGlue;
+
+use App\DB;
+use PDO;
+
 class ArticleMeta
 {
     private $id;
@@ -14,7 +18,7 @@ class ArticleMeta
     public function __construct($idArticle = null)
     {
         if (is_null($this->dbh)) {
-            $this->dbh = \App\DB::connect();
+            $this->dbh = DB::connect();
         }
 
         if (!is_null($idArticle)) {
@@ -142,7 +146,7 @@ class ArticleMeta
             return false;
         } else {
 
-            $this->data = $stmt->fetchAll(\PDO::FETCH_OBJ);
+            $this->data = $stmt->fetchAll(PDO::FETCH_OBJ);
             return true;
         }
     }
@@ -242,7 +246,7 @@ class ArticleMeta
         } else {
             if ($count == 1) {
                 if ($forUpdate) {
-                    $data = $stmt->fetch(\PDO::FETCH_OBJ);
+                    $data = $stmt->fetch(PDO::FETCH_OBJ);
                     if ($data->id == $this->id) {
                         return true;
                     }

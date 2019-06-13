@@ -6,7 +6,6 @@ RewriteRule ^addPage/$  addPage.php [L]
 RewriteRule ^updateMenu/$  updateMenu.php [L]
 RewriteRule ^archives/$  archives.php [L]
 RewriteRule ^cmsArchives/$  archives.php [L]
-RewriteRule ^update/([0-9]+)/$   updatePage.php?id=$1 [L]
 RewriteRule ^pageContent/([0-9]+)/$  updatePageContent.php?id=$1 [L]
 
 RewriteEngine on

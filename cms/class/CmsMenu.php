@@ -1,6 +1,10 @@
 <?php
 
 namespace App\Plugin\Cms;
+
+use App\DB;
+use PDO;
+
 class CmsMenu
 {
     private $id;
@@ -16,7 +20,7 @@ class CmsMenu
     public function __construct($id = null)
     {
         if (is_null($this->dbh)) {
-            $this->dbh = \App\DB::connect();
+            $this->dbh = DB::connect();
         }
 
         if (!is_null($id)) {
@@ -145,11 +149,11 @@ class CmsMenu
                 `id` INT(11) NOT NULL AUTO_INCREMENT,
                 PRIMARY KEY (`id`),
                 `idCms` VARCHAR(255) NOT NULL,
-                `name` VARCHAR(100) NOT NULL,
+                `name` VARCHAR(255) NULL DEFAULT NULL,
                 `parentId` INT(11) NOT NULL,
                 `position` INT(11) NULL DEFAULT NULL,
                 `location` INT(11) NOT NULL DEFAULT 1,
-                UNIQUE  (`idCms`, `name`, `parentId`, `location`),
+                UNIQUE  (`idCms`, `parentId`, `location`),
                 `statut` TINYINT(1) NOT NULL DEFAULT 1,
                 `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=11';
@@ -183,7 +187,7 @@ class CmsMenu
         } else {
             if ($count == 1) {
 
-                $row = $stmt->fetch(\PDO::FETCH_OBJ);
+                $row = $stmt->fetch(PDO::FETCH_OBJ);
                 $this->feed($row);
 
                 return true;
@@ -196,29 +200,39 @@ class CmsMenu
     }
 
     /**
-     * @param $byLocation
+     * @param bool $byLocation
      *
+     * @param $lang
      * @return array|bool
      */
-    public function showAll($byLocation = false)
+    public function showAll($byLocation = false, $lang = LANG)
     {
         $locationCondition = is_numeric($byLocation) ? ' AND acm.location = ' . $byLocation . ' ' : '';
 
-        $sql = 'SELECT DISTINCT acm.id, acm.idCms, acm.name, acm.parentId, acm.position, acm.location, acm.statut, acm.updated_at, 
-        ac.type, ac.description, ac.slug 
+        $sql = 'SELECT DISTINCT acm.id, acm.idCms,
+        CASE WHEN acm.name IS NOT NULL
+        THEN acm.name
+        ELSE (SELECT cc3.metaValue FROM appoe_plugin_cms_content AS cc3 WHERE cc3.type = "HEADER" AND cc3.metaKey = "name" AND cc3.idCms = ac.id AND cc3.lang = :lang)
+        END AS name, 
+        acm.parentId, acm.position, acm.location, acm.statut, acm.updated_at, 
+        ac.type, ac.filename,
+        (SELECT cc1.metaValue FROM appoe_plugin_cms_content AS cc1 WHERE cc1.type = "HEADER" AND cc1.metaKey = "slug" AND cc1.idCms = ac.id AND cc1.lang = :lang) AS slug,
+        (SELECT cc2.metaValue FROM appoe_plugin_cms_content AS cc2 WHERE cc2.type = "HEADER" AND cc2.metaKey = "description" AND cc2.idCms = ac.id AND cc2.lang = :lang) AS description
         FROM appoe_plugin_cms_menu AS acm 
         LEFT JOIN appoe_plugin_cms AS ac 
         ON (acm.idCms = ac.id) 
-        WHERE (ac.statut = 1 OR acm.idCms like "http%" OR acm.idCms like "%#%" OR acm.idCms REGEXP "^[a-zA-Z0-9/-]+$")' . $locationCondition . ' 
+        WHERE (SELECT cc1.metaValue FROM appoe_plugin_cms_content AS cc1 WHERE cc1.type = "HEADER" AND cc1.metaKey = "slug" AND cc1.idCms = ac.id AND cc1.lang = :lang) IS NOT NULL
+        AND (ac.statut = 1 OR acm.idCms like "http%" OR acm.idCms like "%#%" OR acm.idCms REGEXP "^[a-zA-Z0-9/-]+$")' . $locationCondition . ' 
         ORDER BY acm.parentId ASC, acm.position ASC';
         $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':lang', $lang);
         $stmt->execute();
 
         $error = $stmt->errorInfo();
         if ($error[0] != '00000') {
             return false;
         } else {
-            $data = $stmt->fetchAll(\PDO::FETCH_OBJ);
+            $data = $stmt->fetchAll(PDO::FETCH_OBJ);
 
             return $data;
         }

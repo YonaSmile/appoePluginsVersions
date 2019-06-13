@@ -1,5 +1,3 @@
-"use strict";
-
 //get messages
 function liveMessages() {
     return jQuery.get('/app/plugin/messagIn/syncMessages.php');
@@ -11,8 +9,11 @@ function checkUserSessionExit() {
 
 function getLiveMessage() {
     liveMessages().done(function (data) {
-        if ($.isNumeric(data) || data === 0) {
+        if (data != '' && ($.isNumeric(data) || data === 0)) {
             badgeMessageCheck(data);
+            return true;
+        } else {
+            return false;
         }
     });
 }
@@ -31,7 +32,7 @@ jQuery(document).ready(function () {
             getLiveMessage();
 
             //Start Cron
-            var msgCron = setInterval(function () {
+           setInterval(function () {
                 getLiveMessage();
             }, 15000);
         }

@@ -1,5 +1,10 @@
 <?php
+
 namespace App\Plugin\ItemGlue;
+
+use App\DB;
+use PDO;
+
 class ArticleContent
 {
     private $id;
@@ -11,8 +16,8 @@ class ArticleContent
 
     public function __construct($idArticle = null, $lang = null)
     {
-        if(is_null($this->dbh)) {
-            $this->dbh = \App\DB::connect();
+        if (is_null($this->dbh)) {
+            $this->dbh = DB::connect();
         }
 
         if (!is_null($idArticle) && !is_null($lang)) {
@@ -128,7 +133,7 @@ class ArticleContent
         } else {
             if ($count == 1) {
 
-                $row = $stmt->fetch(\PDO::FETCH_OBJ);
+                $row = $stmt->fetch(PDO::FETCH_OBJ);
                 $this->feed($row);
 
                 return true;
@@ -235,7 +240,7 @@ class ArticleContent
         } else {
             if ($count == 1) {
                 if ($forUpdate) {
-                    $data = $stmt->fetch(\PDO::FETCH_OBJ);
+                    $data = $stmt->fetch(PDO::FETCH_OBJ);
                     if ($data->id == $this->id) {
                         return true;
                     }

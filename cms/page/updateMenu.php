@@ -1,23 +1,28 @@
 <?php
 require('header.php');
 
+use App\Plugin\Cms\Cms;
+use App\Plugin\Cms\CmsMenu;
+use App\Plugin\ItemGlue\Article;
+
 require(CMS_PATH . 'process/ajaxProcess.php');
 require(CMS_PATH . 'process/postProcess.php');
 
-$Cms = new \App\Plugin\Cms\Cms();
-$CmsMenu = new \App\Plugin\Cms\CmsMenu();
-$Articles = new \App\Plugin\ItemGlue\Article();
+$Cms = new Cms();
+$Cms->setLang('fr');
+
+$CmsMenu = new CmsMenu();
+$Articles = new Article();
 
 $allCmsPages = $Cms->showAllPages();
-$allCmsMenu = $CmsMenu->showAll();
+$allCmsMenu = $CmsMenu->showAll(false, "fr");
 
 $MENUS = constructMenu($allCmsMenu);
 
 $allPages = extractFromObjToSimpleArr($allCmsPages, 'id', 'name');
 $allArticles = extractFromObjToSimpleArr($Articles->showAll(), 'slug', 'name');
 $allArticlesPages = extractFromObjToSimpleArr($allCmsPages, 'slug', 'name');
-?>
-<?= getTitle($Page->getName(), $Page->getSlug()); ?>
+echo getTitle($Page->getName(), $Page->getSlug()); ?>
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
@@ -46,17 +51,16 @@ $allArticlesPages = extractFromObjToSimpleArr($allCmsPages, 'slug', 'name');
                     </div>
                     <div class="row mb-4" id="menuAdminUpdate">
                         <div class="col-12">
-                            <?php if (isset($MENUS[$key][10])): ?>
-
-                                <?php foreach ($MENUS[$key][10] as $menu): ?>
-                                    <?php if ($menu->location == $key): ?>
+                            <?php if (isset($MENUS[$key][10])):
+                                foreach ($MENUS[$key][10] as $menu):
+                                    if ($menu->location == $key): ?>
                                         <div data-menuid="<?= $menu->id; ?>"
                                              class="m-0 mt-3 py-0 px-3 jumbotron bg-warning text-white fileContent">
                                             <input type="tel" class="updateMenuData positionMenuSpan"
                                                    data-menuid="<?= $menu->id; ?>" data-column="position"
                                                    value="<?= $menu->position; ?>">
                                             <input type="text" data-menuid="<?= $menu->id; ?>" class="updateMenuData"
-                                                   data-column="name" value="<?= $menu->name; ?>">
+                                                   data-column="name" value="<?= $menu->name; ?>" <?= is_numeric($menu->idCms) ? ' readonly ' : ''; ?>>
                                             <small class="inputInfo"></small>
                                             <?php if (empty($MENUS[$key][$menu->id])): ?>
                                                 <button type="button" class="close deleteMenu">
@@ -72,8 +76,8 @@ $allArticlesPages = extractFromObjToSimpleArr($allCmsPages, 'slug', 'name');
                                                    data-column="idCms"
                                                    value="<?= $menu->idCms; ?>">
                                         </div>
-                                        <?php if (!empty($MENUS[$key][$menu->id])): ?>
-                                            <?php foreach ($MENUS[$key][$menu->id] as $subMenu): ?>
+                                        <?php if (!empty($MENUS[$key][$menu->id])):
+                                            foreach ($MENUS[$key][$menu->id] as $subMenu): ?>
                                                 <div class="px-3 py-0 m-0 ml-4 mt-1 jumbotron fileContent"
                                                      data-menuid="<?= $subMenu->id; ?>">
                                                     <input type="tel" class="updateMenuData positionMenuSpan"
@@ -81,7 +85,7 @@ $allArticlesPages = extractFromObjToSimpleArr($allCmsPages, 'slug', 'name');
                                                            value="<?= $subMenu->position; ?>">
                                                     <input type="text" data-menuid="<?= $subMenu->id; ?>"
                                                            class="updateMenuData" data-column="name"
-                                                           value="<?= $subMenu->name; ?>">
+                                                           value="<?= $subMenu->name; ?>" <?= is_numeric($subMenu->idCms) ? ' readonly ' : ''; ?>>
                                                     <small class="inputInfo"></small>
                                                     <?php if (empty($MENUS[$key][$subMenu->id])): ?>
                                                         <button type="button" class="close deleteMenu">
@@ -97,8 +101,8 @@ $allArticlesPages = extractFromObjToSimpleArr($allCmsPages, 'slug', 'name');
                                                            data-column="idCms"
                                                            value="<?= $subMenu->idCms; ?>">
                                                 </div>
-                                                <?php if (!empty($MENUS[$key][$subMenu->id])): ?>
-                                                    <?php foreach ($MENUS[$key][$subMenu->id] as $subSubMenu): ?>
+                                                <?php if (!empty($MENUS[$key][$subMenu->id])):
+                                                    foreach ($MENUS[$key][$subMenu->id] as $subSubMenu): ?>
                                                         <div class="px-3 py-0 m-0 ml-5 mt-1 jumbotron fileContent"
                                                              data-menuid="<?= $subSubMenu->id; ?>">
                                                             <input type="tel" class="updateMenuData positionMenuSpan"
@@ -107,7 +111,7 @@ $allArticlesPages = extractFromObjToSimpleArr($allCmsPages, 'slug', 'name');
                                                                    value="<?= $subSubMenu->position; ?>">
                                                             <input type="text" data-menuid="<?= $subSubMenu->id; ?>"
                                                                    class="updateMenuData" data-column="name"
-                                                                   value="<?= $subSubMenu->name; ?>">
+                                                                   value="<?= $subSubMenu->name; ?>" <?= is_numeric($subSubMenu->idCms) ? ' readonly ' : ''; ?>>
                                                             <small class="inputInfo"></small>
                                                             <?php if (empty($MENUS[$key][$subSubMenu->id])): ?>
                                                                 <button type="button" class="close deleteMenu">
@@ -123,13 +127,13 @@ $allArticlesPages = extractFromObjToSimpleArr($allCmsPages, 'slug', 'name');
                                                                    data-column="idCms"
                                                                    value="<?= $subSubMenu->idCms; ?>">
                                                         </div>
-                                                    <?php endforeach; ?>
-                                                <?php endif; ?>
-                                            <?php endforeach; ?>
-                                        <?php endif; ?>
-                                    <?php endif; ?>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
+                                                    <?php endforeach;
+                                                endif;
+                                            endforeach;
+                                        endif;
+                                    endif;
+                                endforeach;
+                            endif; ?>
                         </div>
                     </div>
                 </div>
@@ -164,7 +168,7 @@ $allArticlesPages = extractFromObjToSimpleArr($allCmsPages, 'slug', 'name');
                             <div class="col-12 my-2 idArticleChoise" data-cmstype="Article" style="display: none;">
                                 <?= \App\Form::select('Page de l\'article', 'slugArticlePage', $allArticlesPages, !empty($_POST['slugArticlePage']) ? $_POST['slugArticlePage'] : '', true, 'disabled'); ?>
                             </div>
-                            <div class="col-12 my-2">
+                            <div class="col-12 my-2 idCmsChoise" data-cmstype="URL" style="display: none;">
                                 <?= \App\Form::text('Nom', 'name', 'text', !empty($_POST['name']) ? $_POST['name'] : '', true, 70); ?>
                             </div>
                             <div class="col-12 my-2">
@@ -212,10 +216,6 @@ $allArticlesPages = extractFromObjToSimpleArr($allCmsPages, 'slug', 'name');
                         }
                     }
                 )
-            });
-
-            $('select#idCms, select#idArticle').change(function () {
-                $('input#name').val(($('option:selected', this).text()));
             });
 
             $('.updateMenuData').on('input', function (event) {

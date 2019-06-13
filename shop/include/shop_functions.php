@@ -1,4 +1,9 @@
 <?php
+
+use App\CategoryRelations;
+use App\Plugin\Shop\ProductContent;
+use App\Plugin\Shop\ShopMedia;
+
 /**
  * @param $amount
  * @return string
@@ -21,13 +26,17 @@ function shop_getProductDetailsFromSlug($slug, $lang = LANG)
 
     if ($Product->showBySlug()) {
 
-        $ProductContent = new \App\Plugin\Shop\ProductContent($Product->getId(), $lang);
+        $ProductContent = new ProductContent($Product->getId(), $lang);
         $ProductMeta = new \App\Plugin\Shop\ProductMeta($Product->getId());
-        $ProductMedia = new \App\Plugin\Shop\ShopMedia($Product->getId());
-        $CategoryRelation = new \App\CategoryRelations('SHOP', $Product->getId());
+        $ProductMedia = new ShopMedia($Product->getId());
+        $CategoryRelation = new CategoryRelations('SHOP', $Product->getId());
 
         $Product->content = $ProductContent;
-        $Product->meta = extractFromObjToSimpleArr($ProductMeta->getData(), 'meta_key', 'meta_value');
+
+        if (!empty($ProductMeta->getData())) {
+            $Product->meta = extractFromObjToSimpleArr($ProductMeta->getData(), 'meta_key', 'meta_value');
+        }
+
         $Product->media = $ProductMedia->showFiles();
         $Product->categories = extractFromObjToSimpleArr($CategoryRelation->getData(), 'categoryId', 'name');
 
@@ -50,9 +59,9 @@ function shop_getProductDetails($idProduct = null, $lang = LANG)
 
     //get necessarily product infos
     $Product = new \App\Plugin\Shop\Product();
-    $ProductContent = new \App\Plugin\Shop\ProductContent(null, $lang);
+    $ProductContent = new ProductContent(null, $lang);
     $ProductMeta = new \App\Plugin\Shop\ProductMeta();
-    $ProductMedia = new \App\Plugin\Shop\ShopMedia();
+    $ProductMedia = new ShopMedia();
 
     if (!is_null($idProduct)) {
         $Product->setId($idProduct);
@@ -487,6 +496,6 @@ function getCategoriesByProduct($id)
     $Product = new \App\Plugin\Shop\Product($id);
 
     //get all categories in relation with article
-    $CategoryRelation = new \App\CategoryRelations('SHOP', $Product->getId());
+    $CategoryRelation = new CategoryRelations('SHOP', $Product->getId());
     return $CategoryRelation->getData();
 }

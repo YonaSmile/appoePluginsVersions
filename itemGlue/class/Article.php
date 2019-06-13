@@ -1,6 +1,10 @@
 <?php
 
 namespace App\Plugin\ItemGlue;
+
+use App\DB;
+use PDO;
+
 class Article
 {
     private $id;
@@ -17,7 +21,7 @@ class Article
     public function __construct($idArticle = null)
     {
         if (is_null($this->dbh)) {
-            $this->dbh = \App\DB::connect();
+            $this->dbh = DB::connect();
         }
 
         if (!is_null($idArticle)) {
@@ -200,7 +204,7 @@ class Article
         } else {
             if ($count == 1) {
 
-                $row = $stmt->fetch(\PDO::FETCH_OBJ);
+                $row = $stmt->fetch(PDO::FETCH_OBJ);
                 $this->feed($row);
 
                 return true;
@@ -232,7 +236,7 @@ class Article
         } else {
             if ($count == 1) {
 
-                $row = $stmt->fetch(\PDO::FETCH_OBJ);
+                $row = $stmt->fetch(PDO::FETCH_OBJ);
                 $this->feed($row);
 
                 return true;
@@ -280,7 +284,7 @@ class Article
         if ($error[0] != '00000') {
             return false;
         } else {
-            return (!$countArticles) ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
+            return (!$countArticles) ? $stmt->fetchAll(PDO::FETCH_OBJ) : $count;
         }
     }
 
@@ -306,7 +310,7 @@ class Article
         if ($error[0] != '00000') {
             return false;
         } else {
-            return (!$countArticles) ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
+            return (!$countArticles) ? $stmt->fetchAll(PDO::FETCH_OBJ) : $count;
         }
     }
 
@@ -338,7 +342,7 @@ class Article
         if ($error[0] != '00000') {
             return false;
         } else {
-            return (!$countArticles) ? $stmt->fetchAll(\PDO::FETCH_OBJ) : $count;
+            return (!$countArticles) ? $stmt->fetchAll(PDO::FETCH_OBJ) : $count;
         }
     }
 
@@ -381,7 +385,7 @@ class Article
         if ($error[0] != '00000') {
             return false;
         } else {
-            return $stmt->fetchAll(\PDO::FETCH_OBJ);
+            return $stmt->fetchAll(PDO::FETCH_OBJ);
 
         }
     }
@@ -437,7 +441,7 @@ class Article
         } else {
             if ($count == 1) {
 
-                $row = $stmt->fetch(\PDO::FETCH_OBJ);
+                $row = $stmt->fetch(PDO::FETCH_OBJ);
                 $this->feed($row);
 
                 return true;
@@ -500,7 +504,7 @@ class Article
         } else {
             if ($count == 1) {
 
-                $row = $stmt->fetch(\PDO::FETCH_OBJ);
+                $row = $stmt->fetch(PDO::FETCH_OBJ);
                 $this->feed($row);
 
                 return true;
@@ -540,7 +544,7 @@ class Article
         if ($error[0] != '00000') {
             return false;
         } else {
-            return $stmt->fetchAll(\PDO::FETCH_OBJ);
+            return $stmt->fetchAll(PDO::FETCH_OBJ);
         }
     }
 
@@ -607,7 +611,7 @@ class Article
     public function delete()
     {
         //Get Media of Article
-        $ArticleMedia = new \App\Plugin\ItemGlue\ArticleMedia($this->id);
+        $ArticleMedia = new ArticleMedia($this->id);
         $allMedia = $ArticleMedia->showFiles();
 
         foreach ($allMedia as $media) {

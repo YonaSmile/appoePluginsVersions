@@ -1,4 +1,9 @@
 <?php
+
+use App\Plugin\Cms\Cms;
+use App\Plugin\Cms\CmsContent;
+use App\Plugin\Cms\CmsMenu;
+
 if (checkPostAndTokenRequest()) {
 
     //Clean data
@@ -10,28 +15,21 @@ if (checkPostAndTokenRequest()) {
 
         if (!empty($_POST['name'])
             && !empty($_POST['slug'])
+            && !empty($_POST['description'])
+            && !empty($_POST['filename'])
         ) {
 
-            $Cms = new \App\Plugin\Cms\Cms();
+            $Cms = new Cms();
 
             //Add Page
-            $Cms->feed($_POST);
-            $Cms->setType('PAGE');
+            $Cms->setFilename($_POST['filename']);
+
             if ($Cms->notExist()) {
                 if ($Cms->save()) {
 
-                    //Add Translation
-                    if (class_exists('App\Plugin\Traduction\Traduction')) {
-                        $Traduction = new \App\Plugin\Traduction\Traduction();
-                        $Traduction->setLang(APP_LANG);
-                        $Traduction->setMetaKey($Cms->getName());
-                        $Traduction->setMetaValue($Cms->getName());
-                        if ($Traduction->save()) {
-                            $Traduction->setMetaKey(slugify($Cms->getSlug()));
-                            $Traduction->setMetaValue(slugify($Cms->getSlug()));
-                            $Traduction->save();
-                        }
-                    }
+                    $CmsContent = new CmsContent();
+                    $CmsContent->setIdCms($Cms->getId());
+                    $CmsContent->saveHeaders($_POST);
 
                     //Delete post data
                     unset($_POST);
@@ -48,7 +46,7 @@ if (checkPostAndTokenRequest()) {
             } else {
                 $Response->status = 'danger';
                 $Response->error_code = 1;
-                $Response->error_msg = trans('Le nom ou le slug existe déjà');
+                $Response->error_msg = trans('Ce fichier est utilisé pour une autre page');
             }
         } else {
             $Response->status = 'danger';
@@ -62,34 +60,71 @@ if (checkPostAndTokenRequest()) {
 
         if (!empty($_POST['id'])
             && !empty($_POST['name'])
+            && !empty($_POST['description'])
             && !empty($_POST['slug'])
         ) {
 
-            $Cms = new \App\Plugin\Cms\Cms($_POST['id']);
+            $cmsUpdate = true;
+            if (!empty($_POST['filename'])) {
 
-            //Update Page
-            $Cms->feed($_POST);
-            $Cms->setType('PAGE');
-            if ($Cms->notExist(true)) {
-                if ($Cms->update()) {
+                $cmsUpdate = false;
 
-                    //Delete post data
-                    unset($_POST);
+                $Cms = new Cms($_POST['id']);
+                $Cms->setFilename($_POST['filename']);
 
-                    $Response->status = 'success';
-                    $Response->error_code = 0;
-                    $Response->error_msg = trans('La page a été mise à jour');
+                if ($Cms->notExist()) {
+                    if ($Cms->update()) {
+                        $cmsUpdate = true;
+                    }
+                }
+            }
+
+            if ($cmsUpdate) {
+                $CmsContent = new CmsContent();
+                $CmsContent->setIdCms($_POST['id']);
+                $CmsContent->setType('HEADER');
+                $CmsContent->setMetaKey('name');
+                $CmsContent->setLang(APP_LANG);
+
+                if ($CmsContent->notExist()) {
+
+                    if ($CmsContent->saveHeaders($_POST)) {
+
+                        //Delete post data
+                        unset($_POST);
+
+                        $Response->status = 'success';
+                        $Response->error_code = 0;
+                        $Response->error_msg = trans('Les en têtes ont étés enregistrés');
+
+                    } else {
+
+                        $Response->status = 'danger';
+                        $Response->error_code = 1;
+                        $Response->error_msg = trans('Un problème est survenu lors de la création des en têtes de la page');
+                    }
 
                 } else {
+                    if ($CmsContent->updateHeaders($_POST)) {
 
-                    $Response->status = 'danger';
-                    $Response->error_code = 1;
-                    $Response->error_msg = trans('Un problème est survenu lors de la mise à jour de la page');
+                        //Delete post data
+                        unset($_POST);
+
+                        $Response->status = 'success';
+                        $Response->error_code = 0;
+                        $Response->error_msg = trans('Les en têtes ont étés mises à jour');
+
+                    } else {
+
+                        $Response->status = 'danger';
+                        $Response->error_code = 1;
+                        $Response->error_msg = trans('Un problème est survenu lors de la mise à jour des en têtes de la page');
+                    }
                 }
             } else {
                 $Response->status = 'danger';
                 $Response->error_code = 1;
-                $Response->error_msg = trans('Le nom ou le slug existe déjà');
+                $Response->error_msg = trans('Ce fichier est utilisé pour une autre page');
             }
         } else {
 
@@ -99,8 +134,9 @@ if (checkPostAndTokenRequest()) {
         }
     }
 
+
     if (isset($_POST['ADDMENUPAGE'])) {
-        if (!empty($_POST['name']) && !empty($_POST['parentId']) && !empty($_POST['location'])) {
+        if (!empty($_POST['parentId']) && !empty($_POST['location'])) {
 
             if (!empty($_POST['idArticle']) && !empty($_POST['slugArticlePage'])) {
                 $_POST['idCms'] = $_POST['slugArticlePage'] . DIRECTORY_SEPARATOR . $_POST['idArticle'];
@@ -109,7 +145,7 @@ if (checkPostAndTokenRequest()) {
             if (!empty($_POST['idCms'])) {
 
                 //Add Menu
-                $CmsMenu = new \App\Plugin\Cms\CmsMenu();
+                $CmsMenu = new CmsMenu();
                 $CmsMenu->feed($_POST);
 
                 if ($CmsMenu->existParent() || $CmsMenu->getParentId() == 10) {
@@ -148,7 +184,7 @@ if (checkPostAndTokenRequest()) {
     if (isset($_POST['UPDATEMENUPAGE'])) {
         if (!empty($_POST['id']) && !empty($_POST['parentId']) && !empty($_POST['location'])) {
 
-            $CmsMenu = new \App\Plugin\Cms\CmsMenu($_POST['id']);
+            $CmsMenu = new CmsMenu($_POST['id']);
 
             if ($CmsMenu->existParent() || $CmsMenu->getParentId() == 10) {
 

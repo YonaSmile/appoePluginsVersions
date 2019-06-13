@@ -1,26 +1,32 @@
 <?php
+
 namespace App\Plugin\Cms;
+
+use App\DB;
+use PDO;
+
 class CmsContent
 {
     private $id;
     private $idCms;
+    private $type = 'BODY';
     private $metaKey;
     private $metaValue;
-    private $lang;
+    private $lang = LANG;
 
     private $data = null;
     private $dbh = null;
 
-    public function __construct($idCms = null, $lang = null)
+    public function __construct($idCms = null, $lang = null, $onlyHeaders = false)
     {
-        if(is_null($this->dbh)) {
-            $this->dbh = \App\DB::connect();
+        if (is_null($this->dbh)) {
+            $this->dbh = DB::connect();
         }
 
         if (!is_null($idCms) && !is_null($lang)) {
             $this->idCms = $idCms;
             $this->lang = $lang;
-            $this->showAll();
+            $this->showAll($onlyHeaders);
         }
     }
 
@@ -54,6 +60,22 @@ class CmsContent
     public function setIdCms($idCms)
     {
         $this->idCms = $idCms;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
     }
 
     /**
@@ -126,12 +148,13 @@ class CmsContent
   					`id` INT(11) NOT NULL AUTO_INCREMENT,
                 	PRIMARY KEY (`id`),
                 	`idCms` INT(11) NOT NULL,
-  					`metaKey` VARCHAR(250) NOT NULL,
+                	`type` VARCHAR(25) NOT NULL DEFAULT "BODY",
+  					`metaKey` VARCHAR(255) NOT NULL,
   					`metaValue` TEXT NOT NULL,
-  					`lang` VARCHAR(10) NOT NULL,
+  					`lang` VARCHAR(10) NOT NULL DEFAULT "fr",
                 	`created_at` DATE NOT NULL,
                 	`updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                	UNIQUE (`idCms`, `metaKey`, `lang`)
+                	UNIQUE (`idCms`, `type`, `metaKey`, `lang`)
 				) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;';
 
         $stmt = $this->dbh->prepare($sql);
@@ -163,7 +186,7 @@ class CmsContent
         } else {
             if ($count == 1) {
 
-                $row = $stmt->fetch(\PDO::FETCH_OBJ);
+                $row = $stmt->fetch(PDO::FETCH_OBJ);
                 $this->feed($row);
 
                 return true;
@@ -176,12 +199,14 @@ class CmsContent
     }
 
     /**
+     * @param bool $onlyHeaders
      * @return array|bool
      */
-    public function showAll()
+    public function showAll($onlyHeaders = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_cms_content WHERE idCms = :idCms AND lang = :lang ORDER BY created_at ASC';
+        $sqlAdd = $onlyHeaders ? ' AND type = "HEADER" ' : '';
+        $sql = 'SELECT * FROM appoe_plugin_cms_content WHERE idCms = :idCms ' . $sqlAdd . ' AND lang = :lang ORDER BY created_at ASC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':idCms', $this->idCms);
         $stmt->bindParam(':lang', $this->lang);
@@ -191,8 +216,11 @@ class CmsContent
         if ($error[0] != '00000') {
             return false;
         } else {
-            $this->data = $stmt->fetchAll(\PDO::FETCH_OBJ);
+            $this->data = $stmt->fetchAll(PDO::FETCH_OBJ);
 
+            if ($onlyHeaders) {
+                $this->setHeaders();
+            }
             return $this->data;
         }
     }
@@ -203,11 +231,12 @@ class CmsContent
     public function save()
     {
 
-        $sql = 'INSERT INTO appoe_plugin_cms_content (idCms, metaKey, metaValue, lang, created_at) 
-                VALUES (:idCms, :metaKey, :metaValue, :lang, CURDATE())';
+        $sql = 'INSERT INTO appoe_plugin_cms_content (idCms, type, metaKey, metaValue, lang, created_at) 
+                VALUES (:idCms, :type, :metaKey, :metaValue, :lang, CURDATE())';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':idCms', $this->idCms);
+        $stmt->bindParam(':type', $this->type);
         $stmt->bindParam(':metaKey', $this->metaKey);
         $stmt->bindParam(':metaValue', $this->metaValue);
         $stmt->bindParam(':lang', $this->lang);
@@ -220,9 +249,46 @@ class CmsContent
             return false;
         } else {
             $this->id = $id;
-            appLog('Creating page content -> idCms: ' . $this->idCms . ' metaKey: ' . $this->metaKey . ' lang: ' . $this->lang);
+            appLog('Creating page content -> idCms: ' . $this->idCms . ' type: ' . $this->type . ' metaKey: ' . $this->metaKey . ' lang: ' . $this->lang);
             return true;
         }
+    }
+
+    /**
+     * @param $headers
+     * @return bool
+     */
+    public function saveHeaders($headers)
+    {
+
+        $authorizedHeaders = array('name', 'description', 'slug');
+
+        if (!isArrayEmpty($headers)) {
+
+
+            $sql = 'INSERT INTO appoe_plugin_cms_content (idCms, type, metaKey, metaValue, lang, created_at) 
+                VALUES (?, ?, ?, ?, ?, CURDATE())';
+
+            $stmt = $this->dbh->prepare($sql);
+
+            foreach (getLangs() as $lang => $longLang) {
+                foreach ($headers as $key => $val) {
+                    if (in_array($key, $authorizedHeaders)) {
+                        $stmt->execute(array($this->idCms, 'HEADER', $key, $val, $lang));
+                    }
+                }
+            }
+
+            $error = $stmt->errorInfo();
+            if ($error[0] == '00000') {
+                appLog('Creating page headers -> idCms: ' . $this->idCms);
+            }
+            return true;
+
+
+        }
+
+        return false;
     }
 
     /**
@@ -247,6 +313,39 @@ class CmsContent
             appLog('Updating page content -> id: ' . $this->id . ' metaKey: ' . $this->metaKey);
             return true;
         }
+    }
+
+    /**
+     * @param $headers
+     * @return bool
+     */
+    public function updateHeaders($headers)
+    {
+
+        $authorizedHeaders = array('name', 'description', 'slug');
+
+        if (!isArrayEmpty($headers)) {
+
+            $sql = 'UPDATE appoe_plugin_cms_content 
+            SET metaValue = :metaValue WHERE idCms = :idCms AND type = "HEADER" AND metaKey = :metaKey AND lang = :lang';
+
+            $stmt = $this->dbh->prepare($sql);
+
+
+            foreach ($headers as $key => $val) {
+                if (in_array($key, $authorizedHeaders)) {
+                    $stmt->execute(array('metaValue' => $val, 'idCms' => $this->idCms, 'metaKey' => $key, 'lang' => $this->lang));
+                }
+            }
+
+            $error = $stmt->errorInfo();
+            if ($error[0] == '00000') {
+                appLog('Updating page headers -> idCms: ' . $this->idCms . ' lang: ' . $this->lang);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -280,10 +379,11 @@ class CmsContent
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id, idCms, metaKey, lang FROM appoe_plugin_cms_content WHERE metaKey = :metaKey AND idCms = :idCms AND lang = :lang';
+        $sql = 'SELECT id FROM appoe_plugin_cms_content WHERE idCms = :idCms AND type = :type AND metaKey = :metaKey AND lang = :lang';
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':metaKey', $this->metaKey);
         $stmt->bindParam(':idCms', $this->idCms);
+        $stmt->bindParam(':type', $this->type);
+        $stmt->bindParam(':metaKey', $this->metaKey);
         $stmt->bindParam(':lang', $this->lang);
         $stmt->execute();
 
@@ -294,16 +394,31 @@ class CmsContent
         } else {
             if ($count == 1) {
                 if ($forUpdate) {
-                    $data = $stmt->fetch(\PDO::FETCH_OBJ);
+                    $data = $stmt->fetch(PDO::FETCH_OBJ);
                     if ($data->id == $this->id) {
                         return true;
                     }
                 }
-
                 return false;
             } else {
                 return true;
             }
+        }
+    }
+
+    /**
+     *
+     */
+    public function setHeaders()
+    {
+
+        if (!isArrayEmpty($this->data)) {
+
+            $newData = array();
+            foreach ($this->data as $data) {
+                $newData[$data->metaKey] = $data->metaValue;
+            }
+            $this->data = $newData;
         }
     }
 

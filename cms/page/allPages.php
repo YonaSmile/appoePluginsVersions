@@ -1,9 +1,12 @@
-<?php require('header.php'); ?>
-<?= getTitle($Page->getName(), $Page->getSlug()); ?>
+<?php require('header.php');
 
-<?php $Cms = new \App\Plugin\Cms\Cms();
-$allCmsPages = $Cms->showAllPages();
-$allPages = extractFromObjArr($allCmsPages, 'id');
+use App\Plugin\Cms\Cms;
+
+$Cms = new Cms();
+$Cms->setLang(APP_LANG);
+$allPages = $Cms->showAllPages();
+
+echo getTitle($Page->getName(), $Page->getSlug());
 ?>
     <div class="row">
         <div class="col-12">
@@ -13,41 +16,37 @@ $allPages = extractFromObjArr($allCmsPages, 'id');
                     <thead>
                     <tr>
                         <th><?= trans('ID'); ?></th>
+                        <th><?= trans('Fichier'); ?></th>
                         <th><?= trans('Nom'); ?></th>
-                        <th><?= trans('Description'); ?></th>
                         <th><?= trans('Slug'); ?></th>
                         <th><?= trans('Modifié le'); ?></th>
                         <th></th>
                     </tr>
                     </thead>
                     <tbody>
-                    <?php if ($allPages): ?>
-                        <?php foreach ($allPages as $cmsPage): ?>
-                            <tr data-idcms="<?= $cmsPage->id ?>">
-                                <td><?= $cmsPage->id ?></td>
-                                <td><?= $cmsPage->name ?></td>
-                                <td><?= mb_strimwidth($cmsPage->description, 0, 70, '...'); ?></td>
-                                <td><?= $cmsPage->slug ?></td>
-                                <td><?= displayTimeStamp($cmsPage->updated_at) ?></td>
+                    <?php if ($allPages):
+                        foreach ($allPages as $page): ?>
+                            <tr data-idcms="<?= $page->id ?>">
+                                <td><?= $page->id ?></td>
+                                <td><?= $page->filename ?></td>
+                                <td><?= $page->name ?></td>
+                                <td><?= $page->slug ?></td>
+                                <td><?= displayTimeStamp($page->updated_at) ?></td>
                                 <td>
-                                    <a href="<?= getPluginUrl('cms/page/pageContent/', $cmsPage->id) ?>"
+                                    <a href="<?= getPluginUrl('cms/page/pageContent/', $page->id) ?>"
                                        class="btn btn-sm" title="<?= trans('Consulter'); ?>">
                                         <span class="btnUpdate"><i class="fas fa-cog"></i></span>
                                     </a>
                                     <?php if (isTechnicien(getUserRoleId())): ?>
-                                        <a href="<?= getPluginUrl('cms/page/update/', $cmsPage->id) ?>"
-                                           class="btn btn-sm" title="<?= trans('Modifier'); ?>">
-                                            <span class="btnEdit"><i class="fas fa-wrench"></i></span>
-                                        </a>
                                         <button type="button" class="btn btn-sm deleteCms"
-                                                title="<?= trans('Archiver'); ?>" data-idcms="<?= $cmsPage->id ?>">
+                                                title="<?= trans('Archiver'); ?>" data-idcms="<?= $page->id ?>">
                                             <span class="btnArchive"><i class="fas fa-archive"></i></span>
                                         </button>
                                     <?php endif; ?>
                                 </td>
                             </tr>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
+                        <?php endforeach;
+                    endif; ?>
                     </tbody>
                 </table>
             </div>
@@ -76,5 +75,5 @@ $allPages = extractFromObjArr($allCmsPages, 'id');
             });
         });
     </script>
-<?php endif; ?>
-<?php require('footer.php'); ?>
+<?php endif;
+require('footer.php'); ?>

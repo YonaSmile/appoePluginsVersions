@@ -1,22 +1,28 @@
 <?php
 
 namespace App\Plugin\Cms;
+
+use App\DB;
+use PDO;
+
 class Cms
 {
     private $id;
-    private $type;
-    private $name;
-    private $description = null;
-    private $slug;
-    private $content = null;
+    private $type = 'PAGE';
+    private $filename;
     private $statut = 1;
 
+    private $name;
+    private $description;
+    private $slug;
+
+    private $lang = LANG;
     private $dbh = null;
 
     public function __construct($idCms = null)
     {
         if (is_null($this->dbh)) {
-            $this->dbh = \App\DB::connect();
+            $this->dbh = DB::connect();
         }
 
         if (!is_null($idCms)) {
@@ -60,6 +66,38 @@ class Cms
     /**
      * @return mixed
      */
+    public function getFilename()
+    {
+        return $this->filename;
+    }
+
+    /**
+     * @param mixed $filename
+     */
+    public function setFilename($filename)
+    {
+        $this->filename = $filename;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStatut()
+    {
+        return $this->statut;
+    }
+
+    /**
+     * @param mixed $statut
+     */
+    public function setStatut($statut)
+    {
+        $this->statut = $statut;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getName()
     {
         return $this->name;
@@ -74,7 +112,7 @@ class Cms
     }
 
     /**
-     * @return null
+     * @return mixed
      */
     public function getDescription()
     {
@@ -82,7 +120,7 @@ class Cms
     }
 
     /**
-     * @param null $description
+     * @param mixed $description
      */
     public function setDescription($description)
     {
@@ -106,50 +144,29 @@ class Cms
     }
 
     /**
-     * @return null
+     * @return bool|mixed|string
      */
-    public function getContent()
+    public function getLang()
     {
-        return $this->content;
+        return $this->lang;
     }
 
     /**
-     * @param null $content
+     * @param bool|mixed|string $lang
      */
-    public function setContent($content)
+    public function setLang($lang)
     {
-        $this->content = $content;
+        $this->lang = $lang;
     }
-
-    /**
-     * @return mixed
-     */
-    public function getStatut()
-    {
-        return $this->statut;
-    }
-
-    /**
-     * @param mixed $statut
-     */
-    public function setStatut($statut)
-    {
-        $this->statut = $statut;
-    }
-
 
     public function createTable()
     {
         $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_cms` (
   					`id` INT(11) NOT NULL AUTO_INCREMENT,
                 	PRIMARY KEY (`id`),
-                	`type` VARCHAR(100) NOT NULL,
-  					`name` VARCHAR(70) NOT NULL,
-  					UNIQUE (`name`),
-  					`description` VARCHAR(300) NULL DEFAULT NULL,
-  					`slug` VARCHAR(100) DEFAULT NULL,
-  					UNIQUE (`slug`),
-  					`content` TEXT,
+                	`type` VARCHAR(100) NOT NULL DEFAULT = "PAGE",
+  					`filename` VARCHAR(255) NOT NULL,
+  					UNIQUE (`type`, `filename`),
   					`statut` BOOLEAN NOT NULL DEFAULT TRUE,
                 	`created_at` DATE NOT NULL,
                 	`updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -171,10 +188,16 @@ class Cms
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_cms WHERE id = :id';
+        $sql = 'SELECT C.*,
+         (SELECT cc1.metaValue FROM appoe_plugin_cms_content AS cc1 WHERE cc1.type = "HEADER" AND cc1.metaKey = "slug" AND cc1.idCms = C.id AND cc1.lang = :lang) AS slug,
+        (SELECT cc2.metaValue FROM appoe_plugin_cms_content AS cc2 WHERE cc2.type = "HEADER" AND cc2.metaKey = "description" AND cc2.idCms = C.id AND cc2.lang = :lang) AS description,
+        (SELECT cc3.metaValue FROM appoe_plugin_cms_content AS cc3 WHERE cc3.type = "HEADER" AND cc3.metaKey = "name" AND cc3.idCms = C.id AND cc3.lang = :lang) AS name
+        FROM appoe_plugin_cms AS C
+         WHERE C.id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
+        $stmt->bindParam(':lang', $this->lang);
         $stmt->execute();
 
         $count = $stmt->rowCount();
@@ -184,7 +207,7 @@ class Cms
         } else {
             if ($count == 1) {
 
-                $row = $stmt->fetch(\PDO::FETCH_OBJ);
+                $row = $stmt->fetch(PDO::FETCH_OBJ);
                 $this->feed($row);
 
                 return true;
@@ -197,15 +220,21 @@ class Cms
     }
 
     /**
+     * @param $slug
+     * @param bool|mixed|string $lang
      * @return bool
      */
-    public function showBySlug()
+    public function showBySlug($slug, $lang = LANG)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_cms WHERE slug = :slug';
+        $sql = 'SELECT C.* FROM appoe_plugin_cms AS C
+         INNER JOIN appoe_plugin_cms_content AS CC
+         ON(C.id = CC.idCms)
+         WHERE CC.type = "HEADER" AND CC.metaKey = "slug" AND CC.metaValue = :slug AND CC.lang = :lang';
 
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':slug', $this->slug);
+        $stmt->bindParam(':slug', $slug);
+        $stmt->bindParam(':lang', $lang);
         $stmt->execute();
 
         $count = $stmt->rowCount();
@@ -215,8 +244,49 @@ class Cms
         } else {
             if ($count == 1) {
 
-                $row = $stmt->fetch(\PDO::FETCH_OBJ);
+                $row = $stmt->fetch(PDO::FETCH_OBJ);
                 $this->feed($row);
+
+                $CmsContent = new CmsContent($this->id, $lang, true);
+                $this->feed($CmsContent->getData());
+
+                return true;
+
+            } else {
+
+                return false;
+            }
+        }
+    }
+
+    /**
+     * @param bool|mixed|string $lang
+     * @return bool
+     */
+    public function showDefaultSlug($lang = LANG)
+    {
+
+        $sql = 'SELECT C.* FROM appoe_plugin_cms AS C
+         INNER JOIN appoe_plugin_cms_content AS CC
+         ON(C.id = CC.idCms)
+         WHERE C.filename = "index" AND CC.type = "HEADER" AND CC.metaKey = "slug" AND CC.lang = :lang';
+
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':lang', $lang);
+        $stmt->execute();
+
+        $count = $stmt->rowCount();
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            if ($count == 1) {
+
+                $row = $stmt->fetch(PDO::FETCH_OBJ);
+                $this->feed($row);
+
+                $CmsContent = new CmsContent($this->id, $lang, true);
+                $this->feed($CmsContent->getData());
 
                 return true;
 
@@ -233,8 +303,15 @@ class Cms
      */
     public function showAll($pageCount = false)
     {
-        $sql = 'SELECT * FROM appoe_plugin_cms ORDER BY created_at DESC';
+        $sql = 'SELECT C.*,
+         (SELECT cc1.metaValue FROM appoe_plugin_cms_content AS cc1 WHERE cc1.type = "HEADER" AND cc1.metaKey = "slug" AND cc1.idCms = C.id AND cc1.lang = :lang) AS slug,
+        (SELECT cc2.metaValue FROM appoe_plugin_cms_content AS cc2 WHERE cc2.type = "HEADER" AND cc2.metaKey = "description" AND cc2.idCms = C.id AND cc2.lang = :lang) AS description,
+        (SELECT cc3.metaValue FROM appoe_plugin_cms_content AS cc3 WHERE cc3.type = "HEADER" AND cc3.metaKey = "name" AND cc3.idCms = C.id AND cc3.lang = :lang) AS name
+        FROM appoe_plugin_cms AS C
+        ORDER BY C.created_at DESC';
+
         $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':lang', $this->lang);
         $stmt->execute();
 
         $count = $stmt->rowCount();
@@ -242,7 +319,7 @@ class Cms
         if ($error[0] != '00000') {
             return false;
         } else {
-            $data = $stmt->fetchAll(\PDO::FETCH_OBJ);
+            $data = $stmt->fetchAll(PDO::FETCH_OBJ);
 
             return (!$pageCount) ? $data : $count;
         }
@@ -256,9 +333,15 @@ class Cms
     public function showAllPages($countPage = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_cms WHERE type = "PAGE" AND statut = :statut ORDER BY name ASC';
+        $sql = 'SELECT C.*,
+         (SELECT cc1.metaValue FROM appoe_plugin_cms_content AS cc1 WHERE cc1.type = "HEADER" AND cc1.metaKey = "slug" AND cc1.idCms = C.id AND cc1.lang = :lang) AS slug,
+        (SELECT cc2.metaValue FROM appoe_plugin_cms_content AS cc2 WHERE cc2.type = "HEADER" AND cc2.metaKey = "description" AND cc2.idCms = C.id AND cc2.lang = :lang) AS description,
+        (SELECT cc3.metaValue FROM appoe_plugin_cms_content AS cc3 WHERE cc3.type = "HEADER" AND cc3.metaKey = "name" AND cc3.idCms = C.id AND cc3.lang = :lang) AS name
+        FROM appoe_plugin_cms AS C
+        WHERE C.type = "PAGE" AND C.statut = :statut ORDER BY C.filename ASC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':statut', $this->statut);
+        $stmt->bindParam(':lang', $this->lang);
         $stmt->execute();
 
         $count = $stmt->rowCount();
@@ -266,7 +349,7 @@ class Cms
         if ($error[0] != '00000') {
             return false;
         } else {
-            $data = $stmt->fetchAll(\PDO::FETCH_OBJ);
+            $data = $stmt->fetchAll(PDO::FETCH_OBJ);
 
             return (!$countPage) ? $data : $count;
         }
@@ -278,14 +361,12 @@ class Cms
     public function save()
     {
 
-        $sql = 'INSERT INTO appoe_plugin_cms (type, name, description, slug, created_at) 
-                VALUES (:type, :name, :description, :slug, CURDATE())';
+        $sql = 'INSERT INTO appoe_plugin_cms (type, filename, created_at) 
+                VALUES (:type, :filename, CURDATE())';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':type', $this->type);
-        $stmt->bindParam(':name', $this->name);
-        $stmt->bindParam(':description', $this->description);
-        $stmt->bindParam(':slug', $this->slug);
+        $stmt->bindParam(':filename', $this->filename);
         $stmt->execute();
 
         $this->id = $this->dbh->lastInsertId();
@@ -294,7 +375,7 @@ class Cms
         if ($error[0] != '00000') {
             return false;
         } else {
-            appLog('Creating page -> type: ' . $this->type . ' name: ' . $this->name . ' description: ' . $this->description . ' slug: ' . $this->slug);
+            appLog('Creating page -> type: ' . $this->type . ' filename: ' . $this->filename);
             return true;
         }
     }
@@ -305,13 +386,11 @@ class Cms
     public function update()
     {
 
-        $sql = 'UPDATE appoe_plugin_cms SET type = :type, name = :name, description = :description, slug = :slug, statut = :statut WHERE id = :id';
+        $sql = 'UPDATE appoe_plugin_cms SET type = :type, filename = :filename, statut = :statut WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':type', $this->type);
-        $stmt->bindParam(':name', $this->name);
-        $stmt->bindParam(':description', $this->description);
-        $stmt->bindParam(':slug', $this->slug);
+        $stmt->bindParam(':filename', $this->filename);
         $stmt->bindParam(':statut', $this->statut);
         $stmt->bindParam(':id', $this->id);
 
@@ -321,7 +400,7 @@ class Cms
         if ($error[0] != '00000') {
             return false;
         } else {
-            appLog('Updating page -> id: ' . $this->id . ' type: ' . $this->type . ' name: ' . $this->name . ' description: ' . $this->description . ' slug: ' . $this->slug.' statut: '.$this->statut);
+            appLog('Updating page -> id: ' . $this->id . ' type: ' . $this->type . ' filename: ' . $this->filename . ' statut: ' . $this->statut);
             return true;
         }
     }
@@ -356,20 +435,12 @@ class Cms
      */
     public function notExist($forUpdate = false)
     {
-        $condition = ' name = :name OR slug = :slug ';
-        if ($forUpdate) {
-            $condition = ' id != :id AND (name = :name OR slug = :slug) ';
-        }
 
-        $sql = 'SELECT id, name, slug FROM appoe_plugin_cms WHERE ' . $condition;
+        $sql = 'SELECT * FROM appoe_plugin_cms WHERE type = :type AND filename = :filename';
         $stmt = $this->dbh->prepare($sql);
 
-        if ($forUpdate) {
-            $stmt->bindParam(':id', $this->id);
-        }
-
-        $stmt->bindParam(':name', $this->name);
-        $stmt->bindParam(':slug', $this->slug);
+        $stmt->bindParam(':type', $this->type);
+        $stmt->bindParam(':filename', $this->filename);
         $stmt->execute();
 
         $count = $stmt->rowCount();
@@ -378,6 +449,10 @@ class Cms
             return false;
         } else {
             if ($count == 1) {
+                if ($forUpdate) {
+                    $row = $stmt->fetch(PDO::FETCH_OBJ);
+                    return $this->id == $row->id ? true : false;
+                }
                 return false;
             } else {
                 return true;
