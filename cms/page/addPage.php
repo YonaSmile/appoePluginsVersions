@@ -2,7 +2,7 @@
 require('header.php');
 require(CMS_PATH . 'process/postProcess.php');
 
-$files = getFilesFromDir(WEB_PUBLIC_PATH . 'html/', true, 'php', true);
+$files = getFilesFromDir(WEB_PUBLIC_PATH . 'html/', ['onlyFiles' => true, 'onlyExtension' => 'php', 'noExtensionDisplaying' => true]);
 
 echo getTitle($Page->getName(), $Page->getSlug());
 if (isset($Response)): ?>

@@ -27,7 +27,7 @@ if (!empty($_GET['id'])):
         $allCmsPages = $Cms->showAllPages();
 
         //get all html files
-        $files = getFilesFromDir(WEB_PUBLIC_PATH . 'html/', true, 'php', true);
+        $files = getFilesFromDir(WEB_PUBLIC_PATH . 'html/', ['onlyFiles' => true, 'onlyExtension' => 'php', 'noExtensionDisplaying' => true]);
 
         echo getTitle(trans('Contenu de la page') . '<strong> ' . $Cms->getName() . '</strong>', $Page->getSlug()); ?>
         <div class="row my-2">
