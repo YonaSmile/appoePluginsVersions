@@ -253,7 +253,6 @@ class Cms
                 return true;
 
             } else {
-
                 return false;
             }
         }

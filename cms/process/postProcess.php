@@ -46,7 +46,7 @@ if (checkPostAndTokenRequest()) {
             } else {
                 $Response->status = 'danger';
                 $Response->error_code = 1;
-                $Response->error_msg = trans('Ce fichier est utilisé pour une autre page');
+                $Response->error_msg = trans('Le fichier est utilisé pour une autre page');
             }
         } else {
             $Response->status = 'danger';
@@ -70,12 +70,19 @@ if (checkPostAndTokenRequest()) {
                 $cmsUpdate = false;
 
                 $Cms = new Cms($_POST['id']);
-                $Cms->setFilename($_POST['filename']);
+                if ($Cms->getFilename() != $_POST['filename']) {
 
-                if ($Cms->notExist()) {
-                    if ($Cms->update()) {
-                        $cmsUpdate = true;
+                    $Cms->setFilename($_POST['filename']);
+
+                    if ($Cms->notExist(true)) {
+                        if (!$Cms->update()) {
+                            $cmsUpdate = false;
+                        } else {
+                            $cmsUpdate = true;
+                        }
                     }
+                } else {
+                    $cmsUpdate = true;
                 }
             }
 
@@ -124,7 +131,7 @@ if (checkPostAndTokenRequest()) {
             } else {
                 $Response->status = 'danger';
                 $Response->error_code = 1;
-                $Response->error_msg = trans('Ce fichier est utilisé pour une autre page');
+                $Response->error_msg = trans('Le fichier est utilisé pour une autre page');
             }
         } else {
 

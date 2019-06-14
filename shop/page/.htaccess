@@ -14,4 +14,4 @@ RewriteRule ^updateStock/([0-9]+)/$  updateStock.php?id=$1 [L]
 RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule (.*) /404.php
+RewriteRule (.*) /app/lib/assets/404.php

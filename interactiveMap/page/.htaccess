@@ -9,4 +9,4 @@ RewriteRule ^updateInterMapContent/([0-9]+)/$  updateInterMapContent.php?id=$1 [
 RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule (.*) /404.php
+RewriteRule (.*) /app/lib/assets/404.php

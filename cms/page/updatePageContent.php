@@ -20,7 +20,7 @@ if (!empty($_GET['id'])):
         $CmsContent = new CmsContent($Cms->getId(), APP_LANG);
 
         //check if is a page operated by content CMS
-        $menuPages = $CmsMenu->showAll();
+        $menuPages = $CmsMenu->showAll(false, APP_LANG);
         $allMenuPages = extractFromObjArr($menuPages, 'slug');
 
         //get all pages for navigations
@@ -147,7 +147,7 @@ if (!empty($_GET['id'])):
                                     <?= \App\Form::text('Nom du lien URL' . ' (slug)', 'slug', 'text', $Cms->getSlug(), true, 100); ?>
                                 </div>
 
-                                <?php if(APP_LANG == "fr"): ?>
+                                <?php if (APP_LANG == "fr" && isTechnicien(getUserRoleId())): ?>
                                     <div class="col-12 mt-2">
                                         <?= \App\Form::select('Fichier', 'filename', array_combine($files, $files), $Cms->getFilename(), true); ?>
                                     </div>
