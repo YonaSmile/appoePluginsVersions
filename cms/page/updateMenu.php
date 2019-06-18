@@ -9,19 +9,19 @@ require(CMS_PATH . 'process/ajaxProcess.php');
 require(CMS_PATH . 'process/postProcess.php');
 
 $Cms = new Cms();
-$Cms->setLang('fr');
+$Cms->setLang(APP_LANG);
 
 $CmsMenu = new CmsMenu();
 $Articles = new Article();
 
 $allCmsPages = $Cms->showAllPages();
-$allCmsMenu = $CmsMenu->showAll(false, "fr");
+$allCmsMenu = $CmsMenu->showAll(false, APP_LANG);
 
 $MENUS = constructMenu($allCmsMenu);
 
-$allPages = extractFromObjToSimpleArr($allCmsPages, 'id', 'name');
+$allPages = extractFromObjToSimpleArr($allCmsPages, 'id', 'menuName');
 $allArticles = extractFromObjToSimpleArr($Articles->showAll(), 'slug', 'name');
-$allArticlesPages = extractFromObjToSimpleArr($allCmsPages, 'slug', 'name');
+$allArticlesPages = extractFromObjToSimpleArr($allCmsPages, 'slug', 'menuName');
 echo getTitle($Page->getName(), $Page->getSlug()); ?>
     <div class="container-fluid">
         <div class="row">

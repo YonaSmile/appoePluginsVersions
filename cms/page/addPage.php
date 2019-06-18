@@ -17,16 +17,19 @@ if (isset($Response)): ?>
     <form action="" method="post" id="addPageForm">
         <?= getTokenField(); ?>
         <div class="row my-2">
-            <div class="col-12 col-lg-6 my-2">
+            <div class="col-12 col-lg-4 my-2">
                 <?= \App\Form::text('Nom', 'name', 'text', !empty($_POST['name']) ? $_POST['name'] : '', true, 250); ?>
             </div>
-            <div class="col-12 col-lg-6 my-2">
+            <div class="col-12 col-lg-8 my-2">
                 <?= \App\Form::text('Description', 'description', 'text', !empty($_POST['description']) ? $_POST['description'] : '', true, 250); ?>
             </div>
-            <div class="col-12 col-lg-6 mt-2">
+            <div class="col-12 col-lg-4 mt-2">
+                <?= \App\Form::text('Nom du menu', 'menuName', 'text', !empty($_POST['menuName']) ? $_POST['menuName'] : '', true, 250); ?>
+            </div>
+            <div class="col-12 col-lg-4 mt-2">
                 <?= \App\Form::text('Nom du lien URL (slug)', 'slug', 'text', !empty($_POST['slug']) ? $_POST['slug'] : '', true, 250); ?>
             </div>
-            <div class="col-12 col-lg-6 mt-2">
+            <div class="col-12 col-lg-4 mt-2">
                 <?= \App\Form::select('Fichier', 'filename', array_combine($files, $files), '', true); ?>
             </div>
             <div class="col-12 p-3">
@@ -46,6 +49,7 @@ if (isset($Response)): ?>
             $('input#name').on('input', function () {
                 $('input#slug').val(convertToSlug($(this).val()));
                 $('input#description').val($(this).val());
+                $('input#menuName').val($(this).val());
             });
         });
     </script>

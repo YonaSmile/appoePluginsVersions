@@ -44,7 +44,12 @@ if (!empty($_GET['id'])):
                         <br>
                         <span><?= $Cms->getSlug(); ?></span>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-3">
+                    <div class="col-12 col-md-6 col-lg-1">
+                        <strong><?= trans('Nom du menu'); ?></strong>
+                        <br>
+                        <span><?= $Cms->getMenuName(); ?></span>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-2">
                         <strong><?= trans('Nom'); ?></strong>
                         <br>
                         <span><?= $Cms->getName(); ?></span>
@@ -73,12 +78,12 @@ if (!empty($_GET['id'])):
                         <?php endif; ?>
                     </div>
                     <div class="col-12 col-lg-4 my-2 text-right">
-                        <select class="custom-select custom-select-sm"
+                        <select class="custom-select custom-select-sm otherPagesSelect"
                                 title="<?= trans('Parcourir les pages'); ?>...">
                             <option selected="selected" disabled><?= trans('Parcourir les pages'); ?>...</option>
                             <?php foreach ($allCmsPages as $pageSelect):
                                 if ($Cms->getId() != $pageSelect->id): ?>
-                                    <option data-href="<?= getPluginUrl('cms/page/pageContent/', $pageSelect->id); ?>"><?= $pageSelect->name; ?></option>
+                                    <option data-href="<?= getPluginUrl('cms/page/pageContent/', $pageSelect->id); ?>"><?= $pageSelect->menuName; ?></option>
                                 <?php endif;
                             endforeach; ?>
                         </select>
@@ -142,6 +147,9 @@ if (!empty($_GET['id'])):
                                 </div>
                                 <div class="col-12 my-2">
                                     <?= \App\Form::text('Description', 'description', 'text', $Cms->getDescription(), true, 300); ?>
+                                </div>
+                                <div class="col-12 mt-2">
+                                    <?= \App\Form::text('Nom du menu', 'menuName', 'text', $Cms->getMenuName(), true, 250); ?>
                                 </div>
                                 <div class="col-12 mt-2">
                                     <?= \App\Form::text('Nom du lien URL' . ' (slug)', 'slug', 'text', $Cms->getSlug(), true, 100); ?>
@@ -268,6 +276,7 @@ if (!empty($_GET['id'])):
                     $('<small class="' + id + ' categoryIdFloatContenaire">').insertAfter($(this));
                 });
 
+
                 for (var i in CKEDITOR.instances) {
 
                     CKEDITOR.instances[i].on('blur', function () {
@@ -277,7 +286,6 @@ if (!empty($_GET['id'])):
 
                         updateCmsContent($input, metaValue);
                     });
-
                 }
 
                 $('form#pageContentManageForm').on('input', 'input, textarea, select', function (event) {
@@ -288,7 +296,7 @@ if (!empty($_GET['id'])):
                     updateCmsContent($input, metaValue);
                 });
 
-                $('.otherPagesSelect').change(function () {
+                $(document.body).on('change', '.otherPagesSelect', function () {
                     var otherEventslink = $('option:selected', this).data('href');
                     location.assign(otherEventslink);
                 });

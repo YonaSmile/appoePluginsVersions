@@ -16,6 +16,7 @@ if (checkPostAndTokenRequest()) {
         if (!empty($_POST['name'])
             && !empty($_POST['slug'])
             && !empty($_POST['description'])
+            && !empty($_POST['menuName'])
             && !empty($_POST['filename'])
         ) {
 
@@ -61,6 +62,7 @@ if (checkPostAndTokenRequest()) {
         if (!empty($_POST['id'])
             && !empty($_POST['name'])
             && !empty($_POST['description'])
+            && !empty($_POST['menuName'])
             && !empty($_POST['slug'])
         ) {
 

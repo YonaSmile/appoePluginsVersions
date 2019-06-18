@@ -13,6 +13,7 @@ class Cms
     private $statut = 1;
 
     private $name;
+    private $menuName;
     private $description;
     private $slug;
 
@@ -114,6 +115,22 @@ class Cms
     /**
      * @return mixed
      */
+    public function getMenuName()
+    {
+        return $this->menuName;
+    }
+
+    /**
+     * @param mixed $menuName
+     */
+    public function setMenuName($menuName)
+    {
+        $this->menuName = $menuName;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getDescription()
     {
         return $this->description;
@@ -191,7 +208,8 @@ class Cms
         $sql = 'SELECT C.*,
          (SELECT cc1.metaValue FROM appoe_plugin_cms_content AS cc1 WHERE cc1.type = "HEADER" AND cc1.metaKey = "slug" AND cc1.idCms = C.id AND cc1.lang = :lang) AS slug,
         (SELECT cc2.metaValue FROM appoe_plugin_cms_content AS cc2 WHERE cc2.type = "HEADER" AND cc2.metaKey = "description" AND cc2.idCms = C.id AND cc2.lang = :lang) AS description,
-        (SELECT cc3.metaValue FROM appoe_plugin_cms_content AS cc3 WHERE cc3.type = "HEADER" AND cc3.metaKey = "name" AND cc3.idCms = C.id AND cc3.lang = :lang) AS name
+        (SELECT cc3.metaValue FROM appoe_plugin_cms_content AS cc3 WHERE cc3.type = "HEADER" AND cc3.metaKey = "name" AND cc3.idCms = C.id AND cc3.lang = :lang) AS name,
+        (SELECT cc4.metaValue FROM appoe_plugin_cms_content AS cc4 WHERE cc4.type = "HEADER" AND cc4.metaKey = "menuName" AND cc4.idCms = C.id AND cc4.lang = :lang) AS menuName
         FROM appoe_plugin_cms AS C
          WHERE C.id = :id';
 
@@ -305,7 +323,8 @@ class Cms
         $sql = 'SELECT C.*,
          (SELECT cc1.metaValue FROM appoe_plugin_cms_content AS cc1 WHERE cc1.type = "HEADER" AND cc1.metaKey = "slug" AND cc1.idCms = C.id AND cc1.lang = :lang) AS slug,
         (SELECT cc2.metaValue FROM appoe_plugin_cms_content AS cc2 WHERE cc2.type = "HEADER" AND cc2.metaKey = "description" AND cc2.idCms = C.id AND cc2.lang = :lang) AS description,
-        (SELECT cc3.metaValue FROM appoe_plugin_cms_content AS cc3 WHERE cc3.type = "HEADER" AND cc3.metaKey = "name" AND cc3.idCms = C.id AND cc3.lang = :lang) AS name
+        (SELECT cc3.metaValue FROM appoe_plugin_cms_content AS cc3 WHERE cc3.type = "HEADER" AND cc3.metaKey = "name" AND cc3.idCms = C.id AND cc3.lang = :lang) AS name,
+        (SELECT cc4.metaValue FROM appoe_plugin_cms_content AS cc4 WHERE cc4.type = "HEADER" AND cc4.metaKey = "menuName" AND cc4.idCms = C.id AND cc4.lang = :lang) AS menuName
         FROM appoe_plugin_cms AS C
         ORDER BY C.created_at DESC';
 
@@ -335,7 +354,8 @@ class Cms
         $sql = 'SELECT C.*,
          (SELECT cc1.metaValue FROM appoe_plugin_cms_content AS cc1 WHERE cc1.type = "HEADER" AND cc1.metaKey = "slug" AND cc1.idCms = C.id AND cc1.lang = :lang) AS slug,
         (SELECT cc2.metaValue FROM appoe_plugin_cms_content AS cc2 WHERE cc2.type = "HEADER" AND cc2.metaKey = "description" AND cc2.idCms = C.id AND cc2.lang = :lang) AS description,
-        (SELECT cc3.metaValue FROM appoe_plugin_cms_content AS cc3 WHERE cc3.type = "HEADER" AND cc3.metaKey = "name" AND cc3.idCms = C.id AND cc3.lang = :lang) AS name
+        (SELECT cc3.metaValue FROM appoe_plugin_cms_content AS cc3 WHERE cc3.type = "HEADER" AND cc3.metaKey = "name" AND cc3.idCms = C.id AND cc3.lang = :lang) AS name,
+        (SELECT cc4.metaValue FROM appoe_plugin_cms_content AS cc4 WHERE cc4.type = "HEADER" AND cc4.metaKey = "menuName" AND cc4.idCms = C.id AND cc4.lang = :lang) AS menuName
         FROM appoe_plugin_cms AS C
         WHERE C.type = "PAGE" AND C.statut = :statut ORDER BY C.filename ASC';
         $stmt = $this->dbh->prepare($sql);

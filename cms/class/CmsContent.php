@@ -261,7 +261,7 @@ class CmsContent
     public function saveHeaders($headers)
     {
 
-        $authorizedHeaders = array('name', 'description', 'slug');
+        $authorizedHeaders = array('name', 'description', 'slug', 'menuName');
 
         if (!isArrayEmpty($headers)) {
 
@@ -322,7 +322,7 @@ class CmsContent
     public function updateHeaders($headers)
     {
 
-        $authorizedHeaders = array('name', 'description', 'slug');
+        $authorizedHeaders = array('name', 'description', 'slug', 'menuName');
 
         if (!isArrayEmpty($headers)) {
 

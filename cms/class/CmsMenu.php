@@ -212,17 +212,15 @@ class CmsMenu
         $sql = 'SELECT DISTINCT acm.id, acm.idCms,
         CASE WHEN acm.name IS NOT NULL
         THEN acm.name
-        ELSE (SELECT cc3.metaValue FROM appoe_plugin_cms_content AS cc3 WHERE cc3.type = "HEADER" AND cc3.metaKey = "name" AND cc3.idCms = ac.id AND cc3.lang = :lang)
+        ELSE (SELECT cc4.metaValue FROM appoe_plugin_cms_content AS cc4 WHERE cc4.type = "HEADER" AND cc4.metaKey = "menuName" AND cc4.idCms = ac.id AND cc4.lang = :lang)
         END AS name, 
         acm.parentId, acm.position, acm.location, acm.statut, acm.updated_at, 
         ac.type, ac.filename,
-        (SELECT cc1.metaValue FROM appoe_plugin_cms_content AS cc1 WHERE cc1.type = "HEADER" AND cc1.metaKey = "slug" AND cc1.idCms = ac.id AND cc1.lang = :lang) AS slug,
-        (SELECT cc2.metaValue FROM appoe_plugin_cms_content AS cc2 WHERE cc2.type = "HEADER" AND cc2.metaKey = "description" AND cc2.idCms = ac.id AND cc2.lang = :lang) AS description
+        (SELECT cc1.metaValue FROM appoe_plugin_cms_content AS cc1 WHERE cc1.type = "HEADER" AND cc1.metaKey = "slug" AND cc1.idCms = ac.id AND cc1.lang = :lang) AS slug
         FROM appoe_plugin_cms_menu AS acm 
         LEFT JOIN appoe_plugin_cms AS ac 
         ON (acm.idCms = ac.id) 
-        WHERE (SELECT cc1.metaValue FROM appoe_plugin_cms_content AS cc1 WHERE cc1.type = "HEADER" AND cc1.metaKey = "slug" AND cc1.idCms = ac.id AND cc1.lang = :lang) IS NOT NULL
-        AND (ac.statut = 1 OR acm.idCms like "http%" OR acm.idCms like "%#%" OR acm.idCms REGEXP "^[a-zA-Z0-9/-]+$")' . $locationCondition . ' 
+        WHERE (ac.statut = 1 OR acm.idCms like "http%" OR acm.idCms like "%#%" OR acm.idCms REGEXP "^[a-zA-Z0-9/-]+$")' . $locationCondition . ' 
         ORDER BY acm.parentId ASC, acm.position ASC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':lang', $lang);
