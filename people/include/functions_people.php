@@ -1,11 +1,25 @@
 <?php
 
+use App\Plugin\People\People;
+
+/**
+ *
+ */
 const PEOPLE_NATURE = array(
     1 => 'Société',
     2 => 'Monsieur',
     3 => 'Madame'
 );
 
+/**
+ * @param array $excludesFields
+ * @param array $dataFields
+ * @param array $requiredFields
+ * @param string $formName
+ * @param bool $showType
+ * @param bool $showSaveBtn
+ * @return string
+ */
 function people_addPersonFormFields(array $excludesFields = array(), array $dataFields = array(), array $requiredFields = array(), $formName = 'ADDPERSON', $showType = true, $showSaveBtn = true)
 {
     //defaults fields
@@ -54,15 +68,35 @@ function people_addPersonFormFields(array $excludesFields = array(), array $data
     return $html;
 }
 
+/**
+ * @return array
+ */
 function getPeopleNatureName()
 {
     return PEOPLE_NATURE;
 }
 
+/**
+ * @param $natureId
+ * @return bool|mixed
+ */
 function getPeopleNatureNameById($natureId)
 {
     if (array_key_exists($natureId, getPeopleNatureName())) {
         return PEOPLE_NATURE[$natureId];
     }
     return false;
+}
+
+/**
+ * @param $type
+ * @param array $data
+ * @return array|int
+ */
+function getPeopleData($type, array $data = array('name'))
+{
+
+    $People = new People();
+    $People->setType($type);
+    return $People->showDataForExport($data);
 }

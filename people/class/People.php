@@ -1,6 +1,10 @@
 <?php
 
 namespace App\Plugin\People;
+
+use App\DB;
+use PDO;
+
 class People
 {
     protected $id;
@@ -27,7 +31,7 @@ class People
     public function __construct($idPerson = null)
     {
         if (is_null($this->dbh)) {
-            $this->dbh = \App\DB::connect();
+            $this->dbh = DB::connect();
         }
 
         if (!is_null($idPerson)) {
@@ -377,7 +381,7 @@ class People
         } else {
             if ($count == 1) {
 
-                $row = $stmt->fetch(\PDO::FETCH_OBJ);
+                $row = $stmt->fetch(PDO::FETCH_OBJ);
                 $this->feed($row);
 
                 return true;
@@ -405,7 +409,7 @@ class People
         if ($error[0] != '00000') {
             return false;
         } else {
-            $data = $stmt->fetchAll(\PDO::FETCH_OBJ);
+            $data = $stmt->fetchAll(PDO::FETCH_OBJ);
 
             return (!$countPeople) ? $data : $count;
         }
@@ -429,9 +433,29 @@ class People
         if ($error[0] != '00000') {
             return false;
         } else {
-            $data = $stmt->fetchAll(\PDO::FETCH_OBJ);
+            $data = $stmt->fetchAll(PDO::FETCH_OBJ);
 
             return (!$countPeople) ? $data : $count;
+        }
+    }
+
+    /**
+     * @param array $data
+     * @return array|int
+     */
+    public function showDataForExport(array $data)
+    {
+        $sql = 'SELECT ' . implode(', ', $data) . ' FROM appoe_plugin_people WHERE type = :type AND status = :status ORDER BY name ASC';
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':type', $this->type);
+        $stmt->bindParam(':status', $this->status);
+        $stmt->execute();
+
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
     }
 
@@ -554,7 +578,7 @@ class People
         } else {
             if ($count == 1) {
                 if ($forUpdate) {
-                    $data = $stmt->fetch(\PDO::FETCH_OBJ);
+                    $data = $stmt->fetch(PDO::FETCH_OBJ);
                     if ($data->id == $this->id) {
                         return true;
                     }
@@ -584,7 +608,7 @@ class People
             return false;
         } else {
             if ($count == 1) {
-                $row = $stmt->fetch(\PDO::FETCH_OBJ);
+                $row = $stmt->fetch(PDO::FETCH_OBJ);
                 $options = unserialize($row->options);
                 if (password_verify($this->options, $options['password'])) {
                     $this->feed($row);
