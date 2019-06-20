@@ -3,7 +3,8 @@ RewriteEngine On
 RewriteBase /app/plugin/people/page/
 RewriteRule ^addPerson/$  addPerson.php [L]
 RewriteRule ^allPeople/$  allPeople.php [L]
-RewriteRule ^archivePeople/$  archivePeople.php [L]
+RewriteRule ^archivePeople/$  archives.php [L]
+RewriteRule ^archives/$  archives.php [L]
 RewriteRule ^update/([0-9]+)/$   updatePerson.php?id=$1 [L]
 
 RewriteEngine on
