@@ -271,7 +271,7 @@ if (!empty($_GET['id'])):
                     event.preventDefault();
                 });
 
-                $.each($('input, textarea, select'), function () {
+                $.each($('#pageContentManageForm input, #pageContentManageForm textarea, #pageContentManageForm select'), function () {
                     var id = $(this).attr('name');
                     $('<small class="' + id + ' categoryIdFloatContenaire">').insertAfter($(this));
                 });
