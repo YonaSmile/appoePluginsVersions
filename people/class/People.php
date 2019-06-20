@@ -544,12 +544,18 @@ class People
      */
     public function delete()
     {
-        $this->status = 0;
+        $sql = 'DELETE FROM appoe_plugin_people WHERE id = :id';
 
-        if ($this->update()) {
-            return true;
-        } else {
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':id', $this->id);
+
+        $stmt->execute();
+
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
             return false;
+        } else {
+            return true;
         }
     }
 

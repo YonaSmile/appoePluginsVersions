@@ -30,8 +30,10 @@
                                     <td><?= $person->name ?></td>
                                     <td><?= $person->firstName; ?></td>
                                     <td>
-                                        <strong><?= (!empty($person->birthDate) && $person->birthDate != '0000-00-00') ? age($person->birthDate) : '' ?></strong>
-                                        <small>(<?= displayFrDate($person->birthDate); ?>)</small>
+                                        <?php if (!empty($person->birthDate) && $person->birthDate != '0000-00-00'): ?>
+                                            <strong><?= age($person->birthDate); ?></strong>
+                                            <small>(<?= displayFrDate($person->birthDate); ?>)</small>
+                                        <?php endif; ?>
                                     </td>
                                     <td><?= $person->email ?></td>
                                     <td><?= $person->city ?></td>
@@ -46,6 +48,11 @@
                                                 data-idperson="<?= $person->id ?>">
                                             <span class="btnCheck"> <i class="fas fa-check"></i></span>
                                         </button>
+                                        <button type="button" class="btn btn-sm deletePerson"
+                                                title="<?= trans('Supprimer'); ?>"
+                                                data-idperson="<?= $person->id ?>">
+                                            <span class="btnArchive"> <i class="fas fa-times"></i></span>
+                                        </button>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -56,25 +63,44 @@
             </div>
         </div>
     </div>
-<script>
-    $(document).ready(function () {
-       $('.unpackPerson').on('click', function () {
-           var idPerson = $(this).data('idperson');
-           if (confirm('<?= trans('Vous allez désarchiver cette personne'); ?>')) {
-               $.post(
-                   '<?= PEOPLE_URL . 'process/ajaxProcess.php'; ?>',
-                   {
-                       unpackPerson: 'OK',
-                       idUnpackPerson: idPerson
-                   },
-                   function (data) {
-                       if (data === true || data == 'true') {
-                           $('tr[data-idperson="' + idPerson + '"]').slideUp();
-                       }
-                   }
-               );
-           }
-       });
-    });
-</script>
+    <script>
+        $(document).ready(function () {
+
+            $('.unpackPerson').on('click', function () {
+                var idPerson = $(this).data('idperson');
+                if (confirm('<?= trans('Vous allez désarchiver cette personne'); ?>')) {
+                    $.post(
+                        '<?= PEOPLE_URL . 'process/ajaxProcess.php'; ?>',
+                        {
+                            unpackPerson: 'OK',
+                            idUnpackPerson: idPerson
+                        },
+                        function (data) {
+                            if (data === true || data == 'true') {
+                                $('tr[data-idperson="' + idPerson + '"]').slideUp();
+                            }
+                        }
+                    );
+                }
+            });
+
+            $('.deletePerson').on('click', function () {
+                var idPerson = $(this).data('idperson');
+                if (confirm('<?= trans('Vous allez supprimer définitivement cette personne'); ?>')) {
+                    $.post(
+                        '<?= PEOPLE_URL . 'process/ajaxProcess.php'; ?>',
+                        {
+                            deletePerson: 'OK',
+                            idDeletePerson: idPerson
+                        },
+                        function (data) {
+                            if (data === true || data == 'true') {
+                                $('tr[data-idperson="' + idPerson + '"]').slideUp();
+                            }
+                        }
+                    );
+                }
+            });
+        });
+    </script>
 <?php require('footer.php'); ?>

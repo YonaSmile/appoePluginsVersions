@@ -1,4 +1,7 @@
 <?php
+
+use App\Plugin\People\People;
+
 if (checkPostAndTokenRequest()) {
 
     //Clean data
@@ -10,7 +13,7 @@ if (checkPostAndTokenRequest()) {
 
         if (!empty($_POST['name']) && !empty($_POST['type'])) {
 
-            $People = new \App\Plugin\People\People();
+            $People = new People();
 
             //Add person
             $People->feed($_POST);
@@ -46,7 +49,7 @@ if (checkPostAndTokenRequest()) {
 
         if (!empty($_POST['id']) && !empty($_POST['name']) && !empty($_POST['type'])) {
 
-            $People = new \App\Plugin\People\People($_POST['id']);
+            $People = new People($_POST['id']);
 
             //Update Person
             $People->feed($_POST);
