@@ -169,7 +169,7 @@ echo getTitle($Page->getName(), $Page->getSlug()); ?>
                                 <?= \App\Form::select('Page de l\'article', 'slugArticlePage', $allArticlesPages, !empty($_POST['slugArticlePage']) ? $_POST['slugArticlePage'] : '', true, 'disabled'); ?>
                             </div>
                             <div class="col-12 my-2 idCmsChoise" data-cmstype="URL" style="display: none;">
-                                <?= \App\Form::text('Nom', 'name', 'text', !empty($_POST['name']) ? $_POST['name'] : '', true, 70); ?>
+                                <?= \App\Form::text('Nom', 'name', 'text', !empty($_POST['name']) ? $_POST['name'] : '', true, 70, 'disabled'); ?>
                             </div>
                             <div class="col-12 my-2">
                                 <?= \App\Form::text('Position / Ordre', 'position', 'tel', !empty($_POST['position']) ? $_POST['position'] : '', false); ?>
@@ -197,7 +197,7 @@ echo getTitle($Page->getName(), $Page->getSlug()); ?>
             $('input[name="radioBtnIdCMS"]').on('change', function () {
 
                 var dataType = $(this).val();
-                $('[data-cmstype]').slideUp().find('input, select').attr('disabled', true);
+                $('[data-cmstype]').slideUp().find('input, select').prop('disabled', true);
                 $('[data-cmstype="' + dataType + '"]').slideDown().find('input, select').prop('disabled', false);
             });
 
