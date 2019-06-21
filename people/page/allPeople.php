@@ -6,6 +6,10 @@ $People = new People();
 $allPersons = $People->showAll();
 echo getTitle($Page->getName(), $Page->getSlug()); ?>
     <div class="row">
+        <div class="col-12 mb-2" style="height: 50px;">
+            <button class="btn btn-sm btn-outline-dark float-right" id="exportCSV">
+                <i class="fas fa-download"></i> <?= trans('Exporter en CSV'); ?></button>
+        </div>
         <div class="col-12">
             <div class="table-responsive">
                 <table id="pagesTable"
@@ -17,6 +21,7 @@ echo getTitle($Page->getName(), $Page->getSlug()); ?>
                         <th><?= trans('Nom'); ?></th>
                         <th><?= trans('Age'); ?></th>
                         <th><?= trans('Email'); ?></th>
+                        <th><?= trans('CP'); ?></th>
                         <th><?= trans('Ville'); ?></th>
                         <th><?= trans('Pays'); ?></th>
                         <th></th>
@@ -38,6 +43,7 @@ echo getTitle($Page->getName(), $Page->getSlug()); ?>
                                     <?php endif; ?>
                                 </td>
                                 <td><?= $person->email ?></td>
+                                <td><?= $person->zip ?></td>
                                 <td><?= $person->city ?></td>
                                 <td><?= getPaysName($person->country); ?></td>
                                 <td>
@@ -77,6 +83,10 @@ echo getTitle($Page->getName(), $Page->getSlug()); ?>
                         }
                     );
                 }
+            });
+
+            $('#exportCSV').on('click', function () {
+                window.open('<?= PEOPLE_URL . 'process/export.php?csv'; ?>');
             });
         });
     </script>

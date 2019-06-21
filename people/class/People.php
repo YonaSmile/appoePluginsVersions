@@ -445,9 +445,13 @@ class People
      */
     public function showDataForExport(array $data)
     {
-        $sql = 'SELECT ' . implode(', ', $data) . ' FROM appoe_plugin_people WHERE type = :type AND status = :status ORDER BY name ASC';
+        $type = !empty($this->type) ? ' type = :type AND ' : '';
+        $sql = 'SELECT ' . implode(', ', $data) . ' FROM appoe_plugin_people WHERE ' . $type . ' status = :status ORDER BY name ASC';
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':type', $this->type);
+
+        if (!empty($this->type)) {
+            $stmt->bindParam(':type', $this->type);
+        }
         $stmt->bindParam(':status', $this->status);
         $stmt->execute();
 

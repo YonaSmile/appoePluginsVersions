@@ -93,7 +93,7 @@ function getPeopleNatureNameById($natureId)
  * @param array $data
  * @return array|int
  */
-function getPeopleData($type, array $data = array('name'))
+function getPeopleData($type = '', array $data = array('name'))
 {
 
     $People = new People();
