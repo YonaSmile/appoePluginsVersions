@@ -132,13 +132,13 @@ if (!defined('__CLASS_HTML2PDF__')) {
             $this->_encoding     = $encoding;
 
             // load the Local
-             \App\Plugin\Pdf\Locale::load($this->_langue);
+            Locale::load($this->_langue);
 
             // create the  HTML2PDF_myPdf object
-            $this->pdf = new  \App\Plugin\Pdf\MyPdf($orientation, 'mm', $format, $unicode, $encoding);
+            $this->pdf = new  MyPdf($orientation, 'mm', $format, $unicode, $encoding);
 
             // init the CSS parsing object
-            $this->parsingCss = new  \App\Plugin\Pdf\ParsingCss($this->pdf);
+            $this->parsingCss = new  ParsingCss($this->pdf);
             $this->parsingCss->fontSet();
             $this->_defList = array();
 
@@ -151,7 +151,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
             $this->setDefaultFont(null);
 
             // init the HTML parsing object
-            $this->parsingHtml = new  \App\Plugin\Pdf\ParsingHtml($this->_encoding);
+            $this->parsingHtml = new  ParsingHtml($this->_encoding);
             $this->_subHtml = null;
             $this->_subPart = false;
 
@@ -314,8 +314,8 @@ if (!defined('__CLASS_HTML2PDF__')) {
          */
         protected function _cleanUp()
         {
-             \App\Plugin\Pdf\Html2pdf::$_subobj = null;
-             \App\Plugin\Pdf\Html2pdf::$_tables = array();
+            Html2pdf::$_subobj = null;
+            Html2pdf::$_tables = array();
         }
 
         /**
@@ -361,7 +361,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
 
             // the name must be a PDF name
             if (strtolower(substr($name, -4))!='.pdf') {
-                throw new \App\Plugin\Pdf\Exception(0, 'The output document name "'.$name.'" is not a PDF name');
+                throw new Exception(0, 'The output document name "'.$name.'" is not a PDF name');
             }
 
             // call the output of TCPDF
@@ -472,9 +472,9 @@ if (!defined('__CLASS_HTML2PDF__')) {
          */
         protected function _vueHTML($content)
         {
-            $content = preg_replace('/<page_header([^>]*)>/isU', '<hr>'. \App\Plugin\Pdf\Locale::get('vue01').' : $1<hr><div$1>', $content);
-            $content = preg_replace('/<page_footer([^>]*)>/isU', '<hr>'. \App\Plugin\Pdf\Locale::get('vue02').' : $1<hr><div$1>', $content);
-            $content = preg_replace('/<page([^>]*)>/isU', '<hr>'. \App\Plugin\Pdf\Locale::get('vue03').' : $1<hr><div$1>', $content);
+            $content = preg_replace('/<page_header([^>]*)>/isU', '<hr>'. Locale::get('vue01').' : $1<hr><div$1>', $content);
+            $content = preg_replace('/<page_footer([^>]*)>/isU', '<hr>'. Locale::get('vue02').' : $1<hr><div$1>', $content);
+            $content = preg_replace('/<page([^>]*)>/isU', '<hr>'. Locale::get('vue03').' : $1<hr><div$1>', $content);
             $content = preg_replace('/<\/page([^>]*)>/isU', '</div><hr>', $content);
             $content = preg_replace('/<bookmark([^>]*)>/isU', '<hr>bookmark : $1<hr>', $content);
             $content = preg_replace('/<\/bookmark([^>]*)>/isU', '', $content);
@@ -486,7 +486,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
             echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
     <head>
-        <title>'. \App\Plugin\Pdf\Locale::get('vue04').' HTML</title>
+        <title>'. Locale::get('vue04').' HTML</title>
         <meta http-equiv="Content-Type" content="text/html; charset='.$this->_encoding.'" >
     </head>
     <body style="padding: 10px; font-size: 10pt;font-family:    Verdana;">
@@ -648,10 +648,10 @@ if (!defined('__CLASS_HTML2PDF__')) {
         protected function _DEBUG_stepline($name, $timeTotal, $timeStep, $memoryUsage, $memoryPeak)
         {
             $txt = str_pad($name, 30, ' ', STR_PAD_RIGHT).
-                    str_pad($timeTotal, 12, ' ', STR_PAD_LEFT).
-                    str_pad($timeStep, 12, ' ', STR_PAD_LEFT).
-                    str_pad($memoryUsage, 15, ' ', STR_PAD_LEFT).
-                    str_pad($memoryPeak, 15, ' ', STR_PAD_LEFT);
+                str_pad($timeTotal, 12, ' ', STR_PAD_LEFT).
+                str_pad($timeStep, 12, ' ', STR_PAD_LEFT).
+                str_pad($memoryUsage, 15, ' ', STR_PAD_LEFT).
+                str_pad($memoryPeak, 15, ' ', STR_PAD_LEFT);
 
             echo '<pre style="padding:0; margin:0">'.$txt.'</pre>';
         }
@@ -928,14 +928,14 @@ if (!defined('__CLASS_HTML2PDF__')) {
             $pdf = null;
 
             // create the sub object
-             \App\Plugin\Pdf\Html2pdf::$_subobj = new HTML2PDF(
-                                        $this->_orientation,
-                                        $this->_format,
-                                        $this->_langue,
-                                        $this->_unicode,
-                                        $this->_encoding,
-                                        array($this->_defaultLeft,$this->_defaultTop,$this->_defaultRight,$this->_defaultBottom)
-                                    );
+            Html2pdf::$_subobj = new HTML2PDF(
+                $this->_orientation,
+                $this->_format,
+                $this->_langue,
+                $this->_unicode,
+                $this->_encoding,
+                array($this->_defaultLeft,$this->_defaultTop,$this->_defaultRight,$this->_defaultBottom)
+            );
 
             // init
             HTML2PDF::$_subobj->setTestTdInOnePage($this->_testTdInOnepage);
@@ -1032,7 +1032,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
                     } else if ($chiffre==9) {
                         $nbRoman=$nbRoman.$nbBaseTen[$i].$nbBaseTen[$i+1];
                     } else if ($chiffre==4) {
-                    $nbRoman=$nbRoman.$nbBaseTen[$i].$nbBaseFive[$i];
+                        $nbRoman=$nbRoman.$nbBaseTen[$i].$nbBaseFive[$i];
                     } else {
                         $nbRoman=$nbRoman.$nbBaseFive[$i];
                         for ($j=$chiffre-5; $j>=1; $j--) {
@@ -1242,7 +1242,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
 
             // the action must exist
             if (!is_callable(array(&$this, $fnc))) {
-                throw new \App\Plugin\Pdf\Exception(1, strtoupper($action['name']), $this->parsingHtml->getHtmlErrorCode($action['html_pos']));
+                throw new Exception(1, strtoupper($action['name']), $this->parsingHtml->getHtmlErrorCode($action['html_pos']));
             }
 
             // lauch the action
@@ -1310,7 +1310,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
             if (count($infos)<2) {
                 // if the test is activ => exception
                 if ($this->_testIsImage) {
-                    throw new \App\Plugin\Pdf\Exception(6, $src);
+                    throw new Exception(6, $src);
                 }
 
                 // else, display a gray rectangle
@@ -1573,7 +1573,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
                 // if the image can not be loaded
                 if (count($imageInfos)<2) {
                     if ($this->_testIsImage) {
-                        throw new \App\Plugin\Pdf\Exception(6, $iName);
+                        throw new Exception(6, $iName);
                     }
                 } else {
                     // convert the size of the image from pixel to the unit of the PDF
@@ -2124,7 +2124,12 @@ if (!defined('__CLASS_HTML2PDF__')) {
                     if (isset($corr[$y][$x]) && is_array($corr[$y][$x]) && $corr[$y][$x][2]>1) {
 
                         // sum the max width of each column in colspan
-                        $s = 0; for ($i=0; $i<$corr[$y][$x][2]; $i++) $s+= $sw[$x+$i];
+                        $s = 0;
+                        for ($i=0; $i<$corr[$y][$x][2]; $i++){
+                            if(!empty($sw[$x+$i])) {
+                                $s+= $sw[$x+$i];
+                            }
+                        }
 
                         // if the max width is < the width of the cell with colspan => we adapt the width of each max width
                         if ($s>0 && $s<$cases[$corr[$y][$x][1]][$corr[$y][$x][0]]['w']) {
@@ -2143,11 +2148,13 @@ if (!defined('__CLASS_HTML2PDF__')) {
                         // without colspan
                         if ($corr[$y][$x][2]==1) {
                             $cases[$corr[$y][$x][1]][$corr[$y][$x][0]]['w'] = $sw[$x];
-                        // with colspan
+                            // with colspan
                         } else {
                             $s = 0;
                             for ($i=0; $i<$corr[$y][$x][2]; $i++) {
-                                $s+= $sw[$x+$i];
+                                if(!empty($sw[$x+$i])) {
+                                    $s += $sw[$x + $i];
+                                }
                             }
                             $cases[$corr[$y][$x][1]][$corr[$y][$x][0]]['w'] = $s;
                         }
@@ -2192,7 +2199,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
                         // without rowspan
                         if ($corr[$y][$x][3]==1) {
                             $cases[$corr[$y][$x][1]][$corr[$y][$x][0]]['h'] = $sh[$y];
-                        // with rowspan
+                            // with rowspan
                         } else {
                             $s = 0;
                             for ($i=0; $i<$corr[$y][$x][3]; $i++) {
@@ -2342,7 +2349,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
                     $form    = null;
                 }
                 $this->pdf->SetMyFooter($page, $date, $hour, $form);
-            // else => we use the last page set used
+                // else => we use the last page set used
             } else {
                 $this->parsingCss->save();
                 $this->parsingCss->analyse('PAGE', $param);
@@ -2745,14 +2752,14 @@ if (!defined('__CLASS_HTML2PDF__')) {
                 if (
                     $w < ($this->pdf->getW() - $this->pdf->getlMargin()-$this->pdf->getrMargin()) &&
                     $this->pdf->getX() + $w>=($this->pdf->getW() - $this->pdf->getrMargin())
-                    )
+                )
                     $this->_tag_open_BR(array());
 
                 if (
-                        ($h < ($this->pdf->getH() - $this->pdf->gettMargin()-$this->pdf->getbMargin())) &&
-                        ($this->pdf->getY() + $h>=($this->pdf->getH() - $this->pdf->getbMargin())) &&
-                        !$this->_isInOverflow
-                    )
+                    ($h < ($this->pdf->getH() - $this->pdf->gettMargin()-$this->pdf->getbMargin())) &&
+                    ($this->pdf->getY() + $h>=($this->pdf->getH() - $this->pdf->getbMargin())) &&
+                    !$this->_isInOverflow
+                )
                     $this->_setNewPage();
 
                 $old = $this->parsingCss->getOldValues();
@@ -3067,7 +3074,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
             if (!isset($param['style']['color'])) $param['style']['color'] = '#000000';
 
             if ($this->_testIsDeprecated && (isset($param['bar_h']) || isset($param['bar_w'])))
-                throw new \App\Plugin\Pdf\Exception(9, array('BARCODE', 'bar_h, bar_w'));
+                throw new Exception(9, array('BARCODE', 'bar_h, bar_w'));
 
             $param['type'] = strtoupper($param['type']);
             if (isset($lstBarcode[$param['type']])) $param['type'] = $lstBarcode[$param['type']];
@@ -3122,7 +3129,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
         protected function _tag_open_QRCODE($param)
         {
             if ($this->_testIsDeprecated && (isset($param['size']) || isset($param['noborder'])))
-                throw new \App\Plugin\Pdf\Exception(9, array('QRCODE', 'size, noborder'));
+                throw new Exception(9, array('QRCODE', 'size, noborder'));
 
             if ($this->_debugActif) $this->_DEBUG_add('QRCODE');
 
@@ -3152,9 +3159,9 @@ if (!defined('__CLASS_HTML2PDF__')) {
             $size = max($w, $h); if (!$size) $size = $this->parsingCss->ConvertToMM('50mm');
 
             $style = array(
-                    'fgcolor' => $this->parsingCss->value['color'],
-                    'bgcolor' => $this->parsingCss->value['background']['color'],
-                );
+                'fgcolor' => $this->parsingCss->value['color'],
+                'bgcolor' => $this->parsingCss->value['background']['color'],
+            );
 
             if ($borders) {
                 $style['border'] = true;
@@ -3387,7 +3394,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
                     $nb++;
                     if ($nb>10000) {
                         $txt = ''; foreach ($words as $k => $word) $txt.= ($k ? ' ' : '').$word[0];
-                        throw new \App\Plugin\Pdf\Exception(2, array($txt, $right-$left, $w));
+                        throw new Exception(2, array($txt, $right-$left, $w));
                     }
 
                     // new margins for the new line
@@ -4124,7 +4131,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
             $this->parsingCss->setPosition();
             $this->parsingCss->fontSet();
 
-             // cancel the effects of the setPosition
+            // cancel the effects of the setPosition
             $this->pdf->setXY($this->pdf->getX()-$this->parsingCss->value['margin']['l'], $this->pdf->getY()-$this->parsingCss->value['margin']['t']);
 
             list($mL, $mR) = $this->_getMargins($this->pdf->getY());
@@ -5205,7 +5212,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
                     HTML2PDF::$_tables[$param['num']]['td_curr'] = $tmpTD;
                     HTML2PDF::$_tables[$param['num']]['new_page'] = true;
                 }
-            // else (in a sub HTML)
+                // else (in a sub HTML)
             } else {
                 // prepare it
                 HTML2PDF::$_tables[$param['num']]['cases'][HTML2PDF::$_tables[$param['num']]['tr_curr']-1] = array();
@@ -5418,8 +5425,8 @@ if (!defined('__CLASS_HTML2PDF__')) {
                 for ($j=0; $j<$rowspan; $j++) {
                     for ($i=0; $i<$colspan; $i++) {
                         HTML2PDF::$_tables[$param['num']]['corr']
-                            [HTML2PDF::$_tables[$param['num']]['corr_y']+$j]
-                            [HTML2PDF::$_tables[$param['num']]['corr_x']+$i] = ($i+$j>0) ? '' : array($x,$y,$colspan,$rowspan);
+                        [HTML2PDF::$_tables[$param['num']]['corr_y']+$j]
+                        [HTML2PDF::$_tables[$param['num']]['corr_x']+$i] = ($i+$j>0) ? '' : array($x,$y,$colspan,$rowspan);
                     }
                 }
                 HTML2PDF::$_tables[$param['num']]['corr_x']+= $colspan;
@@ -5515,7 +5522,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
 
                 // it msut take only one page
                 if ($this->_testTdInOnepage && $this->_subHtml->pdf->getPage()>1) {
-                    throw new \App\Plugin\Pdf\Exception(7);
+                    throw new Exception(7);
                 }
 
                 // size of the content of the TD
@@ -5948,14 +5955,14 @@ if (!defined('__CLASS_HTML2PDF__')) {
                 if (
                     $w < ($this->pdf->getW() - $this->pdf->getlMargin()-$this->pdf->getrMargin()) &&
                     $this->pdf->getX() + $w>=($this->pdf->getW() - $this->pdf->getrMargin())
-                    )
+                )
                     $this->_tag_open_BR(array());
 
                 if (
-                        ($h < ($this->pdf->getH() - $this->pdf->gettMargin()-$this->pdf->getbMargin())) &&
-                        ($this->pdf->getY() + $h>=($this->pdf->getH() - $this->pdf->getbMargin())) &&
-                        !$this->_isInOverflow
-                    )
+                    ($h < ($this->pdf->getH() - $this->pdf->gettMargin()-$this->pdf->getbMargin())) &&
+                    ($this->pdf->getY() + $h>=($this->pdf->getH() - $this->pdf->getbMargin())) &&
+                    !$this->_isInOverflow
+                )
                     $this->_setNewPage();
 
                 $old = $this->parsingCss->getOldValues();
@@ -6108,7 +6115,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
          */
         protected function _tag_open_LINE($param)
         {
-            if (!$this->_isInDraw) throw new \App\Plugin\Pdf\Exception(8, 'LINE');
+            if (!$this->_isInDraw) throw new Exception(8, 'LINE');
 
             $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
             $this->parsingCss->save();
@@ -6135,7 +6142,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
          */
         protected function _tag_open_RECT($param)
         {
-            if (!$this->_isInDraw) throw new \App\Plugin\Pdf\Exception(8, 'RECT');
+            if (!$this->_isInDraw) throw new Exception(8, 'RECT');
 
             $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
             $this->parsingCss->save();
@@ -6162,7 +6169,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
          */
         protected function _tag_open_CIRCLE($param)
         {
-            if (!$this->_isInDraw) throw new \App\Plugin\Pdf\Exception(8, 'CIRCLE');
+            if (!$this->_isInDraw) throw new Exception(8, 'CIRCLE');
 
             $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
             $this->parsingCss->save();
@@ -6187,7 +6194,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
          */
         protected function _tag_open_ELLIPSE($param)
         {
-            if (!$this->_isInDraw) throw new \App\Plugin\Pdf\Exception(8, 'ELLIPSE');
+            if (!$this->_isInDraw) throw new Exception(8, 'ELLIPSE');
 
             $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
             $this->parsingCss->save();
@@ -6214,7 +6221,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
          */
         protected function _tag_open_POLYLINE($param)
         {
-            if (!$this->_isInDraw) throw new \App\Plugin\Pdf\Exception(8, 'POLYGON');
+            if (!$this->_isInDraw) throw new Exception(8, 'POLYGON');
 
             $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
             $this->parsingCss->save();
@@ -6260,7 +6267,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
          */
         protected function _tag_open_POLYGON($param)
         {
-            if (!$this->_isInDraw) throw new \App\Plugin\Pdf\Exception(8, 'POLYGON');
+            if (!$this->_isInDraw) throw new Exception(8, 'POLYGON');
 
             $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
             $this->parsingCss->save();
@@ -6307,7 +6314,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
          */
         protected function _tag_open_PATH($param)
         {
-            if (!$this->_isInDraw) throw new \App\Plugin\Pdf\Exception(8, 'PATH');
+            if (!$this->_isInDraw) throw new Exception(8, 'PATH');
 
             $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
             $this->parsingCss->save();
@@ -6436,7 +6443,7 @@ if (!defined('__CLASS_HTML2PDF__')) {
          */
         protected function _tag_open_G($param)
         {
-            if (!$this->_isInDraw) throw new \App\Plugin\Pdf\Exception(8, 'G');
+            if (!$this->_isInDraw) throw new Exception(8, 'G');
 
             $this->pdf->doTransform(isset($param['transform']) ? $this->_prepareTransform($param['transform']) : null);
             $this->parsingCss->save();
