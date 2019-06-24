@@ -5044,9 +5044,9 @@ if (!defined('__CLASS_HTML2PDF__')) {
 
                 // get the positions of the end of the table
                 $x = HTML2PDF::$_tables[$param['num']]['curr_x'] + HTML2PDF::$_tables[$param['num']]['width'];
-                if (count(HTML2PDF::$_tables[$param['num']]['height'])>1)
+                if (is_array(HTML2PDF::$_tables[$param['num']]['height']) && count(HTML2PDF::$_tables[$param['num']]['height'])>1)
                     $y = $this->_margeTop+HTML2PDF::$_tables[$param['num']]['height'][count(HTML2PDF::$_tables[$param['num']]['height'])-1];
-                else if (count(HTML2PDF::$_tables[$param['num']]['height'])==1)
+                else if (is_array(HTML2PDF::$_tables[$param['num']]['height']) && count(HTML2PDF::$_tables[$param['num']]['height'])==1)
                     $y = HTML2PDF::$_tables[$param['num']]['curr_y']+HTML2PDF::$_tables[$param['num']]['height'][count(HTML2PDF::$_tables[$param['num']]['height'])-1];
                 else
                     $y = HTML2PDF::$_tables[$param['num']]['curr_y'];

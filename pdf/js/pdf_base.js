@@ -1,12 +1,11 @@
 /**
  * Send Post to Pdf Generator with required args: pdfTemplateFilename, pdfOutputName
  * @param data
- * @param viewHtml
  */
-function pdfSend(data, viewHtml = false) {
+function pdfSend(data) {
 
-    var urlAdded = viewHtml ? '?vuehtml' : '';
-    var url = window.location.protocol + '//' + window.location.hostname + '/app/plugin/pdf/index.php' + urlAdded;
+
+    var url = window.location.protocol + '//' + window.location.hostname + '/app/plugin/pdf/page/print/';
     var html = '';
     $.each(data, function (inputName, inputVal) {
         html += '<input type="text" name="' + inputName + '" value="' + inputVal + '" />';

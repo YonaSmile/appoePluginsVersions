@@ -9,6 +9,9 @@
  * FD: equivalent to F + D option
  * E: return the document as base64 mime multi-part email attachment (RFC 2045)
  */
+
+use App\Plugin\Pdf\Html2pdf;
+
 require_once($_SERVER['DOCUMENT_ROOT'] . '/app/main.php');
 /**
  * @param $templateSlug
@@ -20,8 +23,13 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/app/main.php');
 function getPdf($templateSlug, $params, $orientation = 'P', $pdfName = 'appoe', $destination = 'I')
 {
     try {
-        $html2pdf = new \App\Plugin\Pdf\Html2pdf($orientation, 'A4', 'fr', true, 'UTF-8', 12);
+        $html2pdf = new Html2pdf($orientation, 'A4', 'fr', true, 'UTF-8', 12);
         $html2pdf->pdf->SetDisplayMode('fullpage');
+        $html2pdf->pdf->SetCreator('APPOE | AOE - Communication');
+        $html2pdf->pdf->SetAuthor('APPOE | AOE - Communication');
+        $html2pdf->pdf->SetTitle($pdfName);
+        $html2pdf->pdf->SetSubject($pdfName);
+        $html2pdf->pdf->SetKeywords($pdfName);
         $html2pdf->writeHTML(getPdfContent($templateSlug, $params), isset($_GET['vuehtml']));
         $html2pdf->Output($pdfName . '.pdf', $destination);
     } catch (Exception $e) {
