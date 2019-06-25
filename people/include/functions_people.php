@@ -40,7 +40,16 @@ function people_addPersonFormFields(array $excludesFields = array(), array $data
     //html form
     $html = getTokenField();
     $html .= '<div class="my-4"></div><div class="row">';
-    $html .= $showType ? '<div class="col my-2">' . App\Form::select('Enregistrement de type', 'type', getAppTypes(), $type, true) . '</div>' : '';
+
+    if ($showType) {
+        $html .= '<div class="col my-2">' . App\Form::text('Enregistrement de type', 'type', 'text', $type, true, 150, 'list="typeList" autocomplete="off"') . '</div>';
+
+        $html .= '<datalist id="typeList">';
+        foreach (getAppTypes() as $name) {
+            $html .= '<option value="' . $name . '">' . $name . '</option>';
+        }
+        $html .= '</datalist>';
+    }
 
     $html .= $natureF ? '<div class="col my-2">' . App\Form::select('Nature', 'nature', getPeopleNatureName(), $nature, $natureR) . '</div>' : '';
     $html .= $nameF ? '<div class="col my-2">' . App\Form::text('Nom', 'name', 'text', $name, $nameR, 150) . '</div>' : '';
@@ -85,7 +94,7 @@ function getPeopleNatureNameById($natureId)
     if (array_key_exists($natureId, getPeopleNatureName())) {
         return PEOPLE_NATURE[$natureId];
     }
-    return false;
+    return $natureId;
 }
 
 /**
@@ -98,5 +107,23 @@ function getPeopleData($type = '', array $data = array('name'))
 
     $People = new People();
     $People->setType($type);
-    return $People->showDataForExport($data);
+    return clearPeopleData($People->showDataForExport($data));
+}
+
+/**
+ * @param $data
+ * @return mixed
+ */
+function clearPeopleData($data)
+{
+
+    foreach ($data as &$people) {
+
+        if (is_object($people)) {
+            $people->nature = getPeopleNatureNameById($people->nature);
+        } elseif (is_array($people)) {
+            $people['nature'] = getPeopleNatureNameById($people['nature']);
+        }
+    }
+    return $data;
 }

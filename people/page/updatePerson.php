@@ -1,11 +1,16 @@
-<?php require('header.php');
-if (!empty($_GET['id'])): ?>
-    <?php
-    $People = new \App\Plugin\People\People();
+<?php
+require('header.php');
+
+use App\Plugin\People\People;
+
+if (!empty($_GET['id'])):
+
+    $People = new People();
     $People->setId($_GET['id']);
-    if ($People->show()) : ?>
-        <?php require(PEOPLE_PATH . 'process/postProcess.php'); ?>
-        <?= getTitle($Page->getName(), $Page->getSlug()); ?>
+    if ($People->show()) :
+
+        require(PEOPLE_PATH . 'process/postProcess.php');
+        echo getTitle($Page->getName(), $Page->getSlug()); ?>
         <div class="container">
             <?php if (isset($Response)): ?>
                 <div class="row">
@@ -21,7 +26,12 @@ if (!empty($_GET['id'])): ?>
                 <input type="hidden" name="id" value="<?= $People->getId(); ?>">
                 <div class="row">
                     <div class="col-12 col-lg-4 my-2">
-                        <?= \App\Form::select('Enregistrement de type', 'type', getAppTypes(), $People->getType(), true); ?>
+                        <?= \App\Form::text('Enregistrement de type', 'type', 'text', $People->getType(), true, 150, 'list="typeList" autocomplete="off"'); ?>
+                        <datalist id="typeList">
+                            <?php foreach (getAppTypes() as $type => $name): ?>
+                                <option value="<?= $type; ?>"><?= $name; ?></option>
+                            <?php endforeach; ?>
+                        </datalist>
                     </div>
                     <div class="col-12 col-lg-4 my-2">
                         <?= \App\Form::select('Nature de la personne', 'nature', getPeopleNatureName(), $People->getNature(), true); ?>
@@ -72,10 +82,10 @@ if (!empty($_GET['id'])): ?>
             </form>
             <div class="my-4"></div>
         </div>
-    <?php else: ?>
-        <?= getContainerErrorMsg(trans('Cette page n\'existe pas')); ?>
-    <?php endif; ?>
-<?php else: ?>
-    <?= trans('Cette page n\'existe pas'); ?>
-<?php endif; ?>
-<?php require('footer.php'); ?>
+    <?php else:
+        echo getContainerErrorMsg(trans('Cette page n\'existe pas'));
+    endif;
+else:
+    echo trans('Cette page n\'existe pas');
+endif;
+require('footer.php'); ?>
