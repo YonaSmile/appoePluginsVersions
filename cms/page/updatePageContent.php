@@ -29,6 +29,7 @@ if (!empty($_GET['id'])):
         //get all html files
         $files = getFilesFromDir(WEB_PUBLIC_PATH . 'html/', ['onlyFiles' => true, 'onlyExtension' => 'php', 'noExtensionDisplaying' => true]);
 
+        echo getAsset('mediaLibrary', true);
         echo getTitle(trans('Contenu de la page') . '<strong> ' . $Cms->getName() . '</strong>', $Page->getSlug()); ?>
         <div class="row my-2">
 
@@ -119,8 +120,7 @@ if (!empty($_GET['id'])):
             <nav id="headerLinks" class="btn-group-vertical"></nav>
         <?php else: ?>
             <p><?= trans('Model manquant'); ?></p>
-        <?php endif;
-        echo getAsset('mediaLibrary', true); ?>
+        <?php endif; ?>
         <div class="modal fade" id="updatePageModal" tabindex="-1" role="dialog"
              aria-labelledby="updatePageModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
