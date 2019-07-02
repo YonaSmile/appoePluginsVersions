@@ -7,6 +7,24 @@ if (checkAjaxRequest()) {
 
         $_POST = cleanRequest($_POST);
 
+        if (!empty($_POST['shareLink'])) {
+
+            if (!empty($_POST['url'])) {
+
+                $url = WEB_DIR_URL . DEFAULT_ARTICLES_PAGE . DIRECTORY_SEPARATOR . $_POST['url'];
+
+                $message = !empty($_POST['message']) ? $_POST['message'] . ' ' . $url : $url;
+
+                if (twitter_share_article($message)) {
+
+                    echo trans('L\'article a été partagé');
+                } else {
+                    echo trans('Un problème est survenue lors du partage de l\'article');
+                }
+                exit();
+            }
+        }
+
         if (!empty($_POST['sendMessageToLists'])) {
 
             if (!empty($_POST['lists']) && !empty($_POST['message']) && !empty($_POST['url'])) {
@@ -20,6 +38,7 @@ if (checkAjaxRequest()) {
                 } else {
                     echo 'false';
                 }
+                exit();
             }
         }
     }

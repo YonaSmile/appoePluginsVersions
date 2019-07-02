@@ -8,44 +8,49 @@ use App\Plugin\ItemGlue\ArticleMedia;
 use App\Plugin\ItemGlue\ArticleMeta;
 
 /**
- * @param $articleId
+ * @param object|int $articleId
  * @return Article|bool
  */
 function getArticlesDataById($articleId)
 {
     if (is_numeric($articleId)) {
-
         $Article = new Article($articleId);
 
-        if ($Article) {
-
-            //get article content
-            $ArticleContent = new ArticleContent($Article->getId(), LANG);
-            $Article->content = htmlSpeCharDecode($ArticleContent->getContent());
-
-            //Get Media
-            $ArticleMedia = new ArticleMedia($Article->getId());
-            $Article->medias = $ArticleMedia->showFiles();
-
-            //Get Metas
-            $ArticleMeta = new ArticleMeta($Article->getId());
-            if ($ArticleMeta->getData()) {
-                $Article->metas = extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue');
-            }
-
-            //get all categories in relation with article
-            $Article->categories = extractFromObjToSimpleArr(getCategoriesByArticle($Article->getId()), 'categoryId', 'name');
-
-            //Get Traduction
-            if (LANG != "fr") {
-                $Article->setName(trad($Article->getName()));
-                $Article->setDescription(trad($Article->getDescription()));
-                $Article->setSlug(trad($Article->getSlug()));
-            }
-
-            return $Article;
-        }
+    } elseif (is_object($articleId)) {
+        $Article = $articleId;
+    } else {
+        $Article = false;
     }
+
+    if ($Article) {
+
+        //get article content
+        $ArticleContent = new ArticleContent($Article->getId(), LANG);
+        $Article->content = htmlSpeCharDecode($ArticleContent->getContent());
+
+        //Get Media
+        $ArticleMedia = new ArticleMedia($Article->getId());
+        $Article->medias = $ArticleMedia->showFiles();
+
+        //Get Metas
+        $ArticleMeta = new ArticleMeta($Article->getId());
+        if ($ArticleMeta->getData()) {
+            $Article->metas = extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue');
+        }
+
+        //get all categories in relation with article
+        $Article->categories = extractFromObjToSimpleArr(getCategoriesByArticle($Article->getId()), 'categoryId', 'name');
+
+        //Get Traduction
+        if (LANG != "fr") {
+            $Article->setName(trad($Article->getName()));
+            $Article->setDescription(trad($Article->getDescription()));
+            $Article->setSlug(trad($Article->getSlug()));
+        }
+
+        return $Article;
+    }
+
     return false;
 }
 
@@ -333,7 +338,7 @@ function getArticlesBySlug($slug)
         $Article->setSlug($slug);
         if ($Article->showBySlug()) {
 
-            return getArticlesDataById($Article->getId());
+            return getArticlesDataById($Article);
         }
     }
     return false;

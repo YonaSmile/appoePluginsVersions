@@ -9,13 +9,29 @@
             <div class="modal-body" id="modalTwitterBody">
                 <nav>
                     <div class="nav nav-tabs" id="nav-twitter-tab" role="tablist">
-                        <a class="nav-item nav-link colorPrimary active" id="nav-twitterGroup-tab" data-toggle="tab"
+                        <a class="nav-item nav-link colorPrimary active sidebarLink" id="nav-twitterStatus-tab"
+                           data-toggle="tab"
+                           href="#twitterStatus"
+                           role="tab" aria-controls="twitterGroup" aria-selected="true">Sur compte Twitter</a>
+                        <a class="nav-item nav-link colorPrimary sidebarLink" id="nav-twitterGroup-tab"
+                           data-toggle="tab"
                            href="#twitterGroup"
-                           role="tab" aria-controls="twitterGroup" aria-selected="true">Group Twitter</a>
+                           role="tab" aria-controls="twitterGroup" aria-selected="false">Group Twitter</a>
                     </div>
                 </nav>
                 <div class="tab-content border border-top-0 bg-white p-3 mb-2" id="nav-tabContent">
-                    <div class="tab-pane fade show active" id="twitterGroup" role="tabpanel"
+                    <div class="tab-pane fade show active" id="twitterStatus" role="tabpanel"
+                         aria-labelledby="nav-twitterStatus-tab">
+
+                        <?= \App\Form::textarea('Message', 'message', '', 3, true); ?>
+                        <button type="button" class="btn btn-sm bgColorPrimary mt-2"
+                                id="submitShareOnTwitter">
+                            <i class="fas fa-share"></i> <?= trans('Partager'); ?>
+                        </button>
+                        <div id="twitterShareInfo" class="my-3"></div>
+
+                    </div>
+                    <div class="tab-pane fade" id="twitterGroup" role="tabpanel"
                          aria-labelledby="nav-twitterGroup-tab">
                     </div>
                 </div>
@@ -36,14 +52,37 @@
             $('#twitterGroup').load('/app/plugin/twitter/data/twitterGroup.php');
         });
 
-        $('body').on('click', 'button#articleTwitterShareButton', function () {
+        $(document.body).on('click', 'button#articleTwitterShareButton', function () {
             shareLink = $(this).data('share-link');
         });
 
-        $('body').on('click', '#submitTwitterGroup', function () {
+        $(document.body).on('click', '#submitShareOnTwitter', function () {
+
+            busyApp(false);
+
+            var $btn = $(this);
+            $btn.html(loaderHtml() + ' partage en cours...');
+            $('#twitterShareInfo').html('');
+
+            $.post(
+                '/app/plugin/twitter/process/ajaxProcess.php',
+                {
+                    shareLink: 'OK',
+                    url: shareLink,
+                    message: $('#twitterStatus textarea#message').val()
+                }
+            ).done(function (data) {
+
+                $btn.remove();
+                $('#twitterShareInfo').html(data);
+                availableApp();
+            });
+        });
+
+        $(document.body).on('click', '#submitTwitterGroup', function () {
 
             if ($('#twitterGroup input[type=checkbox]:checked').length && $('#twitterGroup textarea#message').val().length) {
-                busyApp();
+                busyApp(false);
 
                 var $btn = $(this);
                 $btn.html(loaderHtml() + ' partage en cours...');

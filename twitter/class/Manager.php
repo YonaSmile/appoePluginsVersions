@@ -13,18 +13,39 @@ class Manager
         }
     }
 
+    /**
+     * @param $query
+     * @return array|object
+     */
     public function twitter_search_user($query)
     {
 
         return $this->connection->get('users/search', ['q' => $query]);
     }
 
+    /**
+     * @param $message
+     * @return array|object
+     */
+    public function twitter_share_article($message)
+    {
+        return $this->connection->post('statuses/update', ['status' => $message]);
+    }
+
+    /**
+     * @param string $listName
+     * @return array|object
+     */
     public function twitter_get_lists($listName = '')
     {
 
         return $this->connection->get('lists/list', ['screen_name' => TWITTER_USERNAME, 'Name' => $listName]);
     }
 
+    /**
+     * @param $listName
+     * @return array|object
+     */
     public function twitter_get_list_members($listName)
     {
 
@@ -38,6 +59,10 @@ class Manager
         return $this->connection->get('lists/members', ['screen_name' => TWITTER_USERNAME, 'list_id' => $listId]);
     }
 
+    /**
+     * @param $listName
+     * @return array
+     */
     public function twitter_get_ids_list_members($listName)
     {
         $usersIds = array();
@@ -50,6 +75,11 @@ class Manager
         return $usersIds;
     }
 
+    /**
+     * @param $userId
+     * @param $message
+     * @return array|object
+     */
     public function twitter_send_directMessage($userId, $message)
     {
 

@@ -18,6 +18,13 @@ function twitter_is_active()
     return false;
 }
 
+function twitter_share_article($message)
+{
+
+    $Manager = new Manager();
+    return $Manager->twitter_share_article($message) ? true : false;
+}
+
 function twitter_send_message_to_lists(array $lists, $message)
 {
 
