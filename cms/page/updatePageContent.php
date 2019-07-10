@@ -32,7 +32,7 @@ if (!empty($_GET['id'])):
         echo getAsset('mediaLibrary', true);
         echo getTitle(trans('Contenu de la page') . '<strong> ' . $Cms->getName() . '</strong>', $Page->getSlug()); ?>
         <div class="row my-2">
-            <table class="table">
+            <table class="table noEffect">
                 <thead class="thead-light">
                 <tr>
                     <th>ID</th>
