@@ -22,7 +22,7 @@ function loadPage($slug = 'home', $folder = 'html', $lang = LANG)
     //Check if Page exist and accessible
     if (!$existPage || $Cms->getStatut() != 1) {
         if (false === @include_once(WEB_PUBLIC_PATH . $folder . DIRECTORY_SEPARATOR . $slug . '.php')) {
-            return 'Cette page n\'existe pas.';
+            return 'La page ' . $slug . ' n\'existe pas.';
         }
         return '';
     }
