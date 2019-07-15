@@ -32,28 +32,30 @@ if (!empty($_GET['id'])):
         echo getAsset('mediaLibrary', true);
         echo getTitle(trans('Contenu de la page') . '<strong> ' . $Cms->getName() . '</strong>', $Page->getSlug()); ?>
         <div class="row my-2">
-            <table class="table noEffect">
-                <thead class="thead-light">
-                <tr>
-                    <th>ID</th>
-                    <th><?= trans('Fichier'); ?></th>
-                    <th><?= trans('Slug'); ?></th>
-                    <th><?= trans('Nom du menu'); ?></th>
-                    <th><?= trans('Nom de la page'); ?></th>
-                    <th class="text-left"><?= trans('Description'); ?></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td><?= $Cms->getId(); ?></td>
-                    <td><?= $Cms->getFilename(); ?></td>
-                    <td><?= $Cms->getSlug(); ?></td>
-                    <td><?= $Cms->getMenuName(); ?></td>
-                    <td><?= $Cms->getName(); ?></td>
-                    <td class="text-left"><?= $Cms->getDescription(); ?></td>
-                </tr>
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="table noEffect">
+                    <thead class="thead-light">
+                    <tr>
+                        <th>ID</th>
+                        <th><?= trans('Fichier'); ?></th>
+                        <th><?= trans('Slug'); ?></th>
+                        <th><?= trans('Nom du menu'); ?></th>
+                        <th><?= trans('Nom de la page'); ?></th>
+                        <th class="text-left"><?= trans('Description'); ?></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td><?= $Cms->getId(); ?></td>
+                        <td><?= $Cms->getFilename(); ?></td>
+                        <td><?= $Cms->getSlug(); ?></td>
+                        <td><?= $Cms->getMenuName(); ?></td>
+                        <td><?= $Cms->getName(); ?></td>
+                        <td class="text-left"><?= $Cms->getDescription(); ?></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
             <div class="col-12">
                 <div class="row my-3">
                     <div class="col-12 col-lg-8 my-2">
