@@ -103,15 +103,8 @@ if (!empty($_GET['id'])):
                     $Template->show();
                     ?>
                 </div>
-                <div class="row my-2">
-                    <div class="col-12">
-                        <button type="button" class="btn btn-outline-primary btn-block btn-lg">
-                            <?= trans('Enregistrer'); ?>
-                        </button>
-                    </div>
-                </div>
             </form>
-            <nav id="headerLinks" class="btn-group-vertical"></nav>
+            <nav id="headerLinks" class="btn-group-vertical" data-title="<?= $Cms->getSlug(); ?>"></nav>
         <?php else: ?>
             <p><?= trans('Model manquant'); ?></p>
         <?php endif; ?>
@@ -213,6 +206,7 @@ if (!empty($_GET['id'])):
                     }
                 });
 
+                $('#headerLinks').append('<small class="d-block text-center w-100"><strong>' + $('#headerLinks').data('title') + '</strong></small>');
                 $.each($('.templateZoneTitle'), function () {
                     var id = Math.random().toString(36).substr(2, 9);
                     $(this).attr('id', id);
