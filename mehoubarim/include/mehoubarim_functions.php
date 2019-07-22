@@ -83,7 +83,11 @@ function mehoubarim_checkExistingFiles($file = null)
 function mehoubarim_jsonWrite($data, $file = MEHOUBARIM_JSON, $writingMode = 'w')
 {
     $json_file = fopen($file, $writingMode);
-    fwrite($json_file, json_encode($data));
+    if (flock($json_file, LOCK_EX)) {
+        fwrite($json_file, json_encode($data));
+        fflush($json_file);
+        flock($json_file, LOCK_UN);
+    }
     fclose($json_file);
 }
 
