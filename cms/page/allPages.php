@@ -17,7 +17,8 @@ echo getTitle($Page->getName(), $Page->getSlug());
                     <tr>
                         <th><?= trans('ID'); ?></th>
                         <th><?= trans('Fichier'); ?></th>
-                        <th><?= trans('Nom'); ?></th>
+                        <th><?= trans('Nom du menu'); ?></th>
+                        <th><?= trans('Nom de la page'); ?></th>
                         <th><?= trans('Slug'); ?></th>
                         <th><?= trans('Modifié le'); ?></th>
                         <th></th>
@@ -29,6 +30,7 @@ echo getTitle($Page->getName(), $Page->getSlug());
                             <tr data-idcms="<?= $page->id ?>">
                                 <td><?= $page->id ?></td>
                                 <td><?= $page->filename ?></td>
+                                <td><?= $page->menuName ?></td>
                                 <td><?= $page->name ?></td>
                                 <td><?= $page->slug ?></td>
                                 <td><?= displayTimeStamp($page->updated_at) ?></td>
