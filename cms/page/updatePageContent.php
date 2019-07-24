@@ -104,7 +104,8 @@ if (!empty($_GET['id'])):
                     ?>
                 </div>
             </form>
-            <nav id="headerLinks" class="btn-group-vertical" data-title="<?= $Cms->getSlug(); ?>"></nav>
+            <nav id="headerLinks" class="btn-group-vertical"
+                 data-title="<?= ucfirst(mb_strtolower($Cms->getMenuName())); ?>"></nav>
         <?php else: ?>
             <p><?= trans('Model manquant'); ?></p>
         <?php endif; ?>
