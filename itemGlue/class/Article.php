@@ -11,11 +11,13 @@ class Article
     private $name;
     private $description = null;
     private $slug;
+    private $content;
     private $statut = 1;
     private $userId;
     private $createdAt;
     private $updatedAt;
 
+    private $lang = LANG;
     private $dbh = null;
 
     public function __construct($idArticle = null)
@@ -24,11 +26,12 @@ class Article
             $this->dbh = DB::connect();
         }
 
+        $this->userId = getUserIdSession();
+
         if (!is_null($idArticle)) {
             $this->id = $idArticle;
             $this->show();
         }
-        $this->userId = getUserIdSession();
     }
 
     /**
@@ -98,6 +101,22 @@ class Article
     /**
      * @return mixed
      */
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    /**
+     * @param mixed $content
+     */
+    public function setContent($content)
+    {
+        $this->content = $content;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getStatut()
     {
         return $this->statut;
@@ -159,16 +178,27 @@ class Article
         $this->updatedAt = $updatedAt;
     }
 
+    /**
+     * @return bool|mixed|string
+     */
+    public function getLang()
+    {
+        return $this->lang;
+    }
+
+    /**
+     * @param bool|mixed|string $lang
+     */
+    public function setLang($lang)
+    {
+        $this->lang = $lang;
+    }
+
     public function createTable()
     {
         $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_itemGlue_articles` (
   					`id` INT(11) NOT NULL AUTO_INCREMENT,
                 	PRIMARY KEY (`id`),
-  					`name` VARCHAR(100) NOT NULL,
-  					UNIQUE (`name`),
-  					`description` VARCHAR(160) NULL DEFAULT NULL,
-  					`slug` VARCHAR(100) DEFAULT NULL,
-  					UNIQUE (`slug`),
   					`statut` BOOLEAN NOT NULL DEFAULT TRUE,
   					`userId` INT(11) NOT NULL,
                 	`created_at` DATE NOT NULL,
@@ -190,11 +220,17 @@ class Article
      */
     public function show()
     {
-
-        $sql = 'SELECT * FROM appoe_plugin_itemGlue_articles WHERE id = :id';
+        $sql = 'SELECT C.*,
+        (SELECT cc1.content FROM appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = C.id AND cc1.lang = :lang) AS name,
+        (SELECT cc2.content FROM appoe_plugin_itemGlue_articles_content AS cc2 WHERE cc2.type = "DESCRIPTION" AND cc2.idArticle = C.id AND cc2.lang = :lang) AS description,
+        (SELECT cc3.content FROM appoe_plugin_itemGlue_articles_content AS cc3 WHERE cc3.type = "SLUG" AND cc3.idArticle = C.id AND cc3.lang = :lang) AS slug,
+        (SELECT cc4.content FROM appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = C.id AND cc4.lang = :lang) AS content
+        FROM appoe_plugin_itemGlue_articles AS C
+        WHERE C.id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
+        $stmt->bindParam(':lang', $this->lang);
         $stmt->execute();
 
         $count = $stmt->rowCount();
@@ -222,9 +258,17 @@ class Article
     public function showBySlug()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_itemGlue_articles WHERE slug = :slug AND statut >= :statut';
+        $sql = 'SELECT C.*,
+        (SELECT cc1.content FROM appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = C.id AND cc1.lang = :lang) AS name,
+        (SELECT cc2.content FROM appoe_plugin_itemGlue_articles_content AS cc2 WHERE cc2.type = "DESCRIPTION" AND cc2.idArticle = C.id AND cc2.lang = :lang) AS description,
+        (SELECT cc3.content FROM appoe_plugin_itemGlue_articles_content AS cc3 WHERE cc3.type = "SLUG" AND cc3.idArticle = C.id AND cc3.lang = :lang) AS slug,
+        (SELECT cc4.content FROM appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = C.id AND cc4.lang = :lang) AS content
+        FROM appoe_plugin_itemGlue_articles AS C
+        WHERE C.id = (SELECT idArticle FROM appoe_plugin_itemGlue_articles_content WHERE type = "SLUG" AND content = :slug AND lang = :lang) 
+        AND C.statut >= :statut';
 
         $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':lang', $this->lang);
         $stmt->bindParam(':slug', $this->slug);
         $stmt->bindParam(':statut', $this->statut);
         $stmt->execute();
@@ -262,8 +306,13 @@ class Article
             $categorySQL = ' AND (C.id = :idCategory OR C.parentId = :idCategory) ';
         }
 
-        $sql = 'SELECT DISTINCT ART.id, ART.name, ART.description, ART.slug, ART.userId, ART.created_at, ART.updated_at, ART.statut, 
-        GROUP_CONCAT(DISTINCT C.id SEPARATOR ";") AS categoryIds, GROUP_CONCAT(DISTINCT C.name SEPARATOR ";") AS categoryNames, AC.content AS content
+        $sql = 'SELECT DISTINCT ART.id, 
+         (SELECT cc1.content FROM appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = ART.id AND cc1.lang = :lang) AS name,
+        (SELECT cc2.content FROM appoe_plugin_itemGlue_articles_content AS cc2 WHERE cc2.type = "DESCRIPTION" AND cc2.idArticle = ART.id AND cc2.lang = :lang) AS description,
+        (SELECT cc3.content FROM appoe_plugin_itemGlue_articles_content AS cc3 WHERE cc3.type = "SLUG" AND cc3.idArticle = ART.id AND cc3.lang = :lang) AS slug,
+        (SELECT cc4.content FROM appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = ART.id AND cc4.lang = :lang) AS content,
+         ART.userId, ART.created_at, ART.updated_at, ART.statut, 
+        GROUP_CONCAT(DISTINCT C.id SEPARATOR ";") AS categoryIds, GROUP_CONCAT(DISTINCT C.name SEPARATOR ";") AS categoryNames
         FROM appoe_categoryRelations AS CR 
         RIGHT JOIN appoe_plugin_itemGlue_articles AS ART 
         ON(CR.typeId = ART.id) 
@@ -298,10 +347,16 @@ class Article
         $limit = $length ? ' LIMIT ' . $length . ' OFFSET 0' : '';
         $featured = $this->statut == 1 ? ' statut >= 1' : ' statut = ' . $this->statut . ' ';
 
-        $sql = 'SELECT * FROM appoe_plugin_itemGlue_articles 
+        $sql = 'SELECT ART.*,
+         (SELECT cc1.content FROM appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = ART.id AND cc1.lang = :lang) AS name,
+        (SELECT cc2.content FROM appoe_plugin_itemGlue_articles_content AS cc2 WHERE cc2.type = "DESCRIPTION" AND cc2.idArticle = ART.id AND cc2.lang = :lang) AS description,
+        (SELECT cc3.content FROM appoe_plugin_itemGlue_articles_content AS cc3 WHERE cc3.type = "SLUG" AND cc3.idArticle = ART.id AND cc3.lang = :lang) AS slug,
+        (SELECT cc4.content FROM appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = ART.id AND cc4.lang = :lang) AS content 
+         FROM appoe_plugin_itemGlue_articles AS ART
         WHERE ' . $featured . ' ORDER BY statut DESC, name ASC ' . $limit;
 
         $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':lang', $this->lang);
         $stmt->execute();
 
         $count = $stmt->rowCount();
@@ -325,11 +380,13 @@ class Article
         $limit = $length ? ' LIMIT ' . $length . ' OFFSET 0' : '';
         $featured = $this->statut == 1 ? ' ART.statut >= 1' : ' ART.statut = ' . $this->statut . ' ';
 
-        $sql = 'SELECT ART.*, AC.content AS content 
-        FROM appoe_plugin_itemGlue_articles AS ART
-        LEFT JOIN appoe_plugin_itemGlue_articles_content AS AC
-        ON(AC.idArticle = ART.id)
-        WHERE ' . $featured . ' AND (AC.lang IS NULL OR AC.lang = :lang) 
+        $sql = 'SELECT ART.*,
+        (SELECT cc1.content FROM appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = ART.id AND cc1.lang = :lang) AS name,
+        (SELECT cc2.content FROM appoe_plugin_itemGlue_articles_content AS cc2 WHERE cc2.type = "DESCRIPTION" AND cc2.idArticle = ART.id AND cc2.lang = :lang) AS description,
+        (SELECT cc3.content FROM appoe_plugin_itemGlue_articles_content AS cc3 WHERE cc3.type = "SLUG" AND cc3.idArticle = ART.id AND cc3.lang = :lang) AS slug,
+        (SELECT cc4.content FROM appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = ART.id AND cc4.lang = :lang) AS content
+        FROM appoe_plugin_itemGlue_articles AS ART     
+        WHERE ' . $featured . '
         ORDER BY ART.statut DESC, ART.created_at DESC ' . $limit;
 
         $stmt = $this->dbh->prepare($sql);
@@ -368,7 +425,12 @@ class Article
         $limit = $length ? ' LIMIT ' . $length . ' OFFSET 0' : '';
         $featured = $this->statut == 1 ? ' ART.statut >= 1' : ' ART.statut = ' . $this->statut . ' ';
 
-        $sql = 'SELECT ART.*, AC.content AS content FROM appoe_plugin_itemGlue_articles AS ART
+        $sql = 'SELECT ART.*, 
+         (SELECT cc1.content FROM appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = ART.id AND cc1.lang = :lang) AS name,
+        (SELECT cc2.content FROM appoe_plugin_itemGlue_articles_content AS cc2 WHERE cc2.type = "DESCRIPTION" AND cc2.idArticle = ART.id AND cc2.lang = :lang) AS description,
+        (SELECT cc3.content FROM appoe_plugin_itemGlue_articles_content AS cc3 WHERE cc3.type = "SLUG" AND cc3.idArticle = ART.id AND cc3.lang = :lang) AS slug,
+        (SELECT cc4.content FROM appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = ART.id AND cc4.lang = :lang) AS content
+         FROM appoe_plugin_itemGlue_articles AS ART
         LEFT JOIN appoe_plugin_itemGlue_articles_content AS AC
         ON(AC.idArticle = ART.id)
         WHERE ' . $featured . ' AND (AC.lang IS NULL OR AC.lang = :lang) ' . $sqlArchives . ' ORDER BY ART.statut DESC, ART.name ASC ' . $limit;
@@ -406,7 +468,11 @@ class Article
             }
         }
 
-        $sql = 'SELECT ART.*, AC.content AS content,
+        $sql = 'SELECT ART.*, 
+        (SELECT cc1.content FROM appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = ART.id AND cc1.lang = :lang) AS name,
+        (SELECT cc2.content FROM appoe_plugin_itemGlue_articles_content AS cc2 WHERE cc2.type = "DESCRIPTION" AND cc2.idArticle = ART.id AND cc2.lang = :lang) AS description,
+        (SELECT cc3.content FROM appoe_plugin_itemGlue_articles_content AS cc3 WHERE cc3.type = "SLUG" AND cc3.idArticle = ART.id AND cc3.lang = :lang) AS slug,
+        (SELECT cc4.content FROM appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = ART.id AND cc4.lang = :lang) AS content,
         GROUP_CONCAT(DISTINCT C.id SEPARATOR ";") AS categoryIds, GROUP_CONCAT(DISTINCT C.name SEPARATOR ";") AS categoryNames 
         FROM appoe_plugin_itemGlue_articles AS ART
         INNER JOIN appoe_plugin_itemGlue_articles_content AS AC
@@ -469,7 +535,11 @@ class Article
             }
         }
 
-        $sql = 'SELECT ART.*, AC.content AS content,
+        $sql = 'SELECT ART.*,
+        (SELECT cc1.content FROM appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = ART.id AND cc1.lang = :lang) AS name,
+        (SELECT cc2.content FROM appoe_plugin_itemGlue_articles_content AS cc2 WHERE cc2.type = "DESCRIPTION" AND cc2.idArticle = ART.id AND cc2.lang = :lang) AS description,
+        (SELECT cc3.content FROM appoe_plugin_itemGlue_articles_content AS cc3 WHERE cc3.type = "SLUG" AND cc3.idArticle = ART.id AND cc3.lang = :lang) AS slug,
+        (SELECT cc4.content FROM appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = ART.id AND cc4.lang = :lang) AS content,
         GROUP_CONCAT(DISTINCT C.id SEPARATOR ";") AS categoryIds, GROUP_CONCAT(DISTINCT C.name SEPARATOR ";") AS categoryNames 
         FROM appoe_plugin_itemGlue_articles AS ART
         INNER JOIN appoe_plugin_itemGlue_articles_content AS AC
@@ -526,7 +596,11 @@ class Article
         $featured = $this->statut == 1 ? ' ART.statut >= 1' : ' ART.statut = ' . $this->statut . ' ';
 
         $sql = 'SELECT DISTINCT ART.id, ART.name, ART.description, ART.slug, ART.userId, ART.created_at, ART.updated_at, ART.statut, 
-        GROUP_CONCAT(DISTINCT C.id SEPARATOR ";") AS categoryIds, GROUP_CONCAT(DISTINCT C.name SEPARATOR ";") AS categoryNames, AC.content AS content
+        GROUP_CONCAT(DISTINCT C.id SEPARATOR ";") AS categoryIds, GROUP_CONCAT(DISTINCT C.name SEPARATOR ";") AS categoryNames,
+        (SELECT cc1.content FROM appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = ART.id AND cc1.lang = :lang) AS name,
+        (SELECT cc2.content FROM appoe_plugin_itemGlue_articles_content AS cc2 WHERE cc2.type = "DESCRIPTION" AND cc2.idArticle = ART.id AND cc2.lang = :lang) AS description,
+        (SELECT cc3.content FROM appoe_plugin_itemGlue_articles_content AS cc3 WHERE cc3.type = "SLUG" AND cc3.idArticle = ART.id AND cc3.lang = :lang) AS slug,
+        (SELECT cc4.content FROM appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = ART.id AND cc4.lang = :lang) AS content
         FROM appoe_categoryRelations AS CR 
         RIGHT JOIN appoe_plugin_itemGlue_articles AS ART 
         ON(CR.typeId = ART.id) 
@@ -554,13 +628,10 @@ class Article
     public function save()
     {
 
-        $sql = 'INSERT INTO appoe_plugin_itemGlue_articles (name, description, slug, statut, userId, created_at) 
-                VALUES (:name, :description, :slug, :statut, :userId, CURDATE())';
+        $sql = 'INSERT INTO appoe_plugin_itemGlue_articles (statut, userId, created_at) 
+                VALUES (:statut, :userId, CURDATE())';
 
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':name', $this->name);
-        $stmt->bindParam(':description', $this->description);
-        $stmt->bindParam(':slug', $this->slug);
         $stmt->bindParam(':statut', $this->statut);
         $stmt->bindParam(':userId', $this->userId);
         $stmt->execute();
@@ -572,7 +643,7 @@ class Article
             return false;
         } else {
             $this->setId($this->id);
-            appLog('Creating Article -> name: ' . $this->name . ' description: ' . $this->description . ' slug: ' . $this->slug . ' statut: ' . $this->statut);
+            appLog('Creating Article -> id: ' . $this->id);
             return true;
         }
     }
@@ -583,12 +654,9 @@ class Article
     public function update()
     {
 
-        $sql = 'UPDATE appoe_plugin_itemGlue_articles SET name = :name, description = :description, slug = :slug, statut = :statut, userId = :userId, created_at = :created_at WHERE id = :id';
+        $sql = 'UPDATE appoe_plugin_itemGlue_articles SET statut = :statut, userId = :userId, created_at = :created_at WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':name', $this->name);
-        $stmt->bindParam(':description', $this->description);
-        $stmt->bindParam(':slug', $this->slug);
         $stmt->bindParam(':statut', $this->statut);
         $stmt->bindParam(':userId', $this->userId);
         $stmt->bindParam(':created_at', $this->createdAt);
@@ -600,7 +668,7 @@ class Article
         if ($error[0] != '00000') {
             return false;
         } else {
-            appLog('Updating Article -> id: ' . $this->id . ' name: ' . $this->name . ' description: ' . $this->description . ' slug: ' . $this->slug . ' statut: ' . $this->statut);
+            appLog('Updating Article -> id: ' . $this->id . ' statut: ' . $this->statut);
             return true;
         }
     }
@@ -635,43 +703,6 @@ class Article
         } else {
             appLog('Deleting Article -> id: ' . $this->id);
             return true;
-        }
-    }
-
-
-    /**
-     * @param bool $forUpdate
-     *
-     * @return bool
-     */
-    public function notExist($forUpdate = false)
-    {
-        $condition = ' name = :name OR slug = :slug ';
-        if ($forUpdate) {
-            $condition = ' id != :id AND (name = :name OR slug = :slug) ';
-        }
-
-        $sql = 'SELECT id, name, slug FROM appoe_plugin_itemGlue_articles WHERE ' . $condition;
-        $stmt = $this->dbh->prepare($sql);
-
-        if ($forUpdate) {
-            $stmt->bindParam(':id', $this->id);
-        }
-
-        $stmt->bindParam(':name', $this->name);
-        $stmt->bindParam(':slug', $this->slug);
-        $stmt->execute();
-
-        $count = $stmt->rowCount();
-        $error = $stmt->errorInfo();
-        if ($error[0] != '00000') {
-            return false;
-        } else {
-            if ($count == 1) {
-                return false;
-            } else {
-                return true;
-            }
         }
     }
 

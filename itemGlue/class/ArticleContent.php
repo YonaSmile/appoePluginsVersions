@@ -9,19 +9,21 @@ class ArticleContent
 {
     private $id;
     private $idArticle;
+    private $type = 'BODY';
     private $content;
-    private $lang;
+    private $lang = APP_LANG;
 
     private $dbh = null;
 
-    public function __construct($idArticle = null, $lang = null)
+    public function __construct($idArticle = null, $type = null, $lang = null)
     {
         if (is_null($this->dbh)) {
             $this->dbh = DB::connect();
         }
 
-        if (!is_null($idArticle) && !is_null($lang)) {
+        if (!is_null($idArticle) && !is_null($type) && !is_null($lang)) {
             $this->idArticle = $idArticle;
+            $this->type = $type;
             $this->lang = $lang;
             $this->show();
         }
@@ -57,6 +59,22 @@ class ArticleContent
     public function setIdArticle($idArticle)
     {
         $this->idArticle = $idArticle;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param mixed $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
     }
 
     /**
@@ -98,6 +116,7 @@ class ArticleContent
   					`id` INT(11) NOT NULL AUTO_INCREMENT,
                 	PRIMARY KEY (`id`),
                 	`idArticle` INT(11) NOT NULL,
+                	`type` VARCHAR(25) NOT NULL DEFAULT "BODY",
   					`content` TEXT NOT NULL,
   					`lang` VARCHAR(10) NOT NULL,
                 	`updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -120,9 +139,10 @@ class ArticleContent
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_itemGlue_articles_content WHERE idArticle = :idArticle AND lang = :lang';
+        $sql = 'SELECT * FROM appoe_plugin_itemGlue_articles_content WHERE idArticle = :idArticle AND type = :type AND lang = :lang';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':idArticle', $this->idArticle);
+        $stmt->bindParam(':type', $this->type);
         $stmt->bindParam(':lang', $this->lang);
         $stmt->execute();
 
@@ -151,11 +171,12 @@ class ArticleContent
     public function save()
     {
 
-        $sql = 'INSERT INTO appoe_plugin_itemGlue_articles_content (idArticle, content, lang) 
-                VALUES (:idArticle, :content, :lang)';
+        $sql = 'INSERT INTO appoe_plugin_itemGlue_articles_content (idArticle, type, content, lang) 
+                VALUES (:idArticle, :type, :content, :lang)';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':idArticle', $this->idArticle);
+        $stmt->bindParam(':type', $this->type);
         $stmt->bindParam(':content', $this->content);
         $stmt->bindParam(':lang', $this->lang);
         $stmt->execute();
@@ -167,9 +188,46 @@ class ArticleContent
             return false;
         } else {
             $this->id = $id;
-            appLog('Creating Article content -> idArticle: ' . $this->idArticle . ' lang: ' . $this->lang);
+            appLog('Creating Article content -> idArticle: ' . $this->idArticle . ' type: ' . $this->type . ' lang: ' . $this->lang);
             return true;
         }
+    }
+
+    /**
+     * @param $headers
+     * @return bool
+     */
+    public function saveHeaders($headers)
+    {
+
+        $authorizedHeaders = array('NAME', 'DESCRIPTION', 'SLUG');
+
+        if (!isArrayEmpty($headers)) {
+
+
+            $sql = 'INSERT INTO appoe_plugin_itemGlue_articles_content (idArticle, type, content, lang) 
+                VALUES (?, ?, ?, ?)';
+
+            $stmt = $this->dbh->prepare($sql);
+
+            foreach (getLangs() as $lang => $longLang) {
+                foreach ($headers as $type => $content) {
+                    if (in_array($type, $authorizedHeaders)) {
+                        $stmt->execute(array($this->idArticle, $type, $content, $lang));
+                    }
+                }
+            }
+
+            $error = $stmt->errorInfo();
+            if ($error[0] == '00000') {
+                appLog('Creating article headers -> idArticle: ' . $this->idArticle);
+            }
+            return true;
+
+
+        }
+
+        return false;
     }
 
     /**
@@ -193,6 +251,39 @@ class ArticleContent
             appLog('Updating Article content -> id: ' . $this->id);
             return true;
         }
+    }
+
+    /**
+     * @param $headers
+     * @return bool
+     */
+    public function updateHeaders($headers)
+    {
+
+        $authorizedHeaders = array('NAME', 'DESCRIPTION', 'SLUG');
+
+        if (!isArrayEmpty($headers)) {
+
+            $sql = 'UPDATE appoe_plugin_itemGlue_articles_content 
+            SET content = :content WHERE idArticle = :idArticle AND type = :type AND lang = :lang';
+
+            $stmt = $this->dbh->prepare($sql);
+
+
+            foreach ($headers as $type => $content) {
+                if (in_array($type, $authorizedHeaders)) {
+                    $stmt->execute(array(':content' => $content, ':idArticle' => $this->idArticle, ':type' => $type, ':lang' => $this->lang));
+                }
+            }
+
+            $error = $stmt->errorInfo();
+            if ($error[0] == '00000') {
+                appLog('Updating article headers -> idArticle: ' . $this->idArticle . ' lang: ' . $this->lang);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -226,10 +317,10 @@ class ArticleContent
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id, idArticle, content, lang FROM appoe_plugin_itemGlue_articles_content WHERE idArticle = :idArticle AND content = :content AND lang = :lang';
+        $sql = 'SELECT id FROM appoe_plugin_itemGlue_articles_content WHERE idArticle = :idArticle AND type = :type AND lang = :lang';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':idArticle', $this->idArticle);
-        $stmt->bindParam(':content', $this->content);
+        $stmt->bindParam(':type', $this->type);
         $stmt->bindParam(':lang', $this->lang);
         $stmt->execute();
 

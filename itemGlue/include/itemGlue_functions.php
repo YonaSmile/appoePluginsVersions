@@ -3,7 +3,6 @@
 use App\Category;
 use App\CategoryRelations;
 use App\Plugin\ItemGlue\Article;
-use App\Plugin\ItemGlue\ArticleContent;
 use App\Plugin\ItemGlue\ArticleMedia;
 use App\Plugin\ItemGlue\ArticleMeta;
 
@@ -25,8 +24,7 @@ function getArticlesDataById($articleId)
     if ($Article) {
 
         //get article content
-        $ArticleContent = new ArticleContent($Article->getId(), LANG);
-        $Article->content = htmlSpeCharDecode($ArticleContent->getContent());
+        $Article->setContent(htmlSpeCharDecode($Article->getContent()));
 
         //Get Media
         $ArticleMedia = new ArticleMedia($Article->getId());
@@ -40,13 +38,6 @@ function getArticlesDataById($articleId)
 
         //get all categories in relation with article
         $Article->categories = extractFromObjToSimpleArr(getCategoriesByArticle($Article->getId()), 'categoryId', 'name');
-
-        //Get Traduction
-        if (LANG != "fr") {
-            $Article->setName(trad($Article->getName()));
-            $Article->setDescription(trad($Article->getDescription()));
-            $Article->setSlug(trad($Article->getSlug()));
-        }
 
         return $Article;
     }
@@ -65,13 +56,6 @@ function getArticleData(stdClass $article)
     $ArticleMeta = new ArticleMeta($article->id);
     if ($ArticleMeta->getData()) {
         $article->metas = extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue');
-    }
-
-    //Get Traduction
-    if (LANG != "fr") {
-        $article->name = trad($article->name);
-        $article->description = trad($article->description);
-        $article->slug = trad($article->slug);
     }
 
     return $article;
@@ -295,9 +279,6 @@ function getSpecificArticlesDetailsBySlug($slug)
         $Article->setSlug($slug);
         if ($Article->showBySlug()) {
 
-            //get article content
-            $ArticleContent = new ArticleContent($Article->getId(), LANG);
-
             //get all categories in relation with article
             $CategoryRelation = new CategoryRelations('ITEMGLUE', $Article->getId());
             $allCategoriesRelations = $CategoryRelation->getData();
@@ -311,7 +292,7 @@ function getSpecificArticlesDetailsBySlug($slug)
             $allArticleMedia = $ArticleMedia->showFiles();
 
             $all['article'] = $Article;
-            $all['content'] = $ArticleContent;
+            $all['content'] = $Article->getContent();
             $all['meta'] = $allArticleMeta;
             $all['categories'] = $allCategoriesRelations;
             $all['media'] = $allArticleMedia;
@@ -331,14 +312,28 @@ function getArticlesBySlug($slug)
 {
     if (!empty($slug)) {
 
-        $slug = trad($slug, true);
-
         //get article
         $Article = new Article();
         $Article->setSlug($slug);
-        if ($Article->showBySlug()) {
 
+        if ($Article->showBySlug()) {
             return getArticlesDataById($Article);
+        }
+
+        //Check for other languages
+        $testedLang = array(LANG);
+
+        foreach (getLangs() as $minLang => $largeLang) {
+            if (!in_array($minLang, $testedLang)) {
+
+                $testedLang[] = $minLang;
+                $Article->setLang($minLang);
+
+                if ($Article->showBySlug()) {
+                    return getArticlesDataById($Article);
+                    break;
+                }
+            }
         }
     }
     return false;

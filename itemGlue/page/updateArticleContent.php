@@ -3,7 +3,6 @@
 use App\Category;
 use App\CategoryRelations;
 use App\Plugin\ItemGlue\Article;
-use App\Plugin\ItemGlue\ArticleContent;
 use App\Plugin\ItemGlue\ArticleMedia;
 
 require('header.php');
@@ -12,12 +11,12 @@ if (!empty($_GET['id'])):
     require(ITEMGLUE_PATH . 'process/postProcess.php');
     $Article = new Article();
     $Article->setId($_GET['id']);
+    $Article->setLang(APP_LANG);
 
-    if ($Article->show()) :
+    if ($Article->show()):
 
         $Article->setStatut(1);
         $allArticles = $Article->showAll(false, false, 'fr');
-        $ArticleContent = new ArticleContent($Article->getId(), APP_LANG);
 
         $Category = new Category();
         $Category->setType('ITEMGLUE');
@@ -42,19 +41,14 @@ if (!empty($_GET['id'])):
         <?php endif; ?>
         <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                <a class="nav-item nav-link colorPrimary <?= empty($Response->MediaTabactive) ? 'active' : ''; ?>"
+                <a class="nav-item nav-link sidebarLink colorPrimary <?= empty($Response->MediaTabactive) ? 'active' : ''; ?>"
                    id="nav-allLibraries-tab" data-toggle="tab"
                    href="#nav-allLibraries"
                    role="tab" aria-controls="nav-allLibraries"
                    aria-selected="true"><?= trans('Contenu de l\'article'); ?></a>
-                <a class="nav-item nav-link colorPrimary <?= !empty($Response->MediaTabactive) ? 'active' : ''; ?>"
+                <a class="nav-item nav-link sidebarLink colorPrimary <?= !empty($Response->MediaTabactive) ? 'active' : ''; ?>"
                    id="nav-newFiles-tab" data-toggle="tab" href="#nav-newFiles" role="tab"
                    aria-controls="nav-newFiles" aria-selected="false"><?= trans('Les médias'); ?></a>
-                <?php if (class_exists('App\Plugin\Traduction\Traduction')): ?>
-                    <a class="nav-item nav-link colorPrimary"
-                       id="nav-traductions-tab" data-toggle="tab" href="#nav-traduction" role="tab"
-                       aria-controls="nav-traduction" aria-selected="false"><?= trans('Traductions'); ?></a>
-                <?php endif; ?>
             </div>
         </nav>
         <div class="tab-content border border-top-0 bg-white py-3 mb-2" id="nav-mediaTabContent">
@@ -64,13 +58,11 @@ if (!empty($_GET['id'])):
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-12">
-                            <?php if (APP_LANG == 'fr' && $Menu->checkUserPermission(getUserRoleId(), 'updateArticle')): ?>
-                                <a id="updateArticleBtn"
-                                   href="<?= getPluginUrl('itemGlue/page/update/', $Article->getId()); ?>"
-                                   class="btn btn-warning btn-sm">
-                                    <span class="fas fa-wrench"></span> <?= trans('Modifier les en-têtes'); ?>
-                                </a>
-                            <?php endif; ?>
+                            <a id="updateArticleBtn" data-toggle="modal" data-target="#updateArticleHeadersModal"
+                               href="<?= getPluginUrl('itemGlue/page/update/', $Article->getId()); ?>"
+                               class="btn btn-warning btn-sm">
+                                <span class="fas fa-wrench"></span> <?= trans('Modifier les en-têtes'); ?>
+                            </a>
                             <button id="addMetaArticleBtn" type="button" class="btn btn-info btn-sm"
                                     data-toggle="modal"
                                     data-target="#modalAddArticleMeta">
@@ -114,7 +106,7 @@ if (!empty($_GET['id'])):
                                 <input type="hidden" name="articleId" value="<?= $Article->getId(); ?>">
                                 <div class="col-12">
                                         <textarea name="articleContent" id="articleContent"
-                                                  class="ckeditor"><?= html_entity_decode($ArticleContent->getContent()); ?></textarea>
+                                                  class="ckeditor"><?= html_entity_decode($Article->getContent()); ?></textarea>
                                 </div>
                                 <div class="my-2"></div>
                                 <div class="col-12">
@@ -199,36 +191,6 @@ if (!empty($_GET['id'])):
                     <?php endif; ?>
                 </div>
             </div>
-            <?php if (class_exists('App\Plugin\Traduction\Traduction')): ?>
-                <div class="tab-pane fade" id="nav-traduction" role="tabpanel"
-                     aria-labelledby="nav-traductions-tab">
-                    <div class="container-fluid">
-                        <?php if (APP_LANG != 'fr'): ?>
-                            <form action="" method="post" class="positionRelative pb-2" id="articleTraductionForm">
-                                <small class="categoryIdFloatContenaire">Enregistré</small>
-                                <div class="row">
-                                    <div class="col-12 my-2">
-                                        <?= \App\Form::text('Nom', $Article->getName(), 'text', trad($Article->getName(), false, APP_LANG), false, 250, '', '', 'articleName'); ?>
-                                    </div>
-                                    <div class="col-12 my-2">
-                                        <?= \App\Form::text('Description', $Article->getDescription(), 'text', trad($Article->getDescription(), false, APP_LANG), false, 250, '', '', 'articleDescription'); ?>
-                                    </div>
-                                    <div class="col-12 my-2">
-                                        <?= \App\Form::text('Nom du lien URL (slug)', $Article->getSlug(), 'text', trad($Article->getSlug(), false, APP_LANG), false, 250, '', '', 'articleSlug'); ?>
-                                    </div>
-                                </div>
-                            </form>
-                            <div class="text-right my-2">
-                                <button id="updateSlugAuto" class="btn btn-sm btn-outline-dark">
-                                    <?= trans('Mettre à jour le lien de l\'article'); ?>
-                                </button>
-                            </div>
-                        <?php else: ?>
-                            <p><?= trans('Pour traduire vous devez changer de langue'); ?></p>
-                        <?php endif; ?>
-                    </div>
-                </div>
-            <?php endif; ?>
         </div>
         <div class="modal fade" id="allMediasModal" tabindex="-1" role="dialog" aria-labelledby="allMediasModalLabel"
              aria-hidden="true">
@@ -247,6 +209,51 @@ if (!empty($_GET['id'])):
                         <button type="button" id="saveMediaModalBtn" class="btn btn-info" data-dismiss="modal">
                             0 <?= trans('médias'); ?></button>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="updateArticleHeadersModal" tabindex="-1" role="dialog"
+             aria-labelledby="updateArticleHeadersModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form action="" method="post" id="updateArticleHeadersForm">
+                        <div class="modal-header">
+                            <h5 class="modal-title"
+                                id="updateArticleHeadersModalLabel"><?= trans('Modifier les en têtes'); ?></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="custom-control custom-checkbox my-3">
+                                <input type="checkbox" class="custom-control-input" id="updateSlugAuto">
+                                <label class="custom-control-label"
+                                       for="updateSlugAuto"><?= trans('Mettre à jour le lien de l\'article automatiquement'); ?></label>
+                            </div>
+
+                            <?= getTokenField(); ?>
+                            <input type="hidden" name="id" value="<?= $Article->getId(); ?>">
+                            <div class="row my-2">
+                                <div class="col-12 my-2">
+                                    <?= \App\Form::text('Nom', 'name', 'text', $Article->getName(), true, 70); ?>
+                                </div>
+                                <div class="col-12 my-2">
+                                    <?= \App\Form::text('Description', 'description', 'text', $Article->getDescription(), true, 300); ?>
+                                </div>
+                                <div class="col-12 my-2">
+                                    <?= \App\Form::text('Nom du lien URL' . ' (slug)', 'slug', 'text', $Article->getSlug(), true, 100); ?>
+                                </div>
+                                <div class="col-12 mt-2">
+                                    <?= \App\Form::radio('Statut de l\'article', 'statut', array_map('trans', ITEMGLUE_ARTICLES_STATUS), $Article->getStatut(), true); ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <?= \App\Form::target('UPDATEARTICLEHEADERS'); ?>
+                            <button type="submit" name="UPDATEARTICLEHEADERSSUBMIT"
+                                    class="btn btn-outline-info"><?= trans('Enregistrer'); ?></button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -506,35 +513,14 @@ if (!empty($_GET['id'])):
                     $(this).text('<?= trans('copié'); ?>');
                 });
 
-                $('#updateSlugAuto').on('click', function () {
-                    $('input.articleSlug').val(convertToSlug($('input.articleName').val())).trigger('input');
+                $('#updateSlugAuto').on('change', function () {
+                    $('form#updateArticleHeadersForm input#slug').val(convertToSlug($('form#updateArticleHeadersForm input#name').val()));
                 });
 
-                $('.categoryIdFloatContenaire').hide();
-                $('form#articleTraductionForm').on('input', 'input', function (event) {
-                    event.preventDefault();
-
-                    var $input = $(this);
-                    var metaKey = $input.attr('name');
-                    var metaValue = $input.val();
-
-                    busyApp();
-                    delay(function () {
-                        $.post(
-                            '/app/plugin/traduction/process/ajaxProcess.php',
-                            {
-                                web_itemGlue_traduction: 'OK',
-                                metaKey: metaKey,
-                                metaValue: metaValue
-                            },
-                            function (data) {
-                                if (data === true || data == 'true') {
-                                    $('.categoryIdFloatContenaire').stop().fadeIn().delay(2000).fadeOut();
-                                    availableApp();
-                                }
-                            }
-                        );
-                    }, 300);
+                $('form#updateArticleHeadersForm input#name').on('input', function () {
+                    if ($('form#updateArticleHeadersForm #updateSlugAuto').is(':checked')) {
+                        $('form#updateArticleHeadersForm input#slug').val(convertToSlug($(this).val()));
+                    }
                 });
             });
         </script>

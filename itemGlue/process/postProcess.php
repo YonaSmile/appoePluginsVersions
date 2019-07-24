@@ -1,4 +1,11 @@
 <?php
+
+use App\CategoryRelations;
+use App\Plugin\ItemGlue\Article;
+use App\Plugin\ItemGlue\ArticleContent;
+use App\Plugin\ItemGlue\ArticleMedia;
+use App\Plugin\ItemGlue\ArticleMeta;
+
 if (checkPostAndTokenRequest()) {
 
     //Clean data
@@ -9,9 +16,13 @@ if (checkPostAndTokenRequest()) {
 
     if (isset($_POST['ADDARTICLE'])) {
 
-        if (!empty($_POST['name']) && !empty($_POST['slug'])) {
+        if (!empty($_POST['name'])
+            && !empty($_POST['description'])
+            && !empty($_POST['slug'])
+            && !empty($_POST['statut'])
+        ) {
 
-            $Article = new \App\Plugin\ItemGlue\Article();
+            $Article = new Article();
 
             $lastCharSlug = substr($_POST['slug'], -1);
             if ($lastCharSlug == '-') {
@@ -19,52 +30,44 @@ if (checkPostAndTokenRequest()) {
             }
 
             //Add Article
-            $Article->feed($_POST);
+            $Article->setStatut($_POST['statut']);
+            if ($Article->save()) {
 
-            if ($Article->notExist()) {
-                if ($Article->save()) {
+                $ArticleContent = new ArticleContent();
+                $ArticleContent->setIdArticle($Article->getId());
 
-                    //Add Translation
-                    if (class_exists('App\Plugin\Traduction\Traduction')) {
-                        $Traduction = new \App\Plugin\Traduction\Traduction();
-                        $Traduction->setLang(APP_LANG);
-                        $Traduction->setMetaKey($Article->getName());
-                        $Traduction->setMetaValue($Article->getName());
-                        if ($Traduction->save()) {
-                            $Traduction->setMetaKey(slugify($Article->getSlug()));
-                            $Traduction->setMetaValue(slugify($Article->getSlug()));
-                            $Traduction->save();
-                        }
+                $headers = array(
+                    'NAME' => $_POST['name'],
+                    'DESCRIPTION' => $_POST['description'],
+                    'SLUG' => $_POST['slug']
+                );
+
+                $ArticleContent->saveHeaders($headers);
+
+                //Add Meta
+                if (defined('ARTICLE_META') && is_array(ARTICLE_META)) {
+                    $ArticleMeta = new ArticleMeta();
+                    foreach (ARTICLE_META as $metaKey => $metaValue) {
+                        $ArticleMeta->setIdArticle($Article->getId());
+                        $ArticleMeta->setMetaKey($metaKey);
+                        $ArticleMeta->setMetaValue($metaValue);
+                        $ArticleMeta->save();
                     }
-
-                    //Add Meta
-                    if (defined('ARTICLE_META') && is_array(ARTICLE_META)) {
-                        $ArticleMeta = new \App\Plugin\ItemGlue\ArticleMeta();
-                        foreach (ARTICLE_META as $metaKey => $metaValue) {
-                            $ArticleMeta->setIdArticle($Article->getId());
-                            $ArticleMeta->setMetaKey($metaKey);
-                            $ArticleMeta->setMetaValue($metaValue);
-                            $ArticleMeta->save();
-                        }
-                    }
-
-                    //Delete post data
-                    unset($_POST);
-
-                    $Response->status = 'success';
-                    $Response->error_code = 0;
-                    $Response->error_msg = trans('L\'article a été enregistré') . ' <a href="' . getPluginUrl('itemGlue/page/articleContent/', $Article->getId()) . '">' . trans('Voir l\'article') . '</a>';
-
-                } else {
-                    $Response->status = 'danger';
-                    $Response->error_code = 1;
-                    $Response->error_msg = trans('Un problème est survenu lors de l\'enregistrement de l\'article');
                 }
+
+                //Delete post data
+                unset($_POST);
+
+                $Response->status = 'success';
+                $Response->error_code = 0;
+                $Response->error_msg = trans('L\'article a été enregistré') . ' <a href="' . getPluginUrl('itemGlue/page/articleContent/', $Article->getId()) . '">' . trans('Voir l\'article') . '</a>';
+
             } else {
                 $Response->status = 'danger';
                 $Response->error_code = 1;
-                $Response->error_msg = trans('Le nom ou le slug de l\'article existe déjà');
+                $Response->error_msg = trans('Un problème est survenu lors de l\'enregistrement de l\'article');
             }
+
         } else {
             $Response->status = 'danger';
             $Response->error_code = 1;
@@ -73,42 +76,64 @@ if (checkPostAndTokenRequest()) {
     }
 
 
-    if (isset($_POST['UPDATEARTICLE'])) {
+    if (isset($_POST['UPDATEARTICLEHEADERS'])) {
 
         if (!empty($_POST['id'])
             && !empty($_POST['name'])
+            && !empty($_POST['description'])
             && !empty($_POST['slug'])
+            && !empty($_POST['statut'])
         ) {
 
-            $Article = new \App\Plugin\ItemGlue\Article($_POST['id']);
+            $Article = new Article();
+            $Article->setId($_POST['id']);
 
-            $lastCharSlug = substr($_POST['slug'], -1);
-            if ($lastCharSlug == '-') {
-                $_POST['slug'] = substr($_POST['slug'], 0, -1);
-            }
+            if ($Article->show()) {
+                $Article->setStatut($_POST['statut']);
 
-            //Update Article
-            $Article->feed($_POST);
-            if ($Article->notExist(true)) {
                 if ($Article->update()) {
 
-                    //Delete post data
-                    unset($_POST);
+                    $ArticleContent = new ArticleContent();
+                    $ArticleContent->setIdArticle($Article->getId());
 
-                    $Response->status = 'success';
-                    $Response->error_code = 0;
-                    $Response->error_msg = trans('L\'article a été mise à jour');
+                    $lastCharSlug = substr($_POST['slug'], -1);
+                    if ($lastCharSlug == '-') {
+                        $_POST['slug'] = substr($_POST['slug'], 0, -1);
+                    }
 
+                    $headers = array(
+                        'NAME' => $_POST['name'],
+                        'DESCRIPTION' => $_POST['description'],
+                        'SLUG' => $_POST['slug']
+                    );
+
+                    //Update Headers
+                    if ($ArticleContent->updateHeaders($headers)) {
+
+                        //Delete post data
+                        unset($_POST);
+
+                        $Response->status = 'success';
+                        $Response->error_code = 0;
+                        $Response->error_msg = trans('Les en têtes de l\'article ont étés mises à jour');
+
+                    } else {
+
+                        $Response->status = 'danger';
+                        $Response->error_code = 1;
+                        $Response->error_msg = trans('Un problème est survenu lors de la mise à jour des en têtes de l\'article');
+                    }
                 } else {
 
                     $Response->status = 'danger';
                     $Response->error_code = 1;
-                    $Response->error_msg = trans('Un problème est survenu lors de la mise à jour de l\'article');
+                    $Response->error_msg = trans('Un problème est survenu lors de la mise à jour du statut de l\'article');
                 }
             } else {
+
                 $Response->status = 'danger';
                 $Response->error_code = 1;
-                $Response->error_msg = trans('Le nom ou le slug de l\'article existe déjà');
+                $Response->error_msg = trans('Cet article n\'existe pas');
             }
         } else {
 
@@ -122,7 +147,7 @@ if (checkPostAndTokenRequest()) {
 
         if (!empty($_POST['articleContent']) && !empty($_POST['articleId'])) {
 
-            $ArticleContent = new \App\Plugin\ItemGlue\ArticleContent($_POST['articleId'], APP_LANG);
+            $ArticleContent = new ArticleContent($_POST['articleId'], 'BODY', APP_LANG);
             $ArticleContent->setContent($_POST['articleContent']);
             if (!empty($ArticleContent->getId())) {
                 if ($ArticleContent->update()) {
@@ -140,7 +165,7 @@ if (checkPostAndTokenRequest()) {
                 }
             }
 
-            $CategoryRelation = new \App\CategoryRelations('ITEMGLUE', $_POST['articleId']);
+            $CategoryRelation = new CategoryRelations('ITEMGLUE', $_POST['articleId']);
             $allCategories = $CategoryRelation->getData();
             $allSimpleCategories = extractFromObjToSimpleArr($allCategories, 'id', 'categoryId');
 
@@ -188,7 +213,7 @@ if (checkPostAndTokenRequest()) {
         $html = '';
         $selectedFilesCount = 0;
 
-        $ArticleMedia = new \App\Plugin\ItemGlue\ArticleMedia($_POST['articleId']);
+        $ArticleMedia = new ArticleMedia($_POST['articleId']);
         $ArticleMedia->setUserId(getUserIdSession());
 
         //Get uploaded files

@@ -1,8 +1,12 @@
-<?php require('header.php'); ?>
-<?= getTitle($Page->getName(), $Page->getSlug());
-$Article = new \App\Plugin\ItemGlue\Article();
+<?php require('header.php');
+
+use App\Plugin\ItemGlue\Article;
+
+$Article = new Article();
 $Article->setStatut(0);
 $allArticles = $Article->showAll();
+
+echo getTitle($Page->getName(), $Page->getSlug());
 ?>
     <div class="row">
         <div class="col-12">
@@ -32,10 +36,6 @@ $allArticles = $Article->showAll();
                                         <span class="btnUpdate"><i class="fas fa-cog"></i></span>
                                     </a>
                                     <?php if (isTechnicien(getUserRoleId())): ?>
-                                        <a href="<?= getPluginUrl('itemGlue/page/update/', $article->id) ?>"
-                                           class="btn btn-sm" title="<?= trans('Modifier'); ?>">
-                                            <span class="btnEdit"><i class="fas fa-wrench"></i></span>
-                                        </a>
                                         <button type="button" class="btn btn-sm deleteArticle"
                                                 title="<?= trans('Supprimer'); ?>"
                                                 data-idarticle="<?= $article->id ?>">
