@@ -334,7 +334,7 @@ class CmsContent
 
             foreach ($headers as $key => $val) {
                 if (in_array($key, $authorizedHeaders)) {
-                    $stmt->execute(array('metaValue' => $val, 'idCms' => $this->idCms, 'metaKey' => $key, 'lang' => $this->lang));
+                    $stmt->execute(array(':metaValue' => $val, ':idCms' => $this->idCms, ':metaKey' => $key, ':lang' => $this->lang));
                 }
             }
 
