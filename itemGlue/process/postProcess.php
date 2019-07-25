@@ -82,6 +82,7 @@ if (checkPostAndTokenRequest()) {
             && !empty($_POST['name'])
             && !empty($_POST['description'])
             && !empty($_POST['slug'])
+            && !empty($_POST['createdAt'])
             && !empty($_POST['statut'])
         ) {
 
@@ -90,6 +91,7 @@ if (checkPostAndTokenRequest()) {
 
             if ($Article->show()) {
                 $Article->setStatut($_POST['statut']);
+                $Article->setCreatedAt($_POST['createdAt']);
 
                 if ($Article->update()) {
 

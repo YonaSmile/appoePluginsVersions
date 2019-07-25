@@ -243,6 +243,10 @@ if (!empty($_GET['id'])):
                                 <div class="col-12 my-2">
                                     <?= \App\Form::text('Nom du lien URL' . ' (slug)', 'slug', 'text', $Article->getSlug(), true, 100); ?>
                                 </div>
+                                <hr class="hrStyle">
+                                <div class="col-12 my-2">
+                                    <?= \App\Form::text('Date de création', 'createdAt', 'date', $Article->getCreatedAt(), true, 10); ?>
+                                </div>
                                 <div class="col-12 mt-2">
                                     <?= \App\Form::radio('Statut de l\'article', 'statut', array_map('trans', ITEMGLUE_ARTICLES_STATUS), $Article->getStatut(), true); ?>
                                 </div>
