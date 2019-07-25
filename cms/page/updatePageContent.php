@@ -136,15 +136,15 @@ if (!empty($_GET['id'])):
                                 <div class="col-12 my-2">
                                     <?= \App\Form::text('Description', 'description', 'text', $Cms->getDescription(), true, 300); ?>
                                 </div>
-                                <div class="col-12 mt-2">
+                                <div class="col-12 my-2">
                                     <?= \App\Form::text('Nom du menu', 'menuName', 'text', $Cms->getMenuName(), true, 250); ?>
                                 </div>
-                                <div class="col-12 mt-2">
+                                <div class="col-12 my-2">
                                     <?= \App\Form::text('Nom du lien URL' . ' (slug)', 'slug', 'text', $Cms->getSlug(), true, 100); ?>
                                 </div>
-
-                                <?php if (APP_LANG == "fr" && isTechnicien(getUserRoleId())): ?>
-                                    <div class="col-12 mt-2">
+                                <?php if (isTechnicien(getUserRoleId())): ?>
+                                    <hr class="hrStyle">
+                                    <div class="col-12 my-2">
                                         <?= \App\Form::select('Fichier', 'filename', array_combine($files, $files), $Cms->getFilename(), true); ?>
                                     </div>
                                 <?php endif; ?>

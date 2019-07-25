@@ -688,7 +688,7 @@ class Article
             $ArticleMedia->delete();
         }
 
-        $sql = 'DELETE FROM appoe_categoryRelations WHERE  type = "ITEMGLUE" AND typeId = :id;';
+        $sql = 'DELETE FROM appoe_categoryRelations WHERE type = "ITEMGLUE" AND typeId = :id;';
         $sql .= 'DELETE FROM appoe_plugin_itemGlue_articles_meta WHERE idArticle = :id;';
         $sql .= 'DELETE FROM appoe_plugin_itemGlue_articles_content WHERE idArticle = :id;';
         $sql .= 'DELETE FROM appoe_plugin_itemGlue_articles WHERE id = :id;';
