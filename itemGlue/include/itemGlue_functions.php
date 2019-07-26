@@ -45,6 +45,10 @@ function getArticlesDataById($articleId)
     return false;
 }
 
+/**
+ * @param stdClass $article
+ * @return stdClass
+ */
 function getArticleData(stdClass $article)
 {
 
@@ -361,12 +365,28 @@ function getAllCategoriesInArticles($articles)
 
     if ($articles) {
         foreach ($articles as $article) {
-            $cat = (false !== strpos($article->categoryNames, ';')) ? explode(';', $article->categoryNames) : $article->categoryNames;
+            $cat = (false !== strpos($article->categoryNames, '||')) ? explode('||', $article->categoryNames) : $article->categoryNames;
             array_push($categories, $cat);
         }
         $categories = array_unique(flatten($categories));
     }
     return $categories;
+}
+
+/**
+ * @param string $categories
+ * @param string $separator
+ * @return string
+ */
+function getSlugifyCategories(string $categories, $separator = '||')
+{
+
+    if (false !== strpos($categories, $separator)) {
+        $categories = explode($separator, $categories);
+        $categories = array_map('slugify', $categories);
+        return implode(' ', $categories);
+    }
+    return slugify($categories);
 }
 
 /**
