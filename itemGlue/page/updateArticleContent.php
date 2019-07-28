@@ -306,16 +306,6 @@ if (!empty($_GET['id'])):
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-12 my-2">
-                                            <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" name="addTradValue"
-                                                       id="customCheck1">
-                                                <label class="custom-control-label"
-                                                       for="customCheck1"><?= trans('Ajouter une traduction'); ?></label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
                                         <div class="col-12 col-lg-3 my-2">
                                             <button type="reset" name="reset" id="resetmeta"
                                                     class="btn btn-outline-danger btn-block btn-lg">
@@ -458,8 +448,11 @@ if (!empty($_GET['id'])):
 
                     addMetaArticle(data).done(function (results) {
                         if (results == 'true') {
+
                             //clear form
-                            $('#resetmeta').trigger('click');
+                            $('input[name="UPDATEMETAARTICLE"]').val('');
+                            CKEDITOR.instances.metaValue.setData('');
+                            $('form#addArticleMetaForm').trigger('reset');
 
                             $('#metaArticleContenair')
                                 .html(loaderHtml())

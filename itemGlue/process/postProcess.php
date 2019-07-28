@@ -46,13 +46,19 @@ if (checkPostAndTokenRequest()) {
 
                 //Add Meta
                 if (defined('ARTICLE_META') && is_array(ARTICLE_META)) {
+
                     $ArticleMeta = new ArticleMeta();
-                    foreach (ARTICLE_META as $metaKey => $metaValue) {
-                        $ArticleMeta->setIdArticle($Article->getId());
-                        $ArticleMeta->setMetaKey($metaKey);
-                        $ArticleMeta->setMetaValue($metaValue);
-                        $ArticleMeta->save();
+
+                    foreach (getLangs() as $minLang => $largeLang) {
+                        foreach (ARTICLE_META as $metaKey => $metaValue) {
+                            $ArticleMeta->setIdArticle($Article->getId());
+                            $ArticleMeta->setMetaKey($metaKey);
+                            $ArticleMeta->setMetaValue($metaValue);
+                            $ArticleMeta->setLang($minLang);
+                            $ArticleMeta->save();
+                        }
                     }
+
                 }
 
                 //Delete post data

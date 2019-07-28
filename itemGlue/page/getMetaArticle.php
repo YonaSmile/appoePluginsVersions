@@ -1,8 +1,12 @@
 <?php
 require_once($_SERVER['DOCUMENT_ROOT'] . '/app/main.php');
 require_once('../ini.php');
+
+use App\Plugin\ItemGlue\ArticleMeta;
+
 includePluginsFiles();
-$MetaArticle = !empty($_GET['idArticle']) ? new \App\Plugin\ItemGlue\ArticleMeta($_GET['idArticle']) : false;
+$MetaArticle = !empty($_GET['idArticle']) ? new ArticleMeta($_GET['idArticle'], APP_LANG) : false;
+
 if ($MetaArticle && !empty($MetaArticle->getData())): ?>
     <?php $allMetaArticle = extractFromObjArr($MetaArticle->getData(), 'id'); ?>
     <div class="accordion" id="accordionMetaProduct">
