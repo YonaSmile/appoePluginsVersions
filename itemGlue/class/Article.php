@@ -408,40 +408,61 @@ class Article
      * @param bool|int $month
      * @param bool $length
      * @param bool $lang
+     * @param bool|int $idCategory
+     * @param bool $parentCategory
      * @return array|bool
      */
-    public function showArchives($year, $month = false, $length = false, $lang = LANG)
+    public function showArchives($year, $month = false, $length = false, $lang = LANG, $idCategory = false, $parentCategory = false)
     {
         if (!is_numeric($year) || strlen($year) != 4) {
             $year = date('Y');
         }
 
-        $sqlArchives = ' AND (YEAR(ART.updated_at) = :year OR YEAR(AC.updated_at) = :year) ';
+        $sqlArchives = ' AND YEAR(ART.created_at) = :year ';
 
         if ($month && is_numeric($month) && checkdate($month, 1, $year)) {
-            $sqlArchives = ' AND (YEAR(ART.updated_at) = :year OR YEAR(AC.updated_at) = :year) AND (MONTH(ART.updated_at) = :month OR MONTH(AC.updated_at) = :month) ';
+            $sqlArchives = ' AND YEAR(ART.created_at) = :year  AND MONTH(ART.created_at) = :month ';
+        }
+
+        $categorySQL = '';
+        if ($idCategory) {
+            $categorySQL = ' AND C.id = :idCategory ';
+            if ($parentCategory) {
+                $categorySQL = ' AND (C.id = :idCategory OR C.parentId = :idCategory) ';
+            }
         }
 
         $limit = $length ? ' LIMIT ' . $length . ' OFFSET 0' : '';
         $featured = $this->statut == 1 ? ' ART.statut >= 1' : ' ART.statut = ' . $this->statut . ' ';
 
-        $sql = 'SELECT ART.*, 
+        $sql = 'SELECT DISTINCT ART.id, 
          (SELECT cc1.content FROM appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = ART.id AND cc1.lang = :lang) AS name,
         (SELECT cc2.content FROM appoe_plugin_itemGlue_articles_content AS cc2 WHERE cc2.type = "DESCRIPTION" AND cc2.idArticle = ART.id AND cc2.lang = :lang) AS description,
         (SELECT cc3.content FROM appoe_plugin_itemGlue_articles_content AS cc3 WHERE cc3.type = "SLUG" AND cc3.idArticle = ART.id AND cc3.lang = :lang) AS slug,
-        (SELECT cc4.content FROM appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = ART.id AND cc4.lang = :lang) AS content
-         FROM appoe_plugin_itemGlue_articles AS ART
-        LEFT JOIN appoe_plugin_itemGlue_articles_content AS AC
+        (SELECT cc4.content FROM appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = ART.id AND cc4.lang = :lang) AS content,
+         ART.userId, ART.created_at, ART.updated_at, ART.statut, 
+        GROUP_CONCAT(DISTINCT C.id SEPARATOR "||") AS categoryIds, GROUP_CONCAT(DISTINCT C.name SEPARATOR "||") AS categoryNames
+        FROM appoe_categoryRelations AS CR 
+        RIGHT JOIN appoe_plugin_itemGlue_articles AS ART 
+        ON(CR.typeId = ART.id) 
+        INNER JOIN appoe_categories AS C
+        ON(C.id = CR.categoryId)
+        INNER JOIN appoe_plugin_itemGlue_articles_content AS AC
         ON(AC.idArticle = ART.id)
-        WHERE ' . $featured . ' AND (AC.lang IS NULL OR AC.lang = :lang) ' . $sqlArchives . ' ORDER BY ART.statut DESC, ART.name ASC ' . $limit;
+        WHERE ' . $featured . ' AND CR.type = "ITEMGLUE" ' . $sqlArchives . ' AND ART.statut > 0 AND C.status > 0 AND AC.lang = :lang' . $categorySQL . '
+        GROUP BY ART.id ORDER BY ART.statut DESC, name DESC ' . $limit;
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindValue(':lang', $lang);
         $stmt->bindValue(':year', $year);
+
         if ($month) {
             $stmt->bindValue(':month', $month);
         }
 
+        if ($idCategory) {
+            $stmt->bindParam(':idCategory', $idCategory);
+        }
         $stmt->execute();
         $error = $stmt->errorInfo();
         if ($error[0] != '00000') {

@@ -201,6 +201,36 @@ function getPreviousArticle($id, $idCategory = false, $parent = false)
 }
 
 /**
+ * @param $year
+ * @param bool $month
+ * @param int $status
+ * @param int|bool $length
+ * @param string $lang
+ * @param int|bool $idCategory
+ * @param bool $parentCategory
+ * @return array|bool
+ */
+function getArticlesArchives($year, $month = false, $status = 1, $length = false, $lang = LANG, $idCategory = false, $parentCategory = false)
+{
+    if (is_numeric($year)) {
+
+        $Article = new Article();
+        $Article->setStatut($status);
+        $allArticles = $Article->showArchives($year, $month, $length, $lang, $idCategory, $parentCategory);
+
+        if (!$allArticles) return false;
+
+        foreach ($allArticles as $key => &$article) {
+
+            $article = getArticleData($article);
+        }
+
+        return $allArticles;
+    }
+    return false;
+}
+
+/**
  * @param $categoryId
  * @param bool $parentId
  * @param int $favorite
@@ -374,6 +404,24 @@ function getAllCategoriesInArticles($articles)
             array_push($categories, $cat);
         }
         $categories = array_unique(flatten($categories));
+    }
+    return $categories;
+}
+
+/**
+ * @param $article
+ * @return array
+ */
+function getCategoriesInArticle($article)
+{
+    $categories = array();
+
+    if ($article) {
+        if (false !== strpos($article->categoryNames, '||')) {
+            $categories = explode('||', $article->categoryNames);
+        } else {
+            $categories[] = $article->categoryNames;
+        }
     }
     return $categories;
 }
