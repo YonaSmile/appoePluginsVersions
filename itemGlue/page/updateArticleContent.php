@@ -450,9 +450,7 @@ if (!empty($_GET['id'])):
                         if (results == 'true') {
 
                             //clear form
-                            $('input[name="UPDATEMETAARTICLE"]').val('');
-                            CKEDITOR.instances.metaValue.setData('');
-                            $('form#addArticleMetaForm').trigger('reset');
+                            $('#resetmeta').trigger('click');
 
                             $('#metaArticleContenair')
                                 .html(loaderHtml())

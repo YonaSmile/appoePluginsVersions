@@ -8,9 +8,10 @@ use App\Plugin\ItemGlue\ArticleMeta;
 
 /**
  * @param object|int $articleId
+ * @param string $lang
  * @return Article|bool
  */
-function getArticlesDataById($articleId)
+function getArticlesDataById($articleId, $lang = LANG)
 {
     if (is_numeric($articleId)) {
         $Article = new Article($articleId);
@@ -31,7 +32,7 @@ function getArticlesDataById($articleId)
         $Article->medias = $ArticleMedia->showFiles();
 
         //Get Metas
-        $ArticleMeta = new ArticleMeta($Article->getId());
+        $ArticleMeta = new ArticleMeta($Article->getId(), $lang);
         if ($ArticleMeta->getData()) {
             $Article->metas = extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue');
         }
@@ -334,7 +335,7 @@ function getArticlesBySlug($slug)
                 $Article->setLang($minLang);
 
                 if ($Article->showBySlug()) {
-                    return getArticlesDataById($Article);
+                    return getArticlesDataById($Article, $minLang);
                     break;
                 }
             }
@@ -416,4 +417,14 @@ function getArticleUrl(stdClass $Article, $meta = 'link', $page = '')
     }
 
     return articleUrl($Article->slug, $page);
+}
+
+/**
+ * @param array $articleMetas
+ * @param $key
+ * @return mixed|string
+ */
+function getArticleMeta(array $articleMetas, $key)
+{
+    return !empty($articleMetas[$key]) ? $articleMetas[$key] : '';
 }

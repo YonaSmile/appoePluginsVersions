@@ -16,7 +16,7 @@ class ArticleMeta
     private $data = null;
     private $dbh = null;
 
-    public function __construct($idArticle = null, $lang = null)
+    public function __construct($idArticle = null, $lang = LANG)
     {
         if (is_null($this->dbh)) {
             $this->dbh = DB::connect();
