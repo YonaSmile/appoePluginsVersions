@@ -77,6 +77,8 @@ function getArticlesByCategory($categoryId, $parent = false, $length = false)
     $Article = new Article();
     $allArticles = $Article->showByCategory($categoryId, $parent);
 
+    if (!$allArticles) return false;
+
     foreach ($allArticles as &$article) {
         $article = getArticleData($article);
     }
@@ -94,11 +96,12 @@ function getRecentArticles($length = false)
     $Article = new Article();
     $allArticles = $Article->showAllByLang(false, $length);
 
-    if ($allArticles) {
-        foreach ($allArticles as &$article) {
-            $article = getArticleData($article);
-        }
+    if (!$allArticles) return false;
+
+    foreach ($allArticles as &$article) {
+        $article = getArticleData($article);
     }
+
     return $allArticles;
 }
 
@@ -113,11 +116,12 @@ function getSearchingArticles($searching)
     $Article = new Article();
     $allArticles = $Article->searchFor($searching);
 
-    if ($allArticles) {
-        foreach ($allArticles as &$article) {
-            $article = getArticleData($article);
-        }
+    if (!$allArticles) return false;
+
+    foreach ($allArticles as &$article) {
+        $article = getArticleData($article);
     }
+
     return $allArticles;
 }
 
