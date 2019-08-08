@@ -33,9 +33,7 @@ function getArticlesDataById($articleId, $lang = LANG)
 
         //Get Metas
         $ArticleMeta = new ArticleMeta($Article->getId(), $lang);
-        if ($ArticleMeta->getData()) {
-            $Article->metas = extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue');
-        }
+        $Article->metas = $ArticleMeta->getData() ? extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue') : array();
 
         //get all categories in relation with article
         $Article->categories = extractFromObjToSimpleArr(getCategoriesByArticle($Article->getId()), 'categoryId', 'name');
@@ -59,9 +57,7 @@ function getArticleData(stdClass $article)
 
     //Get Metas
     $ArticleMeta = new ArticleMeta($article->id);
-    if ($ArticleMeta->getData()) {
-        $article->metas = extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue');
-    }
+    $article->metas = $ArticleMeta->getData() ? extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue') : array();
 
     return $article;
 }
@@ -410,17 +406,18 @@ function getAllCategoriesInArticles($articles)
 
 /**
  * @param $article
+ * @param $property
  * @return array
  */
-function getCategoriesInArticle($article)
+function getCategoriesInArticle($article, $property = 'categoryNames')
 {
     $categories = array();
 
     if ($article) {
-        if (false !== strpos($article->categoryNames, '||')) {
-            $categories = explode('||', $article->categoryNames);
+        if (false !== strpos($article->$property, '||')) {
+            $categories = explode('||', $article->$property);
         } else {
-            $categories[] = $article->categoryNames;
+            $categories[] = $article->$property;
         }
     }
     return $categories;
@@ -476,7 +473,10 @@ function getArticleUrl(stdClass $Article, $meta = 'link', $page = '')
  * @param $key
  * @return mixed|string
  */
-function getArticleMeta(array $articleMetas, $key)
+function getArticleMeta($articleMetas, $key)
 {
-    return !empty($articleMetas[$key]) ? $articleMetas[$key] : '';
+    if (is_array($articleMetas)) {
+        return !empty($articleMetas[$key]) ? $articleMetas[$key] : '';
+    }
+    return '';
 }
