@@ -228,28 +228,18 @@ class Article
         FROM appoe_plugin_itemGlue_articles AS C
         WHERE C.id = :id';
 
-        $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':id', $this->id);
-        $stmt->bindParam(':lang', $this->lang);
-        $stmt->execute();
+        $params = array(':id' => $this->id, ':lang' => $this->lang);
 
-        $count = $stmt->rowCount();
-        $error = $stmt->errorInfo();
-        if ($error[0] != '00000') {
-            return false;
-        } else {
-            if ($count == 1) {
+        $return = DB::exec($sql, $params);
+        if ($return) {
 
-                $row = $stmt->fetch(PDO::FETCH_OBJ);
-                $this->feed($row);
+            if ($return->rowCount() == 1) {
 
+                $this->feed($return->fetch(PDO::FETCH_OBJ));
                 return true;
-
-            } else {
-
-                return false;
             }
         }
+        return false;
     }
 
     /**
@@ -267,29 +257,18 @@ class Article
         WHERE C.id = (SELECT idArticle FROM appoe_plugin_itemGlue_articles_content WHERE type = "SLUG" AND content = :slug AND lang = :lang) 
         AND C.statut >= :statut';
 
-        $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':lang', $this->lang);
-        $stmt->bindParam(':slug', $this->slug);
-        $stmt->bindParam(':statut', $this->statut);
-        $stmt->execute();
+        $params = array(':lang' => $this->lang, ':slug' => $this->slug, ':statut' => $this->statut);
 
-        $count = $stmt->rowCount();
-        $error = $stmt->errorInfo();
-        if ($error[0] != '00000') {
-            return false;
-        } else {
-            if ($count == 1) {
+        $return = DB::exec($sql, $params);
+        if ($return) {
 
-                $row = $stmt->fetch(PDO::FETCH_OBJ);
-                $this->feed($row);
+            if ($return->rowCount() == 1) {
 
+                $this->feed($return->fetch(PDO::FETCH_OBJ));
                 return true;
-
-            } else {
-
-                return false;
             }
         }
+        return false;
     }
 
     /**
@@ -323,18 +302,14 @@ class Article
         WHERE CR.type = "ITEMGLUE" AND ART.statut > 0 AND C.status > 0 AND AC.lang = :lang' . $categorySQL . '
         GROUP BY ART.id ORDER BY ART.statut DESC, ART.created_at DESC';
 
-        $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':idCategory', $idCategory);
-        $stmt->bindValue(':lang', $lang);
-        $stmt->execute();
+        $params = array(':idCategory' => $idCategory, ':lang' => $lang);
 
-        $count = $stmt->rowCount();
-        $error = $stmt->errorInfo();
-        if ($error[0] != '00000') {
-            return false;
-        } else {
-            return (!$countArticles) ? $stmt->fetchAll(PDO::FETCH_OBJ) : $count;
+        $return = DB::exec($sql, $params);
+        if ($return) {
+
+            return (!$countArticles) ? $return->fetchAll(PDO::FETCH_OBJ) : $return->rowCount();
         }
+        return false;
     }
 
     /**
