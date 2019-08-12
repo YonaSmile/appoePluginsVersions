@@ -330,18 +330,14 @@ class Article
          FROM appoe_plugin_itemGlue_articles AS ART
         WHERE ' . $featured . ' ORDER BY statut DESC, name ASC ' . $limit;
 
-        $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':lang', $this->lang);
-        $stmt->execute();
+        $params = array(':lang' => $this->lang);
+        $return = DB::exec($sql, $params);
 
-        $count = $stmt->rowCount();
-        $error = $stmt->errorInfo();
+        if ($return) {
 
-        if ($error[0] != '00000') {
-            return false;
-        } else {
-            return (!$countArticles) ? $stmt->fetchAll(PDO::FETCH_OBJ) : $count;
+            return (!$countArticles) ? $return->fetchAll(PDO::FETCH_OBJ) : $return->rowCount();
         }
+        return false;
     }
 
     /**
@@ -364,18 +360,14 @@ class Article
         WHERE ' . $featured . '
         ORDER BY ART.statut DESC, ART.created_at DESC ' . $limit;
 
-        $stmt = $this->dbh->prepare($sql);
-        $stmt->bindValue(':lang', $lang);
-        $stmt->execute();
+        $params = array(':lang' => $lang);
+        $return = DB::exec($sql, $params);
 
-        $count = $stmt->rowCount();
-        $error = $stmt->errorInfo();
+        if ($return) {
 
-        if ($error[0] != '00000') {
-            return false;
-        } else {
-            return (!$countArticles) ? $stmt->fetchAll(PDO::FETCH_OBJ) : $count;
+            return (!$countArticles) ? $return->fetchAll(PDO::FETCH_OBJ) : $return->rowCount();
         }
+        return false;
     }
 
     /**
@@ -427,25 +419,23 @@ class Article
         WHERE ' . $featured . ' AND CR.type = "ITEMGLUE" ' . $sqlArchives . ' AND ART.statut > 0 AND C.status > 0 AND AC.lang = :lang' . $categorySQL . '
         GROUP BY ART.id ORDER BY ART.statut DESC, name DESC ' . $limit;
 
-        $stmt = $this->dbh->prepare($sql);
-        $stmt->bindValue(':lang', $lang);
-        $stmt->bindValue(':year', $year);
+        $params = array(':lang' => $lang, ':year' => $year);
 
         if ($month) {
-            $stmt->bindValue(':month', $month);
+            $params[':month'] = $month;
         }
 
         if ($idCategory) {
-            $stmt->bindParam(':idCategory', $idCategory);
+            $params[':idCategory'] = $idCategory;
         }
-        $stmt->execute();
-        $error = $stmt->errorInfo();
-        if ($error[0] != '00000') {
-            return false;
-        } else {
-            return $stmt->fetchAll(PDO::FETCH_OBJ);
 
+        $return = DB::exec($sql, $params);
+
+        if ($return) {
+
+            return $return->fetchAll(PDO::FETCH_OBJ);
         }
+        return false;
     }
 
     /**
@@ -488,31 +478,22 @@ class Article
         WHERE ART.id > :id AND CR.type = "ITEMGLUE" AND ART.statut >= 1 AND C.status > 0 AND AC.lang = :lang ' . $addSql . ')
         AND AC.lang = :lang';
 
-        $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':id', $this->id);
-        $stmt->bindValue(':lang', $lang);
+        $params = array(':id' => $this->id, ':lang' => $lang);
+
         if (false !== $idCategory) {
-            $stmt->bindParam(':idCategory', $idCategory);
+            $params[':idCategory'] = $idCategory;
         }
-        $stmt->execute();
 
-        $count = $stmt->rowCount();
-        $error = $stmt->errorInfo();
-        if ($error[0] != '00000') {
-            return false;
-        } else {
-            if ($count == 1) {
+        $return = DB::exec($sql, $params);
+        if ($return) {
 
-                $row = $stmt->fetch(PDO::FETCH_OBJ);
-                $this->feed($row);
+            if ($return->rowCount() == 1) {
 
+                $this->feed($return->fetch(PDO::FETCH_OBJ));
                 return true;
-
-            } else {
-
-                return false;
             }
         }
+        return false;
     }
 
     /**
@@ -555,31 +536,22 @@ class Article
         WHERE ART.id < :id AND CR.type = "ITEMGLUE" AND ART.statut >= 1 AND C.status > 0 AND AC.lang = :lang ' . $addSql . ')
         AND AC.lang = :lang';
 
-        $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':id', $this->id);
-        $stmt->bindValue(':lang', $lang);
+        $params = array(':id' => $this->id, ':lang' => $lang);
+
         if (false !== $idCategory) {
-            $stmt->bindParam(':idCategory', $idCategory);
+            $params[':idCategory'] = $idCategory;
         }
-        $stmt->execute();
 
-        $count = $stmt->rowCount();
-        $error = $stmt->errorInfo();
-        if ($error[0] != '00000') {
-            return false;
-        } else {
-            if ($count == 1) {
+        $return = DB::exec($sql, $params);
+        if ($return) {
 
-                $row = $stmt->fetch(PDO::FETCH_OBJ);
-                $this->feed($row);
+            if ($return->rowCount() == 1) {
 
+                $this->feed($return->fetch(PDO::FETCH_OBJ));
                 return true;
-
-            } else {
-
-                return false;
             }
         }
+        return false;
     }
 
     /**
@@ -607,15 +579,14 @@ class Article
         WHERE ' . $featured . ' AND CR.type = "ITEMGLUE" AND C.status > 0 AND (ART.name LIKE ? OR AC.content LIKE ?) 
         AND AC.lang = ? GROUP BY ART.id ORDER BY ART.statut DESC, ART.created_at DESC ';
 
-        $stmt = $this->dbh->prepare($sql);
-        $stmt->execute(array('%' . $searching . '%', '%' . $searching . '%', $lang));
+        $params = array('%' . $searching . '%', '%' . $searching . '%', $lang);
 
-        $error = $stmt->errorInfo();
-        if ($error[0] != '00000') {
-            return false;
-        } else {
-            return $stmt->fetchAll(PDO::FETCH_OBJ);
+        $return = DB::exec($sql, $params);
+        if ($return) {
+
+            return $return->fetchAll(PDO::FETCH_OBJ);
         }
+        return false;
     }
 
     /**
@@ -627,21 +598,18 @@ class Article
         $sql = 'INSERT INTO appoe_plugin_itemGlue_articles (statut, userId, created_at) 
                 VALUES (:statut, :userId, CURDATE())';
 
-        $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':statut', $this->statut);
-        $stmt->bindParam(':userId', $this->userId);
-        $stmt->execute();
+        $params = array(':statut' => $this->statut, ':userId' => $this->userId);
+        $return = DB::exec($sql, $params);
 
-        $this->id = $this->dbh->lastInsertId();
+        if ($return) {
 
-        $error = $stmt->errorInfo();
-        if ($error[0] != '00000') {
-            return false;
-        } else {
+            $this->id = $this->dbh->lastInsertId();
             $this->setId($this->id);
+
             appLog('Creating Article -> id: ' . $this->id);
             return true;
         }
+        return false;
     }
 
     /**
@@ -652,21 +620,15 @@ class Article
 
         $sql = 'UPDATE appoe_plugin_itemGlue_articles SET statut = :statut, userId = :userId, created_at = :created_at WHERE id = :id';
 
-        $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':statut', $this->statut);
-        $stmt->bindParam(':userId', $this->userId);
-        $stmt->bindParam(':created_at', $this->createdAt);
-        $stmt->bindParam(':id', $this->id);
+        $params = array(':statut' => $this->statut, ':userId' => $this->userId, ':created_at' => $this->createdAt, ':id' => $this->id);
+        $return = DB::exec($sql, $params);
 
-        $stmt->execute();
+        if ($return) {
 
-        $error = $stmt->errorInfo();
-        if ($error[0] != '00000') {
-            return false;
-        } else {
             appLog('Updating Article -> id: ' . $this->id . ' statut: ' . $this->statut);
             return true;
         }
+        return false;
     }
 
     /**
@@ -689,17 +651,15 @@ class Article
         $sql .= 'DELETE FROM appoe_plugin_itemGlue_articles_content WHERE idArticle = :id;';
         $sql .= 'DELETE FROM appoe_plugin_itemGlue_articles WHERE id = :id;';
 
-        $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':id', $this->id);
-        $stmt->execute();
+        $params = array(':id' => $this->id);
+        $return = DB::exec($sql, $params);
 
-        $error = $stmt->errorInfo();
-        if ($error[0] != '00000') {
-            return false;
-        } else {
+        if ($return) {
+
             appLog('Deleting Article -> id: ' . $this->id);
             return true;
         }
+        return false;
     }
 
     /**
