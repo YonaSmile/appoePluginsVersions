@@ -181,7 +181,7 @@ class Cms
         $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_cms` (
   					`id` INT(11) NOT NULL AUTO_INCREMENT,
                 	PRIMARY KEY (`id`),
-                	`type` VARCHAR(100) NOT NULL DEFAULT = "PAGE",
+                	`type` VARCHAR(100) NOT NULL DEFAULT "PAGE",
   					`filename` VARCHAR(255) NOT NULL,
   					UNIQUE (`type`, `filename`),
   					`statut` BOOLEAN NOT NULL DEFAULT TRUE,

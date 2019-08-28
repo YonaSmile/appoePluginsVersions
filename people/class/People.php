@@ -20,6 +20,7 @@ class People
     protected $zip = null;
     protected $city = null;
     protected $country = null;
+    protected $idUser = null;
     protected $options = null;
     protected $status = 1;
     protected $createdAt;
@@ -251,6 +252,22 @@ class People
     /**
      * @return null
      */
+    public function getIdUser()
+    {
+        return $this->idUser;
+    }
+
+    /**
+     * @param null $idUser
+     */
+    public function setIdUser($idUser)
+    {
+        $this->idUser = $idUser;
+    }
+
+    /**
+     * @return null
+     */
     public function getOptions()
     {
         return $this->options;
@@ -331,7 +348,7 @@ class People
     public function createTable()
     {
         $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_people` (
-                `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+                `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
                 PRIMARY KEY (`id`),
                 `type` VARCHAR(150) NOT NULL,
                 `nature` VARCHAR(150) DEFAULT NULL,
@@ -346,6 +363,7 @@ class People
                 `zip` VARCHAR(7) DEFAULT NULL,
                 `city` VARCHAR(100) DEFAULT NULL,
                 `country` VARCHAR(100) DEFAULT NULL,
+                `idUser` INT(11) DEFAULT NULL,
                 `options` TEXT,
                 `status` TINYINT(1) NOT NULL DEFAULT 1,
                 `createdAt` DATETIME NOT NULL,
@@ -472,7 +490,7 @@ class People
 
         $sql = 'INSERT INTO appoe_plugin_people 
                 (type, nature, name, firstName, entitled, birthDate, email, tel, address, zip, city, country, options, status, createdAt) 
-                VALUES (:type, :nature, :name, :firstName, :entitled, :birthDate, :email, :tel, :address, :zip, :city, :country, :options, :status, NOW())';
+                VALUES (:type, :nature, :name, :firstName, :entitled, :birthDate, :email, :tel, :address, :zip, :city, :country, :idUser, :options, :status, NOW())';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':type', $this->type);
@@ -487,6 +505,7 @@ class People
         $stmt->bindParam(':zip', $this->zip);
         $stmt->bindParam(':city', $this->city);
         $stmt->bindParam(':country', $this->country);
+        $stmt->bindParam(':idUser', $this->idUser);
         $stmt->bindParam(':options', $this->options);
         $stmt->bindParam(':status', $this->status);
         $stmt->execute();
@@ -513,7 +532,7 @@ class People
 
         $sql = 'UPDATE appoe_plugin_people SET type = :type, nature = :nature, name = :name, firstName = :firstName, 
                 entitled = :entitled, birthDate = :birthDate, email = :email, tel = :tel, address = :address, zip = :zip, 
-                city = :city, country = :country, options = :options, status = :status 
+                city = :city, country = :country, idUser = :idUser, options = :options, status = :status 
                 WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
@@ -529,6 +548,7 @@ class People
         $stmt->bindParam(':zip', $this->zip);
         $stmt->bindParam(':city', $this->city);
         $stmt->bindParam(':country', $this->country);
+        $stmt->bindParam(':idUser', $this->idUser);
         $stmt->bindParam(':options', $this->options);
         $stmt->bindParam(':status', $this->status);
         $stmt->bindParam(':id', $this->id);
