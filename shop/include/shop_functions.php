@@ -1,7 +1,11 @@
 <?php
 
 use App\CategoryRelations;
+use App\Plugin\Shop\Commande;
+use App\Plugin\Shop\CommandeDetails;
+use App\Plugin\Shop\Product;
 use App\Plugin\Shop\ProductContent;
+use App\Plugin\Shop\ProductMeta;
 use App\Plugin\Shop\ShopMedia;
 
 /**
@@ -21,21 +25,18 @@ function shop_financial($amount)
 function shop_getProductDetailsFromSlug($slug, $lang = LANG)
 {
 
-    $Product = new \App\Plugin\Shop\Product();
+    $Product = new Product();
     $Product->setSlug($slug);
 
     if ($Product->showBySlug()) {
 
         $ProductContent = new ProductContent($Product->getId(), $lang);
-        $ProductMeta = new \App\Plugin\Shop\ProductMeta($Product->getId());
+        $ProductMeta = new ProductMeta($Product->getId());
         $ProductMedia = new ShopMedia($Product->getId());
         $CategoryRelation = new CategoryRelations('SHOP', $Product->getId());
 
         $Product->content = $ProductContent;
-
-        if (!empty($ProductMeta->getData())) {
-            $Product->meta = extractFromObjToSimpleArr($ProductMeta->getData(), 'meta_key', 'meta_value');
-        }
+        $Product->meta = extractFromObjToSimpleArr($ProductMeta->getData(), 'meta_key', 'meta_value');
 
         $Product->media = $ProductMedia->showFiles();
         $Product->categories = extractFromObjToSimpleArr($CategoryRelation->getData(), 'categoryId', 'name');
@@ -54,13 +55,13 @@ function shop_getProductDetailsFromSlug($slug, $lang = LANG)
 function shop_getProductDetails($idProduct = null, $lang = LANG)
 {
     //clear incomplet commandes
-    $Commande = new \App\Plugin\Shop\Commande();
+    $Commande = new Commande();
     $Commande->clearIncompletCommandes();
 
     //get necessarily product infos
-    $Product = new \App\Plugin\Shop\Product();
+    $Product = new Product();
     $ProductContent = new ProductContent(null, $lang);
-    $ProductMeta = new \App\Plugin\Shop\ProductMeta();
+    $ProductMeta = new ProductMeta();
     $ProductMedia = new ShopMedia();
 
     if (!is_null($idProduct)) {
@@ -73,9 +74,7 @@ function shop_getProductDetails($idProduct = null, $lang = LANG)
 
             $ProductMeta->setProductId($Product->getId());
             $ProductMeta->show();
-            if (!isArrayEmpty($ProductMeta->getData())) {
-                $Product->meta = extractFromObjToSimpleArr($ProductMeta->getData(), 'meta_key', 'meta_value');
-            }
+            $Product->meta = extractFromObjToSimpleArr($ProductMeta->getData(), 'meta_key', 'meta_value');
 
             $ProductMedia->setTypeId($idProduct);
             $Product->media = $ProductMedia->showFiles();
@@ -120,7 +119,7 @@ function shop_getShoppingCard($saveCommande = false)
     $poidsTotal = 0;
     $totalProductsPrice = 0;
     $allDataProducts = array();
-    $Product = new \App\Plugin\Shop\Product();
+    $Product = new Product();
 
     //check if products is selected
     if (!empty($_COOKIE['PRODUCT'])) {
@@ -194,7 +193,7 @@ function shop_getShoppingCard($saveCommande = false)
 
                 shop_setTotalShopping($totalProductsPrice + $totalTransport);
 
-                $Commande = new \App\Plugin\Shop\Commande();
+                $Commande = new Commande();
                 if (empty($_SESSION['COMMANDE'])) {
 
                     //save commande
@@ -245,7 +244,7 @@ function saveCommandDetails($data, $Commande)
 {
     if ($data && $Commande) {
 
-        $CommandDetails = new \App\Plugin\Shop\CommandeDetails();
+        $CommandDetails = new CommandeDetails();
 
         foreach ($data as $id => $product) {
             if (is_numeric($id)) {
@@ -324,7 +323,7 @@ function shop_getClientInfo()
  */
 function shop_validateCommande($idCommande)
 {
-    if ($Commande = new \App\Plugin\Shop\Commande($idCommande)) {
+    if ($Commande = new Commande($idCommande)) {
 
         //if commande is already paid, the commande will be archived
         if ($Commande->getOrderState() == 2) {
@@ -349,17 +348,17 @@ function shop_validateCommande($idCommande)
 /**
  * @param $idCommande
  * @param bool $productId
- * @return \App\Plugin\Shop\Commande|bool
+ * @return Commande|bool
  */
 function shop_getCommandeDetails($idCommande, $productId = false)
 {
-    if ($Commande = new \App\Plugin\Shop\Commande($idCommande)) {
+    if ($Commande = new Commande($idCommande)) {
 
         if (!$productId) {
             return $Commande;
         }
 
-        $CommandeDetails = new \App\Plugin\Shop\CommandeDetails($Commande->getId());
+        $CommandeDetails = new CommandeDetails($Commande->getId());
         if ($CommandeDetails->show($productId)) {
             return true;
         }
@@ -374,7 +373,7 @@ function shop_getCommandeDetails($idCommande, $productId = false)
  */
 function shop_clearCommande($idCommande = null)
 {
-    $Commande = new \App\Plugin\Shop\Commande();
+    $Commande = new Commande();
 
     if (!is_null($idCommande)) {
 
