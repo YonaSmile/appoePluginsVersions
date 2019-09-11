@@ -1,13 +1,15 @@
 <?php
 require('main.php');
 require_once('ini.php');
-if (!empty($_GET['id']) && !empty($_GET['level']) && isset($_GET['location'])): ?>
-    <?php
-    $InteractiveMap = new \App\Plugin\InteractiveMap\InteractiveMap();
-    $InteractiveMap->setId($_GET['id']);
-    if ($InteractiveMap->show()) : ?>
 
-        <?php
+use App\Plugin\InteractiveMap\InteractiveMap;
+
+if (!empty($_GET['id']) && !empty($_GET['level']) && isset($_GET['location'])):
+
+    $InteractiveMap = new InteractiveMap();
+    $InteractiveMap->setId($_GET['id']);
+    if ($InteractiveMap->show()) :
+
         $map = json_decode($InteractiveMap->getData(), true);
         $allCategories = array();
         if (!empty($map['categories'])) {
@@ -15,10 +17,10 @@ if (!empty($_GET['id']) && !empty($_GET['level']) && isset($_GET['location'])): 
                 $allCategories[$category['id']] = $category['id'];
             }
         }
-        for ($i = 0; $i < count($map['levels']); $i++) : ?>
-            <?php if ($map['levels'][$i]['id'] == $_GET['level']) : ?>
-                <?php foreach ($map['levels'][$i]['locations'] as $location): ?>
-                    <?php if ($location['id'] == $_GET['location']): ?>
+        for ($i = 0; $i < count($map['levels']); $i++) :
+            if ($map['levels'][$i]['id'] == $_GET['level']) :
+                foreach ($map['levels'][$i]['locations'] as $location):
+                    if ($location['id'] == $_GET['location']): ?>
                         <div class="row">
                             <div class="col-12">
                                 <h6>ID : <?= $location['id']; ?></h6>
@@ -32,7 +34,7 @@ if (!empty($_GET['id']) && !empty($_GET['level']) && isset($_GET['location'])): 
                                    value="<?= $location['description']; ?>">
                             <input type="hidden" id="level" name="level" value="<?= $_GET['level']; ?>">
                             <?= \App\Form::text('Titre', 'title', 'text', $location['title'], false, 250, '', '', 'form-control-sm mb-2'); ?>
-                            <?= \App\Form::text('A Propos', 'about', 'text', $location['about'], false, 250, '', '', 'form-control-sm mb-2'); ?>
+                            <?= \App\Form::text('A Propos', 'about', 'text', !empty($location['about']) ? $location['about'] : '', false, 250, '', '', 'form-control-sm mb-2'); ?>
                             <div class="mb-2">
                                 <?= \App\Form::textarea('description', 'ckeditDescription', $location['description'], 5, false, '', 'ckeditorBasic'); ?>
                             </div>
@@ -70,15 +72,15 @@ if (!empty($_GET['id']) && !empty($_GET['level']) && isset($_GET['location'])): 
                                 <div class="btn-group" role="group"
                                      id="markersChoisesImg" <?= !empty($location['pin']) && $location['pin'] != 'hidden' ? '' : 'style="display: none"'; ?>
                                      aria-label="markerChoise">
-                                    <?php foreach (INTERACTIVE_MAP_PINS as $key => $pin): ?>
-                                        <?php if (file_exists(INTERACTIVE_MAP_PATH . 'images/' . $pin)): ?>
+                                    <?php foreach (INTERACTIVE_MAP_PINS as $key => $pin):
+                                        if (file_exists(INTERACTIVE_MAP_PATH . 'images/' . $pin)): ?>
                                             <button type="button"
                                                     class="btn <?= !empty($location['pin']) && $location['pin'] == $key ? 'bg-info' : ''; ?> btn-light markerChoiseBtn p-2 sidebarLink"
                                                     data-pinchoise="<?= $key; ?>">
                                                 <img src="<?= INTERACTIVE_MAP_URL . 'images/' . $pin; ?>">
                                             </button>
-                                        <?php endif; ?>
-                                    <?php endforeach; ?>
+                                        <?php endif;
+                                    endforeach; ?>
                                 </div>
                             <?php endif; ?>
                         </form>
@@ -237,14 +239,11 @@ if (!empty($_GET['id']) && !empty($_GET['level']) && isset($_GET['location'])): 
                                 );
                             }
                         </script>
-                        <?php break; ?>
-
-                    <?php endif; ?>
-                <?php endforeach; ?>
-
-                <?php break; ?>
-
-            <?php endif; ?>
-        <?php endfor; ?>
-    <?php endif; ?>
-<?php endif; ?>
+                        <?php break;
+                    endif;
+                endforeach;
+                break;
+            endif;
+        endfor;
+    endif;
+endif; ?>

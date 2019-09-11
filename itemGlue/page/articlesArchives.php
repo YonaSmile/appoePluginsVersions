@@ -6,7 +6,7 @@ $Article = new Article();
 $Article->setStatut(0);
 $allArticles = $Article->showAll();
 
-echo getTitle($Page->getName(), $Page->getSlug());
+echo getTitle(getAppPageName(), getAppPageSlug());
 ?>
     <div class="row">
         <div class="col-12">

@@ -7,7 +7,7 @@ $Cms->setStatut(0);
 $Cms->setLang(APP_LANG);
 $allPages = extractFromObjArr($Cms->showAllPages(), 'id');
 
-echo getTitle($Page->getName(), $Page->getSlug()); ?>
+echo getTitle(getAppPageName(), getAppPageSlug()); ?>
     <div class="row">
         <div class="col-12">
             <div class="table-responsive">

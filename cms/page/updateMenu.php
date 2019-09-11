@@ -22,7 +22,7 @@ $MENUS = constructMenu($allCmsMenu);
 $allPages = extractFromObjToSimpleArr($allCmsPages, 'id', 'menuName');
 $allArticles = extractFromObjToSimpleArr($Articles->showAll(), 'slug', 'name');
 $allArticlesPages = extractFromObjToSimpleArr($allCmsPages, 'slug', 'menuName');
-echo getTitle($Page->getName(), $Page->getSlug()); ?>
+echo getTitle(getAppPageName(), getAppPageSlug()); ?>
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">

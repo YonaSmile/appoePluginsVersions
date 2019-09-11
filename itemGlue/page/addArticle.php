@@ -1,7 +1,7 @@
 <?php require('header.php');
 require(ITEMGLUE_PATH . 'process/postProcess.php');
 ?>
-<?= getTitle($Page->getName(), $Page->getSlug()); ?>
+<?= getTitle(getAppPageName(), getAppPageSlug()); ?>
 <?php if (isset($Response)): ?>
     <div class="row">
         <div class="col-12">

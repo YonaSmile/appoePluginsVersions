@@ -4,7 +4,7 @@ require(CMS_PATH . 'process/postProcess.php');
 
 $files = getFilesFromDir(WEB_PUBLIC_PATH . 'html/', ['onlyFiles' => true, 'onlyExtension' => 'php', 'noExtensionDisplaying' => true]);
 
-echo getTitle($Page->getName(), $Page->getSlug());
+echo getTitle(getAppPageName(), getAppPageSlug());
 if (isset($Response)): ?>
     <div class="row">
         <div class="col-12">

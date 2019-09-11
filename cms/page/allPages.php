@@ -6,7 +6,7 @@ $Cms = new Cms();
 $Cms->setLang(APP_LANG);
 $allPages = $Cms->showAllPages();
 
-echo getTitle($Page->getName(), $Page->getSlug());
+echo getTitle(getAppPageName(), getAppPageSlug());
 ?>
     <div class="row">
         <div class="col-12">
