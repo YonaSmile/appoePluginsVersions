@@ -4,6 +4,11 @@ require_once(WEB_PLUGIN_PATH . 'mehoubarim/include/mehoubarim_functions.php');
 
 use App\ShinouiKatan;
 
+$order = mehoubarim_getUserOrder(getUserIdSession());
+if ($order === 'disconnect') {
+    disconnectUser();
+}
+
 $mehoubarim_url_parts = explode('/', $_SERVER['PHP_SELF']);
 
 if (in_array('app', $mehoubarim_url_parts) && in_array('page', $mehoubarim_url_parts)) {

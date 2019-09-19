@@ -6,11 +6,8 @@ if (!empty($_POST['resetStats'])) {
 
 $visitors = mehoubarim_getVisitor();
 $globalData = mehoubarim_getGlobal();
-?>
-<?php
 if ($visitors && is_array($visitors['totalPagesViews']) && is_array($visitors['visitors'])):
-    arsort($visitors['totalPagesViews']);
-    ?>
+    arsort($visitors['totalPagesViews']); ?>
     <strong>
         <span class="colorSecondary">
             <i class="fas fa-clock"></i>

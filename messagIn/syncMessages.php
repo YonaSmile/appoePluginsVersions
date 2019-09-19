@@ -1,8 +1,11 @@
 <?php
-require_once('main.php');
-if (getUserIdSession()) {
 
-    $MessagIn = new \App\Plugin\MessagIn\MessagIn(getUserIdSession());
+use App\Plugin\MessagIn\MessagIn;
+
+require_once('main.php');
+if (getUserIdSession() > 0) {
+
+    $MessagIn = new MessagIn(getUserIdSession());
     $messagesCounter = 0;
 
     if ($MessagIn->getData()) {
@@ -11,4 +14,5 @@ if (getUserIdSession()) {
         }
     }
     echo $messagesCounter;
+    exit();
 }

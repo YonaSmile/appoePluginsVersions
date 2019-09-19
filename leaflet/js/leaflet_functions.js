@@ -1,16 +1,20 @@
 function leaflet_getMap(lngLat, zoom) {
 
     //Create Map
-    var map = new L.Map('mapOSM', {scrollWheelZoom: false}).setView(lngLat, zoom);
+    var map = new L.Map('mapOSM', {
+        scrollWheelZoom: false,
+        zoom: 16,
+        maxZoom: 22,
+        gestureHandling: true
+    }).setView(lngLat, zoom);
 
     //Scroll protection
-    map.on('focus', function() { map.scrollWheelZoom.enable(); });
-    map.on('blur', function() { map.scrollWheelZoom.disable(); });
 
     //Add tiles
     map.addLayer(new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '<a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
-        maxZoom: 19
+        maxZoom: 22,
+        maxNativeZoom:22
     }));
 
     return map;
