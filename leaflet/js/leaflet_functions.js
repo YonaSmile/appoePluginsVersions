@@ -75,37 +75,5 @@ function leaflet_showImg(map, imgSrc = '/app/lib/template/images/logo_app.png', 
 function leaflet_aoe(map) {
 
     var marker = new L.Marker([48.585863, 7.763], {title: 'Art Of Event - Communication'}).addTo(map);
-
-    //marker.bindPopup("<b>Art Of Event</b><br>Communication").openPopup();
     marker.bindTooltip("<b>Art Of Event</b><br>Communication");
-
-    var circle = new L.Circle([48.585863, 7.763], {
-        color: '#fff',
-        fillColor: '#fff',
-        fillOpacity: 0.5,
-        radius: 2500
-    }).addTo(map);
-
-    var latlngs = [
-        [
-            [48.565703, 7.63588],
-            [48.603177, 7.659249],
-            [48.565703, 7.695325]
-        ],
-        [
-            [48.57973, 7.644644],
-            [48.580383, 7.68042]
-        ],
-        [
-            [48.603177, 7.858318],
-            [48.603177, 7.825506],
-            [48.566384, 7.825506],
-            [48.566157, 7.857414]
-        ],
-        [
-            [48.584784, 7.825117],
-            [48.584784, 7.856727]
-        ]
-    ];
-    map.addLayer(new L.Polyline(latlngs, {color: '#FFF'}));
 }
