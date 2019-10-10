@@ -27,7 +27,7 @@ if ($visitors && is_array($visitors['totalPagesViews']) && is_array($visitors['v
     <div class="my-4">
         <?php foreach (array_slice($visitors['totalPagesViews'], 0, 5, true) as $name => $nb): ?>
             <div class="my-2 ml-0 ml-lg-4" style="position: relative;">
-                <span class="mr-2"><?= ucfirst(strtolower($name)); ?></span>
+                <span class="mr-2"><?= ucfirst(mb_strtolower($name)); ?></span>
                 <span class="visitsStatsBadge bgColorSecondary"><?= $nb; ?></span>
             </div>
         <?php endforeach; ?>
