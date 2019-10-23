@@ -11,8 +11,7 @@ if (checkPostAndTokenRequest()) {
     //Clean data
     $_POST = cleanRequest($_POST);
 
-    $Response = new \App\Response();
-    $Response->MediaTabactive = false;
+    $MediaTabactive = false;
 
     if (isset($_POST['ADDARTICLE'])) {
 
@@ -63,21 +62,14 @@ if (checkPostAndTokenRequest()) {
 
                 //Delete post data
                 unset($_POST);
-
-                $Response->status = 'success';
-                $Response->error_code = 0;
-                $Response->error_msg = trans('L\'article a été enregistré') . ' <a href="' . getPluginUrl('itemGlue/page/articleContent/', $Article->getId()) . '">' . trans('Voir l\'article') . '</a>';
+                setPostResponse('L\'article a été enregistré', 'success', ('<a href="' . getPluginUrl('itemGlue/page/articleContent/', $Article->getId()) . '">' . trans('Voir l\'article') . '</a>'));
 
             } else {
-                $Response->status = 'danger';
-                $Response->error_code = 1;
-                $Response->error_msg = trans('Un problème est survenu lors de l\'enregistrement de l\'article');
+                setPostResponse('Un problème est survenu lors de l\'enregistrement de l\'article');
             }
 
         } else {
-            $Response->status = 'danger';
-            $Response->error_code = 1;
-            $Response->error_msg = trans('Tous les champs sont obligatoires');
+            setPostResponse('Tous les champs sont obligatoires');
         }
     }
 
@@ -120,34 +112,21 @@ if (checkPostAndTokenRequest()) {
 
                         //Delete post data
                         unset($_POST);
-
-                        $Response->status = 'success';
-                        $Response->error_code = 0;
-                        $Response->error_msg = trans('Les en têtes de l\'article ont étés mises à jour');
+                        setPostResponse('Les en têtes de l\'article ont étés mises à jour', 'success');
 
                     } else {
 
-                        $Response->status = 'danger';
-                        $Response->error_code = 1;
-                        $Response->error_msg = trans('Un problème est survenu lors de la mise à jour des en têtes de l\'article');
+                        setPostResponse('Un problème est survenu lors de la mise à jour des en têtes de l\'article');
                     }
                 } else {
 
-                    $Response->status = 'danger';
-                    $Response->error_code = 1;
-                    $Response->error_msg = trans('Un problème est survenu lors de la mise à jour du statut de l\'article');
+                    setPostResponse('Un problème est survenu lors de la mise à jour du statut de l\'article');
                 }
             } else {
-
-                $Response->status = 'danger';
-                $Response->error_code = 1;
-                $Response->error_msg = trans('Cet article n\'existe pas');
+                setPostResponse('Cet article n\'existe pas');
             }
         } else {
-
-            $Response->status = 'danger';
-            $Response->error_code = 1;
-            $Response->error_msg = trans('Tous les champs sont obligatoires');
+            setPostResponse('Tous les champs sont obligatoires');
         }
     }
 
@@ -160,16 +139,12 @@ if (checkPostAndTokenRequest()) {
             if (!empty($ArticleContent->getId())) {
                 if ($ArticleContent->update()) {
 
-                    $Response->status = 'success';
-                    $Response->error_code = 0;
-                    $Response->error_msg = trans('Le contenu de l\'article a été mise à jour');
+                    setPostResponse('Le contenu de l\'article a été mise à jour', 'success');
                 }
             } else {
                 if ($ArticleContent->save()) {
 
-                    $Response->status = 'success';
-                    $Response->error_code = 0;
-                    $Response->error_msg = trans('Le contenu de l\'article a été enregistré');
+                    setPostResponse('Le contenu de l\'article a été enregistré', 'success');
                 }
             }
 
@@ -210,9 +185,7 @@ if (checkPostAndTokenRequest()) {
 
         } else {
 
-            $Response->status = 'danger';
-            $Response->error_code = 1;
-            $Response->error_msg = trans('Le contenu de l\'article est obligatoire');
+            setPostResponse('Le contenu de l\'article est obligatoire');
         }
     }
 
@@ -250,9 +223,7 @@ if (checkPostAndTokenRequest()) {
             $html .= trans('Fichiers sélectionnés enregistrés') . ' <strong>' . $selectedFilesCount . '</strong>.';
         }
 
-        $Response->status = 'info';
-        $Response->error_code = 1;
-        $Response->error_msg = $html;
-        $Response->MediaTabactive = true;
+        setPostResponse($html, 'info');
+        $MediaTabactive = true;
     }
 }

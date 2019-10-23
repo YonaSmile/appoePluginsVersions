@@ -640,10 +640,12 @@ class Article
         $ArticleMedia = new ArticleMedia($this->id);
         $allMedia = $ArticleMedia->showFiles();
 
-        foreach ($allMedia as $media) {
-            $ArticleMedia->setId($media->id);
-            $ArticleMedia->setName($media->name);
-            $ArticleMedia->delete();
+        if ($allMedia) {
+            foreach ($allMedia as $media) {
+                $ArticleMedia->setId($media->id);
+                $ArticleMedia->setName($media->name);
+                $ArticleMedia->delete();
+            }
         }
 
         $sql = 'DELETE FROM appoe_categoryRelations WHERE type = "ITEMGLUE" AND typeId = :id;';
