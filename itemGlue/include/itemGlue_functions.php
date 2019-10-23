@@ -480,3 +480,18 @@ function getArticleMeta($articleMetas, $key)
     }
     return '';
 }
+
+/**
+ * get article web url
+ *
+ * @param $articleSlug
+ * @param $articlePage
+ *
+ * @return string
+ */
+function articleUrl($articleSlug, $articlePage = '')
+{
+    $articlePage = !empty($articlePage) ? $articlePage :
+        (defined('DEFAULT_ARTICLES_PAGE') ? DEFAULT_ARTICLES_PAGE . DIRECTORY_SEPARATOR : '/');
+    return webUrl($articlePage, $articleSlug);
+}

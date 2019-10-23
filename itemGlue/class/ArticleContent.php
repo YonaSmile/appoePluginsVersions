@@ -120,7 +120,7 @@ class ArticleContent
   					`content` TEXT NOT NULL,
   					`lang` VARCHAR(10) NOT NULL,
                 	`updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                	UNIQUE (`idArticle`, `lang`)
+                	UNIQUE (`idArticle`, `type`, `lang`)
 				) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;';
 
         $stmt = $this->dbh->prepare($sql);
