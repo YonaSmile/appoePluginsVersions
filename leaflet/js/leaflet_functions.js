@@ -8,11 +8,9 @@ function leaflet_getMap(lngLat, zoom) {
         gestureHandling: true
     }).setView(lngLat, zoom);
 
-    //Scroll protection
-
     //Add tiles
     map.addLayer(new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '<a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+        attribution: '<a href="https://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> | <a href="https://aoe-communication.com" target="_blank" title="Art Of Event - Communication">AOE</a>',
         maxZoom: 22,
         maxNativeZoom:22
     }));
