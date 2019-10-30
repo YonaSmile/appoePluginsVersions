@@ -1,5 +1,9 @@
 <?php
 require('header.php');
+
+use App\Plugin\Shop\ProductContent;
+use App\Plugin\Shop\ShopMedia;
+
 if (!empty($_GET['id'])):
 
     require(SHOP_PATH . 'process/postProcess.php');
@@ -11,13 +15,13 @@ if (!empty($_GET['id'])):
         $ProductBrowse->setStatus(1);
         $allProduct = $ProductBrowse->showAll();
 
-        $ProductContent = new \App\Plugin\Shop\ProductContent($Product->getId(), APP_LANG);
+        $ProductContent = new ProductContent($Product->getId(), APP_LANG);
 
-        $ProductMedia = new \App\Plugin\Shop\ShopMedia($Product->getId());
+        $ProductMedia = new ShopMedia($Product->getId());
         $ProductMedia->setLang(APP_LANG);;
         $allProductMedias = $ProductMedia->showFiles();
 
-        echo getTitle($Product->getName(), $Page->getSlug());
+        echo getTitle($Product->getName(), getAppPageSlug());
         if (isset($Response)): ?>
             <div class="row">
                 <div class="col-12">
@@ -102,7 +106,7 @@ if (!empty($_GET['id'])):
                         <?= getTokenField(); ?>
                         <input type="hidden" name="productId" value="<?= $Product->getId(); ?>">
                         <div class="col-12 col-lg-6 my-2">
-                            <?= \App\Form::file('Importer des médias', 'inputFile[]', false, 'multiple'); ?>
+                            <?= \App\Form::file('Importer des médias', 'inputFile[]', false, 'multiple', '', 'Choisissez...', false); ?>
                         </div>
                         <div class="col-12 col-lg-6 my-2">
                                 <textarea name="textareaSelectedFile" id="textareaSelectedFile"

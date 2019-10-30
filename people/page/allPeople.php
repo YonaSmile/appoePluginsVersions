@@ -49,7 +49,7 @@ echo getTitle($Page->getName(), $Page->getSlug()); ?>
                                 <td>
                                     <a href="<?= getPluginUrl('people/page/update/', $person->id) ?>"
                                        class="btn btn-sm" title="<?= trans('Modifier'); ?>">
-                                        <span class="btnEdit"><i class="fas fa-wrench"></i></span>
+                                        <span class="btnEdit"><i class="fas fa-cog"></i></span>
                                     </a>
                                     <button type="button" class="btn btn-sm deletePerson"
                                             title="<?= trans('Archiver'); ?>"
