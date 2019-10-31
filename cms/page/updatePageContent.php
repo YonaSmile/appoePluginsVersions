@@ -30,7 +30,7 @@ if (!empty($_GET['id'])):
         $files = getFilesFromDir(WEB_PUBLIC_PATH . 'html/', ['onlyFiles' => true, 'onlyExtension' => 'php', 'noExtensionDisplaying' => true]);
 
         echo getAsset('mediaLibrary', true);
-        echo getTitle(trans('Contenu de la page') . '<strong> ' . $Cms->getName() . '</strong>', $Page->getSlug()); ?>
+        echo getTitle(trans('Contenu de la page') . '<strong> ' . $Cms->getName() . '</strong>', getAppPageSlug()); ?>
         <div class="row my-2">
             <div class="table-responsive">
                 <table class="table noEffect">
@@ -134,7 +134,7 @@ if (!empty($_GET['id'])):
                                     <?= \App\Form::text('Nom', 'name', 'text', $Cms->getName(), true, 70); ?>
                                 </div>
                                 <div class="col-12 my-2">
-                                    <?= \App\Form::text('Description', 'description', 'text', $Cms->getDescription(), true, 300); ?>
+                                    <?= \App\Form::textarea('Description', 'description', $Cms->getDescription(), 2, true, 'maxlength="158"'); ?>
                                 </div>
                                 <div class="col-12 my-2">
                                     <?= \App\Form::text('Nom du menu', 'menuName', 'text', $Cms->getMenuName(), true, 250); ?>

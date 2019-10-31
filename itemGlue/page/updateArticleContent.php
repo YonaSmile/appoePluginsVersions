@@ -231,7 +231,7 @@ if (!empty($_GET['id'])):
                                     <?= \App\Form::text('Nom', 'name', 'text', $Article->getName(), true, 70); ?>
                                 </div>
                                 <div class="col-12 my-2">
-                                    <?= \App\Form::text('Description', 'description', 'text', $Article->getDescription(), true, 300); ?>
+                                    <?= \App\Form::textarea('Description', 'description', $Article->getDescription(), 2, true, 'maxlength="158"'); ?>
                                 </div>
                                 <div class="col-12 my-2">
                                     <?= \App\Form::text('Nom du lien URL' . ' (slug)', 'slug', 'text', $Article->getSlug(), true, 100); ?>
