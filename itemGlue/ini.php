@@ -6,6 +6,7 @@ const PLUGIN_TABLES = array(
     'appoe_plugin_itemGlue_articles',
     'appoe_plugin_itemGlue_articles_content',
     'appoe_plugin_itemGlue_articles_meta',
+    'appoe_plugin_itemGlue_articles_relations'
 );
 
 const ITEMGLUE_ARTICLES_STATUS = array(

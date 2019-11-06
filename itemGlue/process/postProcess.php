@@ -5,13 +5,17 @@ use App\Plugin\ItemGlue\Article;
 use App\Plugin\ItemGlue\ArticleContent;
 use App\Plugin\ItemGlue\ArticleMedia;
 use App\Plugin\ItemGlue\ArticleMeta;
+use App\Plugin\ItemGlue\ArticleRelation;
+
+$contentTabActive = true;
 
 if (checkPostAndTokenRequest()) {
 
     //Clean data
     $_POST = cleanRequest($_POST);
 
-    $MediaTabactive = false;
+    $mediaTabactive = false;
+    $relationActive = false;
 
     if (isset($_POST['ADDARTICLE'])) {
 
@@ -189,6 +193,57 @@ if (checkPostAndTokenRequest()) {
         }
     }
 
+    if (isset($_POST['RELATIONUSERS'])) {
+
+        if (!empty($_POST['articleId'])) {
+
+            $ArticleRelation = new ArticleRelation($_POST['articleId'], 'USERS');
+
+            $allRelations = $ArticleRelation->getData();
+            $allSimpleRelations = extractFromObjToSimpleArr($allRelations, 'id', 'typeId');
+
+            if (!empty($_POST['userRelation'])) {
+
+                if (!is_null($allRelations)) {
+                    foreach ($allRelations as $relation) {
+                        if (!in_array($relation->typeId, $_POST['userRelation'])) {
+                            $ArticleRelation->setId($relation->id);
+                            $ArticleRelation->delete();
+                        }
+                    }
+                }
+
+                foreach ($_POST['userRelation'] as $chosenUser) {
+                    if (!in_array($chosenUser, $allSimpleRelations)) {
+                        $ArticleRelation->setType('USERS');
+                        $ArticleRelation->setTypeId($chosenUser);
+                        $ArticleRelation->save();
+                    }
+                }
+
+            } else {
+
+                if (!is_null($allRelations)) {
+                    foreach ($allRelations as $relation) {
+                        $ArticleRelation->setId($relation->id);
+                        $ArticleRelation->delete();
+                    }
+                }
+            }
+
+            //Delete post data
+            unset($_POST);
+
+            setPostResponse('Les modifications ont été enregistrées', 'success');
+
+        } else {
+            setPostResponse('Vous devez sélectionner un utilisateur à associer à l\'article !');
+        }
+
+        $contentTabActive = false;
+        $relationActive = true;
+    }
+
     if (isset($_POST['ADDIMAGESTOARTICLE']) && !empty($_POST['articleId'])) {
 
         $html = '';
@@ -224,6 +279,8 @@ if (checkPostAndTokenRequest()) {
         }
 
         setPostResponse($html, 'info');
-        $MediaTabactive = true;
+
+        $contentTabActive = false;
+        $mediaTabactive = true;
     }
 }
