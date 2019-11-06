@@ -5,6 +5,7 @@ use App\CategoryRelations;
 use App\Plugin\ItemGlue\Article;
 use App\Plugin\ItemGlue\ArticleMedia;
 use App\Plugin\ItemGlue\ArticleMeta;
+use App\Plugin\ItemGlue\ArticleRelation;
 
 /**
  * @param object|int $articleId
@@ -494,4 +495,67 @@ function articleUrl($articleSlug, $articlePage = '')
     $articlePage = !empty($articlePage) ? $articlePage :
         (defined('DEFAULT_ARTICLES_PAGE') ? DEFAULT_ARTICLES_PAGE . DIRECTORY_SEPARATOR : '/');
     return webUrl($articlePage, $articleSlug);
+}
+
+/**
+ * @param $articleId
+ * @param string $type
+ * @return array|bool
+ */
+function getArticleRelation($articleId, $type = 'USERS')
+{
+
+    if (!empty($articleId)) {
+        $ArticleRelation = new ArticleRelation($articleId, $type);
+        if ($ArticleRelation->getData()) {
+            return extractFromObjToSimpleArr($ArticleRelation->getData(), 'id', 'typeId');
+        }
+    }
+
+    return false;
+}
+
+/**
+ * @param $articleId
+ * @return array
+ */
+function getArticleUsers($articleId)
+{
+    $articleUsers = array();
+    if (!empty($articleId)) {
+
+        $articleRelations = getArticleRelation($articleId);
+        if ($articleRelations) {
+
+            foreach ($articleRelations as $relationId => $userId) {
+                $articleUsers[$userId] = getUserEntitled($userId);
+            }
+        }
+    }
+
+    return $articleUsers;
+}
+
+/**
+ * @param $articleId
+ * @return string
+ */
+function showArticleUsers($articleId)
+{
+    $html = trans('Par') . ' ';
+
+    if (!empty($articleId)) {
+
+        $articleUsers = getArticleUsers($articleId);
+        if ($articleUsers) {
+
+            $count = 1;
+            foreach ($articleUsers as $userId => $userEntitled) {
+                $html .= ($count > 1 ? (' ' . trans('et') . ' ') : '') . $userEntitled;
+                $count++;
+            }
+        }
+    }
+
+    return $html;
 }
