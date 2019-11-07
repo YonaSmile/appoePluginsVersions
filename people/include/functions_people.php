@@ -45,8 +45,8 @@ function people_addPersonFormFields(array $excludesFields = array(), array $data
         $html .= '<div class="col my-2">' . App\Form::text('Enregistrement de type', 'type', 'text', $type, true, 150, 'list="typeList" autocomplete="off"') . '</div>';
 
         $html .= '<datalist id="typeList">';
-        foreach (getAppTypes() as $name) {
-            $html .= '<option value="' . $name . '">' . $name . '</option>';
+        foreach (getAppTypes() as $typeName) {
+            $html .= '<option value="' . $typeName . '">' . $typeName . '</option>';
         }
         $html .= '</datalist>';
     }
@@ -108,6 +108,16 @@ function getPeopleData($type = '', array $data = array('name'))
     $People = new People();
     $People->setType($type);
     return clearPeopleData($People->showDataForExport($data));
+}
+
+/**
+ * @return array|int
+ */
+function getPeopleTypes()
+{
+
+    $People = new People();
+    return $People->showTypes();
 }
 
 /**

@@ -34,7 +34,7 @@ if (!empty($_GET['id'])):
         $allRelations = '';
 
         $ArticleRelation = new ArticleRelation($Article->getId(), 'USERS');
-        if($ArticleRelation){
+        if ($ArticleRelation) {
             $allRelations = extractFromObjToSimpleArr($ArticleRelation->getData(), 'typeId', 'typeId');
         }
 

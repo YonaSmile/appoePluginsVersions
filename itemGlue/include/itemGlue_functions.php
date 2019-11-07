@@ -538,11 +538,13 @@ function getArticleUsers($articleId)
 
 /**
  * @param $articleId
+ * @param $by = "Par"
+ * @param $separator = "et"
  * @return string
  */
-function showArticleUsers($articleId)
+function showArticleUsers($articleId, $by = 'Par', $separator = 'et')
 {
-    $html = trans('Par') . ' ';
+    $html = trans($by) . ' ';
 
     if (!empty($articleId)) {
 
@@ -551,7 +553,7 @@ function showArticleUsers($articleId)
 
             $count = 1;
             foreach ($articleUsers as $userId => $userEntitled) {
-                $html .= ($count > 1 ? (' ' . trans('et') . ' ') : '') . $userEntitled;
+                $html .= ($count > 1 ? (' ' . trans($separator) . ' ') : '') . $userEntitled;
                 $count++;
             }
         }

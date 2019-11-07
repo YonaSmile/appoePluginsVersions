@@ -1,9 +1,8 @@
-<?php require('header.php'); ?>
-<?= getTitle($Page->getName(), $Page->getSlug()); ?>
+<?php require('header.php');
+echo getTitle(getAppPageName(), getAppPageSlug()); ?>
     <div class="container">
-        <?php require_once(PEOPLE_PATH . 'process/postProcess.php'); ?>
-
-        <?php if (isset($Response)): ?>
+        <?php require_once(PEOPLE_PATH . 'process/postProcess.php');
+        if (isset($Response)): ?>
             <div class="row">
                 <div class="col-12">
                     <div class="alert alert-<?= $Response->display()->status ?>" role="alert">

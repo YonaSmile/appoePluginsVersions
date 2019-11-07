@@ -458,6 +458,24 @@ class People
     }
 
     /**
+     * @return array|bool
+     */
+    public function showTypes()
+    {
+
+        $sql = 'SELECT type FROM appoe_plugin_people GROUP BY type ORDER BY name ASC';
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->execute();
+
+        $error = $stmt->errorInfo();
+        if ($error[0] == '00000') {
+            return $stmt->fetchAll(PDO::FETCH_OBJ);
+        }
+
+        return false;
+    }
+
+    /**
      * @param array $data
      * @return array|int
      */
@@ -489,7 +507,7 @@ class People
         $this->entitled = $this->name . ' ' . $this->firstName;
 
         $sql = 'INSERT INTO appoe_plugin_people 
-                (type, nature, name, firstName, entitled, birthDate, email, tel, address, zip, city, country, options, status, createdAt) 
+                (type, nature, name, firstName, entitled, birthDate, email, tel, address, zip, city, idUser, country, options, status, createdAt) 
                 VALUES (:type, :nature, :name, :firstName, :entitled, :birthDate, :email, :tel, :address, :zip, :city, :country, :idUser, :options, :status, NOW())';
 
         $stmt = $this->dbh->prepare($sql);
