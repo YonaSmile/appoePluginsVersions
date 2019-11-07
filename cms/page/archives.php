@@ -41,12 +41,12 @@ echo getTitle(getAppPageName(), getAppPageSlug()); ?>
                                                 title="<?= trans('Supprimer'); ?>">
                                             <span class="btnArchive"><i class="fas fa-times"></i></span>
                                         </button>
+                                        <button type="button" class="btn btn-sm unpackPage"
+                                                title="<?= trans('désarchiver'); ?>"
+                                                data-idpage="<?= $page->id ?>">
+                                            <span class="btnCheck"> <i class="fas fa-check"></i></span>
+                                        </button>
                                     <?php endif; ?>
-                                    <button type="button" class="btn btn-sm unpackPage"
-                                            title="<?= trans('désarchiver'); ?>"
-                                            data-idpage="<?= $page->id ?>">
-                                        <span class="btnCheck"> <i class="fas fa-check"></i></span>
-                                    </button>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
