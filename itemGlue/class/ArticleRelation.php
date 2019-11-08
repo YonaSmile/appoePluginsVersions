@@ -87,7 +87,7 @@ class ArticleRelation
     /**
      * @param mixed $articleId
      */
-    public function setArticleId($articleId): void
+    public function setArticleId($articleId)
     {
         $this->articleId = $articleId;
     }
@@ -103,7 +103,7 @@ class ArticleRelation
     /**
      * @param mixed $data
      */
-    public function setData($data): void
+    public function setData($data)
     {
         $this->data = $data;
     }
