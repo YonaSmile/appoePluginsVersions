@@ -30,7 +30,7 @@ if (!empty($_GET['id'])):
         $ArticleMedia->setLang(APP_LANG);
         $allArticleMedias = $ArticleMedia->showFiles();
 
-        $listUsers = extractFromObjToSimpleArr(getAdaptedUsers(), 'id', 'nom', 'prenom');
+        $listUsers = extractFromObjToSimpleArr(getAllUsers(true), 'id', 'nom', 'prenom');
         $allRelations = '';
 
         $ArticleRelation = new ArticleRelation($Article->getId(), 'USERS');
