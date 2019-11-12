@@ -36,3 +36,11 @@ const CMS_LOCATIONS = array(
     20 => 'Menu Autre 5',
     21 => 'Menu Autre 6'
 );
+
+const CMS_TYPES = array(
+    'PAGE',
+    'HEADER',
+    'FOOTER',
+    'SIDEBAR',
+    'OTHER'
+);

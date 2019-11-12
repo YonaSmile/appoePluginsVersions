@@ -5,7 +5,7 @@ use App\Plugin\Cms\Cms;
 $Cms = new Cms();
 $Cms->setStatut(0);
 $Cms->setLang(APP_LANG);
-$allPages = extractFromObjArr($Cms->showAllPages(), 'id');
+$allPages = extractFromObjArr($Cms->showAll(), 'id');
 
 echo getTitle(getAppPageName(), getAppPageSlug()); ?>
     <div class="row">
@@ -15,8 +15,11 @@ echo getTitle(getAppPageName(), getAppPageSlug()); ?>
                        class="sortableTable table table-striped">
                     <thead>
                     <tr>
-                        <th><?= trans('Nom'); ?></th>
-                        <th><?= trans('Description'); ?></th>
+                        <th><?= trans('ID'); ?></th>
+                        <th><?= trans('Type'); ?></th>
+                        <th><?= trans('Fichier'); ?></th>
+                        <th><?= trans('Nom du menu'); ?></th>
+                        <th><?= trans('Nom de la page'); ?></th>
                         <th><?= trans('Slug'); ?></th>
                         <th><?= trans('Modifié le'); ?></th>
                         <th></th>
@@ -26,7 +29,10 @@ echo getTitle(getAppPageName(), getAppPageSlug()); ?>
                     <?php if ($allPages): ?>
                         <?php foreach ($allPages as $page): ?>
                             <tr data-idcms="<?= $page->id ?>">
+                                <td><?= $page->id ?></td>
+                                <td><?= $page->type ?></td>
                                 <td><?= $page->filename ?></td>
+                                <td><?= $page->menuName ?></td>
                                 <td><?= $page->name ?></td>
                                 <td><?= $page->slug ?></td>
                                 <td><?= displayTimeStamp($page->updated_at) ?></td>

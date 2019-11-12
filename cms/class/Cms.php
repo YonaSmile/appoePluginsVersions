@@ -326,10 +326,11 @@ class Cms
         (SELECT cc3.metaValue FROM appoe_plugin_cms_content AS cc3 WHERE cc3.type = "HEADER" AND cc3.metaKey = "name" AND cc3.idCms = C.id AND cc3.lang = :lang) AS name,
         (SELECT cc4.metaValue FROM appoe_plugin_cms_content AS cc4 WHERE cc4.type = "HEADER" AND cc4.metaKey = "menuName" AND cc4.idCms = C.id AND cc4.lang = :lang) AS menuName
         FROM appoe_plugin_cms AS C
-        ORDER BY C.created_at DESC';
+        WHERE C.statut = :statut ORDER BY C.created_at DESC';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':lang', $this->lang);
+        $stmt->bindParam(':statut', $this->statut);
         $stmt->execute();
 
         $count = $stmt->rowCount();
@@ -359,8 +360,8 @@ class Cms
         FROM appoe_plugin_cms AS C
         WHERE C.type = "PAGE" AND C.statut = :statut ORDER BY C.filename ASC';
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':statut', $this->statut);
         $stmt->bindParam(':lang', $this->lang);
+        $stmt->bindParam(':statut', $this->statut);
         $stmt->execute();
 
         $count = $stmt->rowCount();

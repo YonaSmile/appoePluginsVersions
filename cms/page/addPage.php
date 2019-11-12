@@ -18,14 +18,17 @@ showPostResponse(getDataPostResponse()); ?>
             <div class="col-12 col-lg-6 my-2">
                 <?= \App\Form::textarea('Description', 'description', !empty($_POST['description']) ? $_POST['description'] : '', 4, true, 'maxlength="158"'); ?>
             </div>
-            <div class="col-12 col-lg-6 mt-2">
+            <div class="col-12 col-lg-6 my-2">
                 <?= \App\Form::text('Nom du menu', 'menuName', 'text', !empty($_POST['menuName']) ? $_POST['menuName'] : '', true, 40); ?>
                 <div class="mt-3">
-                    <?= \App\Form::select('Fichier', 'filename', array_combine($files, $files), '', true); ?>
+                    <?= \App\Form::select('Fichier', 'filename', array_combine($files, $files), !empty($_POST['filename']) ? $_POST['filename'] : '', true); ?>
                 </div>
             </div>
-            <div class="col-12 p-3">
+            <div class="col-12 col-lg-6 my-2">
                 <?= \App\Form::radio('Statut de la page', 'statut', array_map('trans', CMS_PAGE_STATUS), !empty($_POST['statut']) ? $_POST['statut'] : 1, true); ?>
+            </div>
+            <div class="col-12 col-lg-6 my-2">
+                <?= \App\Form::select('Type de page', 'type', array_combine(CMS_TYPES, CMS_TYPES), !empty($_POST['type']) ? $_POST['type'] : 'PAGE', true); ?>
             </div>
             <div class="col-12 mb-3 mt-3">
                 <?= \App\Form::target('ADDPAGE'); ?>

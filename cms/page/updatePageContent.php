@@ -30,13 +30,15 @@ if (!empty($_GET['id'])):
         $files = getFilesFromDir(WEB_PUBLIC_PATH . 'html/', ['onlyFiles' => true, 'onlyExtension' => 'php', 'noExtensionDisplaying' => true]);
 
         echo getAsset('mediaLibrary', true);
-        echo getTitle(trans('Contenu de la page') . '<strong> ' . $Cms->getName() . '</strong>', getAppPageSlug()); ?>
+        echo getTitle(trans('Contenu de la page') . '<strong> ' . $Cms->getName() . '</strong>', getAppPageSlug());
+        showPostResponse(); ?>
         <div class="row my-2">
             <div class="table-responsive">
                 <table class="table noEffect">
                     <thead class="thead-light">
                     <tr>
                         <th>ID</th>
+                        <th><?= trans('Type'); ?></th>
                         <th><?= trans('Fichier'); ?></th>
                         <th><?= trans('Slug'); ?></th>
                         <th><?= trans('Nom du menu'); ?></th>
@@ -47,6 +49,7 @@ if (!empty($_GET['id'])):
                     <tbody>
                     <tr>
                         <td><?= $Cms->getId(); ?></td>
+                        <td><?= $Cms->getType(); ?></td>
                         <td><?= $Cms->getFilename(); ?></td>
                         <td><?= $Cms->getSlug(); ?></td>
                         <td><?= $Cms->getMenuName(); ?></td>
@@ -86,29 +89,20 @@ if (!empty($_GET['id'])):
                 </div>
             </div>
         </div>
-        <?php if (isset($Response)): ?>
-        <div class="row">
-            <div class="col-12">
-                <div class="alert alert-<?= $Response->display()->status ?>" role="alert">
-                    <?= $Response->display()->error_msg; ?>
-                </div>
+        <?php if (file_exists(WEB_PATH . $Cms->getFilename() . '.php')): ?>
+        <form action="" method="post" id="pageContentManageForm">
+            <div class="row my-2">
+                <?php
+                $Template = new Template(WEB_PATH . $Cms->getFilename() . '.php', $CmsContent->getData());
+                $Template->show();
+                ?>
             </div>
-        </div>
-    <?php endif;
-        if (file_exists(WEB_PATH . $Cms->getFilename() . '.php')): ?>
-            <form action="" method="post" id="pageContentManageForm">
-                <div class="row my-2">
-                    <?php
-                    $Template = new Template(WEB_PATH . $Cms->getFilename() . '.php', $CmsContent->getData());
-                    $Template->show();
-                    ?>
-                </div>
-            </form>
-            <nav id="headerLinks" class="btn-group-vertical"
-                 data-title="<?= ucfirst(mb_strtolower($Cms->getMenuName())); ?>"></nav>
-        <?php else: ?>
-            <p><?= trans('Model manquant'); ?></p>
-        <?php endif; ?>
+        </form>
+        <nav id="headerLinks" class="btn-group-vertical"
+             data-title="<?= ucfirst(mb_strtolower($Cms->getMenuName())); ?>"></nav>
+    <?php else: ?>
+        <p><?= trans('Model manquant'); ?></p>
+    <?php endif; ?>
         <div class="modal fade" id="updatePageModal" tabindex="-1" role="dialog"
              aria-labelledby="updatePageModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -146,6 +140,9 @@ if (!empty($_GET['id'])):
                                     <hr class="hrStyle">
                                     <div class="col-12 my-2">
                                         <?= \App\Form::select('Fichier', 'filename', array_combine($files, $files), $Cms->getFilename(), true); ?>
+                                    </div>
+                                    <div class="col-12 my-2">
+                                        <?= \App\Form::select('Type de page', 'type', array_combine(CMS_TYPES, CMS_TYPES), $Cms->getType(), true); ?>
                                     </div>
                                 <?php endif; ?>
                             </div>

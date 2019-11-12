@@ -4,7 +4,7 @@ use App\Plugin\Cms\Cms;
 
 $Cms = new Cms();
 $Cms->setLang(APP_LANG);
-$allPages = $Cms->showAllPages();
+$allPages = $Cms->showAll();
 
 echo getTitle(getAppPageName(), getAppPageSlug());
 ?>
@@ -16,6 +16,7 @@ echo getTitle(getAppPageName(), getAppPageSlug());
                     <thead>
                     <tr>
                         <th><?= trans('ID'); ?></th>
+                        <th><?= trans('Type'); ?></th>
                         <th><?= trans('Fichier'); ?></th>
                         <th><?= trans('Nom du menu'); ?></th>
                         <th><?= trans('Nom de la page'); ?></th>
@@ -29,6 +30,7 @@ echo getTitle(getAppPageName(), getAppPageSlug());
                         foreach ($allPages as $page): ?>
                             <tr data-idcms="<?= $page->id ?>">
                                 <td><?= $page->id ?></td>
+                                <td><?= $page->type ?></td>
                                 <td><?= $page->filename ?></td>
                                 <td><?= $page->menuName ?></td>
                                 <td><?= $page->name ?></td>

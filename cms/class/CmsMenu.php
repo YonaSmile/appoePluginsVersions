@@ -215,12 +215,12 @@ class CmsMenu
         ELSE (SELECT cc4.metaValue FROM appoe_plugin_cms_content AS cc4 WHERE cc4.type = "HEADER" AND cc4.metaKey = "menuName" AND cc4.idCms = ac.id AND cc4.lang = :lang)
         END AS name, 
         acm.parentId, acm.position, acm.location, acm.statut, acm.updated_at, 
-        ac.type, ac.filename,
+        ac.type, ac.filename, ac.statut AS pageStatut,
         (SELECT cc1.metaValue FROM appoe_plugin_cms_content AS cc1 WHERE cc1.type = "HEADER" AND cc1.metaKey = "slug" AND cc1.idCms = ac.id AND cc1.lang = :lang) AS slug
         FROM appoe_plugin_cms_menu AS acm 
         LEFT JOIN appoe_plugin_cms AS ac 
         ON (acm.idCms = ac.id) 
-        WHERE (ac.statut = 1 OR acm.idCms like "http%" OR acm.idCms like "%#%" OR acm.idCms REGEXP "^[a-zA-Z0-9/-]+$")' . $locationCondition . ' 
+        WHERE (ac.statut = 1 OR acm.idCms like "http%" OR acm.idCms like "%#%" OR acm.idCms REGEXP "^[a-zA-Z/-]+$")' . $locationCondition . ' 
         ORDER BY acm.parentId ASC, acm.position ASC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':lang', $lang);

@@ -9,8 +9,6 @@ if (checkPostAndTokenRequest()) {
     //Clean data
     $_POST = cleanRequest($_POST);
 
-    $Response = new \App\Response();
-
     if (isset($_POST['ADDPAGE'])) {
 
         if (!empty($_POST['name'])
@@ -18,12 +16,14 @@ if (checkPostAndTokenRequest()) {
             && !empty($_POST['description'])
             && !empty($_POST['menuName'])
             && !empty($_POST['filename'])
+            && !empty($_POST['type'])
         ) {
 
             $Cms = new Cms();
 
             //Add Page
             $Cms->setFilename($_POST['filename']);
+            $Cms->setType($_POST['type']);
 
             if ($Cms->notExist()) {
                 if ($Cms->save()) {
@@ -35,24 +35,15 @@ if (checkPostAndTokenRequest()) {
                     //Delete post data
                     unset($_POST);
 
-                    $Response->status = 'success';
-                    $Response->error_code = 0;
-                    $Response->error_msg = trans('La page a été enregistré') . ' <a href="' . getPluginUrl('cms/page/pageContent/', $Cms->getId()) . '">' . trans('Voir la page') . '</a>';
-
+                    setPostResponse('La page a été enregistré', 'success', ('<a href="' . getPluginUrl('cms/page/pageContent/', $Cms->getId()) . '">' . trans('Voir la page') . '</a>'));
                 } else {
-                    $Response->status = 'danger';
-                    $Response->error_code = 1;
-                    $Response->error_msg = trans('Un problème est survenu lors de l\'enregistrement de la page');
+                    setPostResponse('Un problème est survenu lors de l\'enregistrement de la page');
                 }
             } else {
-                $Response->status = 'danger';
-                $Response->error_code = 1;
-                $Response->error_msg = trans('Le fichier est utilisé pour une autre page');
+                setPostResponse('Le fichier est utilisé pour une autre page');
             }
         } else {
-            $Response->status = 'danger';
-            $Response->error_code = 1;
-            $Response->error_msg = trans('Tous les champs sont obligatoires');
+            setPostResponse('Tous les champs sont obligatoires');
         }
     }
 
@@ -67,14 +58,15 @@ if (checkPostAndTokenRequest()) {
         ) {
 
             $cmsUpdate = true;
-            if (!empty($_POST['filename'])) {
+            if (!empty($_POST['filename']) && !empty($_POST['type'])) {
 
                 $cmsUpdate = false;
 
                 $Cms = new Cms($_POST['id']);
-                if ($Cms->getFilename() != $_POST['filename']) {
+                if ($Cms->getFilename() != $_POST['filename'] || $Cms->getType() != $_POST['type']) {
 
                     $Cms->setFilename($_POST['filename']);
+                    $Cms->setType($_POST['type']);
 
                     if ($Cms->notExist(true)) {
                         if (!$Cms->update()) {
@@ -102,15 +94,9 @@ if (checkPostAndTokenRequest()) {
                         //Delete post data
                         unset($_POST);
 
-                        $Response->status = 'success';
-                        $Response->error_code = 0;
-                        $Response->error_msg = trans('Les en têtes ont étés enregistrés');
-
+                        setPostResponse('Les en têtes ont étés enregistrés', 'success');
                     } else {
-
-                        $Response->status = 'danger';
-                        $Response->error_code = 1;
-                        $Response->error_msg = trans('Un problème est survenu lors de la création des en têtes de la page');
+                        setPostResponse('Un problème est survenu lors de la création des en têtes de la page');
                     }
 
                 } else {
@@ -119,27 +105,20 @@ if (checkPostAndTokenRequest()) {
                         //Delete post data
                         unset($_POST);
 
-                        $Response->status = 'success';
-                        $Response->error_code = 0;
-                        $Response->error_msg = trans('Les en têtes ont étés mises à jour');
+                        setPostResponse('Les en têtes ont étés mises à jour', 'success');
 
                     } else {
 
-                        $Response->status = 'danger';
-                        $Response->error_code = 1;
-                        $Response->error_msg = trans('Un problème est survenu lors de la mise à jour des en têtes de la page');
+                        setPostResponse('Un problème est survenu lors de la mise à jour des en têtes de la page');
                     }
                 }
             } else {
-                $Response->status = 'danger';
-                $Response->error_code = 1;
-                $Response->error_msg = trans('Le fichier est utilisé pour une autre page');
+
+                setPostResponse('Le fichier est utilisé pour une autre page');
             }
         } else {
 
-            $Response->status = 'danger';
-            $Response->error_code = 1;
-            $Response->error_msg = trans('Tous les champs sont obligatoires');
+            setPostResponse('Tous les champs sont obligatoires');
         }
     }
 
@@ -164,29 +143,23 @@ if (checkPostAndTokenRequest()) {
                         //Delete post data
                         unset($_POST);
 
-                        $Response->status = 'success';
-                        $Response->error_code = 0;
-                        $Response->error_msg = trans('La menu a été enregistré');
+                        setPostResponse('La menu a été enregistré', 'success');
 
                     } else {
-                        $Response->status = 'danger';
-                        $Response->error_code = 1;
-                        $Response->error_msg = trans('Un problème est survenu lors de l\'enregistrement du menu');
+
+                        setPostResponse('Un problème est survenu lors de l\'enregistrement du menu');
                     }
                 } else {
-                    $Response->status = 'danger';
-                    $Response->error_code = 1;
-                    $Response->error_msg = trans('Ce menu n\'existe pas');
+
+                    setPostResponse('Ce menu n\'existe pas');
                 }
             } else {
-                $Response->status = 'danger';
-                $Response->error_code = 1;
-                $Response->error_msg = trans('Aucune page n\'a été choisi');
+
+                setPostResponse('Aucune page n\'a été choisi');
             }
         } else {
-            $Response->status = 'danger';
-            $Response->error_code = 1;
-            $Response->error_msg = trans('Tous les champs sont obligatoires');
+
+            setPostResponse('Tous les champs sont obligatoires');
         }
     }
 
@@ -202,24 +175,19 @@ if (checkPostAndTokenRequest()) {
                     //Delete post data
                     unset($_POST);
 
-                    $Response->status = 'success';
-                    $Response->error_code = 0;
-                    $Response->error_msg = trans('La menu a été mise à jour');
+                    setPostResponse('La menu a été mise à jour', 'success');
 
                 } else {
-                    $Response->status = 'danger';
-                    $Response->error_code = 1;
-                    $Response->error_msg = trans('Un problème est survenu lors de la mise à jour du menu');
+
+                    setPostResponse('Un problème est survenu lors de la mise à jour du menu');
                 }
             } else {
-                $Response->status = 'danger';
-                $Response->error_code = 1;
-                $Response->error_msg = trans('Ce menu n\'existe pas');
+
+                setPostResponse('Ce menu n\'existe pas');
             }
         } else {
-            $Response->status = 'danger';
-            $Response->error_code = 1;
-            $Response->error_msg = trans('Tous les champs sont obligatoires');
+
+            setPostResponse('Tous les champs sont obligatoires');
         }
     }
 }
