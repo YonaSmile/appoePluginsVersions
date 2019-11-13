@@ -42,5 +42,6 @@ const CMS_TYPES = array(
     'HEADER',
     'FOOTER',
     'SIDEBAR',
+    'INCLUDE CONTENT',
     'OTHER'
 );
