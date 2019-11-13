@@ -24,7 +24,7 @@ if (!empty($_GET['id'])):
         $allMenuPages = extractFromObjArr($menuPages, 'slug');
 
         //get all pages for navigations
-        $allCmsPages = $Cms->showAllPages();
+        $allCmsPages = $Cms->showAll();
 
         //get all html files
         $files = getFilesFromDir(WEB_PUBLIC_PATH . 'html/', ['onlyFiles' => true, 'onlyExtension' => 'php', 'noExtensionDisplaying' => true]);
