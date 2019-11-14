@@ -1,1 +1,1 @@
-<?php session_start(); header('location:allPages/');
+<?php session_start(); header('location:allArticles/');

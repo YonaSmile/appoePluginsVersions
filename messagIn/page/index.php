@@ -1,1 +1,1 @@
-<?php session_start(); header('location:allMessages.php');
+<?php session_start(); header('location:allMessages/');
