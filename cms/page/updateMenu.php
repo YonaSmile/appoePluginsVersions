@@ -22,7 +22,8 @@ $MENUS = constructMenu($allCmsMenu);
 $allPages = extractFromObjToSimpleArr($allCmsPages, 'id', 'menuName');
 $allArticles = extractFromObjToSimpleArr($Articles->showAll(), 'slug', 'name');
 $allArticlesPages = extractFromObjToSimpleArr($allCmsPages, 'slug', 'menuName');
-echo getTitle(getAppPageName(), getAppPageSlug()); ?>
+echo getTitle(getAppPageName(), getAppPageSlug());
+showPostResponse(); ?>
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
@@ -32,15 +33,6 @@ echo getTitle(getAppPageName(), getAppPageSlug()); ?>
                 </button>
             </div>
         </div>
-        <?php if (isset($Response)): ?>
-            <div class="row my-2">
-                <div class="col-12">
-                    <div class="alert alert-<?= $Response->display()->status ?>" role="alert">
-                        <?= $Response->display()->error_msg; ?>
-                    </div>
-                </div>
-            </div>
-        <?php endif; ?>
         <div class="row my-3">
             <?php foreach (CMS_LOCATIONS as $key => $value): ?>
                 <div class="col-12 col-lg-6">
@@ -157,7 +149,7 @@ echo getTitle(getAppPageName(), getAppPageSlug()); ?>
                                 <?= \App\Form::radio('Type de menu', 'radioBtnIdCMS', array('Page' => 'Page', 'URL' => 'URL', 'Article' => 'Article'), !empty($_POST['radioBtnIdCMS']) ? $_POST['radioBtnIdCMS'] : 'Page', true, 'custom-control-inline'); ?>
                             </div>
                             <div class="col-12 my-2 idCmsChoise" data-cmstype="URL" style="display: none;">
-                                <?= \App\Form::text('Lien URL', 'idCms', 'url', !empty($_POST['idCms']) ? $_POST['idCms'] : '', true, 255, 'disabled'); ?>
+                                <?= \App\Form::text('Lien URL', 'idCms', 'text', !empty($_POST['idCms']) ? $_POST['idCms'] : '', true, 255, 'disabled'); ?>
                             </div>
                             <div class="col-12 my-2 idCmsChoise" data-cmstype="Page">
                                 <?= \App\Form::select('Page', 'idCms', $allPages, !empty($_POST['idCms']) ? $_POST['idCms'] : '', true); ?>

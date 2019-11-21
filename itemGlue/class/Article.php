@@ -273,15 +273,15 @@ class Article
 
     /**
      * @param $idCategory
-     * @param bool $parentId
+     * @param bool $showParent
      * @param bool $countArticles
      * @param bool $lang
      * @return bool|array
      */
-    public function showByCategory($idCategory, $parentId = false, $countArticles = false, $lang = LANG)
+    public function showByCategory($idCategory, $showParent = false, $countArticles = false, $lang = LANG)
     {
         $categorySQL = ' AND C.id = :idCategory ';
-        if (true === $parentId) {
+        if (true === $showParent) {
             $categorySQL = ' AND (C.id = :idCategory OR C.parentId = :idCategory) ';
         }
 
