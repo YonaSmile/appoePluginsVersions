@@ -400,7 +400,7 @@ function getAllCategoriesInArticles($articles)
             $cat = (false !== strpos($article->categoryNames, '||')) ? explode('||', $article->categoryNames) : $article->categoryNames;
             array_push($categories, $cat);
         }
-        $categories = array_unique(flatten($categories));
+        $categories = flatten($categories);
     }
     return $categories;
 }
