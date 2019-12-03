@@ -17,7 +17,8 @@ if (!empty($_GET['id'])):
     if ($Article->show()):
 
         $Article->setStatut(1);
-        $allArticles = $Article->showAll(false, false, 'fr');
+        $Article->setLang('fr');
+        $allArticles = $Article->showAll(false, false);
 
         $Category = new Category();
         $Category->setType('ITEMGLUE');
