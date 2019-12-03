@@ -544,14 +544,16 @@ function getArticleUsers($articleId)
  */
 function showArticleUsers($articleId, $by = 'Par', $separator = 'et')
 {
-    $html = trans($by) . ' ';
+    $html = '';
 
     if (!empty($articleId)) {
 
         $articleUsers = getArticleUsers($articleId);
         if ($articleUsers) {
 
+            $html = trans($by) . ' ';
             $count = 1;
+
             foreach ($articleUsers as $userId => $userEntitled) {
                 $html .= ($count > 1 ? (' ' . trans($separator) . ' ') : '') . $userEntitled;
                 $count++;
