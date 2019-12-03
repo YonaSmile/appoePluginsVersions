@@ -194,7 +194,7 @@ class ArticleMeta
             return false;
         } else {
             $this->id = $id;
-            appLog('Creating Article meta -> idArticle: ' . $this->idArticle . 'metaKey: ' . $this->metaKey.' lang: '.$this->lang);
+            appLog('Creating Article meta -> idArticle: ' . $this->idArticle . ' metaKey: ' . $this->metaKey.' lang: '.$this->lang);
             return true;
         }
     }
@@ -218,7 +218,7 @@ class ArticleMeta
         if ($error[0] != '00000') {
             return false;
         } else {
-            appLog('Updating Article meta -> id: ' . $this->id . 'metaKey: ' . $this->metaKey);
+            appLog('Updating Article meta -> id: ' . $this->id . ' metaKey: ' . $this->metaKey);
             return true;
         }
     }
