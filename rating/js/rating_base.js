@@ -35,6 +35,7 @@ jQuery(document).ready(function ($) {
             out_data,
             function (INFO) {
                 if (INFO) {
+
                     $(widget).data('fsr', INFO);
                     set_votes(widget);
                 }
@@ -83,7 +84,7 @@ jQuery(document).ready(function ($) {
             var votes = $(widget).data('fsr').number_votes;
             var exact = $(widget).data('fsr').dec_avg;
 
-            $(widget).find('.star_' + avg).prevAll().andSelf().addClass('ratings_vote');
+            $(widget).find('.star_' + avg).prevAll().addBack().addClass('ratings_vote');
             $(widget).find('.star_' + avg).nextAll().removeClass('ratings_vote');
             $(widget).find('.total_votes').text(votes + ' évaluations ( note : ' + exact + ' )');
         }

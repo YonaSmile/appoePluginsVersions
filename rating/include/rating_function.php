@@ -1,5 +1,9 @@
 <?php
 
+use App\Plugin\Cms\Cms;
+use App\Plugin\ItemGlue\Article;
+use App\Plugin\Rating\Rating;
+
 function getAverage($data)
 {
     return array_sum($data) / count($data);
@@ -27,7 +31,7 @@ function getRate($dbRates, $moreVotes = 0, $moreSum = 0)
 function getAllRates($status = 1)
 {
 
-    $Rating = new \App\Plugin\Rating\Rating();
+    $Rating = new Rating();
     $allRating = $Rating->showAll(false, $status);
 
     $types = array();
@@ -38,9 +42,9 @@ function getAllRates($status = 1)
         }
 
         if (!array_key_exists($rating->typeId, $types[$rating->type])) {
-            $types[$rating->type][$rating->typeId]['score'] = '';
-            $types[$rating->type][$rating->typeId]['nbVotes'] = '';
-            $types[$rating->type][$rating->typeId]['average'] = '';
+            $types[$rating->type][$rating->typeId]['score'] = 0;
+            $types[$rating->type][$rating->typeId]['nbVotes'] = 0;
+            $types[$rating->type][$rating->typeId]['average'] = 0;
         }
 
         $types[$rating->type][$rating->typeId]['score'] += $rating->score;
@@ -54,7 +58,7 @@ function getAllRates($status = 1)
 
 function getUnconfirmedRates()
 {
-    $Rating = new \App\Plugin\Rating\Rating();
+    $Rating = new Rating();
     return $Rating->showAll(false, 0);
 }
 
@@ -69,7 +73,7 @@ function getUnconfirmedRates()
 function showRatings($type, $typeId, $clicable = true, $sizeClass = 'largeStars', $minimize = false)
 {
     $html = '<div class="movie_choice" id="' . $type . '_' . $typeId . '">
-                <div id="' . strtoupper($type) . '-item-' . $typeId . '" data-type="' . $type . '" class="rate_widget" data-idstars="'. $type . '_' . $typeId .'">
+                <div id="' . strtoupper($type) . '-item-' . $typeId . '" data-type="' . $type . '" class="rate_widget" data-idstars="' . $type . '_' . $typeId . '">
                     <div class="star_1 ratings_stars ' . ($clicable ? ' starClick ' : '') . $sizeClass . '"></div>
                     <div class="star_2 ratings_stars ' . ($clicable ? ' starClick ' : '') . $sizeClass . '"></div>
                     <div class="star_3 ratings_stars ' . ($clicable ? ' starClick ' : '') . $sizeClass . '"></div>
@@ -88,10 +92,10 @@ function getObj($type)
 
     switch ($type) {
         case 'ITEMGLUE':
-            return new \App\Plugin\ItemGlue\Article();
+            return new Article();
             break;
         case 'CMS':
-            return new \App\Plugin\Cms\Cms();
+            return new Cms();
             break;
         case 'SHOP':
             return new \App\Plugin\Shop\Product();
