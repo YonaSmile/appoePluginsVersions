@@ -5,7 +5,7 @@ namespace App\Plugin\Utils;
 class Mail
 {
 
-    public static function checkAjaxPostRecaptcha(array $post, $serverSecretKey)
+    public static function checkAjaxPostRecaptcha(array $post, $serverSecretKey, $connectedStatus = false)
     {
 
         //Check Ajax Request
@@ -13,23 +13,19 @@ class Mail
             && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
 
             //User Stay Connected
-            if (function_exists('mehoubarim_connecteUser')) {
+            if ($connectedStatus && function_exists('mehoubarim_connecteUser')) {
                 mehoubarim_connecteUser();
             }
 
             //Clean Post
-            $post = cleanRequest($post);
+            $recaptchaField = cleanRequest($post['g-recaptcha-response']);
 
             //Check and Confirm Recaptcha V3
-            if (!empty($post['g-recaptcha-response'])) {
-                if (false === checkRecaptcha($serverSecretKey, $post['g-recaptcha-response'])) {
-                    return false;
-                }
-            } else {
-                return false;
+            if (!empty($recaptchaField)) {
+                return checkRecaptcha($serverSecretKey, $recaptchaField);
             }
         }
 
-        return true;
+        return false;
     }
 }
