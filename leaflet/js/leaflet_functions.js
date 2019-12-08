@@ -1,21 +1,26 @@
-function leaflet_getMap(lngLat, zoom) {
+function leaflet_getMap(lngLat, zoom, otherTile = '') {
 
-    //Create Map
-    var map = new L.Map('mapOSM', {
-        scrollWheelZoom: false,
-        zoom: 16,
-        maxZoom: 22,
-        gestureHandling: true
-    }).setView(lngLat, zoom);
+    if ($('#mapOSM').length) {
 
-    //Add tiles
-    map.addLayer(new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '<a href="https://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> | <a href="https://aoe-communication.com" target="_blank" title="Art Of Event - Communication">AOE</a>',
-        maxZoom: 22,
-        maxNativeZoom:22
-    }));
+        //Create Map
+        var map = new L.Map('mapOSM', {
+            scrollWheelZoom: false,
+            zoom: 16,
+            maxZoom: 22,
+            gestureHandling: true
+        }).setView(lngLat, zoom);
 
-    return map;
+        //Scroll protection
+
+        //Add tiles
+        map.addLayer(new L.TileLayer(!otherTile.trim() ? 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png' : otherTile, {
+            attribution: '<a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+            maxZoom: 22,
+            maxNativeZoom: 22
+        }));
+
+        return map;
+    }
 }
 
 function leaflet_getGps(map) {
