@@ -79,13 +79,10 @@
 
 .templateZoneInput div.form-group {
     position: relative;
+    margin-bottom: 20px;
 }
 
-#pageContentManageForm label {
-    font-size: 1.2em;
-    color: #7386d5;
-    font-weight: 700;
-}
+#pageContentManageForm label {}
 
 #pageContentManageForm input,
 #pageContentManageForm select,
@@ -96,9 +93,4 @@
 
 #pageContentManageForm input,
 #pageContentManageForm select,
-#pageContentManageForm textarea {
-    border-bottom: 0;
-    border-top: 0;
-    border-left: 2px solid #7386d5;
-    border-right: 0;
-}
+#pageContentManageForm textarea {}
