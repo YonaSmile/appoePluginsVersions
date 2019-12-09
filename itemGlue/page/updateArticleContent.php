@@ -145,52 +145,29 @@ if (!empty($_GET['id'])):
                     </form>
                     <?php if ($allArticleMedias): ?>
                         <hr class="my-4 mx-5">
-                        <div class="card-columns">
+                        <div class="card-columns mb-3">
                             <?php foreach ($allArticleMedias as $file): ?>
-                                <div class="card bg-none border-0 my-1">
-                                    <?php if (isImage(FILE_DIR_PATH . $file->name)): ?>
+                                <div class="card view border-0 bg-none"
+                                     data-file-id="<?= $file->id; ?>">
+                                    <?php if (isImage(FILE_DIR_PATH . $file->name)):
+                                        $fileSize = getimagesize(FILE_DIR_PATH . $file->name); ?>
                                         <img src="<?= getThumb($file->name, 370); ?>"
-                                             alt="<?= $file->title; ?>"
-                                             data-originsrc="<?= WEB_DIR_INCLUDE . $file->name; ?>"
-                                             data-filename="<?= $file->name; ?>"
-                                             class="img-fluid img-thumbnail seeOnOverlay seeDataOnHover">
-                                    <?php else: ?>
-                                        <a href="<?= WEB_DIR_INCLUDE . $file->name; ?>" target="_blank">
-                                            <img src="<?= getImgAccordingExtension(getFileExtension($file->name)); ?>">
-                                        </a>
-                                        <small class="fileLink" data-src="<?= WEB_DIR_INCLUDE . $file->name; ?>">
-                                            <button class="btn btn-sm btn-outline-info btn-block copyLinkOnClick">
-                                                <?= trans('Copier le lien du média'); ?>
-                                            </button>
-                                        </small>
+                                             class="img-fluid">
+                                    <?php else:
+                                        $fileSize = true; ?>
+                                        <img src="<?= getImgAccordingExtension(getFileExtension($file->name)); ?>"
+                                             class="img-fluid">
                                     <?php endif; ?>
-                                    <form method="post" data-imageid="<?= $file->id; ?>">
-                                        <input type="hidden" class="typeId" name="typeId"
-                                               value="<?= $file->typeId; ?>">
-                                        <?= \App\Form::text('Titre', 'title', 'text', $file->title, false, 255, '', '', 'form-control-sm imageTitle upImgForm', 'Titre'); ?>
-                                        <?= \App\Form::textarea('Description', 'description', $file->description, 1, false, '', 'form-control-sm imageDescription upImgForm', 'Description'); ?>
-                                        <?= \App\Form::text('Lien', 'link', 'url', $file->link, false, 255, '', '', 'form-control-sm imagelink upImgForm', 'Lien'); ?>
-                                        <?= \App\Form::text('Position', 'position', 'text', $file->position, false, 5, '', '', 'form-control-sm imagePosition upImgForm', 'Position'); ?>
-                                        <select class="custom-select custom-select-sm templatePosition form-control-sm upImgForm"
-                                                name="templatePosition">
-                                            <?php if (!getSerializedOptions($file->options, 'templatePosition')): ?>
-                                                <option selected value=""><?= trans('Zone du thème'); ?></option>
-                                            <?php endif;
-                                            foreach (FILE_TEMPLATE_POSITIONS as $filePositionId => $name): ?>
-                                                <option value="<?= $filePositionId; ?>" <?= $filePositionId == getSerializedOptions($file->options, 'templatePosition') ? 'selected' : ''; ?>><?= $name; ?></option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                        <small class="infosMedia"></small>
-                                    </form>
-                                    <button type="button" class="deleteImage btn btn-danger btn-sm"
-                                            data-imageid="<?= $file->id; ?>"
-                                            style="position: absolute; top: 0; right: 0;">
-                                        <i class="fas fa-times"></i>
-                                    </button>
+                                    <a href="#" class="info getMediaDetails mask"
+                                       data-file-id="<?= $file->id; ?>">
+                                        <?php if ($fileSize || (is_array($fileSize) && $fileSize[1] > 150)): ?>
+                                            <h2><?= $file->title; ?></h2>
+                                            <p><?= nl2br($file->description); ?></p>
+                                        <?php endif; ?>
+                                    </a>
                                 </div>
                             <?php endforeach; ?>
                         </div>
-                        <hr class="mt-2 mt-3 mb-1 mx-5">
                     <?php endif; ?>
                 </div>
             </div>
@@ -259,6 +236,7 @@ if (!empty($_GET['id'])):
                 </div>
             </div>
         </div>
+        <div id="mediaDetails" data-file-id="">Aucun fichier sélectionné</div>
         <div class="modal fade" id="allMediasModal" tabindex="-1" role="dialog" aria-labelledby="allMediasModalLabel"
              aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
@@ -328,6 +306,7 @@ if (!empty($_GET['id'])):
                 </div>
             </div>
         </div>
+        <script type="text/javascript" src="/app/lib/template/js/media.js"></script>
         <script type="text/javascript">
             $(document).ready(function () {
 
@@ -346,68 +325,6 @@ if (!empty($_GET['id'])):
                 }).eq(0).parent('.checkCategories').parent('div').parent('div')
                     .addClass('d-flex flex-row justify-content-start flex-wrap my-3')
                     .children('strong.inputLabel').addClass('w-100');
-
-                $('.upImgForm').on('input', function () {
-
-                    busyApp();
-
-                    $('small.infosMedia').hide().html('');
-                    var $input = $(this);
-                    var $form = $input.closest('form');
-                    var idImage = $form.data('imageid');
-                    var title = $form.find('input.imageTitle').val();
-                    var description = $form.find('textarea.imageDescription').val();
-                    var link = $form.find('input.imagelink').val();
-                    var position = $form.find('input.imagePosition').val();
-                    var typeId = $form.find('input.typeId').val();
-                    var templatePosition = $form.find('select.templatePosition').val();
-                    var $info = $form.find('small.infosMedia');
-                    $info.html('');
-
-                    delay(function () {
-                        $.post(
-                            '/app/ajax/media.php',
-                            {
-                                updateDetailsImg: 'OK',
-                                idImage: idImage,
-                                title: title,
-                                description: description,
-                                link: link,
-                                position: position,
-                                templatePosition: templatePosition,
-                                typeId: typeId
-                            },
-                            function (data) {
-                                if (data && (data == 'true' || data === true)) {
-                                    $info.html('<?= trans('Enregistré'); ?>').show();
-                                    availableApp();
-                                }
-                            }
-                        );
-                    }, 300);
-                });
-
-                $('.deleteImage').on('click', function () {
-                    if (confirm('<?= trans('Vous allez supprimer cette image'); ?>')) {
-                        busyApp();
-                        var $btn = $(this);
-                        var idImage = $btn.data('imageid');
-
-                        $.post(
-                            '<?= ITEMGLUE_URL; ?>process/ajaxProcess.php',
-                            {
-                                deleteImage: 'OK',
-                                idImage: idImage
-                            },
-                            function (data) {
-                                if (data && (data == 'true' || data === true)) {
-                                    $btn.parent('div').fadeOut('fast');
-                                    availableApp();
-                                }
-                            }
-                        )
-                    }
-                });
 
                 CKEDITOR.config.height = 300;
 
