@@ -563,12 +563,13 @@ class Article
     {
         $featured = $this->statut == 1 ? ' ART.statut >= 1' : ' ART.statut = ' . $this->statut . ' ';
 
-        $sql = 'SELECT DISTINCT ART.id, ART.name, ART.description, ART.slug, ART.userId, ART.created_at, ART.updated_at, ART.statut, 
-        GROUP_CONCAT(DISTINCT C.id SEPARATOR "||") AS categoryIds, GROUP_CONCAT(DISTINCT C.name SEPARATOR "||") AS categoryNames,
-        (SELECT cc1.content FROM appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = ART.id AND cc1.lang = :lang) AS name,
+        $sql = 'SELECT DISTINCT ART.id, 
+         (SELECT cc1.content FROM appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = ART.id AND cc1.lang = :lang) AS name,
         (SELECT cc2.content FROM appoe_plugin_itemGlue_articles_content AS cc2 WHERE cc2.type = "DESCRIPTION" AND cc2.idArticle = ART.id AND cc2.lang = :lang) AS description,
         (SELECT cc3.content FROM appoe_plugin_itemGlue_articles_content AS cc3 WHERE cc3.type = "SLUG" AND cc3.idArticle = ART.id AND cc3.lang = :lang) AS slug,
-        (SELECT cc4.content FROM appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = ART.id AND cc4.lang = :lang) AS content
+        (SELECT cc4.content FROM appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = ART.id AND cc4.lang = :lang) AS content,
+         ART.userId, ART.created_at, ART.updated_at, ART.statut, 
+        GROUP_CONCAT(DISTINCT C.id SEPARATOR "||") AS categoryIds, GROUP_CONCAT(DISTINCT C.name SEPARATOR "||") AS categoryNames
         FROM appoe_categoryRelations AS CR 
         RIGHT JOIN appoe_plugin_itemGlue_articles AS ART 
         ON(CR.typeId = ART.id) 
@@ -576,10 +577,10 @@ class Article
         ON(C.id = CR.categoryId)
         INNER JOIN appoe_plugin_itemGlue_articles_content AS AC
         ON(AC.idArticle = ART.id)
-        WHERE ' . $featured . ' AND CR.type = "ITEMGLUE" AND C.status > 0 AND (ART.name LIKE ? OR AC.content LIKE ?) 
-        AND AC.lang = ? GROUP BY ART.id ORDER BY ART.statut DESC, ART.created_at DESC ';
+        WHERE ' . $featured . ' AND CR.type = "ITEMGLUE" AND C.status > 0 AND (name LIKE :search OR content LIKE :search) 
+        AND AC.lang = :lang GROUP BY ART.id ORDER BY ART.statut DESC, ART.created_at DESC ';
 
-        $params = array('%' . $searching . '%', '%' . $searching . '%', $lang);
+        $params = array(':search' => '%' . $searching . '%', ':lang' => $lang);
 
         $return = DB::exec($sql, $params);
         if ($return) {
