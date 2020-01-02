@@ -10,11 +10,9 @@ function leaflet_getMap(lngLat, zoom, otherTile = '') {
             gestureHandling: true
         }).setView(lngLat, zoom);
 
-        //Scroll protection
-
         //Add tiles
         map.addLayer(new L.TileLayer(!otherTile.trim() ? 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png' : otherTile, {
-            attribution: '<a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+            attribution: '<a href="https://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> | <a href="https://aoe-communication.com" target="_blank" title="Art Of Event - Communication">AOE</a>',
             maxZoom: 22,
             maxNativeZoom: 22
         }));
@@ -25,58 +23,79 @@ function leaflet_getMap(lngLat, zoom, otherTile = '') {
 
 function leaflet_getGps(map) {
 
-    new L.Control.Gps({
+    if ($('#mapOSM').length) {
 
-        //autoActive:true,
-        autoCenter: true
+        new L.Control.Gps({
 
-    }).addTo(map);
+            //autoActive:true,
+            autoCenter: true
+
+        }).addTo(map);
+    }
 }
 
 function leaflet_developpement(map) {
 
-    var popup = L.popup();
+    if ($('#mapOSM').length) {
+        var popup = L.popup();
 
-    function onMapClick(e) {
-        popup
-            .setLatLng(e.latlng)
-            .setContent("Position : " + e.latlng.toString())
-            .openOn(map);
+        function onMapClick(e) {
+            popup
+                .setLatLng(e.latlng)
+                .setContent("Position : " + e.latlng.toString())
+                .openOn(map);
+        }
+
+        map.on('click', onMapClick);
     }
+}
 
-    map.on('click', onMapClick);
+function leaflet_simpleMarker(map, lngLat, title, imgSrc) {
+
+    if ($('#mapOSM').length) {
+
+        var marker = L.marker(lngLat, {title: title}).addTo(map);
+        marker.bindPopup('<img src="' + imgSrc + '" alt="' + title + '">', {minWidth: 100}).openPopup();
+        map.invalidateSize();
+    }
 }
 
 function leaflet_showImg(map, imgSrc = '/app/lib/template/images/logo_app.png', imgWidth = '128px', onclickUrl = 'https://aoe-communication.com', position = 'bottomleft') {
 
-    L.Control.Watermark = L.Control.extend({
+    if ($('#mapOSM').length) {
 
-        onAdd: function (map) {
+        L.Control.Watermark = L.Control.extend({
 
-            var img = L.DomUtil.create('img');
-            img.src = imgSrc;
-            img.style.width = imgWidth;
+            onAdd: function (map) {
 
-            L.DomEvent.on(img, 'click', function () {
-                window.open(onclickUrl, '_blank');
-            });
+                var img = L.DomUtil.create('img');
+                img.src = imgSrc;
+                img.style.width = imgWidth;
 
-            return img;
-        },
+                L.DomEvent.on(img, 'click', function () {
+                    window.open(onclickUrl, '_blank');
+                });
 
-        onRemove: function (map) {
-        }
-    });
+                return img;
+            },
 
-    L.control.watermark = function (opts) {
-        return new L.Control.Watermark(opts);
-    };
+            onRemove: function (map) {
+            }
+        });
 
-    L.control.watermark({position: position}).addTo(map);
+        L.control.watermark = function (opts) {
+            return new L.Control.Watermark(opts);
+        };
+
+        L.control.watermark({position: position}).addTo(map);
+    }
 }
 
 function leaflet_aoe(map) {
 
-    var marker = new L.Marker([48.585863, 7.763], {title: 'Art Of Event - Communication'}).addTo(map);
-    marker.bindTooltip("<b>Art Of Event</b><br>Communication");
+    if ($('#mapOSM').length) {
+
+        var marker = new L.Marker([48.585863, 7.763], {title: 'Art Of Event - Communication'}).addTo(map);
+        marker.bindTooltip("<b>Art Of Event</b><br>Communication");
+    }
 }
