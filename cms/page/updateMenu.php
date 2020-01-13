@@ -156,6 +156,7 @@ showPostResponse(); ?>
                             </div>
                             <div class="col-12 my-2 idArticleChoise" data-cmstype="Article" style="display: none;">
                                 <?= \App\Form::select('Article', 'idArticle', $allArticles, !empty($_POST['idArticle']) ? $_POST['idArticle'] : '', true, 'disabled'); ?>
+                                <input type="hidden" name="name" value="">
                             </div>
                             <div class="col-12 my-2 idArticleChoise" data-cmstype="Article" style="display: none;">
                                 <?= \App\Form::select('Page de l\'article', 'slugArticlePage', $allArticlesPages, !empty($_POST['slugArticlePage']) ? $_POST['slugArticlePage'] : '', true, 'disabled'); ?>
@@ -191,6 +192,10 @@ showPostResponse(); ?>
                 var dataType = $(this).val();
                 $('[data-cmstype]').slideUp().find('input, select').prop('disabled', true);
                 $('[data-cmstype="' + dataType + '"]').slideDown().find('input, select').prop('disabled', false);
+            });
+
+            $('select#idArticle').on('input', function () {
+                $('div[data-cmstype="Article"] input[name="name"]').val($('option:selected', this).text());
             });
 
             $('select#location').on('change', function () {
