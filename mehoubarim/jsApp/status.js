@@ -37,13 +37,18 @@ jQuery(document).ready(function () {
     var userId = 0;
 
     $(document).on('dblclick', 'span.activeUser', function () {
-        var $user = $(this);
+        let $user = $(this);
         userId = $user.data('userid');
 
+        let date = new Date($user.data('last-connexion') * 1000);
+        let html = '<p><strong>Emplacement: </strong>' + $user.data('page-consulting') + ' ' +
+            '<a class="text-info" href="' + $user.data('page-consulting') + '"><i class="fas fa-external-link-alt"></i></a></p>';
+        html += '<p><strong>Dernière connexion: </strong>' + date.getHours() + 'h:' + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) + '</p>';
+        html += '<button type="button" class="btn btn-sm btn-danger btnLogoutUser m-3">' + $user.data('txt-btn-logout') + '</button>';
+        html += '<button type="button" class="btn btn-sm btn-warning btnFreeUser m-3">' + $user.data('txt-btn-freeuser') + '</button>';
+
         $('#modalInfo #modalTitle').html($user.data('user-name'));
-        $('#modalInfo #modalBody').html('<p><strong>Location: </strong>' + $user.data('page-consulting') + '</p>')
-            .append('<button type="button" class="btn btn-sm btn-danger btnLogoutUser m-3">' + $user.data('txt-btn-logout') + '</button>')
-            .append('<button type="button" class="btn btn-sm btn-warning btnFreeUser m-3">' + $user.data('txt-btn-freeuser') + '</button>');
+        $('#modalInfo #modalBody').html(html);
         $('#modalInfo').modal('show');
     });
 

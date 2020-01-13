@@ -27,6 +27,7 @@ if (!isVisitor()):
                 <span class="activeUser pb-1 border-bottom border-<?= STATUS_CONNECTED_USER[$connectedUserData['status']]; ?>"
                       style="position: relative;cursor: pointer;"
                       data-page-consulting="<?= $connectedUserData['pageConsulting']; ?>"
+                      data-last-connexion="<?= $connectedUserData['lastConnect']; ?>"
                       data-user-name="<?= getUserEntitled($connectedUserId); ?>"
                       data-user-status="<?= $connectedUserData['status']; ?>"
                       data-userid="<?= $connectedUserId; ?>"
