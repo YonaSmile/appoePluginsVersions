@@ -23,14 +23,30 @@ if ($visitors && is_array($visitors['totalPagesViews']) && is_array($visitors['v
             <span class="visitsStatsBadge bgColorSecondary"><?= array_sum($visitors['visitors']); ?></span>
         </div>
     </div>
-    <strong class="colorSecondary"><?= trans('Les pages les plus consultées'); ?></strong>
-    <div class="my-4">
-        <?php foreach (array_slice($visitors['totalPagesViews'], 0, 5, true) as $name => $nb): ?>
-            <div class="my-2 ml-0 ml-lg-4" style="position: relative;">
-                <span class="mr-2"><?= ucfirst(mb_strtolower($name)); ?></span>
-                <span class="visitsStatsBadge bgColorSecondary"><?= $nb; ?></span>
+    <div class="my-4" id="statsDetails">
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <?php foreach (MEHOUBARIM_TYPES as $type => $key): if (array_key_exists($type, getMehoubarimType())): ?>
+                    <a class="nav-item sidebarLink colorSecondary nav-link <?= $type === 'PAGE' ? 'active' : ''; ?>"
+                       id="nav-<?= $type; ?>-tab"
+                       data-toggle="tab" href="#nav-<?= $type; ?>" role="tab" aria-controls="nav-<?= $type; ?>"
+                       aria-selected="<?= $type === 'PAGE' ? 'true' : 'false'; ?>"><?= getMehoubarimType()[$type]; ?></a>
+                <?php endif; endforeach; ?>
             </div>
-        <?php endforeach; ?>
+        </nav>
+        <div class="tab-content mt-3" id="nav-tabContent">
+            <?php foreach (MEHOUBARIM_TYPES as $type => $key): if (array_key_exists($type, getMehoubarimType())): ?>
+                <div class="tab-pane fade <?= $type === 'PAGE' ? ' show active ' : ''; ?>" id="nav-<?= $type; ?>"
+                     role="tabpanel" aria-labelledby="nav-<?= $type; ?>-tab">
+                    <?php foreach (array_slice($visitors[$key], 0, 5, true) as $name => $nb): ?>
+                        <div class="my-2 ml-0 ml-lg-4" style="position: relative;">
+                            <span class="mr-2"><?= shortenText(ucfirst(mb_strtolower($name)), 57); ?></span>
+                            <span class="visitsStatsBadge bgColorSecondary"><?= $nb; ?></span>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; endforeach; ?>
+        </div>
     </div>
     <div class="text-right">
         <button class="btn btn-outline-info btn-sm border-radius-0 borderColorSecondary colorSecondary" id="resetStats"
@@ -42,22 +58,4 @@ if ($visitors && is_array($visitors['totalPagesViews']) && is_array($visitors['v
         <div class="progress-bar bgColorSecondary" role="progressbar" id="visitsLoader" style="width: 0;"
              aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
     </div>
-    <script type="text/javascript">
-        jQuery(document).ready(function ($) {
-
-            $('#resetStats').on('click', function () {
-                if (confirm('<?= trans('Vous allez réinitialiser les statistiques'); ?>')) {
-                    $(this).attr('disabled', 'disabled').addClass('disabled')
-                        .html('<i class="fas fa-circle-notch fa-spin"></i> <?= trans('Chargement'); ?>...');
-
-                    $('#listVisitorsStats, #listPagesStats').hide();
-
-                    $.post(
-                        '/app/plugin/mehoubarim/visites.php',
-                        {resetStats: 'OK'}
-                    );
-                }
-            });
-        });
-    </script>
 <?php endif; ?>

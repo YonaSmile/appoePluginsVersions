@@ -13,6 +13,29 @@ const STATUS_CONNECTED_USER = array(
     4 => 'danger'
 );
 
+const MEHOUBARIM_TYPES = array(
+    'PAGE' => 'totalPagesViews',
+    'ARTICLE' => 'totalArticlesViews',
+    'SHOP' => 'totalShopViews'
+);
+
+/**
+ * @return array
+ */
+function getMehoubarimType()
+{
+
+    $mehoubarimType = array(
+        'PAGE' => 'Pages',
+        'ARTICLE' => 'Articles'
+    );
+
+    if (defined('MEHOUBARIM_TYPES_DISPLAY') && !isArrayEmpty(MEHOUBARIM_TYPES_DISPLAY)) {
+        $mehoubarimType = array_merge($mehoubarimType, MEHOUBARIM_TYPES_DISPLAY);
+    }
+
+    return $mehoubarimType;
+}
 
 /**
  * check and create necessarily files
@@ -54,7 +77,9 @@ function mehoubarim_checkExistingFiles($file = null)
 
         //Edit
         $parsed_json_visitors['visitors'] = array();
-        $parsed_json_visitors['totalPagesViews'] = array();
+        foreach (MEHOUBARIM_TYPES as $type => $key) {
+            $parsed_json_visitors[$key] = array();
+        }
 
         //Write
         mehoubarim_jsonWrite($parsed_json_visitors, VISITORS_JSON);
@@ -350,7 +375,9 @@ function mehoubarim_cleanVisitor()
 
     //Edit
     $parsed_json['visitors'] = array();
-    $parsed_json['totalPagesViews'] = array();
+    foreach (MEHOUBARIM_TYPES as $type => $key) {
+        $parsed_json[$key] = array();
+    }
 
     //Write
     mehoubarim_jsonWrite($parsed_json, VISITORS_JSON);
@@ -385,10 +412,10 @@ function mehoubarim_getVisitor()
 }
 
 /**
- * @param $page
+ * @param $pageData
  * update visitors & visits
  */
-function mehoubarim_updateVisitor($page)
+function mehoubarim_updateVisitor(array $pageData)
 {
     if (!empty($_SERVER['REMOTE_ADDR'])) {
 
@@ -410,41 +437,18 @@ function mehoubarim_updateVisitor($page)
         }
 
         //update pages views
-        if (!empty($parsed_json['totalPagesViews'][$page])) {
+        if (!empty($parsed_json[MEHOUBARIM_TYPES[$pageData['type']]][$pageData['name']])) {
 
             //Edit
-            $parsed_json['totalPagesViews'][$page] += 1;
+            $parsed_json[MEHOUBARIM_TYPES[$pageData['type']]][$pageData['name']] += 1;
 
         } else {
 
             //Edit
-            $parsed_json['totalPagesViews'][$page] = 1;
+            $parsed_json[MEHOUBARIM_TYPES[$pageData['type']]][$pageData['name']] = 1;
         }
 
         //Write
         mehoubarim_jsonWrite($parsed_json, VISITORS_JSON);
     }
-}
-
-/**
- * @param $page
- * update only numbers of pages visited
- */
-function mehoubarim_updatePagesViews($page)
-{
-    //Get
-    $parsed_json = mehoubarim_jsonRead(VISITORS_JSON);
-
-    if (!empty($parsed_json['totalPagesViews'][$page])) {
-
-        //Edit
-        $parsed_json['totalPagesViews'][$page] += 1;
-
-    } else {
-
-        //Edit
-        $parsed_json['totalPagesViews'][$page] = 1;
-    }
-    //Write
-    mehoubarim_jsonWrite($parsed_json, VISITORS_JSON);
 }

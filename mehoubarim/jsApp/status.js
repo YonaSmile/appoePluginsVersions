@@ -5,22 +5,24 @@ function checkUserSessionExit() {
 function getUserStatus() {
     jQuery('#usersStatsSubMenu').load('/app/plugin/mehoubarim/index.php');
 
-    jQuery('#visitorsStats').load('/app/plugin/mehoubarim/visites.php', function () {
+    if (jQuery('#visitorsStats:hover').length === 0) {
+        jQuery('#visitorsStats').load('/app/plugin/mehoubarim/visites.php', function () {
 
-        jQuery('#visitorsStats #visitsLoader')
-            .animate(
-                {
-                    width: '100%',
-                    valuenow: 100
-                },
-                {
-                    duration: 14000,
-                    step: function (now) {
-                        jQuery(this).attr('aria-valuenow', now)
+            jQuery('#visitorsStats #visitsLoader')
+                .animate(
+                    {
+                        width: '100%',
+                        valuenow: 100
+                    },
+                    {
+                        duration: 14000,
+                        step: function (now) {
+                            jQuery(this).attr('aria-valuenow', now)
+                        }
                     }
-                }
-            );
-    });
+                );
+        });
+    }
 }
 
 jQuery(document).ready(function () {
@@ -35,6 +37,23 @@ jQuery(document).ready(function () {
     });
 
     var userId = 0;
+
+
+    $(document).on('click', '#resetStats', function () {
+        if (confirm('Vous allez réinitialiser les statistiques')) {
+            $(this).attr('disabled', 'disabled').addClass('disabled')
+                .html('<i class="fas fa-circle-notch fa-spin"></i> Chargement...');
+
+            $('#listVisitorsStats, #listPagesStats').hide();
+
+            $.post(
+                '/app/plugin/mehoubarim/visites.php',
+                {resetStats: 'OK'}
+            ).success(function () {
+                getUserStatus();
+            });
+        }
+    });
 
     $(document).on('dblclick', 'span.activeUser', function () {
         let $user = $(this);
