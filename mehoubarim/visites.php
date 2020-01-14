@@ -23,10 +23,11 @@ if ($visitors && is_array($visitors['totalPagesViews']) && is_array($visitors['v
             <span class="visitsStatsBadge bgColorSecondary"><?= array_sum($visitors['visitors']); ?></span>
         </div>
     </div>
-    <div class="my-4" id="statsDetails">
+    <strong><span class="colorSecondary"><i class="fas fa-eye"></i></span> <?= trans('Les plus consultés'); ?></strong>
+    <div class="my-3" id="statsDetails">
         <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                <?php foreach (MEHOUBARIM_TYPES as $type => $key): if (array_key_exists($type, getMehoubarimType())): ?>
+                <?php foreach (MEHOUBARIM_TYPES as $type => $key): if (array_key_exists($type, getMehoubarimType()) && !isArrayEmpty($visitors[$key])): ?>
                     <a class="nav-item sidebarLink colorSecondary nav-link <?= $type === 'PAGE' ? 'active' : ''; ?>"
                        id="nav-<?= $type; ?>-tab"
                        data-toggle="tab" href="#nav-<?= $type; ?>" role="tab" aria-controls="nav-<?= $type; ?>"
@@ -35,7 +36,7 @@ if ($visitors && is_array($visitors['totalPagesViews']) && is_array($visitors['v
             </div>
         </nav>
         <div class="tab-content mt-3" id="nav-tabContent">
-            <?php foreach (MEHOUBARIM_TYPES as $type => $key): if (array_key_exists($type, getMehoubarimType())): ?>
+            <?php foreach (MEHOUBARIM_TYPES as $type => $key): if (array_key_exists($type, getMehoubarimType()) && !isArrayEmpty($visitors[$key])): ?>
                 <div class="tab-pane fade <?= $type === 'PAGE' ? ' show active ' : ''; ?>" id="nav-<?= $type; ?>"
                      role="tabpanel" aria-labelledby="nav-<?= $type; ?>-tab">
                     <?php foreach (array_slice($visitors[$key], 0, 5, true) as $name => $nb): ?>
