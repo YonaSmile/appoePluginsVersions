@@ -128,10 +128,10 @@ if (!empty($_GET['id'])):
                                     <?= \App\Form::text('Nom', 'name', 'text', $Cms->getName(), true, 70); ?>
                                 </div>
                                 <div class="col-12 my-2">
-                                    <?= \App\Form::textarea('Description', 'description', $Cms->getDescription(), 2, true, 'maxlength="158"'); ?>
+                                    <?= \App\Form::textarea('Description', 'description', $Cms->getDescription(), 2, true, 'maxlength="160"'); ?>
                                 </div>
                                 <div class="col-12 my-2">
-                                    <?= \App\Form::text('Nom du menu', 'menuName', 'text', $Cms->getMenuName(), true, 250); ?>
+                                    <?= \App\Form::text('Nom du menu', 'menuName', 'text', $Cms->getMenuName(), true, 100); ?>
                                 </div>
                                 <div class="col-12 my-2">
                                     <?= \App\Form::text('Nom du lien URL' . ' (slug)', 'slug', 'text', $Cms->getSlug(), true, 100); ?>
