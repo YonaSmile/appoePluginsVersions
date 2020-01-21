@@ -1,6 +1,6 @@
 <?php
 require_once('header.php');
-if (!empty($_POST['resetStats'])) {
+if (!empty($_GET['resetStats']) && $_GET['resetStats'] === 'OK') {
     mehoubarim_cleanVisitor();
 }
 

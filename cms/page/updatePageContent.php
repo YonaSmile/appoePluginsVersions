@@ -16,12 +16,8 @@ if (!empty($_GET['id'])):
 
     if ($Cms->show()):
 
-        $CmsMenu = new CmsMenu();
+        // get page content
         $CmsContent = new CmsContent($Cms->getId(), APP_LANG);
-
-        //check if is a page operated by content CMS
-        $menuPages = $CmsMenu->showAll(false, APP_LANG);
-        $allMenuPages = extractFromObjArr($menuPages, 'slug');
 
         //get all pages for navigations
         $allCmsPages = $Cms->showAll();
@@ -68,7 +64,7 @@ if (!empty($_GET['id'])):
                                 <i class="fas fa-wrench"></i> <?= trans('Modifier les en têtes'); ?>
                             </button>
                         <?php endif;
-                        if (array_key_exists($Cms->getSlug(), $allMenuPages)): ?>
+                        if ($Cms->getType() === 'PAGE'): ?>
                             <a href="<?= webUrl($Cms->getSlug() . '/'); ?>"
                                class="btn btn-outline-info btn-sm" target="_blank">
                                 <i class="fas fa-external-link-alt"></i> <?= trans('Visualiser la page'); ?>

@@ -1,38 +1,43 @@
-function checkUserSessionExit() {
-    return jQuery.post('/app/ajax/plugin.php', {checkUserSession: 'OK'});
+function mehoubarim_getUsersVisites(reset = false) {
+
+    jQuery('#visitorsStats').load('/app/plugin/mehoubarim/visites.php' + (true === reset ? '?resetStats=OK' : ''), function () {
+
+        jQuery('#visitorsStats #visitsLoader')
+            .animate(
+                {
+                    width: '100%',
+                    valuenow: 100
+                },
+                {
+                    duration: 60000,
+                    step: function (now) {
+                        jQuery(this).attr('aria-valuenow', now)
+                    }
+                }
+            );
+    });
 }
 
-function getUserStatus() {
+function mehoubarim_getUserStatus() {
     jQuery('#usersStatsSubMenu').load('/app/plugin/mehoubarim/index.php');
-
-    if (jQuery('#visitorsStats:hover').length === 0) {
-        jQuery('#visitorsStats').load('/app/plugin/mehoubarim/visites.php', function () {
-
-            jQuery('#visitorsStats #visitsLoader')
-                .animate(
-                    {
-                        width: '100%',
-                        valuenow: 100
-                    },
-                    {
-                        duration: 14000,
-                        step: function (now) {
-                            jQuery(this).attr('aria-valuenow', now)
-                        }
-                    }
-                );
-        });
-    }
 }
 
 jQuery(document).ready(function () {
 
     checkUserSessionExit().done(function (data) {
         if (data == 'true') {
-            getUserStatus();
+
+            mehoubarim_getUserStatus();
             setInterval(function () {
-                getUserStatus();
+                mehoubarim_getUserStatus();
             }, 15000);
+
+            mehoubarim_getUsersVisites();
+            setInterval(function () {
+                if (jQuery('#visitorsStats:hover').length === 0) {
+                    mehoubarim_getUsersVisites();
+                }
+            }, 60000);
         }
     });
 
@@ -44,14 +49,8 @@ jQuery(document).ready(function () {
             $(this).attr('disabled', 'disabled').addClass('disabled')
                 .html('<i class="fas fa-circle-notch fa-spin"></i> Chargement...');
 
-            $('#listVisitorsStats, #listPagesStats').hide();
-
-            $.post(
-                '/app/plugin/mehoubarim/visites.php',
-                {resetStats: 'OK'}
-            ).success(function () {
-                getUserStatus();
-            });
+            $('#visitorsStats').html('');
+            mehoubarim_getUsersVisites(true);
         }
     });
 
@@ -83,7 +82,7 @@ jQuery(document).ready(function () {
             {logoutUser: userId}
         ).done(function (data) {
             $('#modalInfo').modal('hide');
-            getUserStatus();
+            mehoubarim_getUserStatus();
         });
     });
 
@@ -99,7 +98,7 @@ jQuery(document).ready(function () {
             {freeUser: userId}
         ).done(function (data) {
             $('#modalInfo').modal('hide');
-            getUserStatus();
+            mehoubarim_getUserStatus();
         });
     });
 });
