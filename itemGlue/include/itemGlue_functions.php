@@ -477,7 +477,7 @@ function getArticleUrl(stdClass $Article, $meta = 'link', $page = '')
 function getArticleMeta($articleMetas, $key)
 {
     if (is_array($articleMetas)) {
-        return !empty($articleMetas[$key]) ? $articleMetas[$key] : '';
+        return !empty($articleMetas[$key]) ? htmlSpeCharDecode($articleMetas[$key]) : '';
     }
     return '';
 }
