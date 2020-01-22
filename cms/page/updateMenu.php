@@ -52,7 +52,8 @@ showPostResponse(); ?>
                                                    data-menuid="<?= $menu->id; ?>" data-column="position"
                                                    value="<?= $menu->position; ?>">
                                             <input type="text" data-menuid="<?= $menu->id; ?>" class="updateMenuData"
-                                                   data-column="name" value="<?= $menu->name; ?>" <?= is_numeric($menu->idCms) ? ' readonly ' : ''; ?>>
+                                                   data-column="name" value="<?= $menu->name; ?>"
+                                                   <?= is_numeric($menu->idCms) ? ' readonly ' : ''; ?>>
                                             <small class="inputInfo"></small>
                                             <?php if (empty($MENUS[$key][$menu->id])): ?>
                                                 <button type="button" class="close deleteMenu">
@@ -77,7 +78,8 @@ showPostResponse(); ?>
                                                            value="<?= $subMenu->position; ?>">
                                                     <input type="text" data-menuid="<?= $subMenu->id; ?>"
                                                            class="updateMenuData" data-column="name"
-                                                           value="<?= $subMenu->name; ?>" <?= is_numeric($subMenu->idCms) ? ' readonly ' : ''; ?>>
+                                                           value="<?= $subMenu->name; ?>"
+                                                           <?= is_numeric($subMenu->idCms) ? ' readonly ' : ''; ?>>
                                                     <small class="inputInfo"></small>
                                                     <?php if (empty($MENUS[$key][$subMenu->id])): ?>
                                                         <button type="button" class="close deleteMenu">
@@ -103,7 +105,8 @@ showPostResponse(); ?>
                                                                    value="<?= $subSubMenu->position; ?>">
                                                             <input type="text" data-menuid="<?= $subSubMenu->id; ?>"
                                                                    class="updateMenuData" data-column="name"
-                                                                   value="<?= $subSubMenu->name; ?>" <?= is_numeric($subSubMenu->idCms) ? ' readonly ' : ''; ?>>
+                                                                   value="<?= $subSubMenu->name; ?>"
+                                                                   <?= is_numeric($subSubMenu->idCms) ? ' readonly ' : ''; ?>>
                                                             <small class="inputInfo"></small>
                                                             <?php if (empty($MENUS[$key][$subSubMenu->id])): ?>
                                                                 <button type="button" class="close deleteMenu">
@@ -226,22 +229,23 @@ showPostResponse(); ?>
                 var $inputInfo = $input.parent('div').children('small.inputInfo');
                 $('small.inputInfo').html('');
 
-                $.post(
-                    '<?= CMS_URL . 'process/ajaxProcess.php'; ?>',
-                    {
-                        updateMenu: 'OK',
-                        column: column,
-                        idMenu: idMenu,
-                        value: value
-                    },
-                    function (data) {
-                        if (data === true || data == 'true') {
-                            $inputInfo.html('<?= trans('Enregistré'); ?>');
-                            availableApp();
+                delay(function () {
+                    $.post(
+                        '<?= CMS_URL . 'process/ajaxProcess.php'; ?>',
+                        {
+                            updateMenu: 'OK',
+                            column: column,
+                            idMenu: idMenu,
+                            value: value
+                        },
+                        function (data) {
+                            if (data === true || data == 'true') {
+                                $inputInfo.html('<?= trans('Enregistré'); ?>');
+                                availableApp();
+                            }
                         }
-                    }
-                );
-
+                    );
+                }, 500);
             });
 
             $('.updateIdCmsMenuBtn').on('click', function (event) {
