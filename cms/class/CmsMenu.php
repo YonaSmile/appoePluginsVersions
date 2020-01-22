@@ -288,7 +288,7 @@ class CmsMenu
         if ($error[0] != '00000') {
             return false;
         } else {
-            appLog('Updating page menu -> id: ' . $this->id . 'idCms: ' . $this->idCms . ' name: ' . $this->name . ' position: ' . $this->position . ' parentId: ' . $this->parentId . ' location: ' . $this->location . ' statut: ' . $this->statut);
+            appLog('Updating page menu -> id: ' . $this->id . ' idCms: ' . $this->idCms . ' name: ' . $this->name . ' position: ' . $this->position . ' parentId: ' . $this->parentId . ' location: ' . $this->location . ' statut: ' . $this->statut);
             return true;
         }
     }
