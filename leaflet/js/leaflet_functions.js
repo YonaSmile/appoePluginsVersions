@@ -55,7 +55,7 @@ function leaflet_simpleMarker(map, lngLat, title, imgSrc) {
     if ($('#mapOSM').length) {
 
         var marker = L.marker(lngLat, {title: title}).addTo(map);
-        marker.bindPopup('<img src="' + imgSrc + '" alt="' + title + '">', {minWidth: 100}).openPopup();
+        marker.bindPopup('<img src="' + imgSrc + '" alt="' + title + '" style="max-width:100%">', {minWidth: 100}).openPopup();
         map.invalidateSize();
     }
 }
