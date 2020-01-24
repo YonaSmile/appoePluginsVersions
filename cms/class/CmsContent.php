@@ -31,6 +31,49 @@ class CmsContent
     }
 
     /**
+     * @param bool $onlyHeaders
+     * @return array|bool
+     */
+    public function showAll($onlyHeaders = false)
+    {
+
+        $sqlAdd = $onlyHeaders ? ' AND type = "HEADER" ' : '';
+        $sql = 'SELECT * FROM appoe_plugin_cms_content WHERE idCms = :idCms ' . $sqlAdd . ' AND lang = :lang ORDER BY created_at ASC';
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':idCms', $this->idCms);
+        $stmt->bindParam(':lang', $this->lang);
+        $stmt->execute();
+
+        $error = $stmt->errorInfo();
+        if ($error[0] != '00000') {
+            return false;
+        } else {
+            $this->data = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+            if ($onlyHeaders) {
+                $this->setHeaders();
+            }
+            return $this->data;
+        }
+    }
+
+    /**
+     *
+     */
+    public function setHeaders()
+    {
+
+        if (!isArrayEmpty($this->data)) {
+
+            $newData = array();
+            foreach ($this->data as $data) {
+                $newData[$data->metaKey] = $data->metaValue;
+            }
+            $this->data = $newData;
+        }
+    }
+
+    /**
      * @return mixed
      */
     public function getId()
@@ -199,29 +242,18 @@ class CmsContent
     }
 
     /**
-     * @param bool $onlyHeaders
-     * @return array|bool
+     * Feed class attributs
+     *
+     * @param $data
      */
-    public function showAll($onlyHeaders = false)
+    public function feed($data)
     {
+        foreach ($data as $attribut => $value) {
+            $method = 'set' . str_replace(' ', '', ucwords(str_replace('_', ' ', $attribut)));
 
-        $sqlAdd = $onlyHeaders ? ' AND type = "HEADER" ' : '';
-        $sql = 'SELECT * FROM appoe_plugin_cms_content WHERE idCms = :idCms ' . $sqlAdd . ' AND lang = :lang ORDER BY created_at ASC';
-        $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':idCms', $this->idCms);
-        $stmt->bindParam(':lang', $this->lang);
-        $stmt->execute();
-
-        $error = $stmt->errorInfo();
-        if ($error[0] != '00000') {
-            return false;
-        } else {
-            $this->data = $stmt->fetchAll(PDO::FETCH_OBJ);
-
-            if ($onlyHeaders) {
-                $this->setHeaders();
+            if (is_callable(array($this, $method))) {
+                $this->$method($value);
             }
-            return $this->data;
         }
     }
 
@@ -316,6 +348,25 @@ class CmsContent
     }
 
     /**
+     * @param $oldName
+     * @param $newName
+     * @return bool
+     */
+    public function renameFilename($oldName, $newName)
+    {
+
+        $sql = 'UPDATE appoe_plugin_cms_content SET metaValue = :newName WHERE metaValue = :oldName';
+
+        $stmt = DB::exec($sql, [':newName' => $newName, ':oldName' => $oldName]);
+
+        if ($stmt) {
+            appLog('Renaming files in page content -> old: ' . $oldName . ' new: ' . $newName);
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * @param $headers
      * @return bool
      */
@@ -370,7 +421,6 @@ class CmsContent
         }
     }
 
-
     /**
      * @param bool $forUpdate
      *
@@ -402,38 +452,6 @@ class CmsContent
                 return false;
             } else {
                 return true;
-            }
-        }
-    }
-
-    /**
-     *
-     */
-    public function setHeaders()
-    {
-
-        if (!isArrayEmpty($this->data)) {
-
-            $newData = array();
-            foreach ($this->data as $data) {
-                $newData[$data->metaKey] = $data->metaValue;
-            }
-            $this->data = $newData;
-        }
-    }
-
-    /**
-     * Feed class attributs
-     *
-     * @param $data
-     */
-    public function feed($data)
-    {
-        foreach ($data as $attribut => $value) {
-            $method = 'set' . str_replace(' ', '', ucwords(str_replace('_', ' ', $attribut)));
-
-            if (is_callable(array($this, $method))) {
-                $this->$method($value);
             }
         }
     }
