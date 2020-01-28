@@ -7,7 +7,9 @@ if (!empty($_GET['resetStats']) && $_GET['resetStats'] === 'OK') {
 $visitors = mehoubarim_getVisitor();
 $globalData = mehoubarim_getGlobal();
 if ($visitors && is_array($visitors['totalPagesViews']) && is_array($visitors['visitors'])):
-    arsort($visitors['totalPagesViews']); ?>
+    foreach (MEHOUBARIM_TYPES as &$name) {
+        arsort($visitors[$name]);
+    } ?>
     <strong>
         <span class="colorSecondary">
             <i class="fas fa-clock"></i>
