@@ -35,6 +35,49 @@ class Article
     }
 
     /**
+     * @return bool
+     */
+    public function show()
+    {
+        $sql = 'SELECT C.*,
+        (SELECT cc1.content FROM appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = C.id AND cc1.lang = :lang) AS name,
+        (SELECT cc2.content FROM appoe_plugin_itemGlue_articles_content AS cc2 WHERE cc2.type = "DESCRIPTION" AND cc2.idArticle = C.id AND cc2.lang = :lang) AS description,
+        (SELECT cc3.content FROM appoe_plugin_itemGlue_articles_content AS cc3 WHERE cc3.type = "SLUG" AND cc3.idArticle = C.id AND cc3.lang = :lang) AS slug,
+        (SELECT cc4.content FROM appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = C.id AND cc4.lang = :lang) AS content
+        FROM appoe_plugin_itemGlue_articles AS C
+        WHERE C.id = :id';
+
+        $params = array(':id' => $this->id, ':lang' => $this->lang);
+
+        $return = DB::exec($sql, $params);
+        if ($return) {
+
+            if ($return->rowCount() == 1) {
+
+                $this->feed($return->fetch(PDO::FETCH_OBJ));
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Feed class attributs
+     *
+     * @param $data
+     */
+    public function feed($data)
+    {
+        foreach ($data as $attribut => $value) {
+            $method = 'set' . str_replace(' ', '', ucwords(str_replace('_', ' ', $attribut)));
+
+            if (is_callable(array($this, $method))) {
+                $this->$method($value);
+            }
+        }
+    }
+
+    /**
      * @return mixed
      */
     public function getId()
@@ -213,33 +256,6 @@ class Article
         }
 
         return true;
-    }
-
-    /**
-     * @return bool
-     */
-    public function show()
-    {
-        $sql = 'SELECT C.*,
-        (SELECT cc1.content FROM appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = C.id AND cc1.lang = :lang) AS name,
-        (SELECT cc2.content FROM appoe_plugin_itemGlue_articles_content AS cc2 WHERE cc2.type = "DESCRIPTION" AND cc2.idArticle = C.id AND cc2.lang = :lang) AS description,
-        (SELECT cc3.content FROM appoe_plugin_itemGlue_articles_content AS cc3 WHERE cc3.type = "SLUG" AND cc3.idArticle = C.id AND cc3.lang = :lang) AS slug,
-        (SELECT cc4.content FROM appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = C.id AND cc4.lang = :lang) AS content
-        FROM appoe_plugin_itemGlue_articles AS C
-        WHERE C.id = :id';
-
-        $params = array(':id' => $this->id, ':lang' => $this->lang);
-
-        $return = DB::exec($sql, $params);
-        if ($return) {
-
-            if ($return->rowCount() == 1) {
-
-                $this->feed($return->fetch(PDO::FETCH_OBJ));
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -663,21 +679,5 @@ class Article
             return true;
         }
         return false;
-    }
-
-    /**
-     * Feed class attributs
-     *
-     * @param $data
-     */
-    public function feed($data)
-    {
-        foreach ($data as $attribut => $value) {
-            $method = 'set' . str_replace(' ', '', ucwords(str_replace('_', ' ', $attribut)));
-
-            if (is_callable(array($this, $method))) {
-                $this->$method($value);
-            }
-        }
     }
 }
