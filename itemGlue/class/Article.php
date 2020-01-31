@@ -290,11 +290,10 @@ class Article
     /**
      * @param $idCategory
      * @param bool $showParent
-     * @param bool $countArticles
-     * @param bool $lang
+     * @param string $lang
      * @return bool|array
      */
-    public function showByCategory($idCategory, $showParent = false, $countArticles = false, $lang = LANG)
+    public function showByCategory($idCategory, $showParent = false, $lang = LANG)
     {
         $categorySQL = ' AND C.id = :idCategory ';
         if (true === $showParent) {
@@ -322,8 +321,7 @@ class Article
 
         $return = DB::exec($sql, $params);
         if ($return) {
-
-            return (!$countArticles) ? $return->fetchAll(PDO::FETCH_OBJ) : $return->rowCount();
+            return $return->fetchAll(PDO::FETCH_OBJ);
         }
         return false;
     }
@@ -357,12 +355,11 @@ class Article
     }
 
     /**
-     * @param bool $countArticles
      * @param bool $length
      * @param bool $lang
      * @return array|bool
      */
-    public function showAllByLang($countArticles = false, $length = false, $lang = LANG)
+    public function showAllByLang($length = false, $lang = LANG)
     {
         $limit = $length ? ' LIMIT ' . $length . ' OFFSET 0' : '';
         $featured = $this->statut == 1 ? ' ART.statut >= 1' : ' ART.statut = ' . $this->statut . ' ';
@@ -381,7 +378,7 @@ class Article
 
         if ($return) {
 
-            return (!$countArticles) ? $return->fetchAll(PDO::FETCH_OBJ) : $return->rowCount();
+            return $return->fetchAll(PDO::FETCH_OBJ);
         }
         return false;
     }

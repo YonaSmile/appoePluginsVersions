@@ -64,15 +64,16 @@ function getArticleData(stdClass $article)
 }
 
 /**
- * @param $categoryId
+ * @param int $categoryId
  * @param bool $parent
- * @param bool $length
+ * @param bool|int $length
+ * @param string $lang
  * @return array|bool
  */
-function getArticlesByCategory($categoryId, $parent = false, $length = false)
+function getArticlesByCategory($categoryId, $parent = false, $length = false, $lang = LANG)
 {
     $Article = new Article();
-    $allArticles = $Article->showByCategory($categoryId, $parent);
+    $allArticles = $Article->showByCategory($categoryId, $parent, $lang);
 
     if (!$allArticles) return false;
 
@@ -86,12 +87,13 @@ function getArticlesByCategory($categoryId, $parent = false, $length = false)
 
 /**
  * @param bool $length
+ * @param string $lang
  * @return array|bool
  */
-function getRecentArticles($length = false)
+function getRecentArticles($length = false, $lang = LANG)
 {
     $Article = new Article();
-    $allArticles = $Article->showAllByLang(false, $length);
+    $allArticles = $Article->showAllByLang($length, $lang);
 
     if (!$allArticles) return false;
 
