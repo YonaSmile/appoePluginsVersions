@@ -18,14 +18,9 @@ class Article
     private $updatedAt;
 
     private $lang = LANG;
-    private $dbh = null;
 
     public function __construct($idArticle = null)
     {
-        if (is_null($this->dbh)) {
-            $this->dbh = DB::connect();
-        }
-
         $this->userId = getUserIdSession();
 
         if (!is_null($idArticle)) {
@@ -248,14 +243,12 @@ class Article
                 	`updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 				) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;';
 
-        $stmt = $this->dbh->prepare($sql);
-        $stmt->execute();
-        $error = $stmt->errorInfo();
-        if ($error[0] != '00000') {
-            return false;
+        $return = DB::exec($sql);
+        if ($return) {
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     /**
