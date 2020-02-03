@@ -6,9 +6,11 @@ if (!empty($_GET['resetStats']) && $_GET['resetStats'] === 'OK') {
 
 $visitors = mehoubarim_getVisitor();
 $globalData = mehoubarim_getGlobal();
-if ($visitors && is_array($visitors['totalPagesViews']) && is_array($visitors['visitors'])):
+if ($visitors && is_array($visitors['visitors'])):
     foreach (MEHOUBARIM_TYPES as &$name) {
-        arsort($visitors[$name]);
+        if (array_key_exists($name, $visitors) && !isArrayEmpty($visitors[$name])) {
+            arsort($visitors[$name]);
+        }
     } ?>
     <strong>
         <span class="colorSecondary">
@@ -29,26 +31,30 @@ if ($visitors && is_array($visitors['totalPagesViews']) && is_array($visitors['v
     <div class="my-3" id="statsDetails">
         <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                <?php foreach (MEHOUBARIM_TYPES as $type => $key): if (array_key_exists($type, getMehoubarimType()) && !isArrayEmpty($visitors[$key])): ?>
-                    <a class="nav-item sidebarLink colorSecondary nav-link <?= $type === 'PAGE' ? 'active' : ''; ?>"
-                       id="nav-<?= $type; ?>-tab"
-                       data-toggle="tab" href="#nav-<?= $type; ?>" role="tab" aria-controls="nav-<?= $type; ?>"
-                       aria-selected="<?= $type === 'PAGE' ? 'true' : 'false'; ?>"><?= getMehoubarimType()[$type]; ?></a>
-                <?php endif; endforeach; ?>
+                <?php foreach (MEHOUBARIM_TYPES as $type => $key):
+                    if (array_key_exists($type, getMehoubarimType()) && !isArrayEmpty($visitors[$key])): ?>
+                        <a class="nav-item sidebarLink colorSecondary nav-link <?= $type === 'PAGE' ? 'active' : ''; ?>"
+                           id="nav-<?= $type; ?>-tab"
+                           data-toggle="tab" href="#nav-<?= $type; ?>" role="tab" aria-controls="nav-<?= $type; ?>"
+                           aria-selected="<?= $type === 'PAGE' ? 'true' : 'false'; ?>"><?= getMehoubarimType()[$type]; ?></a>
+                    <?php endif;
+                endforeach; ?>
             </div>
         </nav>
         <div class="tab-content mt-3" id="nav-tabContent">
-            <?php foreach (MEHOUBARIM_TYPES as $type => $key): if (array_key_exists($type, getMehoubarimType()) && !isArrayEmpty($visitors[$key])): ?>
-                <div class="tab-pane fade <?= $type === 'PAGE' ? ' show active ' : ''; ?>" id="nav-<?= $type; ?>"
-                     role="tabpanel" aria-labelledby="nav-<?= $type; ?>-tab">
-                    <?php foreach (array_slice($visitors[$key], 0, 5, true) as $name => $nb): ?>
-                        <div class="my-2 ml-0 ml-lg-4" style="position: relative;">
-                            <span class="mr-2"><?= shortenText(ucfirst(mb_strtolower($name)), 57); ?></span>
-                            <span class="visitsStatsBadge bgColorSecondary"><?= $nb; ?></span>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            <?php endif; endforeach; ?>
+            <?php foreach (MEHOUBARIM_TYPES as $type => $key):
+                if (array_key_exists($type, getMehoubarimType()) && !isArrayEmpty($visitors[$key])): ?>
+                    <div class="tab-pane fade <?= $type === 'PAGE' ? ' show active ' : ''; ?>" id="nav-<?= $type; ?>"
+                         role="tabpanel" aria-labelledby="nav-<?= $type; ?>-tab">
+                        <?php foreach (array_slice($visitors[$key], 0, 5, true) as $name => $nb): ?>
+                            <div class="my-2 ml-0 ml-lg-4" style="position: relative;">
+                                <span class="mr-2"><?= shortenText(ucfirst(mb_strtolower($name)), 57); ?></span>
+                                <span class="visitsStatsBadge bgColorSecondary"><?= $nb; ?></span>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif;
+            endforeach; ?>
         </div>
     </div>
     <div class="text-right">
