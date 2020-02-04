@@ -48,7 +48,7 @@ if ($visitors && is_array($visitors['visitors'])):
                          role="tabpanel" aria-labelledby="nav-<?= $type; ?>-tab">
                         <?php foreach (array_slice($visitors[$key], 0, 5, true) as $name => $nb): ?>
                             <div class="my-2 ml-0 ml-lg-4" style="position: relative;">
-                                <span class="mr-2"><?= shortenText(ucfirst(mb_strtolower($name)), 57); ?></span>
+                                <span class="mr-2"><?= shortenText(ucfirst(mb_strtolower($name)), 54); ?></span>
                                 <span class="visitsStatsBadge bgColorSecondary"><?= $nb; ?></span>
                             </div>
                         <?php endforeach; ?>
