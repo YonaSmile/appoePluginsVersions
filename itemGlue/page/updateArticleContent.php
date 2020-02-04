@@ -181,11 +181,11 @@ if (!empty($_GET['id'])):
                             <div class="row">
                                 <div class="col-12 my-2">
                                     <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" checked="checked"
-                                               name="addMetaData"
-                                               id="metaDataAvailable">
-                                        <label class="custom-control-label"
-                                               for="metaDataAvailable"><?= trans('Activer métadonnée'); ?></label>
+                                        <input type="checkbox" class="custom-control-input"
+                                               name="addMetaData" id="metaDataAvailable">
+                                        <label class="custom-control-label" for="metaDataAvailable">
+                                            <strong><?= trans('Supprimer la mise en forme'); ?></strong>
+                                        </label>
                                     </div>
                                 </div>
                             </div>
@@ -310,6 +310,14 @@ if (!empty($_GET['id'])):
         <script type="text/javascript">
             $(document).ready(function () {
 
+                function resetMetas(){
+                    $('form#addArticleMetaForm input[name="UPDATEMETAARTICLE"]').val('');
+                    $('form#addArticleMetaForm input#metaKey').val('');
+                    CKEDITOR.instances.metaValue.setData('');
+                    $('form#addArticleMetaForm').trigger("reset").blur();
+                    return true;
+                }
+
                 $('#allMediaModalContainer').load('/app/ajax/media.php?getAllMedia');
 
                 $('form#galleryArticleForm').submit(function () {
@@ -342,14 +350,20 @@ if (!empty($_GET['id'])):
                     }
                 });
 
-                $('#resetmeta').on('click', function () {
-                    $('input[name="UPDATEMETAARTICLE"]').val('');
-                    CKEDITOR.instances.metaValue.setData('');
-                    $('form#addArticleMetaForm').trigger('reset');
+                $(document.body).on('click', '#resetmeta', function (e) {
+                    e.preventDefault();
+                    resetMetas();
                 });
 
                 $('form#addArticleMetaForm').on('submit', function (event) {
                     event.preventDefault();
+
+                    if($('#metaDataAvailable').is(':checked')) {
+                        if(!confirm('Vous êtes sur le point de supprimer la mise en forme')){
+                            return false;
+                        }
+                    }
+
                     var $form = $(this);
                     busyApp();
 
@@ -367,7 +381,7 @@ if (!empty($_GET['id'])):
                         if (results == 'true') {
 
                             //clear form
-                            $('#resetmeta').trigger('click');
+                            resetMetas();
 
                             $('#metaArticleContenair')
                                 .html(loaderHtml())
