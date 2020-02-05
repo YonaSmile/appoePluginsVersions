@@ -3,10 +3,6 @@ function liveMessages() {
     return jQuery.get('/app/plugin/messagIn/syncMessages.php');
 }
 
-function checkUserSessionExit() {
-    return $.post('/app/ajax/plugin.php', {checkUserSession: 'OK'});
-}
-
 function getLiveMessage() {
     liveMessages().done(function (data) {
         if (data != '' && ($.isNumeric(data) || data === 0)) {
@@ -32,9 +28,9 @@ jQuery(document).ready(function () {
             getLiveMessage();
 
             //Start Cron
-           setInterval(function () {
+            setInterval(function () {
                 getLiveMessage();
-            }, 15000);
+            }, 60000);
         }
     });
 });
