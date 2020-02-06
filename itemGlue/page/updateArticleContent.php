@@ -16,9 +16,10 @@ if (!empty($_GET['id'])):
 
     if ($Article->show()):
 
-        $Article->setStatut(1);
-        $Article->setLang('fr');
-        $allArticles = $Article->showAll(false, false);
+        $AllArticles = new Article();
+        $AllArticles->setStatut($Article->getStatut() == 0 ? 0 : 1);
+        $AllArticles->setLang(APP_LANG);
+        $allArticles = $AllArticles->showAll();
 
         $Category = new Category();
         $Category->setType('ITEMGLUE');
