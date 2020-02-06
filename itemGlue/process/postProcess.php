@@ -22,8 +22,10 @@ if (checkPostAndTokenRequest()) {
         if (!empty($_POST['name'])
             && !empty($_POST['description'])
             && !empty($_POST['slug'])
-            && !empty($_POST['statut'])
+            && isset($_POST['statut'])
         ) {
+
+            $_POST['statut'] = is_numeric($_POST['statut']) ? $_POST['statut'] : 0;
 
             $Article = new Article();
 
@@ -85,8 +87,10 @@ if (checkPostAndTokenRequest()) {
             && !empty($_POST['description'])
             && !empty($_POST['slug'])
             && !empty($_POST['createdAt'])
-            && !empty($_POST['statut'])
+            && isset($_POST['statut'])
         ) {
+
+            $_POST['statut'] = is_numeric($_POST['statut']) ? $_POST['statut'] : 0;
 
             $Article = new Article();
             $Article->setId($_POST['id']);
@@ -130,7 +134,7 @@ if (checkPostAndTokenRequest()) {
                 setPostResponse('Cet article n\'existe pas');
             }
         } else {
-            setPostResponse('Tous les champs sont obligatoires');
+            setPostResponse('Tous les champs sont obligatoires ' . implode(', ', $_POST));
         }
     }
 
