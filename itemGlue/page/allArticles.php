@@ -6,8 +6,7 @@ $Article = new Article();
 $Article->setLang(APP_LANG);
 $allArticles = $Article->showAll();
 
-echo getTitle(getAppPageName(), getAppPageSlug());
-?>
+echo getTitle(getAppPageName(), getAppPageSlug()); ?>
     <div class="row">
         <div class="col-12">
             <div class="table-responsive">
@@ -32,8 +31,11 @@ echo getTitle(getAppPageName(), getAppPageSlug());
                                 <td><?= displayTimeStamp($article->updated_at) ?></td>
                                 <td>
                                     <button type="button" class="btn btn-sm featuredArticle"
-                                            title="<?= $article->statut == 2 ? trans('Article standard') : trans('Article en vedette'); ?>"
-                                            data-idarticle="<?= $article->id ?>"
+                                            title="<?= $article->statut == 2 ? trans('Article standard') : trans('Article vedette'); ?>"
+                                            data-idarticle="<?= $article->id ?>" data-title-standard="<?= trans('Article standard'); ?>"
+                                            data-title-vedette="<?= trans('Article vedette'); ?>"
+                                            data-confirm-standard="<?= trans('Vous allez mettre cet article en vedette'); ?>"
+                                            data-confirm-vedette="<?= trans('Cet article ne sera plus vedette'); ?>"
                                             data-statutarticle="<?= $article->statut; ?>">
                                             <span class="text-warning">
                                             <?= $article->statut == 2 ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>'; ?>
@@ -45,6 +47,7 @@ echo getTitle(getAppPageName(), getAppPageSlug());
                                     </a>
                                     <button type="button" class="btn btn-sm archiveArticle"
                                             title="<?= trans('Archiver'); ?>"
+                                            data-confirm-msg="<?= trans('Vous allez archiver cet article'); ?>"
                                             data-idarticle="<?= $article->id ?>">
                                         <span class="btnArchive"><i class="fas fa-archive"></i></span>
                                     </button>
@@ -56,66 +59,4 @@ echo getTitle(getAppPageName(), getAppPageSlug());
             </div>
         </div>
     </div>
-    <script>
-        $(document).ready(function () {
-
-            $('.archiveArticle').on('click', function () {
-
-                var idArticle = $(this).data('idarticle');
-                if (confirm('<?= trans('Vous allez archiver cet article'); ?>')) {
-                    busyApp();
-                    $.post(
-                        '<?= ITEMGLUE_URL . 'process/ajaxProcess.php'; ?>',
-                        {
-                            archiveArticle: 'OK',
-                            idArticleArchive: idArticle
-                        },
-                        function (data) {
-                            if (data === true || data == 'true') {
-                                $('tr[data-idarticle="' + idArticle + '"]').slideUp();
-                                availableApp();
-                            }
-                        }
-                    );
-                }
-            });
-
-            $('.featuredArticle').on('click', function () {
-
-                var $btn = $(this);
-
-                var currentStatut = $btn.data('statutarticle');
-                var nowStatut = currentStatut == 2 ? 1 : 2;
-
-                var idArticle = $btn.data('idarticle');
-                var $iconContainer = $btn.children('span');
-
-                var iconFeatured = nowStatut == 2 ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
-
-                var textConfirmFeatured = nowStatut == 2 ? '<?= trans('Vous allez mettre en vedette cet article'); ?>' : '<?= trans('Cet article ne sera plus mis en vedette'); ?>';
-                var textTitleFeatured = nowStatut == 2 ? '<?= trans('Article standard'); ?>' : '<?= trans('Article en vedette'); ?>';
-
-                if (confirm(textConfirmFeatured)) {
-                    busyApp();
-                    $.post(
-                        '<?= ITEMGLUE_URL . 'process/ajaxProcess.php'; ?>',
-                        {
-                            featuredArticle: 'OK',
-                            idArticleFeatured: idArticle,
-                            newStatut: nowStatut
-                        },
-                        function (data) {
-                            if (data === true || data == 'true') {
-
-                                $btn.data('statutarticle', nowStatut);
-                                $btn.attr('title', textTitleFeatured);
-                                $iconContainer.html(iconFeatured);
-                                availableApp();
-                            }
-                        }
-                    );
-                }
-            });
-        });
-    </script>
 <?php require('footer.php'); ?>

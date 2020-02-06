@@ -40,8 +40,7 @@ if (!empty($_GET['id'])):
         }
 
         echo getTitle($Article->getName(), getAppPageSlug());
-        showPostResponse();
-        ?>
+        showPostResponse(); ?>
         <select class="custom-select custom-select-sm otherArticlesSelect otherProjetSelect notPrint float-right"
                 title="<?= trans('Parcourir les autres articles'); ?>...">
             <option selected="selected" disabled><?= trans('Parcourir les autres articles'); ?>
@@ -175,7 +174,7 @@ if (!empty($_GET['id'])):
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-12 col-lg-6">
-                            <div id="metaArticleContenair"></div>
+                            <div id="metaArticleContenair" data-article-id="<?= $Article->getId(); ?>"></div>
                         </div>
                         <div class="col-12 col-lg-6" style="box-shadow: -100px 0px 6px -100px #ccc;">
                             <div class="row">
@@ -307,149 +306,6 @@ if (!empty($_GET['id'])):
             </div>
         </div>
         <script type="text/javascript" src="/app/lib/template/js/media.js"></script>
-        <script type="text/javascript">
-            $(document).ready(function () {
-
-                function resetMetas(){
-                    $('form#addArticleMetaForm input[name="UPDATEMETAARTICLE"]').val('');
-                    $('form#addArticleMetaForm input#metaKey').val('');
-                    CKEDITOR.instances.metaValue.setData('');
-                    $('form#addArticleMetaForm').trigger("reset").blur();
-                    return true;
-                }
-
-                $('#allMediaModalContainer').load('/app/ajax/media.php?getAllMedia');
-
-                $('form#galleryArticleForm').submit(function () {
-                    $('#loader').fadeIn('fast');
-                });
-
-                $('input[name="categories[]"]').each(function () {
-                    if ($(this).next('label').text().charAt(0) !== '-') {
-                        $(this).parent('.checkCategories').wrap('<div class="mr-5 my-4 pb-2 border-bottom">');
-                    } else {
-                        $(this).parent('.checkCategories').prev('div').append($(this).parent('.checkCategories'));
-                    }
-                }).eq(0).parent('.checkCategories').parent('div').parent('div')
-                    .addClass('d-flex flex-row justify-content-start flex-wrap my-3')
-                    .children('strong.inputLabel').addClass('w-100');
-
-                CKEDITOR.config.height = 300;
-
-                $('#metaArticleContenair').load('<?= ITEMGLUE_URL; ?>page/getMetaArticle.php?idArticle=<?= $Article->getId(); ?>');
-
-                $('#metaDataAvailable').change(function () {
-                    if ($('#metaDataAvailable').is(':checked')) {
-                        $('form#addArticleMetaForm input#metaKey').val(convertToSlug($('form#addArticleMetaForm input#metaKey').val()));
-                    }
-                });
-
-                $('form#addArticleMetaForm input#metaKey').keyup(function () {
-                    if ($('#metaDataAvailable').is(':checked')) {
-                        $('form#addArticleMetaForm input#metaKey').val(convertToSlug($('form#addArticleMetaForm input#metaKey').val()));
-                    }
-                });
-
-                $(document.body).on('click', '#resetmeta', function (e) {
-                    e.preventDefault();
-                    resetMetas();
-                });
-
-                $('form#addArticleMetaForm').on('submit', function (event) {
-                    event.preventDefault();
-
-                    if($('#metaDataAvailable').is(':checked')) {
-                        if(!confirm('Vous êtes sur le point de supprimer la mise en forme')){
-                            return false;
-                        }
-                    }
-
-                    var $form = $(this);
-                    busyApp();
-
-                    var data = {
-                        ADDARTICLEMETA: 'OK',
-                        UPDATEMETAARTICLE: $('input[name="UPDATEMETAARTICLE"]').val(),
-                        idArticle: $('input[name="idArticle"]').val(),
-                        metaKey: $('input#metaKey').val(),
-                        metaValue: $('#metaDataAvailable').is(':checked')
-                            ? CKEDITOR.instances.metaValue.document.getBody().getText()
-                            : CKEDITOR.instances.metaValue.getData()
-                    };
-
-                    addMetaArticle(data).done(function (results) {
-                        if (results == 'true') {
-
-                            //clear form
-                            resetMetas();
-
-                            $('#metaArticleContenair')
-                                .html(loaderHtml())
-                                .load('<?= ITEMGLUE_URL; ?>page/getMetaArticle.php?idArticle=<?= $Article->getId(); ?>');
-                        }
-
-                        $('[type="submit"]', $form).attr('disabled', false).html('<?= trans('Enregistrer'); ?>').removeClass('disabled');
-                        availableApp();
-                    });
-
-                });
-
-                $('#metaArticleContenair').on('click', '.metaProductUpdateBtn', function () {
-                    var $btn = $(this);
-                    var idMetaArticle = $btn.data('idmetaproduct');
-
-                    var $contenair = $('div.card[data-idmetaproduct="' + idMetaArticle + '"]');
-                    var title = $contenair.find('h5 button.metaProductTitle-' + idMetaArticle).text();
-                    var content = $contenair.find('div.metaProductContent-' + idMetaArticle).html();
-
-                    $('input[name="UPDATEMETAARTICLE"]').val(idMetaArticle);
-                    $('input#metaKey').val($.trim(title));
-                    CKEDITOR.instances.metaValue.setData(content);
-                });
-
-                $('#metaArticleContenair').on('click', '.metaProductDeleteBtn', function () {
-                    var $btn = $(this);
-                    var idMetaArticle = $btn.data('idmetaproduct');
-
-                    if (confirm('<?= trans('Êtes-vous sûr de vouloir supprimer cette métadonnée ?'); ?>')) {
-                        busyApp();
-
-                        deleteMetaArticle(idMetaArticle).done(function (data) {
-                            if (data == 'true') {
-
-                                $('#metaArticleContenair')
-                                    .html(loaderHtml())
-                                    .load('<?= ITEMGLUE_URL; ?>page/getMetaArticle.php?idArticle=<?= $Article->getId(); ?>');
-                            }
-                            availableApp();
-                        });
-                    }
-                });
-
-                $('.otherArticlesSelect').change(function () {
-                    var otherEventslink = $('option:selected', this).data('href');
-                    location.assign(otherEventslink);
-                });
-
-                var textDefaultCopyFile = '<?= trans('Copier le lien du média'); ?>';
-                $('.copyLinkOnClick').on('click', function (e) {
-                    e.preventDefault();
-                    $('.copyLinkOnClick').text(textDefaultCopyFile);
-                    copyToClipboard($(this).parent().data('src'));
-                    $(this).text('<?= trans('copié'); ?>');
-                });
-
-                $('#updateSlugAuto').on('change', function () {
-                    $('form#updateArticleHeadersForm input#slug').val(convertToSlug($('form#updateArticleHeadersForm input#name').val()));
-                });
-
-                $('form#updateArticleHeadersForm input#name').on('input', function () {
-                    if ($('form#updateArticleHeadersForm #updateSlugAuto').is(':checked')) {
-                        $('form#updateArticleHeadersForm input#slug').val(convertToSlug($(this).val()));
-                    }
-                });
-            });
-        </script>
     <?php else:
         echo getContainerErrorMsg(trans('Cette page n\'existe pas'));
     endif;

@@ -38,11 +38,13 @@ echo getTitle(getAppPageName(), getAppPageSlug());
                                     <?php if (isTechnicien(getUserRoleId())): ?>
                                         <button type="button" class="btn btn-sm deleteArticle"
                                                 title="<?= trans('Supprimer'); ?>"
-                                                data-idarticle="<?= $article->id ?>">
+                                                data-idarticle="<?= $article->id ?>"
+                                                data-confirm-msg="<?= trans('Vous allez supprimer définitivement cet article'); ?>">
                                             <span class="btnArchive"><i class="fas fa-times"></i></span>
                                         </button>
                                     <?php endif; ?>
                                     <button type="button" class="btn btn-sm unpackArticle"
+                                            data-confirm-msg="<?= trans('Vous allez désarchiver cet article'); ?>"
                                             title="<?= trans('désarchiver'); ?>"
                                             data-idarticle="<?= $article->id ?>">
                                         <span class="btnCheck"> <i class="fas fa-check"></i></span>
@@ -56,51 +58,4 @@ echo getTitle(getAppPageName(), getAppPageSlug());
             </div>
         </div>
     </div>
-    <script>
-        $(document).ready(function () {
-
-            $('.unpackArticle').on('click', function () {
-                var idArticle = $(this).data('idarticle');
-                if (confirm('<?= trans('Vous allez désarchiver cet article'); ?>')) {
-                    busyApp();
-                    $.post(
-                        '<?= ITEMGLUE_URL . 'process/ajaxProcess.php'; ?>',
-                        {
-                            unpackArticle: 'OK',
-                            idUnpackArticle: idArticle
-                        },
-                        function (data) {
-                            if (data === true || data == 'true') {
-                                $('tr[data-idarticle="' + idArticle + '"]').slideUp();
-                                availableApp();
-                            }
-                        }
-                    );
-                }
-            });
-
-            <?php if (isTechnicien(getUserRoleId())): ?>
-            $('.deleteArticle').on('click', function () {
-
-                var idArticle = $(this).data('idarticle');
-                if (confirm('<?= trans('Vous allez supprimer définitivement cet article'); ?>')) {
-                    busyApp();
-                    $.post(
-                        '<?= ITEMGLUE_URL . 'process/ajaxProcess.php'; ?>',
-                        {
-                            deleteArticle: 'OK',
-                            idArticleDelete: idArticle
-                        },
-                        function (data) {
-                            if (data === true || data == 'true') {
-                                $('tr[data-idarticle="' + idArticle + '"]').slideUp();
-                                availableApp();
-                            }
-                        }
-                    );
-                }
-            });
-            <?php endif; ?>
-        });
-    </script>
 <?php require('footer.php'); ?>

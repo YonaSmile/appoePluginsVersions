@@ -7,8 +7,8 @@ use App\Plugin\ItemGlue\ArticleMeta;
 includePluginsFiles();
 $MetaArticle = !empty($_GET['idArticle']) ? new ArticleMeta($_GET['idArticle'], APP_LANG) : false;
 
-if ($MetaArticle && !empty($MetaArticle->getData())): ?>
-    <?php $allMetaArticle = extractFromObjArr($MetaArticle->getData(), 'id'); ?>
+if ($MetaArticle && !empty($MetaArticle->getData())):
+    $allMetaArticle = extractFromObjArr($MetaArticle->getData(), 'id'); ?>
     <div class="accordion" id="accordionMetaProduct">
         <?php foreach ($allMetaArticle as $id => $meta): ?>
             <div class="card" data-idmetaproduct="<?= $id; ?>">

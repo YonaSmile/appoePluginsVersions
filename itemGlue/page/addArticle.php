@@ -1,13 +1,12 @@
 <?php require('header.php');
 require(ITEMGLUE_PATH . 'process/postProcess.php');
 echo getTitle(getAppPageName(), getAppPageSlug());
-showPostResponse(getDataPostResponse());
-?>
+showPostResponse(getDataPostResponse()); ?>
     <form action="" method="post" id="addArticleForm">
         <?= getTokenField(); ?>
         <div class="row my-2">
             <div class="col-12 col-lg-6 my-2">
-                <?= \App\Form::text('Nom', 'name', 'text', !empty($_POST['name']) ? $_POST['name'] : '', true, 70); ?>
+                <?= \App\Form::text('Nom', 'name', 'text', !empty($_POST['name']) ? $_POST['name'] : '', true, 70, 'autofocus'); ?>
                 <div class="mt-3">
                     <?= \App\Form::text('Nom du lien URL (slug)', 'slug', 'text', !empty($_POST['slug']) ? $_POST['slug'] : '', true, 70); ?>
                 </div>
@@ -24,15 +23,4 @@ showPostResponse(getDataPostResponse());
             </div>
         </div>
     </form>
-    <script>
-        $(document).ready(function () {
-            setTimeout(function () {
-                $('input#name').focus();
-            }, 100);
-            $('input#name').keyup(function () {
-                $('input#slug').val(convertToSlug($(this).val()));
-                $('textarea#description').val($(this).val());
-            });
-        });
-    </script>
 <?php require('footer.php'); ?>
