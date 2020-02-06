@@ -610,7 +610,7 @@ class Article
 
         if ($return) {
 
-            $this->id = $this->dbh->lastInsertId();
+            $this->id = $return->lastInsertId;
             $this->setId($this->id);
 
             appLog('Creating Article -> id: ' . $this->id);
