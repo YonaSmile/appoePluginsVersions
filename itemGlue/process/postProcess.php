@@ -134,7 +134,7 @@ if (checkPostAndTokenRequest()) {
                 setPostResponse('Cet article n\'existe pas');
             }
         } else {
-            setPostResponse('Tous les champs sont obligatoires ' . implode(', ', $_POST));
+            setPostResponse('Tous les champs sont obligatoires');
         }
     }
 
