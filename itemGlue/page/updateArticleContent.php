@@ -98,6 +98,13 @@ if (!empty($_GET['id'])):
                                         <i class="fab fa-twitter"></i>
                                     </button>
                                 <?php endif;
+                                if (pluginExist('facebook')): ?>
+                                    <button type="button"
+                                            class="btn btn-primary btn-sm notPrint float-right ml-1 shareOnFb"
+                                            data-fb-post-link="<?= articleUrl($Article->getSlug()); ?>">
+                                        <i class="fab fa-facebook-f"></i>
+                                    </button>
+                                <?php endif;
                             endif; ?>
                         </div>
                     </div>
