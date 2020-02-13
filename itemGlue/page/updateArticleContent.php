@@ -42,7 +42,7 @@ if (!empty($_GET['id'])):
 
         echo getTitle($Article->getName(), getAppPageSlug());
         showPostResponse(); ?>
-        <select class="custom-select custom-select-sm otherArticlesSelect otherProjetSelect notPrint float-right"
+        <select class="custom-select custom-select-sm otherArticlesSelect otherProjetSelect notPrint float-sm-right"
                 title="<?= trans('Parcourir les autres articles'); ?>...">
             <option selected="selected" disabled><?= trans('Parcourir les autres articles'); ?>
                 ...
@@ -61,13 +61,13 @@ if (!empty($_GET['id'])):
                    id="nav-allLibraries-tab" data-toggle="tab"
                    href="#nav-allLibraries"
                    role="tab" aria-controls="nav-allLibraries"
-                   aria-selected="true"><?= trans('Contenu de l\'article'); ?></a>
+                   aria-selected="true"><?= trans('Contenu'); ?></a>
                 <a class="nav-item nav-link sidebarLink colorPrimary <?= !empty($mediaTabactive) ? 'active' : ''; ?>"
                    id="nav-newFiles-tab" data-toggle="tab" href="#nav-newFiles" role="tab"
-                   aria-controls="nav-newFiles" aria-selected="false"><?= trans('Les médias'); ?></a>
+                   aria-controls="nav-newFiles" aria-selected="false"><?= trans('Médias'); ?></a>
                 <a class="nav-item nav-link sidebarLink colorPrimary"
                    id="nav-extra-tab" data-toggle="tab" href="#nav-extra" role="tab"
-                   aria-controls="nav-extra" aria-selected="false"><?= trans('Détails supplémentaires'); ?></a>
+                   aria-controls="nav-extra" aria-selected="false"><?= trans('Détails'); ?></a>
                 <a class="nav-item nav-link sidebarLink colorPrimary <?= !empty($relationActive) ? 'active' : ''; ?>"
                    id="nav-relation-tab" data-toggle="tab" href="#nav-relation" role="tab"
                    aria-controls="nav-relation" aria-selected="false"><?= trans('Association'); ?></a>
