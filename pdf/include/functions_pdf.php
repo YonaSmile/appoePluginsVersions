@@ -19,8 +19,9 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/app/main.php');
  * @param string $orientation
  * @param string $pdfName
  * @param string $destination
+ * @param bool $vueHtml
  */
-function getPdf($templateSlug, $params, $orientation = 'P', $pdfName = 'appoe', $destination = 'I')
+function getPdf($templateSlug, $params, $orientation = 'P', $pdfName = 'appoe', $destination = 'I', $vueHtml = false)
 {
     try {
         $html2pdf = new Html2pdf($orientation, 'A4', 'fr', true, 'UTF-8', 12);
@@ -30,57 +31,27 @@ function getPdf($templateSlug, $params, $orientation = 'P', $pdfName = 'appoe', 
         $html2pdf->pdf->SetTitle($pdfName);
         $html2pdf->pdf->SetSubject($pdfName);
         $html2pdf->pdf->SetKeywords($pdfName);
-        $html2pdf->writeHTML(getPdfContent($templateSlug, $params), isset($_GET['vuehtml']));
+        $html2pdf->writeHTML(getPdfTemplate($templateSlug, $params), $vueHtml);
         $html2pdf->Output($pdfName . '.pdf', $destination);
+        exit;
     } catch (Exception $e) {
-        echo $e;
+        echo $e->getMessage();
         exit;
     }
 }
 
-/**
- * @param $templateSlug
- * @param $params
- * @return false|string
- */
-function getPdfContent($templateSlug, $params)
-{
-    ob_start();
-    getPdfTemplate($templateSlug, $params);
-    return ob_get_clean();
-}
 
 /**
  * @param $templateSlug
  * @param $params
+ * @return string
  */
 function getPdfTemplate($templateSlug, $params)
 {
     if (defined('PDF_TEMPLATE_PATH')) {
-
-        $file = PDF_TEMPLATE_PATH . $templateSlug . '.php';
-
-        if (file_exists($file)) {
-
-            $templateContent = getFileContent($file, false);
-
-            if ($params && preg_match_all("/{{(.*?)}}/", $templateContent, $match)) {
-
-                foreach ($match[1] as $i => $zone) {
-
-                    //Set zones
-                    $templateContent = str_replace($match[0][$i], sprintf('%s', !empty($params[$zone]) ? $params[$zone] : ''), $templateContent);
-
-                }
-            }
-
-            echo $templateContent;
-
-        } else {
-            echo 'Le template n\'existe pas.';
-        }
+        return getFileContent(PDF_TEMPLATE_PATH . $templateSlug . '.php', $params);
     } else {
-        echo 'Aucun emplacement des templates pdf, n\'est défini.';
+        return 'Aucun emplacement des templates pdf, n\'est défini.';
     }
 }
 
