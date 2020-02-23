@@ -10,9 +10,14 @@
  * E: return the document as base64 mime multi-part email attachment (RFC 2045)
  */
 
-use App\Plugin\Pdf\Html2pdf;
-
 require_once($_SERVER['DOCUMENT_ROOT'] . '/app/main.php');
+
+require WEB_PLUGIN_PATH . 'pdf/vendor/autoload.php';
+
+use Spipu\Html2Pdf\Exception\ExceptionFormatter;
+use Spipu\Html2Pdf\Exception\Html2PdfException;
+use Spipu\Html2Pdf\Html2Pdf;
+
 /**
  * @param $templateSlug
  * @param $params
@@ -24,7 +29,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/app/main.php');
 function getPdf($templateSlug, $params, $orientation = 'P', $pdfName = 'appoe', $destination = 'I', $vueHtml = false)
 {
     try {
-        $html2pdf = new Html2pdf($orientation, 'A4', 'fr', true, 'UTF-8', 12);
+        $html2pdf = new Html2Pdf($orientation, 'A4', 'fr', true, 'UTF-8', 12);
         $html2pdf->pdf->SetDisplayMode('fullpage');
         $html2pdf->pdf->SetCreator('APPOE | AOE - Communication');
         $html2pdf->pdf->SetAuthor('APPOE | AOE - Communication');
@@ -34,9 +39,11 @@ function getPdf($templateSlug, $params, $orientation = 'P', $pdfName = 'appoe', 
         $html2pdf->writeHTML(getPdfTemplate($templateSlug, $params), $vueHtml);
         $html2pdf->Output($pdfName . '.pdf', $destination);
         exit;
-    } catch (Exception $e) {
-        echo $e->getMessage();
-        exit;
+    } catch (Html2PdfException $e) {
+
+        $html2pdf->clean();
+        $formatter = new ExceptionFormatter($e);
+        echo $formatter->getHtmlMessage();
     }
 }
 
@@ -53,30 +60,4 @@ function getPdfTemplate($templateSlug, $params)
     } else {
         return 'Aucun emplacement des templates pdf, n\'est défini.';
     }
-}
-
-/**
- * @param array $params
- * @return string
- */
-function generateTableFromData(array $params)
-{
-
-    $content = '';
-    if ($params && !isArrayEmpty($params)) {
-
-        foreach ($params as $param) {
-
-            if ($param && !isArrayEmpty($param)) {
-
-                $content .= '<tr>';
-                foreach ($param as $val) {
-                    $content .= '<td>' . $val . '</td>';
-                }
-                $content .= '</tr>';
-            }
-        }
-    }
-
-    return $content;
 }
