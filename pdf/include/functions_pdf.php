@@ -36,7 +36,7 @@ function getPdf($templateSlug, $params, $orientation = 'P', $pdfName = 'appoe', 
         $html2pdf->pdf->SetTitle($pdfName);
         $html2pdf->pdf->SetSubject($pdfName);
         $html2pdf->pdf->SetKeywords($pdfName);
-        $html2pdf->writeHTML(getPdfTemplate($templateSlug, $params), $vueHtml);
+        $html2pdf->writeHTML(getPdfTemplate($templateSlug, $params));
         $html2pdf->Output($pdfName . '.pdf', $destination);
         exit;
     } catch (Html2PdfException $e) {
