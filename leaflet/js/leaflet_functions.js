@@ -21,6 +21,18 @@ function leaflet_getMap(lngLat, zoom, otherTile = '') {
     }
 }
 
+function leaflet_marker_show(lngLat, imgSrc, title, otherTile = '', zoom = 14, minWidth = 100) {
+
+    if ($('#mapOSM').length) {
+
+        //Get MAP
+        var map = leaflet_getMap(lngLat, zoom, otherTile);
+        var marker = new L.Marker(lngLat, {title: title}).addTo(map);
+        marker.bindPopup('<img src="' + imgSrc + '" alt="' + title + '">', {minWidth: minWidth}).openPopup();
+        map.invalidateSize();
+    }
+}
+
 function leaflet_getGps(map) {
 
     if ($('#mapOSM').length) {
