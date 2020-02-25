@@ -1,6 +1,6 @@
 function leaflet_getMap(lngLat, zoom, otherTile = '') {
 
-    if ($('#mapOSM').length) {
+    if (jQuery('#mapOSM').length) {
 
         //Create Map
         var map = new L.Map('mapOSM', {
@@ -21,21 +21,43 @@ function leaflet_getMap(lngLat, zoom, otherTile = '') {
     }
 }
 
-function leaflet_marker_show(lngLat, imgSrc, title, otherTile = '', zoom = 14, minWidth = 100) {
+function leaflet_marker_show(options = []) {
 
-    if ($('#mapOSM').length) {
+    var mapOptions = {
+        lngLat: [],
+        title: '',
+        html: '',
+        otherTile: '',
+        zoom: 14,
+        minWidth: 100,
+    };
+
+    //Merge options
+    jQuery.extend(mapOptions, options);
+
+    //Check for lngLat
+    if (!jQuery.isEmptyObject(mapOptions['lngLat'])) {
 
         //Get MAP
-        var map = leaflet_getMap(lngLat, zoom, otherTile);
-        var marker = new L.Marker(lngLat, {title: title}).addTo(map);
-        marker.bindPopup('<img src="' + imgSrc + '" alt="' + title + '">', {minWidth: minWidth}).openPopup();
-        map.invalidateSize();
+        var map = leaflet_getMap(mapOptions['lngLat'], mapOptions['zoom'], mapOptions['otherTile']);
+
+        if (map) {
+
+            //Get marker
+            var marker = new L.Marker(mapOptions['lngLat'], {title: mapOptions['title']}).addTo(map);
+
+            //Add popup
+            marker.bindPopup(mapOptions['html'], {minWidth: mapOptions['minWidth']}).openPopup();
+
+            //Resize map
+            map.invalidateSize();
+        }
     }
 }
 
 function leaflet_getGps(map) {
 
-    if ($('#mapOSM').length) {
+    if (jQuery('#mapOSM').length) {
 
         new L.Control.Gps({
 
@@ -48,7 +70,7 @@ function leaflet_getGps(map) {
 
 function leaflet_developpement(map) {
 
-    if ($('#mapOSM').length) {
+    if (jQuery('#mapOSM').length) {
         var popup = L.popup();
 
         function onMapClick(e) {
@@ -64,7 +86,7 @@ function leaflet_developpement(map) {
 
 function leaflet_simpleMarker(map, lngLat, title, imgSrc) {
 
-    if ($('#mapOSM').length) {
+    if (jQuery('#mapOSM').length) {
 
         var marker = L.marker(lngLat, {title: title}).addTo(map);
         marker.bindPopup('<img src="' + imgSrc + '" alt="' + title + '" style="max-width:100%">', {minWidth: 100}).openPopup();
@@ -74,7 +96,7 @@ function leaflet_simpleMarker(map, lngLat, title, imgSrc) {
 
 function leaflet_showImg(map, imgSrc = '/app/lib/template/images/logo_app.png', imgWidth = '128px', onclickUrl = 'https://aoe-communication.com', position = 'bottomleft') {
 
-    if ($('#mapOSM').length) {
+    if (jQuery('#mapOSM').length) {
 
         L.Control.Watermark = L.Control.extend({
 
@@ -105,7 +127,7 @@ function leaflet_showImg(map, imgSrc = '/app/lib/template/images/logo_app.png', 
 
 function leaflet_aoe(map) {
 
-    if ($('#mapOSM').length) {
+    if (jQuery('#mapOSM').length) {
 
         var marker = new L.Marker([48.585863, 7.763], {title: 'Art Of Event - Communication'}).addTo(map);
         marker.bindTooltip("<b>Art Of Event</b><br>Communication");
