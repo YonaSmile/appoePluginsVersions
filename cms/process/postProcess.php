@@ -132,6 +132,10 @@ if (checkPostAndTokenRequest()) {
 
             if (!empty($_POST['idCms'])) {
 
+                if (!empty($_POST['radioBtnIdCMS']) && $_POST['radioBtnIdCMS'] == 'Page') {
+                    $_POST['name'] = null;
+                }
+
                 //Add Menu
                 $CmsMenu = new CmsMenu();
                 $CmsMenu->feed($_POST);

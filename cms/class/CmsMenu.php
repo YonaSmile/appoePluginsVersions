@@ -9,7 +9,7 @@ class CmsMenu
 {
     private $id;
     private $idCms;
-    private $name;
+    private $name = null;
     private $position = null;
     private $parentId;
     private $location;
