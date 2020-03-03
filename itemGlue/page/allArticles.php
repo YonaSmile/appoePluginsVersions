@@ -1,14 +1,13 @@
 <?php require('header.php');
 $allArticles = getRecentArticles(false, APP_LANG);
 echo getTitle(getAppPageName(), getAppPageSlug(), '', '<div class="position-absolute" style="top:0;right:0;">
-<button type="button" id="displayArticleAsGrid" class="btn btn-sm bgColorPrimary my-2" title="' . trans('Mode grille') . '"><i class="fas fa-th"></i></button>
-    <button type="button" id="displayArticleAsTable" class="btn btn-sm bgColorPrimary my-2" disabled="disabled" title="' . trans('Mode tableau') . '"><i class="fas fa-table"></i></button></div>'); ?>
+<button type="button" id="displayArticleAsGrid" class="btn btn-sm bgColorPrimary noHandle my-2" title="' . trans('Mode grille') . '"><i class="fas fa-th"></i></button>
+    <button type="button" id="displayArticleAsTable" class="btn btn-sm bgColorPrimary noHandle my-2" disabled="disabled" title="' . trans('Mode tableau') . '"><i class="fas fa-table"></i></button></div>'); ?>
     <div class="row">
         <div class="col-12">
             <?php if ($allArticles): ?>
-                <div class="table-responsive">
-                    <table id="articlesTable"
-                           class="sortableTable table table-striped">
+                <div class="table-responsive" id="articlesTable">
+                    <table class="sortableTable table table-striped">
                         <thead>
                         <tr>
                             <th><?= trans('Nom'); ?></th>
@@ -30,10 +29,10 @@ echo getTitle(getAppPageName(), getAppPageSlug(), '', '<div class="position-abso
                                     <button type="button" class="btn btn-sm featuredArticle"
                                             title="<?= $article->statut == 2 ? trans('Article standard') : trans('Article vedette'); ?>"
                                             data-idarticle="<?= $article->id ?>"
-                                            data-title-standard="<?= trans('Article standard'); ?>"
-                                            data-title-vedette="<?= trans('Article vedette'); ?>"
-                                            data-confirm-standard="<?= trans('Vous allez mettre cet article en vedette'); ?>"
-                                            data-confirm-vedette="<?= trans('Cet article ne sera plus vedette'); ?>"
+                                            data-title-standard="<?= trans('Article vedette'); ?>"
+                                            data-title-vedette="<?= trans('Article standard'); ?>"
+                                            data-confirm-standard="<?= trans('Cet article ne sera plus vedette'); ?>"
+                                            data-confirm-vedette="<?= trans('Vous allez mettre cet article en vedette'); ?>"
                                             data-statutarticle="<?= $article->statut; ?>">
                                             <span class="text-warning">
                                             <?= $article->statut == 2 ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>'; ?>

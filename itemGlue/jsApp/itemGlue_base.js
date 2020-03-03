@@ -201,22 +201,22 @@ $(document).ready(function () {
     $(document).on('click', '.featuredArticle', function () {
 
         let $btn = $(this);
-
-        let titleStandard = $btn.data('title-standard');
-        let titleFeatured = $btn.data('title-vedette');
-        let confirmStandard = $btn.data('confirm-standard');
-        let confirmFeatured = $btn.data('confirm-vedette');
-
-        let currentStatut = $btn.data('statutarticle');
-        let nowStatut = currentStatut == 2 ? 1 : 2;
-
         let idArticle = $btn.data('idarticle');
-        let $iconContainer = $btn.children('span');
+        let $btns = $('.featuredArticle[data-idarticle="' + idArticle + '"');
+
+        let titleStandard = $btn.attr('data-title-standard');
+        let titleFeatured = $btn.attr('data-title-vedette');
+        let confirmStandard = $btn.attr('data-confirm-standard');
+        let confirmFeatured = $btn.attr('data-confirm-vedette');
+
+        let nowStatut = $btn.attr('data-statutarticle') == 2 ? 1 : 2;
+
+        let $iconContainer = $btns.children('span');
 
         let iconFeatured = nowStatut == 2 ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
 
-        let textConfirmFeatured = nowStatut == 2 ? confirmStandard : confirmFeatured;
-        let textTitleFeatured = nowStatut == 2 ? titleStandard : titleFeatured;
+        let textConfirmFeatured = nowStatut == 2 ? confirmFeatured : confirmStandard;
+        let textTitleFeatured = nowStatut == 2 ? titleFeatured : titleStandard;
 
         if (confirm(textConfirmFeatured)) {
             busyApp();
@@ -230,8 +230,8 @@ $(document).ready(function () {
                 function (data) {
                     if (data === true || data == 'true') {
 
-                        $btn.data('statutarticle', nowStatut);
-                        $btn.attr('title', textTitleFeatured);
+                        $btns.attr('data-statutarticle', nowStatut);
+                        $btns.attr('title', textTitleFeatured);
                         $iconContainer.html(iconFeatured);
                         availableApp();
                     }
@@ -261,8 +261,8 @@ $(document).ready(function () {
         setCookie('articleGridPreferences', 'table', 365);
 
         $('#articlesGridContainer').fadeOut('fast', function () {
-            if (!$('.table-responsive:has(table#articlesTable)').is(":visible")) {
-                $('.table-responsive:has(table#articlesTable)').fadeIn('fast');
+            if (!$('#articlesTable').is(":visible")) {
+                $('#articlesTable').fadeIn('fast');
                 $('#displayArticleAsGrid').prop('disabled', false);
             }
         });
@@ -273,7 +273,7 @@ $(document).ready(function () {
         $('#displayArticleAsGrid').prop('disabled', true);
         setCookie('articleGridPreferences', 'grid', 365);
 
-        $('.table-responsive:has(table#articlesTable)').fadeOut('fast', function () {
+        $('#articlesTable').fadeOut('fast', function () {
             if (!$('#articlesGridContainer').is(":visible")) {
                 $('#articlesGridContainer').fadeIn('slow');
                 $('#displayArticleAsTable').prop('disabled', false);
@@ -284,23 +284,20 @@ $(document).ready(function () {
     function createArticleGridView() {
 
         if (!$('#articlesGridContainer').length) {
+            $('<div id="articlesGridContainer" class="card-columns"></div>').hide().insertAfter('#articlesTable');
 
-            $('<div id="articlesGridContainer" class="card-columns"></div>')
-                .hide()
-                .insertAfter('.table-responsive:has(table#articlesTable)');
-
-            $('table#articlesTable tr:has(td)').each(function (index, tr) {
+            $('#articlesTable table tr:has(td)').each(function (index, tr) {
                 let $tr = $(tr);
                 let html = '<div class="card my-3" data-idarticle="' + $tr.data('idarticle') + '">';
 
-                html += '<img class="card-img" src="' + $tr.data('img') + '" class="card-img-top">';
+                html += '<img src="' + $tr.data('img') + '">';
                 html += '<div class="card-body">';
                 html += '<p class="card-title"><b>Titre</b><br>' + $tr.find('td[data-col="name"]').text() + '</p>';
                 html += '<p class="card-text"><b>Description</b><br>' + $tr.data('description') + '</p>';
                 html += '<p class="card-text"><b>Slug</b><br>' + $tr.find('td[data-col="slug"]').text() + '</p>';
                 html += '<p class="card-text"><b>Catégories</b><br>' + $tr.find('td[data-col="categories"]').text() + '</p>';
                 html += '<p class="card-text"><small class="text-muted">' + $tr.find('td[data-col="date"]').text() + '</small></p>';
-                html += '<p class="card-text">' + $tr.find('td[data-col="buttons"]').html() + '</p>';
+                html += '<p class="card-text d-flex justify-content-between btn-group">' + $tr.find('td[data-col="buttons"]').html() + '</p>';
                 html += '</div></div></div>';
 
                 $('#articlesGridContainer').append(html);
