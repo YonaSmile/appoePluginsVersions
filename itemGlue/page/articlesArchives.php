@@ -10,20 +10,20 @@ echo getTitle(getAppPageName(), getAppPageSlug());
 ?>
     <div class="row">
         <div class="col-12">
-            <div class="table-responsive">
-                <table id="pagesTable"
-                       class="sortableTable table table-striped">
-                    <thead>
-                    <tr>
-                        <th><?= trans('Nom'); ?></th>
-                        <th><?= trans('Slug'); ?></th>
-                        <th><?= trans('Catégories'); ?></th>
-                        <th><?= trans('Modifié le'); ?></th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <?php if ($allArticles): ?>
+            <?php if ($allArticles): ?>
+                <div class="table-responsive">
+                    <table id="pagesTable"
+                           class="sortableTable table table-striped">
+                        <thead>
+                        <tr>
+                            <th><?= trans('Nom'); ?></th>
+                            <th><?= trans('Slug'); ?></th>
+                            <th><?= trans('Catégories'); ?></th>
+                            <th><?= trans('Modifié le'); ?></th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
                         <?php foreach ($allArticles as $article): ?>
                             <tr data-idarticle="<?= $article->id ?>">
                                 <td><?= $article->name ?></td>
@@ -52,10 +52,12 @@ echo getTitle(getAppPageName(), getAppPageSlug());
                                 </td>
                             </tr>
                         <?php endforeach; ?>
-                    <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
+                        </tbody>
+                    </table>
+                </div>
+            <?php else: ?>
+                <p><?= trans('Aucun article n\'a été archivé'); ?></p>
+            <?php endif; ?>
         </div>
     </div>
 <?php require('footer.php'); ?>

@@ -1,38 +1,36 @@
 <?php require('header.php');
-
-use App\Plugin\ItemGlue\Article;
-
-$Article = new Article();
-$Article->setLang(APP_LANG);
-$allArticles = $Article->showAll();
-
-echo getTitle(getAppPageName(), getAppPageSlug()); ?>
+$allArticles = getRecentArticles(false, APP_LANG);
+echo getTitle(getAppPageName(), getAppPageSlug(), '', '<div class="position-absolute" style="top:0;right:0;">
+<button type="button" id="displayArticleAsGrid" class="btn btn-sm bgColorPrimary my-2" title="' . trans('Mode grille') . '"><i class="fas fa-th"></i></button>
+    <button type="button" id="displayArticleAsTable" class="btn btn-sm bgColorPrimary my-2" disabled="disabled" title="' . trans('Mode tableau') . '"><i class="fas fa-table"></i></button></div>'); ?>
     <div class="row">
         <div class="col-12">
-            <div class="table-responsive">
-                <table id="pagesTable"
-                       class="sortableTable table table-striped">
-                    <thead>
-                    <tr>
-                        <th><?= trans('Nom'); ?></th>
-                        <th><?= trans('Slug'); ?></th>
-                        <th><?= trans('Catégories'); ?></th>
-                        <th><?= trans('Modifié le'); ?></th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <?php if ($allArticles): ?>
+            <?php if ($allArticles): ?>
+                <div class="table-responsive">
+                    <table id="articlesTable"
+                           class="sortableTable table table-striped">
+                        <thead>
+                        <tr>
+                            <th><?= trans('Nom'); ?></th>
+                            <th><?= trans('Slug'); ?></th>
+                            <th><?= trans('Catégories'); ?></th>
+                            <th><?= trans('Crée le'); ?></th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
                         <?php foreach ($allArticles as $article): ?>
-                            <tr data-idarticle="<?= $article->id ?>">
-                                <td><?= $article->name ?></td>
-                                <td><?= $article->slug ?></td>
-                                <td><?= implode(', ', extractFromObjToSimpleArr(getCategoriesByArticle($article->id), 'name')); ?></td>
-                                <td><?= displayTimeStamp($article->updated_at) ?></td>
-                                <td>
+                            <tr data-idarticle="<?= $article->id ?>" data-description="<?= $article->description ?>"
+                                data-img="<?= getFirstImage(getFileTemplatePosition($article->medias, 1, true), '', 370, true); ?>">
+                                <td data-col="name"><?= $article->name ?></td>
+                                <td data-col="slug"><?= $article->slug ?></td>
+                                <td data-col="categories"><?= implode(', ', extractFromObjToSimpleArr(getCategoriesByArticle($article->id), 'name')); ?></td>
+                                <td data-col="date"><?= displayCompleteDate($article->created_at, false) ?></td>
+                                <td data-col="buttons">
                                     <button type="button" class="btn btn-sm featuredArticle"
                                             title="<?= $article->statut == 2 ? trans('Article standard') : trans('Article vedette'); ?>"
-                                            data-idarticle="<?= $article->id ?>" data-title-standard="<?= trans('Article standard'); ?>"
+                                            data-idarticle="<?= $article->id ?>"
+                                            data-title-standard="<?= trans('Article standard'); ?>"
                                             data-title-vedette="<?= trans('Article vedette'); ?>"
                                             data-confirm-standard="<?= trans('Vous allez mettre cet article en vedette'); ?>"
                                             data-confirm-vedette="<?= trans('Cet article ne sera plus vedette'); ?>"
@@ -53,10 +51,12 @@ echo getTitle(getAppPageName(), getAppPageSlug()); ?>
                                     </button>
                             </tr>
                         <?php endforeach; ?>
-                    <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
+                        </tbody>
+                    </table>
+                </div>
+            <?php else: ?>
+                <p><?= trans('Aucun article n\'a été enregistré'); ?></p>
+            <?php endif; ?>
         </div>
     </div>
 <?php require('footer.php'); ?>

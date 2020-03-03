@@ -174,7 +174,7 @@ $(document).ready(function () {
      */
 
     //Archive an article
-    $('.archiveArticle').on('click', function (e) {
+    $(document).on('click', '.archiveArticle', function (e) {
         e.preventDefault();
 
         let $btn = $(this);
@@ -198,7 +198,7 @@ $(document).ready(function () {
     });
 
     //Highlight an article
-    $('.featuredArticle').on('click', function () {
+    $(document).on('click', '.featuredArticle', function () {
 
         let $btn = $(this);
 
@@ -239,6 +239,74 @@ $(document).ready(function () {
             );
         }
     });
+
+    let artcileGridPreference = getCookie('articleGridPreferences');
+    if (artcileGridPreference === 'grid') {
+        createArticleGridView();
+        showArticlesGrid();
+    }
+
+    $('#displayArticleAsGrid').on('click', function () {
+        createArticleGridView();
+        showArticlesGrid();
+    });
+
+    $('#displayArticleAsTable').on('click', function () {
+        showArticlesTable();
+    });
+
+    function showArticlesTable() {
+
+        $('#displayArticleAsTable').prop('disabled', true);
+        setCookie('articleGridPreferences', 'table', 365);
+
+        $('#articlesGridContainer').fadeOut('fast', function () {
+            if (!$('.table-responsive:has(table#articlesTable)').is(":visible")) {
+                $('.table-responsive:has(table#articlesTable)').fadeIn('fast');
+                $('#displayArticleAsGrid').prop('disabled', false);
+            }
+        });
+    }
+
+    function showArticlesGrid() {
+
+        $('#displayArticleAsGrid').prop('disabled', true);
+        setCookie('articleGridPreferences', 'grid', 365);
+
+        $('.table-responsive:has(table#articlesTable)').fadeOut('fast', function () {
+            if (!$('#articlesGridContainer').is(":visible")) {
+                $('#articlesGridContainer').fadeIn('slow');
+                $('#displayArticleAsTable').prop('disabled', false);
+            }
+        });
+    }
+
+    function createArticleGridView() {
+
+        if (!$('#articlesGridContainer').length) {
+
+            $('<div id="articlesGridContainer" class="card-columns"></div>')
+                .hide()
+                .insertAfter('.table-responsive:has(table#articlesTable)');
+
+            $('table#articlesTable tr:has(td)').each(function (index, tr) {
+                let $tr = $(tr);
+                let html = '<div class="card my-3" data-idarticle="' + $tr.data('idarticle') + '">';
+
+                html += '<img class="card-img" src="' + $tr.data('img') + '" class="card-img-top">';
+                html += '<div class="card-body">';
+                html += '<p class="card-title"><b>Titre</b><br>' + $tr.find('td[data-col="name"]').text() + '</p>';
+                html += '<p class="card-text"><b>Description</b><br>' + $tr.data('description') + '</p>';
+                html += '<p class="card-text"><b>Slug</b><br>' + $tr.find('td[data-col="slug"]').text() + '</p>';
+                html += '<p class="card-text"><b>Catégories</b><br>' + $tr.find('td[data-col="categories"]').text() + '</p>';
+                html += '<p class="card-text"><small class="text-muted">' + $tr.find('td[data-col="date"]').text() + '</small></p>';
+                html += '<p class="card-text">' + $tr.find('td[data-col="buttons"]').html() + '</p>';
+                html += '</div></div></div>';
+
+                $('#articlesGridContainer').append(html);
+            });
+        }
+    }
 
     /**
      * Articles archives
