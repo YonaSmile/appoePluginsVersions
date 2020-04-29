@@ -231,7 +231,7 @@ if ( ! empty( $_GET['id'] ) ):
                     }
 
                     if (!zoning) {
-                        $('#pageContentLoader').slideUp(500);
+                        $('#pageContentLoader').css('opacity', 0).slideUp(500);
                         $('#pageContentManageForm').show().addClass('row');
                     }
 
@@ -273,7 +273,7 @@ if ( ! empty( $_GET['id'] ) ):
                         });
 
                         html += '</div>';
-                        $('#pageContentLoader').slideUp(500);
+                        $('#pageContentLoader').css('opacity', 0).slideUp(500);
                         $('form#pageContentManageForm').html(html).fadeIn(500);
 
                         $(document.body).on('click', 'button.seePreview', function () {
