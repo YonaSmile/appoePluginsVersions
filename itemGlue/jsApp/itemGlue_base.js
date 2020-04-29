@@ -151,6 +151,7 @@ $(document).ready(function () {
         $('form#updateArticleHeadersForm input#name').on('input', function () {
             if ($('form#updateArticleHeadersForm #updateSlugAuto').is(':checked')) {
                 $('form#updateArticleHeadersForm input#slug').val(convertToSlug($(this).val()));
+                countChars($('form#updateArticleHeadersForm input#slug'), 'slug');
             }
         });
     }
@@ -163,10 +164,19 @@ $(document).ready(function () {
         $('form#addArticleForm input#name').focus();
     }, 100);
 
+
     //Add automatically a slug and a description from name of the article, when add new article
     $('form#addArticleForm input#name').keyup(function () {
         $('form#addArticleForm input#slug').val(convertToSlug($(this).val()));
         $('form#addArticleForm textarea#description').val($(this).val());
+
+        countChars($('form#addArticleForm input#slug'), 'slug');
+        countChars($('form#addArticleForm textarea#description'), 'description');
+    });
+
+    //Stop adding automaticly slug and description from the name of article
+    $('form#addArticleForm input#slug, form#addArticleForm textarea#description').on('focus', function () {
+        $('form#addArticleForm input#name').unbind('keyup');
     });
 
     /**

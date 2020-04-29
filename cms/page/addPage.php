@@ -10,13 +10,13 @@ showPostResponse(getDataPostResponse()); ?>
         <?= getTokenField(); ?>
         <div class="row my-2">
             <div class="col-12 col-lg-6 my-2">
-                <?= \App\Form::text('Nom', 'name', 'text', !empty($_POST['name']) ? $_POST['name'] : '', true, 70); ?>
+                <?= \App\Form::text('Nom', 'name', 'text', !empty($_POST['name']) ? $_POST['name'] : '', true, 70, 'autofocus data-seo="title"'); ?>
             </div>
             <div class="col-12 col-lg-6 mt-2">
-                <?= \App\Form::text('Nom du lien URL (slug)', 'slug', 'text', !empty($_POST['slug']) ? $_POST['slug'] : '', true, 70); ?>
+                <?= \App\Form::text('Nom du lien URL (slug)', 'slug', 'text', !empty($_POST['slug']) ? $_POST['slug'] : '', true, 70, 'data-seo="slug"'); ?>
             </div>
             <div class="col-12 col-lg-6 my-2">
-                <?= \App\Form::textarea('Description', 'description', !empty($_POST['description']) ? $_POST['description'] : '', 4, true, 'maxlength="158"'); ?>
+                <?= \App\Form::textarea('Description', 'description', !empty($_POST['description']) ? $_POST['description'] : '', 4, true, 'maxlength="158" data-seo="description"'); ?>
             </div>
             <div class="col-12 col-lg-6 my-2">
                 <?= \App\Form::text('Nom du menu', 'menuName', 'text', !empty($_POST['menuName']) ? $_POST['menuName'] : '', true, 40); ?>
@@ -41,10 +41,18 @@ showPostResponse(getDataPostResponse()); ?>
             setTimeout(function () {
                 $('input#name').focus();
             }, 100);
-            $('input#name').on('input', function () {
+            $('input#name').on('keyup', function () {
                 $('input#slug').val(convertToSlug($(this).val()));
                 $('textarea#description').val($(this).val());
                 $('input#menuName').val($(this).val());
+
+                countChars($('input#slug'), 'slug');
+                countChars($('textarea#description'), 'description');
+            });
+
+            //Stop adding automaticly slug and description from the name of article
+            $('input#slug, textarea#description, input#menuName').on('focus', function () {
+                $('input#name').unbind('keyup');
             });
         });
     </script>

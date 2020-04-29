@@ -59,22 +59,26 @@
     z-index: 5;
 }
 
+#pageContentManageFormAccordion h2 button{
+    color: #FFF;
+    font-size: 1.2rem;
+    font-weight: 300;
+    text-decoration: none;
+    text-transform: uppercase;
+    display: block;
+    width: 100%;
+    text-align: left;
+}
+
 .templateZoneInput {
-    transition: all 0.4s;
-    -webkit-transform: perspective(1px) translateZ(0);
-    transform: perspective(1px) translateZ(0);
     box-shadow: 0 0 1px rgba(0, 0, 0, 0);
-    -webkit-transition-duration: 0.4s;
-    transition-duration: 0.4s;
-    -webkit-transition-property: transform;
-    transition-property: transform;
+
 }
 
 .templateZoneInput:hover,
 .templateZoneInput:focus,
 .templateZoneInput:active {
-    -webkit-transform: scaleX(1.03);
-    transform: scaleX(1.03);
+    background: rgba(0,0,0,0.03);
 }
 
 .templateZoneInput div.form-group {
