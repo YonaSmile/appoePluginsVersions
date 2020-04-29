@@ -91,6 +91,8 @@ if ( ! empty( $_GET['id'] ) ):
         </div>
         <div class="row mb-2">
 			<?php if ( file_exists( WEB_PATH . $Cms->getFilename() . '.php' ) ): ?>
+                <span id="pageContentLoader" class="col-12"><i
+                            class="fas fa-circle-notch fa-spin"></i> Chargement...</span>
                 <form action="" method="post" class="col-12" id="pageContentManageForm" style="display:none;">
 					<?php
 					$Template = new Template( WEB_PATH . $Cms->getFilename() . '.php', $CmsContent->getData() );
@@ -229,6 +231,7 @@ if ( ! empty( $_GET['id'] ) ):
                     }
 
                     if (!zoning) {
+                        $('#pageContentLoader').fadeOut(500);
                         $('#pageContentManageForm').show().addClass('row');
                     }
 
@@ -270,6 +273,7 @@ if ( ! empty( $_GET['id'] ) ):
                         });
 
                         html += '</div>';
+                        $('#pageContentLoader').fadeOut(500);
                         $('form#pageContentManageForm').html(html).fadeIn(500);
 
                         $(document.body).on('click', 'button.seePreview', function () {
@@ -278,10 +282,11 @@ if ( ! empty( $_GET['id'] ) ):
                             $('.previewZone[data-id="' + id + '"]').slideDown();
                         });
 
+                        let userNavbarHeight = $('#site header nav.navbar').height();
                         $(document.body).on('shown.bs.collapse', '.collapse', function () {
                             var $panel = $(this).closest('.card');
                             $('html,body').animate({
-                                scrollTop: $panel.offset().top-50
+                                scrollTop: $panel.offset().top - userNavbarHeight
                             }, 500);
                         })
 
@@ -358,18 +363,20 @@ if ( ! empty( $_GET['id'] ) ):
                     $('form#updatePageForm input#name').unbind('keyup');
                 });
 
-                $(window).scroll(function () {
+                if ($('#headerLinks').find('a').length) {
+                    $(window).scroll(function () {
 
-                    $('#headerLinks').css('transform', 'translateX(0)');
+                        $('#headerLinks').css('transform', 'translateX(0)');
 
-                    clearTimeout($.data(this, 'scrollTimer'));
-                    $.data(this, 'scrollTimer', setTimeout(function () {
-                        if ($('#headerLinks a:hover').length == 0) {
-                            $('#headerLinks a').blur();
-                            $('#headerLinks').css('transform', 'translateX(100%)');
-                        }
-                    }, 3000));
-                });
+                        clearTimeout($.data(this, 'scrollTimer'));
+                        $.data(this, 'scrollTimer', setTimeout(function () {
+                            if ($('#headerLinks a:hover').length == 0) {
+                                $('#headerLinks a').blur();
+                                $('#headerLinks').css('transform', 'translateX(100%)');
+                            }
+                        }, 3000));
+                    });
+                }
 
 
                 $(document).on('dblclick', 'input.urlFile', function (event) {
