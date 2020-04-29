@@ -395,8 +395,7 @@ if ( ! empty( $_GET['id'] ) ):
                     location.assign(otherEventslink);
                 });
 
-            })
-            ;
+            });
         </script>
 	<?php else:
 		echo getContainerErrorMsg( trans( 'Cette page n\'existe pas' ) );
