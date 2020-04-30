@@ -279,7 +279,7 @@ if ( ! empty( $_GET['id'] ) ):
 
                             let id = $(this).attr('id');
                             let title = $(this).find('h5').text();
-                            let frame = '<iframe src="' + pageSrc + '" class="previewPageFrame" data-id="' + id + '" style="display:none;left: 0;top: 0;height: 100%;width: 100%;position: absolute;border: 0">your browser needs to be updated.</iframe>';
+                            let frame = '<iframe src="' + pageSrc + '" class="previewPageFrame" data-content="false" data-id="' + id + '" style="display:none;left: 0;top: 0;height: 100%;width: 100%;position: absolute;border: 0">your browser needs to be updated.</iframe>';
                             $(el).find('h5').remove();
 
                             //Card
@@ -296,10 +296,15 @@ if ( ! empty( $_GET['id'] ) ):
                         $('form#pageContentManageForm').html(html).fadeIn(500);
 
                         $(document.body).on('click', 'button.seePreview', function () {
-                            let id = $(this).data('id');
+                            $('.previewZone').slideUp();
+                            $('button.seePreview').fadeIn();
 
-                            hideElementsInFrame('body', 'hideElementInFrame', 'id', [id]);
-                            $(this).fadeIn().remove();
+                            let id = $(this).data('id');
+                            $(this).fadeOut();
+                            if($('iframe.previewPageFrame[data-id="' + id + '"]').attr('data-content') == 'false') {
+                                hideElementsInFrame('body', 'hideElementInFrame', 'id', [id]);
+                                $('iframe.previewPageFrame[data-id="' + id + '"]').attr('data-content', 'true');
+                            }
                             $('.previewZone[data-id="' + id + '"]').slideDown();
                         });
 
