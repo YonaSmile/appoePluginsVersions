@@ -28,8 +28,7 @@ if ( ! empty( $_GET['id'] ) ):
 			'onlyExtension'         => 'php',
 			'noExtensionDisplaying' => true
 		] );
-
-		echo getAsset( 'mediaLibrary', true );
+		//echo getAsset('mediaLibrary', true);
 		echo getTitle( trans( 'Contenu de la page' ) . '<strong> ' . $Cms->getName() . '</strong>', getAppPageSlug() );
 		showPostResponse(); ?>
         <div class="row my-2">
@@ -157,6 +156,7 @@ if ( ! empty( $_GET['id'] ) ):
                 </div>
             </div>
         </div>
+        <div id="loadMediaLibrary"></div>
         <script type="text/javascript">
 
 
@@ -332,6 +332,9 @@ if ( ! empty( $_GET['id'] ) ):
 
                         updateCmsContent($input, metaValue);
                     });
+
+                }).fail(function () {
+                    $('#pageContentLoader').fadeOut().html('Une erreur s\'est produite').fadeIn();
                 });
 
                 CKEDITOR.on("instanceReady", function (event) {
@@ -385,7 +388,7 @@ if ( ! empty( $_GET['id'] ) ):
 
                     $('input[rel=cms-img-popover]').popover('hide');
                     var idInput = $(this).attr('id');
-                    $('#libraryModal').data('inputid', idInput);
+                    $('#libraryModal').attr('data-inputid', idInput);
                     $('#libraryModal').modal('show');
                 });
 
@@ -394,7 +397,12 @@ if ( ! empty( $_GET['id'] ) ):
                     var otherEventslink = $('option:selected', this).data('href');
                     location.assign(otherEventslink);
                 });
+            });
 
+            $(window).on("load", function () {
+                if ($('input.urlFile').length) {
+                    $('#loadMediaLibrary').load(WEB_APP_URL + 'lib/assets/mediaLibrary.php');
+                }
             });
         </script>
 	<?php else:
