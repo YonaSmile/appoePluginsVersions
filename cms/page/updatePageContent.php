@@ -60,13 +60,11 @@ if ( ! empty( $_GET['id'] ) ):
             <div class="col-12">
                 <div class="row my-3">
                     <div class="col-12 col-lg-8 my-2">
-						<?php if ( $Menu->checkUserPermission( getUserRoleId(), 'updatePage' ) ): ?>
-                            <button id="updatePageBtn" data-toggle="modal" data-target="#updatePageModal"
-                                    class="btn btn-outline-warning btn-sm">
-                                <i class="fas fa-wrench"></i> <?= trans( 'Modifier les en têtes' ); ?>
-                            </button>
-						<?php endif;
-						if ( $Cms->getType() === 'PAGE' ): ?>
+                        <button id="updatePageBtn" data-toggle="modal" data-target="#updatePageModal"
+                                class="btn btn-outline-warning btn-sm">
+                            <i class="fas fa-wrench"></i> <?= trans( 'Modifier les en têtes' ); ?>
+                        </button>
+						<?php if ( $Cms->getType() === 'PAGE' ): ?>
                             <a href="<?= webUrl( $Cms->getSlug() . '/' ); ?>"
                                class="btn btn-outline-info btn-sm" id="takeLookToPage" target="_blank">
                                 <i class="fas fa-external-link-alt"></i> <?= trans( 'Visualiser la page' ); ?>
@@ -335,7 +333,6 @@ if ( ! empty( $_GET['id'] ) ):
                         var id = $(this).attr('name');
                         $('<small class="' + id + ' categoryIdFloatContenaire">').insertAfter($(this));
                     });
-
 
 
                 }).fail(function () {
