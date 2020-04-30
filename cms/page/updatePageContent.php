@@ -28,7 +28,6 @@ if ( ! empty( $_GET['id'] ) ):
 			'onlyExtension'         => 'php',
 			'noExtensionDisplaying' => true
 		] );
-		//echo getAsset('mediaLibrary', true);
 		echo getTitle( trans( 'Contenu de la page' ) . '<strong> ' . $Cms->getName() . '</strong>', getAppPageSlug() );
 		showPostResponse(); ?>
         <div class="row my-2">
@@ -156,26 +155,47 @@ if ( ! empty( $_GET['id'] ) ):
                 </div>
             </div>
         </div>
-    <div id="loadMediaLibrary"></div>
+        <div id="loadMediaLibrary"></div>
         <script type="text/javascript">
 
+            function hideElementsInFrame(element, classeToMove, attributName, attributValues) {
 
-            function hideElementsOnPreviewFrame(idToKeep) {
+                element = $('.previewPageFrame[data-id="' + attributValues + '"]').contents().find(element);
 
-                let body = $('.previewPageFrame[data-id="' + idToKeep + '"]').contents().find('body');
-                $('header, footer, #adminDashPublic', body).remove();
-
-                $('nav#headerLinks').find('a').each(function (num, el) {
-                    let idNav = $(el).data('target');
-                    if (idNav !== '#collapse' + idToKeep) {
-                        //TODO -------- and not find parent with this child----------
-                        $(idNav.replace('collapse', ''), body).attr('style', 'display: none !important;opacity:0 !important;height:0 !important;width:0 !important;position: absolute !important;z-index:0 !important;');
+                for (const attributValue of attributValues) {
+                    if ($(element).attr(attributName) !== attributValue) { // si c'est pas le bon id -> add
+                        $(element).addClass(classeToMove);
+                    } else {
+                        $(element).removeClass(classeToMove); //si c'est c'est le bon -> remove
+                        removeClassForEveryParents(element, classeToMove); // -> remove pour les parents jusqu'a element
+                        removeClassForEveryChildren(element, classeToMove); // -> remove pour les gosses si un autre est passé par la
+                        return;
                     }
-                });
+                    if ($(element).children().length > 0) { //je dig la suite du DOM
+                        for (const child of $(element).children()) {
+                            hideElementsInFrame(child, classeToMove, attributName, attributValues);
+                        }
+                    }
+                }
+                $('.previewPageFrame[data-id="' + attributValues + '"]').fadeIn();
+            }
 
-                $('.previewPageFrame[data-id="' + idToKeep + '"]').fadeIn();
-                $('.previewLoader-' + idToKeep).fadeOut().remove();
+            function removeClassForEveryParents(element, classToRemove) {
+                for (const parent of $(element).parents()) {
+                    let tagNameParent = $(parent).prop('tagName').toLowerCase();
+                    if (tagNameParent !== element) {
+                        $(parent).removeClass(classToRemove);
+                    } else {
+                        $(parent).removeClass(classToRemove);
+                        break;
+                    }
+                }
+            }
 
+            function removeClassForEveryChildren(element, classeToAdd) {
+                for (const child of $(element).children()) {
+                    $(child).removeClass(classeToAdd);
+                }
             }
 
             function updateCmsContent($input, metaValue) {
@@ -260,13 +280,13 @@ if ( ! empty( $_GET['id'] ) ):
 
                             let id = $(this).attr('id');
                             let title = $(this).find('h5').text();
-                            let frame = '<iframe src="' + pageSrc + '" class="previewPageFrame" data-id="' + id + '" style="display:none;left: 0;top: 0;height: 100%;width: 100%;position: absolute;border: 0" onload="hideElementsOnPreviewFrame(\'' + id + '\')">your browser needs to be updated.</iframe>';
+                            let frame = '<iframe src="' + pageSrc + '" class="previewPageFrame" data-id="' + id + '" style="display:none;left: 0;top: 0;height: 100%;width: 100%;position: absolute;border: 0">your browser needs to be updated.</iframe>';
                             $(el).find('h5').remove();
 
                             //Card
                             html += '<div class="card"><div class="card-header bgColorPrimary" id="heading' + id + '"><h2 class="mb-0"><button class="btn btn-link collapsed zoneTitleBtn" type="button" data-id="' + id + '" data-toggle="collapse" data-target="#collapse' + id + '" aria-expanded="false" aria-controls="collapse' + id + '">' + title + ' </button> </h2></div>';
                             html += '<div id="collapse' + id + '" class="collapse" aria-labelledby="heading' + id + '" data-parent="#pageContentManageFormAccordion">';
-                            html += '<div class="card-body"><small class="previewLoader-' + id + '" style="margin-left:10px;">' + loaderHtml() + ' Chargement du visuel...</small><div class="previewZone" data-id="' + id + '" style="max-height: 500px;overflow-y: auto;border: 6px solid #CCC;padding-bottom: 30.25%;position: relative;display: none;">' + frame + '</div>';
+                            html += '<div class="card-body"><div class="previewZone" data-id="' + id + '" style="max-height: 500px;overflow-y: auto;border: 6px solid #CCC;padding-bottom: 30.25%;position: relative;display: none;">' + frame + '</div>';
                             html += '<button type="button" class="btn btn-info bt-sm btn-block seePreview" data-id="' + id + '">Voir le rendu</button>';
                             html += $(el).get(0).outerHTML;
                             html += '</div></div></div>';
@@ -278,6 +298,8 @@ if ( ! empty( $_GET['id'] ) ):
 
                         $(document.body).on('click', 'button.seePreview', function () {
                             let id = $(this).data('id');
+
+                            hideElementsInFrame('body', 'hideElementInFrame', 'id', [id]);
                             $(this).hide().remove();
                             $('.previewZone[data-id="' + id + '"]').slideDown();
                         });
