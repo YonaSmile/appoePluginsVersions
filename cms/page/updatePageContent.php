@@ -240,8 +240,9 @@ if ( ! empty( $_GET['id'] ) ):
                 jQuery.ajaxSetup({async: false});
                 $.get(pageSrc, function (data) {
                     if ($('.templateZoneTitle').length) {
+                        var response = $('<html />').html(data);
                         $('#pageContentManageForm .templateZoneTitle').each(function (num, el) {
-                            if (!$(data).find('#' + $(el).attr('id')).length) {
+                            if (response.find('#' + $(el).attr('id')).length == 0) {
                                 zoning = false;
                                 return false;
                             }
