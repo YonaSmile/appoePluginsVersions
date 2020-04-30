@@ -286,7 +286,7 @@ if ( ! empty( $_GET['id'] ) ):
                             html += '<div class="card"><div class="card-header bgColorPrimary" id="heading' + id + '"><h2 class="mb-0"><button class="btn btn-link collapsed zoneTitleBtn" type="button" data-id="' + id + '" data-toggle="collapse" data-target="#collapse' + id + '" aria-expanded="false" aria-controls="collapse' + id + '">' + title + ' </button> </h2></div>';
                             html += '<div id="collapse' + id + '" class="collapse" aria-labelledby="heading' + id + '" data-parent="#pageContentManageFormAccordion">';
                             html += '<div class="card-body"><div class="previewZone" data-id="' + id + '" style="max-height: 500px;overflow-y: auto;border: 6px solid #CCC;padding-bottom: 30.25%;position: relative;display: none;">' + frame + '</div>';
-                            html += '<button type="button" class="btn btn-info bt-sm btn-block seePreview" data-id="' + id + '">Voir le rendu</button>';
+                            html += '<button type="button" class="arrowDown seePreview" data-id="' + id + '">Voir le rendu</button>';
                             html += $(el).get(0).outerHTML;
                             html += '</div></div></div>';
                         });
@@ -299,7 +299,7 @@ if ( ! empty( $_GET['id'] ) ):
                             let id = $(this).data('id');
 
                             hideElementsInFrame('body', 'hideElementInFrame', 'id', [id]);
-                            $(this).hide().remove();
+                            $(this).fadeIn().remove();
                             $('.previewZone[data-id="' + id + '"]').slideDown();
                         });
 
@@ -400,7 +400,6 @@ if ( ! empty( $_GET['id'] ) ):
                     });
                 }
 
-
                 $(document).on('dblclick', 'input.urlFile', function (event) {
                     event.stopPropagation();
                     event.preventDefault();
@@ -409,7 +408,6 @@ if ( ! empty( $_GET['id'] ) ):
                     $('#libraryModal').attr('data-inputid', $(this).attr('id'));
                     $('#libraryModal').modal('show');
                 });
-
 
                 $(document.body).on('change', '.otherPagesSelect', function () {
                     var otherEventslink = $('option:selected', this).data('href');
