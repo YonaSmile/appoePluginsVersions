@@ -104,7 +104,7 @@ class Stock
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_shop_stock` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `'.TABLEPREFIX.'appoe_plugin_shop_stock` (
         `id` int(11) NOT NULL AUTO_INCREMENT,
         PRIMARY KEY (`id`),
         `product_id` int(11) NOT NULL,
@@ -130,7 +130,7 @@ class Stock
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_shop_stock WHERE id = :id';
+        $sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_shop_stock WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -152,7 +152,7 @@ class Stock
     public function showAll()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_shop_stock WHERE status = TRUE ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_shop_stock WHERE status = TRUE ORDER BY updated_at DESC';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();
@@ -168,7 +168,7 @@ class Stock
 
     public function getStock()
     {
-        $sql = 'SELECT * FROM appoe_plugin_shop_stock WHERE product_id = :product_id';
+        $sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_shop_stock WHERE product_id = :product_id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':product_id', $this->product_id);
@@ -195,7 +195,7 @@ class Stock
     public function save()
     {
 
-        $sql = 'INSERT INTO appoe_plugin_shop_stock (product_id, limit_quantity, date_limit, status) 
+        $sql = 'INSERT INTO '.TABLEPREFIX.'appoe_plugin_shop_stock (product_id, limit_quantity, date_limit, status) 
                 VALUES (:product_id, :limit_quantity, :date_limit, :status)';
 
         $stmt = $this->dbh->prepare($sql);
@@ -220,7 +220,7 @@ class Stock
     public function update()
     {
 
-        $sql = 'UPDATE appoe_plugin_shop_stock SET product_id = :product_id, limit_quantity = :limit_quantity, date_limit = :date_limit, status = :status WHERE id = :id';
+        $sql = 'UPDATE '.TABLEPREFIX.'appoe_plugin_shop_stock SET product_id = :product_id, limit_quantity = :limit_quantity, date_limit = :date_limit, status = :status WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -244,7 +244,7 @@ class Stock
     public function exist()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_shop_stock WHERE product_id = :product_id';
+        $sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_shop_stock WHERE product_id = :product_id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':product_id', $this->product_id);
@@ -271,7 +271,7 @@ class Stock
      */
     public function delete()
     {
-        $sql = 'DELETE FROM appoe_plugin_shop_stock WHERE id = :id';
+        $sql = 'DELETE FROM '.TABLEPREFIX.'appoe_plugin_shop_stock WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);

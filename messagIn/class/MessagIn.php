@@ -108,7 +108,7 @@ class MessagIn {
 	}
 
 	public function createTable() {
-		$sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_messagIn` (
+		$sql = 'CREATE TABLE IF NOT EXISTS `'.TABLEPREFIX.'appoe_plugin_messagIn` (
   					`id` INT(11) NOT NULL AUTO_INCREMENT,
                 	PRIMARY KEY (`id`),
                 	`fromUser` INT(11) UNSIGNED NOT NULL,
@@ -134,7 +134,7 @@ class MessagIn {
 	 */
 	public function show() {
 
-		$sql = 'SELECT * FROM appoe_plugin_messagIn WHERE id = :id';
+		$sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_messagIn WHERE id = :id';
 
 		$stmt = $this->dbh->prepare( $sql );
 		$stmt->bindParam( ':id', $this->id );
@@ -164,7 +164,7 @@ class MessagIn {
 	 */
 	public function showAll() {
 
-		$sql  = 'SELECT * FROM appoe_plugin_messagIn WHERE toUser = :toUser ORDER BY statut DESC, created_at DESC';
+		$sql  = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_messagIn WHERE toUser = :toUser ORDER BY statut DESC, created_at DESC';
 		$stmt = $this->dbh->prepare( $sql );
 		$stmt->bindParam( ':toUser', $this->toUser );
 		$stmt->execute();
@@ -184,7 +184,7 @@ class MessagIn {
 	 */
 	public function showAllUnread() {
 
-		$sql  = 'SELECT * FROM appoe_plugin_messagIn WHERE toUser = :toUser AND statut = FALSE ORDER BY created_at';
+		$sql  = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_messagIn WHERE toUser = :toUser AND statut = FALSE ORDER BY created_at';
 		$stmt = $this->dbh->prepare( $sql );
 		$stmt->bindParam( ':toUser', $this->toUser );
 		$stmt->execute();
@@ -204,7 +204,7 @@ class MessagIn {
 	 */
 	public function save() {
 
-		$sql = 'INSERT INTO appoe_plugin_messagIn (fromUser, toUser, text, created_at) 
+		$sql = 'INSERT INTO '.TABLEPREFIX.'appoe_plugin_messagIn (fromUser, toUser, text, created_at) 
                 VALUES (:fromUser, :toUser, :text, CURDATE())';
 
 		$stmt = $this->dbh->prepare( $sql );
@@ -230,7 +230,7 @@ class MessagIn {
 	 */
 	public function update() {
 
-		$sql = 'UPDATE appoe_plugin_messagIn SET fromUser = :fromUser, toUser = :toUser, text = :text, statut = :statut WHERE id = :id';
+		$sql = 'UPDATE '.TABLEPREFIX.'appoe_plugin_messagIn SET fromUser = :fromUser, toUser = :toUser, text = :text, statut = :statut WHERE id = :id';
 
 		$stmt = $this->dbh->prepare( $sql );
 		$stmt->bindParam( ':fromUser', $this->fromUser );
@@ -254,7 +254,7 @@ class MessagIn {
 	 */
 	public function delete() {
 
-		$sql = 'DELETE FROM appoe_plugin_messagIn WHERE id = :id';
+		$sql = 'DELETE FROM '.TABLEPREFIX.'appoe_plugin_messagIn WHERE id = :id';
 
 		$stmt = $this->dbh->prepare( $sql );
 		$stmt->bindParam( ':id', $this->id );

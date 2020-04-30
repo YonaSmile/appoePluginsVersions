@@ -106,7 +106,7 @@ class ProductContent
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_shop_products_content` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `'.TABLEPREFIX.'appoe_plugin_shop_products_content` (
   					`id` INT(11) NOT NULL AUTO_INCREMENT,
                 	PRIMARY KEY (`id`),
                 	`product_id` INT(11) NOT NULL,
@@ -133,7 +133,7 @@ class ProductContent
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_shop_products_content WHERE product_id = :product_id AND lang = :lang';
+        $sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_shop_products_content WHERE product_id = :product_id AND lang = :lang';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':product_id', $this->idProduct);
         $stmt->bindParam(':lang', $this->lang);
@@ -164,7 +164,7 @@ class ProductContent
     public function save()
     {
 
-        $sql = 'INSERT INTO appoe_plugin_shop_products_content (product_id, resume, content, lang) 
+        $sql = 'INSERT INTO '.TABLEPREFIX.'appoe_plugin_shop_products_content (product_id, resume, content, lang) 
                 VALUES (:product_id, :resume, :content, :lang)';
 
         $stmt = $this->dbh->prepare($sql);
@@ -192,7 +192,7 @@ class ProductContent
     public function update()
     {
 
-        $sql = 'UPDATE appoe_plugin_shop_products_content SET resume = :resume, content = :content WHERE id = :id';
+        $sql = 'UPDATE '.TABLEPREFIX.'appoe_plugin_shop_products_content SET resume = :resume, content = :content WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':resume', $this->resume);
@@ -215,7 +215,7 @@ class ProductContent
     public function delete()
     {
 
-        $sql = 'DELETE FROM appoe_plugin_shop_products_content WHERE product_id = :product_id';
+        $sql = 'DELETE FROM '.TABLEPREFIX.'appoe_plugin_shop_products_content WHERE product_id = :product_id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':product_id', $this->idProduct);
@@ -239,7 +239,7 @@ class ProductContent
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id, product_id, content, lang FROM appoe_plugin_shop_products_content WHERE product_id = :product_id AND content = :content AND lang = :lang';
+        $sql = 'SELECT id, product_id, content, lang FROM '.TABLEPREFIX.'appoe_plugin_shop_products_content WHERE product_id = :product_id AND content = :content AND lang = :lang';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':product_id', $this->idProduct);
         $stmt->bindParam(':content', $this->content);

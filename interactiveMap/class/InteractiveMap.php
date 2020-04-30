@@ -140,7 +140,7 @@ class InteractiveMap
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_interactiveMap` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `'.TABLEPREFIX.'appoe_plugin_interactiveMap` (
   					`id` mediumint(9) NOT NULL AUTO_INCREMENT,
   					PRIMARY KEY (`id`),
                     `title` varchar(250) NOT NULL,
@@ -169,7 +169,7 @@ class InteractiveMap
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_interactiveMap WHERE id = :id';
+        $sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_interactiveMap WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -201,7 +201,7 @@ class InteractiveMap
     public function showAll($countMap = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_interactiveMap WHERE status = 1 ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_interactiveMap WHERE status = 1 ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();
 
@@ -219,7 +219,7 @@ class InteractiveMap
      */
     public function save()
     {
-        $sql = 'INSERT INTO appoe_plugin_interactiveMap (title, data, options, width, height) 
+        $sql = 'INSERT INTO '.TABLEPREFIX.'appoe_plugin_interactiveMap (title, data, options, width, height) 
                 VALUES (:title, :data, :options, :width, :height)';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':title', $this->title);
@@ -243,7 +243,7 @@ class InteractiveMap
     public function update()
     {
 
-        $sql = 'UPDATE appoe_plugin_interactiveMap SET options = :options, title = :title, width = :width, height = :height, status = :status WHERE id = :id';
+        $sql = 'UPDATE '.TABLEPREFIX.'appoe_plugin_interactiveMap SET options = :options, title = :title, width = :width, height = :height, status = :status WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':options', $this->options);
@@ -265,7 +265,7 @@ class InteractiveMap
 
     public function updateData()
     {
-        $sql = 'UPDATE appoe_plugin_interactiveMap SET data = :data WHERE id = :id';
+        $sql = 'UPDATE '.TABLEPREFIX.'appoe_plugin_interactiveMap SET data = :data WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':data', $this->data);
@@ -286,7 +286,7 @@ class InteractiveMap
     public function delete()
     {
 
-        $sql = 'DELETE FROM appoe_plugin_interactiveMap WHERE id = :id';
+        $sql = 'DELETE FROM '.TABLEPREFIX.'appoe_plugin_interactiveMap WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -309,7 +309,7 @@ class InteractiveMap
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id, title FROM appoe_plugin_interactiveMap WHERE title = :title';
+        $sql = 'SELECT id, title FROM '.TABLEPREFIX.'appoe_plugin_interactiveMap WHERE title = :title';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':title', $this->title);
         $stmt->execute();

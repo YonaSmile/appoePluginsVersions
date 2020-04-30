@@ -174,7 +174,7 @@ class Traduction
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_traduction` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `'.TABLEPREFIX.'appoe_plugin_traduction` (
   					`id` INT(11) NOT NULL AUTO_INCREMENT,
                 	PRIMARY KEY (`id`),
   					`metaKey` VARCHAR(250) NOT NULL,
@@ -200,7 +200,7 @@ class Traduction
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_traduction WHERE id = :id';
+        $sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_traduction WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -231,7 +231,7 @@ class Traduction
     public function showByValue()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_traduction WHERE metaValue = :metaValue AND lang != :lang';
+        $sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_traduction WHERE metaValue = :metaValue AND lang != :lang';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':metaValue', $this->metaValue);
@@ -263,7 +263,7 @@ class Traduction
     public function showAll()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_traduction WHERE lang = :lang ORDER BY updated_at DESC';
+        $sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_traduction WHERE lang = :lang ORDER BY updated_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':lang', $this->lang);
         $stmt->execute();
@@ -286,7 +286,7 @@ class Traduction
      */
     public function save()
     {
-        $sql = 'INSERT INTO appoe_plugin_traduction (metaKey, metaValue, lang) 
+        $sql = 'INSERT INTO '.TABLEPREFIX.'appoe_plugin_traduction (metaKey, metaValue, lang) 
                 VALUES (:metaKey, :metaValue, :lang)';
 
         $stmt = $this->dbh->prepare($sql);
@@ -311,7 +311,7 @@ class Traduction
      */
     public function saveMultiple()
     {
-        $sql = 'INSERT INTO appoe_plugin_traduction (metaKey, metaValue, lang) 
+        $sql = 'INSERT INTO '.TABLEPREFIX.'appoe_plugin_traduction (metaKey, metaValue, lang) 
                 VALUES (:metaKey, :metaValue, :lang)';
 
         $stmt = $this->dbh->prepare($sql);
@@ -334,7 +334,7 @@ class Traduction
     public function update()
     {
 
-        $sql = 'UPDATE appoe_plugin_traduction SET metaValue = :metaValue WHERE id = :id';
+        $sql = 'UPDATE '.TABLEPREFIX.'appoe_plugin_traduction SET metaValue = :metaValue WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':metaValue', $this->metaValue);
@@ -356,7 +356,7 @@ class Traduction
     public function updateByMeta()
     {
 
-        $sql = 'UPDATE appoe_plugin_traduction SET metaValue = :metaValue WHERE metaKey = :metaKey AND lang = :lang';
+        $sql = 'UPDATE '.TABLEPREFIX.'appoe_plugin_traduction SET metaValue = :metaValue WHERE metaKey = :metaKey AND lang = :lang';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':metaValue', $this->metaValue);
@@ -379,7 +379,7 @@ class Traduction
     public function delete()
     {
 
-        $sql = 'DELETE FROM appoe_plugin_traduction WHERE id = :id';
+        $sql = 'DELETE FROM '.TABLEPREFIX.'appoe_plugin_traduction WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -400,7 +400,7 @@ class Traduction
     public function deleteByKey()
     {
 
-        $sql = 'DELETE FROM appoe_plugin_traduction WHERE metaKey = :metaKey';
+        $sql = 'DELETE FROM '.TABLEPREFIX.'appoe_plugin_traduction WHERE metaKey = :metaKey';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':metaKey', $this->metaKey);
@@ -423,7 +423,7 @@ class Traduction
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id, metaKey, lang FROM appoe_plugin_traduction WHERE metaKey = :metaKey AND lang = :lang';
+        $sql = 'SELECT id, metaKey, lang FROM '.TABLEPREFIX.'appoe_plugin_traduction WHERE metaKey = :metaKey AND lang = :lang';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':metaKey', $this->metaKey);
         $stmt->bindParam(':lang', $this->lang);

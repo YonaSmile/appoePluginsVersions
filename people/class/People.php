@@ -347,7 +347,7 @@ class People
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_people` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `'.TABLEPREFIX.'appoe_plugin_people` (
                 `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
                 PRIMARY KEY (`id`),
                 `type` VARCHAR(150) NOT NULL,
@@ -386,7 +386,7 @@ class People
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_people WHERE id = :id';
+        $sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_people WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -417,7 +417,7 @@ class People
      */
     public function showAll($countPeople = false)
     {
-        $sql = 'SELECT * FROM appoe_plugin_people WHERE status = :status ORDER BY name ASC';
+        $sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_people WHERE status = :status ORDER BY name ASC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':status', $this->status);
         $stmt->execute();
@@ -440,7 +440,7 @@ class People
     public function showByType($countPeople = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_people WHERE type = :type AND status = :status ORDER BY name ASC';
+        $sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_people WHERE type = :type AND status = :status ORDER BY name ASC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':type', $this->type);
         $stmt->bindParam(':status', $this->status);
@@ -463,7 +463,7 @@ class People
     public function showTypes()
     {
 
-        $sql = 'SELECT type FROM appoe_plugin_people GROUP BY type ORDER BY name ASC';
+        $sql = 'SELECT type FROM '.TABLEPREFIX.'appoe_plugin_people GROUP BY type ORDER BY name ASC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();
 
@@ -482,7 +482,7 @@ class People
     public function showDataForExport(array $data)
     {
         $type = !empty($this->type) ? ' type = :type AND ' : '';
-        $sql = 'SELECT ' . implode(', ', $data) . ' FROM appoe_plugin_people WHERE ' . $type . ' status = :status ORDER BY name ASC';
+        $sql = 'SELECT ' . implode(', ', $data) . ' FROM '.TABLEPREFIX.'appoe_plugin_people WHERE ' . $type . ' status = :status ORDER BY name ASC';
         $stmt = $this->dbh->prepare($sql);
 
         if (!empty($this->type)) {
@@ -506,7 +506,7 @@ class People
     {
         $this->entitled = $this->name . ' ' . $this->firstName;
 
-        $sql = 'INSERT INTO appoe_plugin_people 
+        $sql = 'INSERT INTO '.TABLEPREFIX.'appoe_plugin_people 
                 (type, nature, name, firstName, entitled, birthDate, email, tel, address, zip, city, idUser, country, options, status, createdAt) 
                 VALUES (:type, :nature, :name, :firstName, :entitled, :birthDate, :email, :tel, :address, :zip, :city, :country, :idUser, :options, :status, NOW())';
 
@@ -548,7 +548,7 @@ class People
 
         $this->entitled = $this->name . ' ' . $this->firstName;
 
-        $sql = 'UPDATE appoe_plugin_people SET type = :type, nature = :nature, name = :name, firstName = :firstName, 
+        $sql = 'UPDATE '.TABLEPREFIX.'appoe_plugin_people SET type = :type, nature = :nature, name = :name, firstName = :firstName, 
                 entitled = :entitled, birthDate = :birthDate, email = :email, tel = :tel, address = :address, zip = :zip, 
                 city = :city, country = :country, idUser = :idUser, options = :options, status = :status 
                 WHERE id = :id';
@@ -586,7 +586,7 @@ class People
      */
     public function delete()
     {
-        $sql = 'DELETE FROM appoe_plugin_people WHERE id = :id';
+        $sql = 'DELETE FROM '.TABLEPREFIX.'appoe_plugin_people WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -609,7 +609,7 @@ class People
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id FROM appoe_plugin_people WHERE type = :type AND name = :name 
+        $sql = 'SELECT id FROM '.TABLEPREFIX.'appoe_plugin_people WHERE type = :type AND name = :name 
         AND firstName = :firstName AND email = :email AND address = :address';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':type', $this->type);
@@ -645,7 +645,7 @@ class People
      */
     public function authPeople()
     {
-        $sql = 'SELECT * FROM appoe_plugin_people WHERE type = :type AND email = :email';
+        $sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_people WHERE type = :type AND email = :email';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':email', $this->email);
         $stmt->bindParam(':type', $this->type);

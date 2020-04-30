@@ -25,7 +25,7 @@ class Client extends \App\Plugin\People\People
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id FROM appoe_plugin_people WHERE type = :type AND email = :email';
+        $sql = 'SELECT id FROM '.TABLEPREFIX.'appoe_plugin_people WHERE type = :type AND email = :email';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':type', $this->type);
         $stmt->bindParam(':email', $this->email);

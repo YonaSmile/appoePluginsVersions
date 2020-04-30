@@ -127,7 +127,7 @@ class ArticleMeta
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_itemGlue_articles_meta` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `'.TABLEPREFIX.'appoe_plugin_itemGlue_articles_meta` (
         `id` INT(11) NOT NULL AUTO_INCREMENT,
         PRIMARY KEY (`id`),
         `idArticle` INT(11) NOT NULL,
@@ -154,7 +154,7 @@ class ArticleMeta
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_itemGlue_articles_meta WHERE idArticle = :idArticle AND lang = :lang';
+        $sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_meta WHERE idArticle = :idArticle AND lang = :lang';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':idArticle', $this->idArticle);
         $stmt->bindParam(':lang', $this->lang);
@@ -177,7 +177,7 @@ class ArticleMeta
     public function save()
     {
 
-        $sql = 'INSERT INTO appoe_plugin_itemGlue_articles_meta (idArticle, metaKey, metaValue, lang) 
+        $sql = 'INSERT INTO '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_meta (idArticle, metaKey, metaValue, lang) 
                 VALUES (:idArticle, :metaKey, :metaValue, :lang)';
 
         $stmt = $this->dbh->prepare($sql);
@@ -205,7 +205,7 @@ class ArticleMeta
     public function update()
     {
 
-        $sql = 'UPDATE appoe_plugin_itemGlue_articles_meta SET metaKey = :metaKey, metaValue = :metaValue WHERE id = :id';
+        $sql = 'UPDATE '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_meta SET metaKey = :metaKey, metaValue = :metaValue WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':metaKey', $this->metaKey);
@@ -229,7 +229,7 @@ class ArticleMeta
     public function delete()
     {
 
-        $sql = 'DELETE FROM appoe_plugin_itemGlue_articles_meta WHERE id = :id';
+        $sql = 'DELETE FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_meta WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -254,7 +254,7 @@ class ArticleMeta
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id FROM appoe_plugin_itemGlue_articles_meta 
+        $sql = 'SELECT id FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_meta 
         WHERE idArticle = :idArticle AND metaKey = :metaKey AND lang = :lang';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':idArticle', $this->idArticle);

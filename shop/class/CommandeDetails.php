@@ -105,7 +105,7 @@ class CommandeDetails
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_shop_commandes_details` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `'.TABLEPREFIX.'appoe_plugin_shop_commandes_details` (
           `id` int(11) NOT NULL AUTO_INCREMENT,
             PRIMARY KEY (`id`),
           `commandeId` int(11) NOT NULL,
@@ -135,7 +135,7 @@ class CommandeDetails
     public function show($idProduct = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_shop_commandes_details WHERE commandeId = :commandeId ';
+        $sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_shop_commandes_details WHERE commandeId = :commandeId ';
 
         if ($idProduct) {
             $sql .= ' AND product_id = :idProduct';
@@ -169,7 +169,7 @@ class CommandeDetails
     public function save()
     {
 
-        $sql = 'INSERT INTO appoe_plugin_shop_commandes_details (commandeId, product_id, quantity, price, poids, created_at) 
+        $sql = 'INSERT INTO '.TABLEPREFIX.'appoe_plugin_shop_commandes_details (commandeId, product_id, quantity, price, poids, created_at) 
                 VALUES (:commandeId, :product_id, :quantity, :price, :poids, NOW())';
 
         $stmt = $this->dbh->prepare($sql);
@@ -194,7 +194,7 @@ class CommandeDetails
      */
     public function delete()
     {
-        $sql = 'DELETE FROM appoe_plugin_shop_commandes_details WHERE commandeId = :commandeId';
+        $sql = 'DELETE FROM '.TABLEPREFIX.'appoe_plugin_shop_commandes_details WHERE commandeId = :commandeId';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':commandeId', $this->commandeId);

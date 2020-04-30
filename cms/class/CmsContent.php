@@ -38,7 +38,7 @@ class CmsContent
     {
 
         $sqlAdd = $onlyHeaders ? ' AND type = "HEADER" ' : '';
-        $sql = 'SELECT * FROM appoe_plugin_cms_content WHERE idCms = :idCms ' . $sqlAdd . ' AND lang = :lang ORDER BY created_at ASC';
+        $sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_cms_content WHERE idCms = :idCms ' . $sqlAdd . ' AND lang = :lang ORDER BY created_at ASC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':idCms', $this->idCms);
         $stmt->bindParam(':lang', $this->lang);
@@ -187,7 +187,7 @@ class CmsContent
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_cms_content` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `'.TABLEPREFIX.'appoe_plugin_cms_content` (
   					`id` INT(11) NOT NULL AUTO_INCREMENT,
                 	PRIMARY KEY (`id`),
                 	`idCms` INT(11) NOT NULL,
@@ -216,7 +216,7 @@ class CmsContent
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_cms_content WHERE id = :id';
+        $sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_cms_content WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -263,7 +263,7 @@ class CmsContent
     public function save()
     {
 
-        $sql = 'INSERT INTO appoe_plugin_cms_content (idCms, type, metaKey, metaValue, lang, created_at) 
+        $sql = 'INSERT INTO '.TABLEPREFIX.'appoe_plugin_cms_content (idCms, type, metaKey, metaValue, lang, created_at) 
                 VALUES (:idCms, :type, :metaKey, :metaValue, :lang, CURDATE())';
 
         $stmt = $this->dbh->prepare($sql);
@@ -298,7 +298,7 @@ class CmsContent
         if (!isArrayEmpty($headers)) {
 
 
-            $sql = 'INSERT INTO appoe_plugin_cms_content (idCms, type, metaKey, metaValue, lang, created_at) 
+            $sql = 'INSERT INTO '.TABLEPREFIX.'appoe_plugin_cms_content (idCms, type, metaKey, metaValue, lang, created_at) 
                 VALUES (?, ?, ?, ?, ?, CURDATE())';
 
             $stmt = $this->dbh->prepare($sql);
@@ -329,7 +329,7 @@ class CmsContent
     public function update()
     {
 
-        $sql = 'UPDATE appoe_plugin_cms_content SET metaKey = :metaKey, metaValue = :metaValue WHERE id = :id';
+        $sql = 'UPDATE '.TABLEPREFIX.'appoe_plugin_cms_content SET metaKey = :metaKey, metaValue = :metaValue WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':metaKey', $this->metaKey);
@@ -355,7 +355,7 @@ class CmsContent
     public function renameFilename($oldName, $newName)
     {
 
-        $sql = 'UPDATE appoe_plugin_cms_content SET metaValue = :newName WHERE metaValue = :oldName';
+        $sql = 'UPDATE '.TABLEPREFIX.'appoe_plugin_cms_content SET metaValue = :newName WHERE metaValue = :oldName';
 
         $stmt = DB::exec($sql, [':newName' => $newName, ':oldName' => $oldName]);
 
@@ -377,7 +377,7 @@ class CmsContent
 
         if (!isArrayEmpty($headers)) {
 
-            $sql = 'UPDATE appoe_plugin_cms_content 
+            $sql = 'UPDATE '.TABLEPREFIX.'appoe_plugin_cms_content 
             SET metaValue = :metaValue WHERE idCms = :idCms AND type = "HEADER" AND metaKey = :metaKey AND lang = :lang';
 
             $stmt = $this->dbh->prepare($sql);
@@ -405,7 +405,7 @@ class CmsContent
     public function delete()
     {
 
-        $sql = 'DELETE FROM appoe_plugin_cms_content WHERE idCms = :idCms';
+        $sql = 'DELETE FROM '.TABLEPREFIX.'appoe_plugin_cms_content WHERE idCms = :idCms';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':idCms', $this->idCms);
@@ -429,7 +429,7 @@ class CmsContent
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id FROM appoe_plugin_cms_content WHERE idCms = :idCms AND type = :type AND metaKey = :metaKey AND lang = :lang';
+        $sql = 'SELECT id FROM '.TABLEPREFIX.'appoe_plugin_cms_content WHERE idCms = :idCms AND type = :type AND metaKey = :metaKey AND lang = :lang';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':idCms', $this->idCms);
         $stmt->bindParam(':type', $this->type);

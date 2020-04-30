@@ -3,9 +3,9 @@ define('CMS_PATH', WEB_PLUGIN_PATH . 'cms/');
 define('CMS_URL', WEB_PLUGIN_URL . 'cms/');
 
 const PLUGIN_TABLES = array(
-    'appoe_plugin_cms',
-    'appoe_plugin_cms_menu',
-    'appoe_plugin_cms_content',
+	TABLEPREFIX.'appoe_plugin_cms',
+	TABLEPREFIX.'appoe_plugin_cms_menu',
+	TABLEPREFIX.'appoe_plugin_cms_content',
 );
 
 const CMS_PAGE_STATUS = array(

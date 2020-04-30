@@ -35,11 +35,11 @@ class Article
     public function show()
     {
         $sql = 'SELECT C.*,
-        (SELECT cc1.content FROM appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = C.id AND cc1.lang = :lang) AS name,
-        (SELECT cc2.content FROM appoe_plugin_itemGlue_articles_content AS cc2 WHERE cc2.type = "DESCRIPTION" AND cc2.idArticle = C.id AND cc2.lang = :lang) AS description,
-        (SELECT cc3.content FROM appoe_plugin_itemGlue_articles_content AS cc3 WHERE cc3.type = "SLUG" AND cc3.idArticle = C.id AND cc3.lang = :lang) AS slug,
-        (SELECT cc4.content FROM appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = C.id AND cc4.lang = :lang) AS content
-        FROM appoe_plugin_itemGlue_articles AS C
+        (SELECT cc1.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = C.id AND cc1.lang = :lang) AS name,
+        (SELECT cc2.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc2 WHERE cc2.type = "DESCRIPTION" AND cc2.idArticle = C.id AND cc2.lang = :lang) AS description,
+        (SELECT cc3.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc3 WHERE cc3.type = "SLUG" AND cc3.idArticle = C.id AND cc3.lang = :lang) AS slug,
+        (SELECT cc4.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = C.id AND cc4.lang = :lang) AS content
+        FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles AS C
         WHERE C.id = :id';
 
         $params = array(':id' => $this->id, ':lang' => $this->lang);
@@ -234,7 +234,7 @@ class Article
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_itemGlue_articles` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `'.TABLEPREFIX.'appoe_plugin_itemGlue_articles` (
   					`id` INT(11) NOT NULL AUTO_INCREMENT,
                 	PRIMARY KEY (`id`),
   					`statut` BOOLEAN NOT NULL DEFAULT TRUE,
@@ -258,12 +258,12 @@ class Article
     {
 
         $sql = 'SELECT C.*,
-        (SELECT cc1.content FROM appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = C.id AND cc1.lang = :lang) AS name,
-        (SELECT cc2.content FROM appoe_plugin_itemGlue_articles_content AS cc2 WHERE cc2.type = "DESCRIPTION" AND cc2.idArticle = C.id AND cc2.lang = :lang) AS description,
-        (SELECT cc3.content FROM appoe_plugin_itemGlue_articles_content AS cc3 WHERE cc3.type = "SLUG" AND cc3.idArticle = C.id AND cc3.lang = :lang) AS slug,
-        (SELECT cc4.content FROM appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = C.id AND cc4.lang = :lang) AS content
-        FROM appoe_plugin_itemGlue_articles AS C
-        WHERE C.id = (SELECT idArticle FROM appoe_plugin_itemGlue_articles_content WHERE type = "SLUG" AND content = :slug AND lang = :lang) 
+        (SELECT cc1.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = C.id AND cc1.lang = :lang) AS name,
+        (SELECT cc2.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc2 WHERE cc2.type = "DESCRIPTION" AND cc2.idArticle = C.id AND cc2.lang = :lang) AS description,
+        (SELECT cc3.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc3 WHERE cc3.type = "SLUG" AND cc3.idArticle = C.id AND cc3.lang = :lang) AS slug,
+        (SELECT cc4.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = C.id AND cc4.lang = :lang) AS content
+        FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles AS C
+        WHERE C.id = (SELECT idArticle FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content WHERE type = "SLUG" AND content = :slug AND lang = :lang) 
         AND C.statut >= :statut';
 
         $params = array(':lang' => $this->lang, ':slug' => $this->slug, ':statut' => $this->statut);
@@ -294,18 +294,18 @@ class Article
         }
 
         $sql = 'SELECT DISTINCT ART.id, 
-         (SELECT cc1.content FROM appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = ART.id AND cc1.lang = :lang) AS name,
-        (SELECT cc2.content FROM appoe_plugin_itemGlue_articles_content AS cc2 WHERE cc2.type = "DESCRIPTION" AND cc2.idArticle = ART.id AND cc2.lang = :lang) AS description,
-        (SELECT cc3.content FROM appoe_plugin_itemGlue_articles_content AS cc3 WHERE cc3.type = "SLUG" AND cc3.idArticle = ART.id AND cc3.lang = :lang) AS slug,
-        (SELECT cc4.content FROM appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = ART.id AND cc4.lang = :lang) AS content,
+         (SELECT cc1.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = ART.id AND cc1.lang = :lang) AS name,
+        (SELECT cc2.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc2 WHERE cc2.type = "DESCRIPTION" AND cc2.idArticle = ART.id AND cc2.lang = :lang) AS description,
+        (SELECT cc3.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc3 WHERE cc3.type = "SLUG" AND cc3.idArticle = ART.id AND cc3.lang = :lang) AS slug,
+        (SELECT cc4.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = ART.id AND cc4.lang = :lang) AS content,
          ART.userId, ART.created_at, ART.updated_at, ART.statut, 
         GROUP_CONCAT(DISTINCT C.id SEPARATOR "||") AS categoryIds, GROUP_CONCAT(DISTINCT C.name SEPARATOR "||") AS categoryNames
-        FROM appoe_categoryRelations AS CR 
-        RIGHT JOIN appoe_plugin_itemGlue_articles AS ART 
+        FROM '.TABLEPREFIX.'appoe_categoryRelations AS CR 
+        RIGHT JOIN '.TABLEPREFIX.'appoe_plugin_itemGlue_articles AS ART 
         ON(CR.typeId = ART.id) 
-        INNER JOIN appoe_categories AS C
+        INNER JOIN '.TABLEPREFIX.'appoe_categories AS C
         ON(C.id = CR.categoryId)
-        INNER JOIN appoe_plugin_itemGlue_articles_content AS AC
+        INNER JOIN '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS AC
         ON(AC.idArticle = ART.id)
         WHERE CR.type = "ITEMGLUE" AND ART.statut > 0 AND C.status > 0 AND AC.lang = :lang' . $categorySQL . '
         GROUP BY ART.id ORDER BY ART.statut DESC, ART.created_at DESC';
@@ -330,11 +330,11 @@ class Article
         $featured = $this->statut == 1 ? ' statut >= 1' : ' statut = ' . $this->statut . ' ';
 
         $sql = 'SELECT ART.*,
-         (SELECT cc1.content FROM appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = ART.id AND cc1.lang = :lang) AS name,
-        (SELECT cc2.content FROM appoe_plugin_itemGlue_articles_content AS cc2 WHERE cc2.type = "DESCRIPTION" AND cc2.idArticle = ART.id AND cc2.lang = :lang) AS description,
-        (SELECT cc3.content FROM appoe_plugin_itemGlue_articles_content AS cc3 WHERE cc3.type = "SLUG" AND cc3.idArticle = ART.id AND cc3.lang = :lang) AS slug,
-        (SELECT cc4.content FROM appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = ART.id AND cc4.lang = :lang) AS content 
-         FROM appoe_plugin_itemGlue_articles AS ART
+         (SELECT cc1.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = ART.id AND cc1.lang = :lang) AS name,
+        (SELECT cc2.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc2 WHERE cc2.type = "DESCRIPTION" AND cc2.idArticle = ART.id AND cc2.lang = :lang) AS description,
+        (SELECT cc3.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc3 WHERE cc3.type = "SLUG" AND cc3.idArticle = ART.id AND cc3.lang = :lang) AS slug,
+        (SELECT cc4.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = ART.id AND cc4.lang = :lang) AS content 
+         FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles AS ART
         WHERE ' . $featured . ' ORDER BY statut DESC, name ASC ' . $limit;
 
         $params = array(':lang' => $this->lang);
@@ -358,11 +358,11 @@ class Article
         $featured = $this->statut == 1 ? ' ART.statut >= 1' : ' ART.statut = ' . $this->statut . ' ';
 
         $sql = 'SELECT ART.*,
-        (SELECT cc1.content FROM appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = ART.id AND cc1.lang = :lang) AS name,
-        (SELECT cc2.content FROM appoe_plugin_itemGlue_articles_content AS cc2 WHERE cc2.type = "DESCRIPTION" AND cc2.idArticle = ART.id AND cc2.lang = :lang) AS description,
-        (SELECT cc3.content FROM appoe_plugin_itemGlue_articles_content AS cc3 WHERE cc3.type = "SLUG" AND cc3.idArticle = ART.id AND cc3.lang = :lang) AS slug,
-        (SELECT cc4.content FROM appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = ART.id AND cc4.lang = :lang) AS content
-        FROM appoe_plugin_itemGlue_articles AS ART     
+        (SELECT cc1.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = ART.id AND cc1.lang = :lang) AS name,
+        (SELECT cc2.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc2 WHERE cc2.type = "DESCRIPTION" AND cc2.idArticle = ART.id AND cc2.lang = :lang) AS description,
+        (SELECT cc3.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc3 WHERE cc3.type = "SLUG" AND cc3.idArticle = ART.id AND cc3.lang = :lang) AS slug,
+        (SELECT cc4.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = ART.id AND cc4.lang = :lang) AS content
+        FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles AS ART     
         WHERE ' . $featured . '
         ORDER BY ART.statut DESC, ART.created_at DESC ' . $limit;
 
@@ -409,18 +409,18 @@ class Article
         $featured = $this->statut == 1 ? ' ART.statut >= 1' : ' ART.statut = ' . $this->statut . ' ';
 
         $sql = 'SELECT DISTINCT ART.id, 
-         (SELECT cc1.content FROM appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = ART.id AND cc1.lang = :lang) AS name,
-        (SELECT cc2.content FROM appoe_plugin_itemGlue_articles_content AS cc2 WHERE cc2.type = "DESCRIPTION" AND cc2.idArticle = ART.id AND cc2.lang = :lang) AS description,
-        (SELECT cc3.content FROM appoe_plugin_itemGlue_articles_content AS cc3 WHERE cc3.type = "SLUG" AND cc3.idArticle = ART.id AND cc3.lang = :lang) AS slug,
-        (SELECT cc4.content FROM appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = ART.id AND cc4.lang = :lang) AS content,
+         (SELECT cc1.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = ART.id AND cc1.lang = :lang) AS name,
+        (SELECT cc2.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc2 WHERE cc2.type = "DESCRIPTION" AND cc2.idArticle = ART.id AND cc2.lang = :lang) AS description,
+        (SELECT cc3.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc3 WHERE cc3.type = "SLUG" AND cc3.idArticle = ART.id AND cc3.lang = :lang) AS slug,
+        (SELECT cc4.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = ART.id AND cc4.lang = :lang) AS content,
          ART.userId, ART.created_at, ART.updated_at, ART.statut, 
         GROUP_CONCAT(DISTINCT C.id SEPARATOR "||") AS categoryIds, GROUP_CONCAT(DISTINCT C.name SEPARATOR "||") AS categoryNames
-        FROM appoe_categoryRelations AS CR 
-        RIGHT JOIN appoe_plugin_itemGlue_articles AS ART 
+        FROM '.TABLEPREFIX.'appoe_categoryRelations AS CR 
+        RIGHT JOIN '.TABLEPREFIX.'appoe_plugin_itemGlue_articles AS ART 
         ON(CR.typeId = ART.id) 
-        INNER JOIN appoe_categories AS C
+        INNER JOIN '.TABLEPREFIX.'appoe_categories AS C
         ON(C.id = CR.categoryId)
-        INNER JOIN appoe_plugin_itemGlue_articles_content AS AC
+        INNER JOIN '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS AC
         ON(AC.idArticle = ART.id)
         WHERE ' . $featured . ' AND CR.type = "ITEMGLUE" ' . $sqlArchives . ' AND ART.statut > 0 AND C.status > 0 AND AC.lang = :lang' . $categorySQL . '
         GROUP BY ART.id ORDER BY ART.statut DESC, name DESC ' . $limit;
@@ -461,25 +461,25 @@ class Article
         }
 
         $sql = 'SELECT ART.*, 
-        (SELECT cc1.content FROM appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = ART.id AND cc1.lang = :lang) AS name,
-        (SELECT cc2.content FROM appoe_plugin_itemGlue_articles_content AS cc2 WHERE cc2.type = "DESCRIPTION" AND cc2.idArticle = ART.id AND cc2.lang = :lang) AS description,
-        (SELECT cc3.content FROM appoe_plugin_itemGlue_articles_content AS cc3 WHERE cc3.type = "SLUG" AND cc3.idArticle = ART.id AND cc3.lang = :lang) AS slug,
-        (SELECT cc4.content FROM appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = ART.id AND cc4.lang = :lang) AS content,
+        (SELECT cc1.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = ART.id AND cc1.lang = :lang) AS name,
+        (SELECT cc2.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc2 WHERE cc2.type = "DESCRIPTION" AND cc2.idArticle = ART.id AND cc2.lang = :lang) AS description,
+        (SELECT cc3.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc3 WHERE cc3.type = "SLUG" AND cc3.idArticle = ART.id AND cc3.lang = :lang) AS slug,
+        (SELECT cc4.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = ART.id AND cc4.lang = :lang) AS content,
         GROUP_CONCAT(DISTINCT C.id SEPARATOR "||") AS categoryIds, GROUP_CONCAT(DISTINCT C.name SEPARATOR "||") AS categoryNames 
-        FROM appoe_plugin_itemGlue_articles AS ART
-        INNER JOIN appoe_plugin_itemGlue_articles_content AS AC
+        FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles AS ART
+        INNER JOIN '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS AC
         ON(ART.id = AC.idArticle)
-        INNER JOIN appoe_categoryRelations AS CR 
+        INNER JOIN '.TABLEPREFIX.'appoe_categoryRelations AS CR 
         ON(CR.typeId = ART.id) 
-        INNER JOIN appoe_categories AS C
+        INNER JOIN '.TABLEPREFIX.'appoe_categories AS C
         ON(C.id = CR.categoryId)
         WHERE ART.id = (
-        SELECT MIN(ART.id) FROM appoe_plugin_itemGlue_articles AS ART 
-        INNER JOIN appoe_plugin_itemGlue_articles_content AS AC
+        SELECT MIN(ART.id) FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles AS ART 
+        INNER JOIN '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS AC
         ON(ART.id = AC.idArticle)
-        INNER JOIN appoe_categoryRelations AS CR 
+        INNER JOIN '.TABLEPREFIX.'appoe_categoryRelations AS CR 
         ON(CR.typeId = ART.id) 
-        INNER JOIN appoe_categories AS C
+        INNER JOIN '.TABLEPREFIX.'appoe_categories AS C
         ON(C.id = CR.categoryId)
         WHERE ART.id > :id AND CR.type = "ITEMGLUE" AND ART.statut >= 1 AND C.status > 0 AND AC.lang = :lang ' . $addSql . ')
         AND AC.lang = :lang';
@@ -519,25 +519,25 @@ class Article
         }
 
         $sql = 'SELECT ART.*,
-        (SELECT cc1.content FROM appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = ART.id AND cc1.lang = :lang) AS name,
-        (SELECT cc2.content FROM appoe_plugin_itemGlue_articles_content AS cc2 WHERE cc2.type = "DESCRIPTION" AND cc2.idArticle = ART.id AND cc2.lang = :lang) AS description,
-        (SELECT cc3.content FROM appoe_plugin_itemGlue_articles_content AS cc3 WHERE cc3.type = "SLUG" AND cc3.idArticle = ART.id AND cc3.lang = :lang) AS slug,
-        (SELECT cc4.content FROM appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = ART.id AND cc4.lang = :lang) AS content,
+        (SELECT cc1.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = ART.id AND cc1.lang = :lang) AS name,
+        (SELECT cc2.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc2 WHERE cc2.type = "DESCRIPTION" AND cc2.idArticle = ART.id AND cc2.lang = :lang) AS description,
+        (SELECT cc3.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc3 WHERE cc3.type = "SLUG" AND cc3.idArticle = ART.id AND cc3.lang = :lang) AS slug,
+        (SELECT cc4.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = ART.id AND cc4.lang = :lang) AS content,
         GROUP_CONCAT(DISTINCT C.id SEPARATOR "||") AS categoryIds, GROUP_CONCAT(DISTINCT C.name SEPARATOR "||") AS categoryNames 
-        FROM appoe_plugin_itemGlue_articles AS ART
-        INNER JOIN appoe_plugin_itemGlue_articles_content AS AC
+        FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles AS ART
+        INNER JOIN '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS AC
         ON(ART.id = AC.idArticle)
-        INNER JOIN appoe_categoryRelations AS CR 
+        INNER JOIN '.TABLEPREFIX.'appoe_categoryRelations AS CR 
         ON(CR.typeId = ART.id) 
-        INNER JOIN appoe_categories AS C
+        INNER JOIN '.TABLEPREFIX.'appoe_categories AS C
         ON(C.id = CR.categoryId)
         WHERE ART.id = (
-        SELECT MAX(ART.id) FROM appoe_plugin_itemGlue_articles AS ART 
-        INNER JOIN appoe_plugin_itemGlue_articles_content AS AC
+        SELECT MAX(ART.id) FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles AS ART 
+        INNER JOIN '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS AC
         ON(ART.id = AC.idArticle)
-        INNER JOIN appoe_categoryRelations AS CR 
+        INNER JOIN '.TABLEPREFIX.'appoe_categoryRelations AS CR 
         ON(CR.typeId = ART.id) 
-        INNER JOIN appoe_categories AS C
+        INNER JOIN '.TABLEPREFIX.'appoe_categories AS C
         ON(C.id = CR.categoryId)
         WHERE ART.id < :id AND CR.type = "ITEMGLUE" AND ART.statut >= 1 AND C.status > 0 AND AC.lang = :lang ' . $addSql . ')
         AND AC.lang = :lang';
@@ -570,18 +570,18 @@ class Article
         $featured = $this->statut == 1 ? ' ART.statut >= 1' : ' ART.statut = ' . $this->statut . ' ';
 
         $sql = 'SELECT DISTINCT ART.id, 
-         (SELECT cc1.content FROM appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = ART.id AND cc1.lang = :lang) AS name,
-        (SELECT cc2.content FROM appoe_plugin_itemGlue_articles_content AS cc2 WHERE cc2.type = "DESCRIPTION" AND cc2.idArticle = ART.id AND cc2.lang = :lang) AS description,
-        (SELECT cc3.content FROM appoe_plugin_itemGlue_articles_content AS cc3 WHERE cc3.type = "SLUG" AND cc3.idArticle = ART.id AND cc3.lang = :lang) AS slug,
-        (SELECT cc4.content FROM appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = ART.id AND cc4.lang = :lang) AS content,
+         (SELECT cc1.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = ART.id AND cc1.lang = :lang) AS name,
+        (SELECT cc2.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc2 WHERE cc2.type = "DESCRIPTION" AND cc2.idArticle = ART.id AND cc2.lang = :lang) AS description,
+        (SELECT cc3.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc3 WHERE cc3.type = "SLUG" AND cc3.idArticle = ART.id AND cc3.lang = :lang) AS slug,
+        (SELECT cc4.content FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = ART.id AND cc4.lang = :lang) AS content,
          ART.userId, ART.created_at, ART.updated_at, ART.statut, 
         GROUP_CONCAT(DISTINCT C.id SEPARATOR "||") AS categoryIds, GROUP_CONCAT(DISTINCT C.name SEPARATOR "||") AS categoryNames
-        FROM appoe_categoryRelations AS CR 
-        RIGHT JOIN appoe_plugin_itemGlue_articles AS ART 
+        FROM '.TABLEPREFIX.'appoe_categoryRelations AS CR 
+        RIGHT JOIN '.TABLEPREFIX.'appoe_plugin_itemGlue_articles AS ART 
         ON(CR.typeId = ART.id) 
-        INNER JOIN appoe_categories AS C
+        INNER JOIN '.TABLEPREFIX.'appoe_categories AS C
         ON(C.id = CR.categoryId)
-        INNER JOIN appoe_plugin_itemGlue_articles_content AS AC
+        INNER JOIN '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content AS AC
         ON(AC.idArticle = ART.id)
         WHERE ' . $featured . ' AND CR.type = "ITEMGLUE" AND C.status > 0 AND (name LIKE :search OR content LIKE :search) 
         AND AC.lang = :lang GROUP BY ART.id ORDER BY ART.statut DESC, ART.created_at DESC ';
@@ -602,7 +602,7 @@ class Article
     public function save()
     {
 
-        $sql = 'INSERT INTO appoe_plugin_itemGlue_articles (statut, userId, created_at) 
+        $sql = 'INSERT INTO '.TABLEPREFIX.'appoe_plugin_itemGlue_articles (statut, userId, created_at) 
                 VALUES (:statut, :userId, CURDATE())';
 
         $params = array(':statut' => $this->statut, ':userId' => $this->userId);
@@ -625,7 +625,7 @@ class Article
     public function update()
     {
 
-        $sql = 'UPDATE appoe_plugin_itemGlue_articles SET statut = :statut, userId = :userId, created_at = :created_at WHERE id = :id';
+        $sql = 'UPDATE '.TABLEPREFIX.'appoe_plugin_itemGlue_articles SET statut = :statut, userId = :userId, created_at = :created_at WHERE id = :id';
 
         $params = array(':statut' => $this->statut, ':userId' => $this->userId, ':created_at' => $this->createdAt, ':id' => $this->id);
         $return = DB::exec($sql, $params);
@@ -655,10 +655,10 @@ class Article
             }
         }
 
-        $sql = 'DELETE FROM appoe_categoryRelations WHERE type = "ITEMGLUE" AND typeId = :id;';
-        $sql .= 'DELETE FROM appoe_plugin_itemGlue_articles_meta WHERE idArticle = :id;';
-        $sql .= 'DELETE FROM appoe_plugin_itemGlue_articles_content WHERE idArticle = :id;';
-        $sql .= 'DELETE FROM appoe_plugin_itemGlue_articles WHERE id = :id;';
+        $sql = 'DELETE FROM '.TABLEPREFIX.'appoe_categoryRelations WHERE type = "ITEMGLUE" AND typeId = :id;';
+        $sql .= 'DELETE FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_meta WHERE idArticle = :id;';
+        $sql .= 'DELETE FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content WHERE idArticle = :id;';
+        $sql .= 'DELETE FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles WHERE id = :id;';
 
         $params = array(':id' => $this->id);
         $return = DB::exec($sql, $params);

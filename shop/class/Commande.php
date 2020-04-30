@@ -208,7 +208,7 @@ class Commande
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_shop_commandes` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `'.TABLEPREFIX.'appoe_plugin_shop_commandes` (
                 `id` int(11) NOT NULL AUTO_INCREMENT,
                 PRIMARY KEY (`id`),
                 `client_id` int(11) NULL DEFAULT NULL,
@@ -239,7 +239,7 @@ class Commande
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_shop_commandes WHERE id = :id';
+        $sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_shop_commandes WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -273,7 +273,7 @@ class Commande
         if (is_int($orderState)) {
             $orderStateSql = ' AND orderState = ' . $orderState;
         }
-        $sql = 'SELECT * FROM appoe_plugin_shop_commandes WHERE status ' . ($minStatus ? '>=' : '=') . ' :status ' . $orderStateSql . ' ORDER BY created_at DESC';
+        $sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_shop_commandes WHERE status ' . ($minStatus ? '>=' : '=') . ' :status ' . $orderStateSql . ' ORDER BY created_at DESC';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':status', $status);
@@ -294,7 +294,7 @@ class Commande
     public function clearIncompletCommandes()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_shop_commandes WHERE orderState = 2 AND created_at < current_timestamp - interval "600" second';
+        $sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_shop_commandes WHERE orderState = 2 AND created_at < current_timestamp - interval "600" second';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();
@@ -320,7 +320,7 @@ class Commande
 
         if (!is_null($this->billing) && !is_null($this->preBilling)) {
 
-            $sql = 'INSERT INTO appoe_plugin_shop_commandes (client_id, total, total_transport, orderState, deliveryState, preBilling, billing, created_at) 
+            $sql = 'INSERT INTO '.TABLEPREFIX.'appoe_plugin_shop_commandes (client_id, total, total_transport, orderState, deliveryState, preBilling, billing, created_at) 
                 VALUES (:client_id, :total, :total_transport, :orderState, :deliveryState, :preBilling, :billing, NOW())';
 
             $stmt = $this->dbh->prepare($sql);
@@ -352,7 +352,7 @@ class Commande
     public function update()
     {
 
-        $sql = 'UPDATE appoe_plugin_shop_commandes SET client_id = :client_id, total = :total, total_transport = :total_transport, orderState = :orderState, deliveryState = :deliveryState, status = :status WHERE id = :id';
+        $sql = 'UPDATE '.TABLEPREFIX.'appoe_plugin_shop_commandes SET client_id = :client_id, total = :total, total_transport = :total_transport, orderState = :orderState, deliveryState = :deliveryState, status = :status WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -377,8 +377,8 @@ class Commande
      */
     public function delete()
     {
-        $sql = 'UPDATE appoe_plugin_shop_commandes SET orderState = 1, status = 0 WHERE id = :id;';
-        $sql .= 'DELETE FROM appoe_plugin_shop_commandes_details WHERE commandeId = :id;';
+        $sql = 'UPDATE '.TABLEPREFIX.'appoe_plugin_shop_commandes SET orderState = 1, status = 0 WHERE id = :id;';
+        $sql .= 'DELETE FROM '.TABLEPREFIX.'appoe_plugin_shop_commandes_details WHERE commandeId = :id;';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -396,7 +396,7 @@ class Commande
     {
         $this->preBilling = date('y');
 
-        $sql = 'SELECT preBilling, billing FROM appoe_plugin_shop_commandes WHERE preBilling = :preBilling ORDER BY billing DESC LIMIT 0, 1';
+        $sql = 'SELECT preBilling, billing FROM '.TABLEPREFIX.'appoe_plugin_shop_commandes WHERE preBilling = :preBilling ORDER BY billing DESC LIMIT 0, 1';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':preBilling', $this->preBilling);

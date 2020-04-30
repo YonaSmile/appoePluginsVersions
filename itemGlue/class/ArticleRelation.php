@@ -110,7 +110,7 @@ class ArticleRelation
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_itemGlue_articles_relations` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `'.TABLEPREFIX.'appoe_plugin_itemGlue_articles_relations` (
   					`id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
                 	PRIMARY KEY (`id`),
                     `type` VARCHAR(250) NOT NULL,
@@ -129,7 +129,7 @@ class ArticleRelation
      */
     public function show()
     {
-        $sql = 'SELECT * FROM appoe_plugin_itemGlue_articles_relations WHERE type = :type AND articleId = :articleId';
+        $sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_relations WHERE type = :type AND articleId = :articleId';
         $stmt = DB::exec($sql, [':type' => $this->type, ':articleId' => $this->articleId]);
         $this->data = $stmt ? $stmt->fetchAll(PDO::FETCH_OBJ) : false;
         return $this->data;
@@ -140,7 +140,7 @@ class ArticleRelation
      */
     public function showAll()
     {
-        $sql = 'SELECT * FROM appoe_plugin_itemGlue_articles_relations WHERE articleId = :articleId';
+        $sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_relations WHERE articleId = :articleId';
         $stmt = DB::exec($sql, [':articleId' => $this->articleId]);
 
         return $stmt ? $stmt->fetchAll(PDO::FETCH_OBJ) : false;
@@ -151,7 +151,7 @@ class ArticleRelation
      */
     public function save()
     {
-        $sql = 'INSERT INTO appoe_plugin_itemGlue_articles_relations (type, typeId, articleId) VALUES(:type, :typeId, :articleId)';
+        $sql = 'INSERT INTO '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_relations (type, typeId, articleId) VALUES(:type, :typeId, :articleId)';
         $stmt = DB::exec($sql, [':type' => $this->type, ':typeId' => $this->typeId, ':articleId' => $this->articleId]);
 
         if ($stmt) {
@@ -167,7 +167,7 @@ class ArticleRelation
      */
     public function update()
     {
-        $sql = 'UPDATE appoe_plugin_itemGlue_articles_relations SET type = :type, typeId = :typeId, articleId = :articleId WHERE id = :id';
+        $sql = 'UPDATE '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_relations SET type = :type, typeId = :typeId, articleId = :articleId WHERE id = :id';
         $stmt = DB::exec($sql, [':type' => $this->type, ':typeId' => $this->typeId, ':articleId' => $this->articleId, ':id' => $this->id]);
 
         if ($stmt) {
@@ -183,7 +183,7 @@ class ArticleRelation
      */
     public function delete()
     {
-        $sql = 'DELETE FROM appoe_plugin_itemGlue_articles_relations WHERE id = :id';
+        $sql = 'DELETE FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_relations WHERE id = :id';
         $stmt = DB::exec($sql, [':id' => $this->id]);
 
         if ($stmt) {

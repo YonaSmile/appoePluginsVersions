@@ -3,12 +3,12 @@ define('SHOP_PATH', WEB_PLUGIN_PATH . 'shop/');
 define('SHOP_URL', WEB_PLUGIN_URL . 'shop/');
 
 const PLUGIN_TABLES = array(
-    'appoe_plugin_shop_commandes',
-    'appoe_plugin_shop_commandes_details',
-    'appoe_plugin_shop_products',
-    'appoe_plugin_shop_products_content',
-    'appoe_plugin_shop_products_meta',
-    'appoe_plugin_shop_stock'
+	TABLEPREFIX.'appoe_plugin_shop_commandes',
+	TABLEPREFIX.'appoe_plugin_shop_commandes_details',
+	TABLEPREFIX.'appoe_plugin_shop_products',
+	TABLEPREFIX.'appoe_plugin_shop_products_content',
+	TABLEPREFIX.'appoe_plugin_shop_products_meta',
+	TABLEPREFIX.'appoe_plugin_shop_stock'
 );
 
 const PRODUCT_STATUS = array(

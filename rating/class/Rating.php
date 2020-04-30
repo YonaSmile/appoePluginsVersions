@@ -141,7 +141,7 @@ class Rating
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_rating` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `'.TABLEPREFIX.'appoe_plugin_rating` (
   					`id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
                     PRIMARY KEY (`id`),
                     `type` VARCHAR(150) NOT NULL,
@@ -168,7 +168,7 @@ class Rating
      */
     public function show()
     {
-        $sql = 'SELECT * FROM appoe_plugin_rating WHERE id = :id';
+        $sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_rating WHERE id = :id';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
         $stmt->execute();
@@ -197,7 +197,7 @@ class Rating
     public function showByType($countRating = false, $status = 1)
     {
         if (is_int($status)) {
-            $sql = 'SELECT * FROM appoe_plugin_rating WHERE type = :type AND typeId = :typeId AND status = :status ORDER BY updated_at DESC';
+            $sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_rating WHERE type = :type AND typeId = :typeId AND status = :status ORDER BY updated_at DESC';
             $stmt = $this->dbh->prepare($sql);
             $stmt->bindParam(':type', $this->type);
             $stmt->bindParam(':typeId', $this->typeId);
@@ -225,7 +225,7 @@ class Rating
     public function showAll($countRating = false, $status = 1)
     {
         if (is_int($status)) {
-            $sql = 'SELECT * FROM appoe_plugin_rating WHERE status = :status ORDER BY updated_at DESC';
+            $sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_rating WHERE status = :status ORDER BY updated_at DESC';
             $stmt = $this->dbh->prepare($sql);
             $stmt->bindParam(':status', $status);
             $stmt->execute();
@@ -248,7 +248,7 @@ class Rating
      */
     public function save()
     {
-        $sql = 'INSERT INTO appoe_plugin_rating (type, typeId, user, score) VALUES (:type, :typeId, :user, :score)';
+        $sql = 'INSERT INTO '.TABLEPREFIX.'appoe_plugin_rating (type, typeId, user, score) VALUES (:type, :typeId, :user, :score)';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':type', $this->type);
@@ -272,7 +272,7 @@ class Rating
      */
     public function update()
     {
-        $sql = 'UPDATE appoe_plugin_rating SET type = :type, typeId = :typeId, user = :user, score = :score, status = :status WHERE id = :id';
+        $sql = 'UPDATE '.TABLEPREFIX.'appoe_plugin_rating SET type = :type, typeId = :typeId, user = :user, score = :score, status = :status WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':type', $this->type);
@@ -297,7 +297,7 @@ class Rating
      */
     public function delete()
     {
-        $sql = 'DELETE FROM appoe_plugin_rating WHERE id = :id';
+        $sql = 'DELETE FROM '.TABLEPREFIX.'appoe_plugin_rating WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -315,7 +315,7 @@ class Rating
      */
     public function deleteAll()
     {
-        $sql = 'DELETE FROM appoe_plugin_rating WHERE type = :type AND typeId = :typeId';
+        $sql = 'DELETE FROM '.TABLEPREFIX.'appoe_plugin_rating WHERE type = :type AND typeId = :typeId';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':type', $this->type);
@@ -336,7 +336,7 @@ class Rating
      */
     public function notExist($forUpdate = false)
     {
-        $sql = 'SELECT id FROM appoe_plugin_rating WHERE type = :type AND typeId = :typeId AND user = :user';
+        $sql = 'SELECT id FROM '.TABLEPREFIX.'appoe_plugin_rating WHERE type = :type AND typeId = :typeId AND user = :user';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':type', $this->type);
         $stmt->bindParam(':typeId', $this->typeId);

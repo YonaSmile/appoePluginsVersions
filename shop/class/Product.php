@@ -210,7 +210,7 @@ class Product
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_shop_products` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `'.TABLEPREFIX.'appoe_plugin_shop_products` (
         `id` int(11) NOT NULL AUTO_INCREMENT,
         PRIMARY KEY (`id`),
         `type` varchar(150) NOT NULL,
@@ -242,7 +242,7 @@ class Product
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_shop_products WHERE id = :id';
+        $sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_shop_products WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -273,7 +273,7 @@ class Product
     public function showBySlug()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_shop_products WHERE slug = :slug';
+        $sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_shop_products WHERE slug = :slug';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':slug', $this->slug);
@@ -312,12 +312,12 @@ class Product
         }
 
         $sql = 'SELECT DISTINCT PRO.*, C.id AS idCategory, C.name AS categoryName, PROCONTENT.resume, PROCONTENT.content
-        FROM appoe_categoryRelations AS CR 
-        RIGHT JOIN appoe_plugin_shop_products AS PRO 
+        FROM '.TABLEPREFIX.'appoe_categoryRelations AS CR 
+        RIGHT JOIN '.TABLEPREFIX.'appoe_plugin_shop_products AS PRO 
         ON(CR.typeId = PRO.id) 
-        INNER JOIN appoe_categories AS C
+        INNER JOIN '.TABLEPREFIX.'appoe_categories AS C
         ON(C.id = CR.categoryId)
-        INNER JOIN appoe_plugin_shop_products_content AS PROCONTENT
+        INNER JOIN '.TABLEPREFIX.'appoe_plugin_shop_products_content AS PROCONTENT
         ON(PROCONTENT.product_id = PRO.id)
         WHERE CR.type = "SHOP" AND PRO.status > 0 AND C.status > 0 AND PROCONTENT.lang = :lang' . $categorySQL . '
         GROUP BY PRO.id ORDER BY PRO.status DESC, PROCONTENT.updated_at DESC';
@@ -344,7 +344,7 @@ class Product
     {
 
         $featured = $this->status == 1 ? ' status >= 1' : ' status = ' . $this->status . ' ';
-        $sql = 'SELECT * FROM appoe_plugin_shop_products WHERE ' . $featured . ' ORDER BY status DESC, created_at DESC';
+        $sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_shop_products WHERE ' . $featured . ' ORDER BY status DESC, created_at DESC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();
 
@@ -364,7 +364,7 @@ class Product
     public function save()
     {
 
-        $sql = 'INSERT INTO appoe_plugin_shop_products (type, name, slug, price, poids, dimension, created_at) 
+        $sql = 'INSERT INTO '.TABLEPREFIX.'appoe_plugin_shop_products (type, name, slug, price, poids, dimension, created_at) 
                 VALUES (:type, :name, :slug, :price, :poids, :dimension, CURDATE())';
 
         $stmt = $this->dbh->prepare($sql);
@@ -391,7 +391,7 @@ class Product
     public function update()
     {
 
-        $sql = 'UPDATE appoe_plugin_shop_products SET type = :type, name = :name, 
+        $sql = 'UPDATE '.TABLEPREFIX.'appoe_plugin_shop_products SET type = :type, name = :name, 
         slug = :slug, price = :price, poids = :poids, dimension = :dimension, status = :status WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
@@ -420,7 +420,7 @@ class Product
     public function exist($forUpdate = false)
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_shop_products WHERE (type = :type AND name = :name) OR slug = :slug';
+        $sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_shop_products WHERE (type = :type AND name = :name) OR slug = :slug';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':type', $this->type);
@@ -456,7 +456,7 @@ class Product
      */
     public function getDateLimit()
     {
-        $sql = 'SELECT date_limit FROM appoe_plugin_shop_stock WHERE product_id = :id AND date_limit IS NOT NULL';
+        $sql = 'SELECT date_limit FROM '.TABLEPREFIX.'appoe_plugin_shop_stock WHERE product_id = :id AND date_limit IS NOT NULL';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -492,8 +492,8 @@ class Product
     public function getStockLimit()
     {
         $sql = 'SELECT s.limit_quantity, SUM(cd.quantity) AS orderedQuantity
-                FROM appoe_plugin_shop_stock AS s
-                LEFT JOIN appoe_plugin_shop_commandes_details AS cd
+                FROM '.TABLEPREFIX.'appoe_plugin_shop_stock AS s
+                LEFT JOIN '.TABLEPREFIX.'appoe_plugin_shop_commandes_details AS cd
                 ON(s.product_id = cd.product_id)
                 WHERE s.product_id = :id';
 
@@ -534,10 +534,10 @@ class Product
      */
     public function delete()
     {
-        $sql = 'DELETE FROM appoe_plugin_shop_products WHERE id = :id;';
-        $sql .= 'DELETE FROM appoe_plugin_shop_products_content WHERE product_id = :id;';
-        $sql .= 'DELETE FROM appoe_plugin_shop_products_meta WHERE product_id = :id;';
-        $sql .= 'DELETE FROM appoe_plugin_shop_stock WHERE product_id = :id;';
+        $sql = 'DELETE FROM '.TABLEPREFIX.'appoe_plugin_shop_products WHERE id = :id;';
+        $sql .= 'DELETE FROM '.TABLEPREFIX.'appoe_plugin_shop_products_content WHERE product_id = :id;';
+        $sql .= 'DELETE FROM '.TABLEPREFIX.'appoe_plugin_shop_products_meta WHERE product_id = :id;';
+        $sql .= 'DELETE FROM '.TABLEPREFIX.'appoe_plugin_shop_stock WHERE product_id = :id;';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);

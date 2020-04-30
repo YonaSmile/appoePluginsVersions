@@ -3,10 +3,10 @@ define('ITEMGLUE_PATH', WEB_PLUGIN_PATH . 'itemGlue/');
 define('ITEMGLUE_URL', WEB_PLUGIN_URL . 'itemGlue/');
 
 const PLUGIN_TABLES = array(
-    'appoe_plugin_itemGlue_articles',
-    'appoe_plugin_itemGlue_articles_content',
-    'appoe_plugin_itemGlue_articles_meta',
-    'appoe_plugin_itemGlue_articles_relations'
+	TABLEPREFIX.'appoe_plugin_itemGlue_articles',
+	TABLEPREFIX.'appoe_plugin_itemGlue_articles_content',
+	TABLEPREFIX.'appoe_plugin_itemGlue_articles_meta',
+	TABLEPREFIX.'appoe_plugin_itemGlue_articles_relations'
 );
 
 const ITEMGLUE_ARTICLES_STATUS = array(

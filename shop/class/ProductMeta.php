@@ -107,7 +107,7 @@ class ProductMeta
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_shop_products_meta` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `'.TABLEPREFIX.'appoe_plugin_shop_products_meta` (
         `id` int(11) NOT NULL AUTO_INCREMENT,
         PRIMARY KEY (`id`),
         `product_id` int(11) NOT NULL,
@@ -132,7 +132,7 @@ class ProductMeta
      */
     public function show()
     {
-        $sql = 'SELECT * FROM appoe_plugin_shop_products_meta WHERE product_id = :product_id ORDER BY id ASC';
+        $sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_shop_products_meta WHERE product_id = :product_id ORDER BY id ASC';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':product_id', $this->product_id, \PDO::PARAM_INT);
@@ -154,7 +154,7 @@ class ProductMeta
 
     public function save()
     {
-        $sql = 'INSERT INTO appoe_plugin_shop_products_meta (product_id, meta_key, meta_value) VALUES(:product_id, :meta_key, :meta_value)';
+        $sql = 'INSERT INTO '.TABLEPREFIX.'appoe_plugin_shop_products_meta (product_id, meta_key, meta_value) VALUES(:product_id, :meta_key, :meta_value)';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':product_id', $this->product_id);
@@ -173,7 +173,7 @@ class ProductMeta
 
     public function update()
     {
-        $sql = 'UPDATE appoe_plugin_shop_products_meta SET meta_key = :meta_key, meta_value = :meta_value WHERE id = :id';
+        $sql = 'UPDATE '.TABLEPREFIX.'appoe_plugin_shop_products_meta SET meta_key = :meta_key, meta_value = :meta_value WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -192,7 +192,7 @@ class ProductMeta
 
     public function exist($forUpdate = false)
     {
-        $sql = 'SELECT * FROM appoe_plugin_shop_products_meta WHERE product_id = :product_id AND meta_key = :meta_key';
+        $sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_shop_products_meta WHERE product_id = :product_id AND meta_key = :meta_key';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':product_id', $this->product_id);
@@ -223,7 +223,7 @@ class ProductMeta
      */
     public function delete()
     {
-        $sql = 'DELETE FROM appoe_plugin_shop_products_meta WHERE id = :id';
+        $sql = 'DELETE FROM '.TABLEPREFIX.'appoe_plugin_shop_products_meta WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);

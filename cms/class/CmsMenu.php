@@ -145,7 +145,7 @@ class CmsMenu
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `appoe_plugin_cms_menu` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `'.TABLEPREFIX.'appoe_plugin_cms_menu` (
                 `id` INT(11) NOT NULL AUTO_INCREMENT,
                 PRIMARY KEY (`id`),
                 `idCms` VARCHAR(255) NOT NULL,
@@ -174,7 +174,7 @@ class CmsMenu
     public function show()
     {
 
-        $sql = 'SELECT * FROM appoe_plugin_cms_menu WHERE id = :id';
+        $sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_cms_menu WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -212,13 +212,13 @@ class CmsMenu
         $sql = 'SELECT DISTINCT acm.id, acm.idCms,
         CASE WHEN acm.name IS NOT NULL
         THEN acm.name
-        ELSE (SELECT cc4.metaValue FROM appoe_plugin_cms_content AS cc4 WHERE cc4.type = "HEADER" AND cc4.metaKey = "menuName" AND cc4.idCms = ac.id AND cc4.lang = :lang)
+        ELSE (SELECT cc4.metaValue FROM '.TABLEPREFIX.'appoe_plugin_cms_content AS cc4 WHERE cc4.type = "HEADER" AND cc4.metaKey = "menuName" AND cc4.idCms = ac.id AND cc4.lang = :lang)
         END AS name, 
         acm.parentId, acm.position, acm.location, acm.statut, acm.updated_at, 
         ac.type, ac.filename, ac.statut AS pageStatut,
-        (SELECT cc1.metaValue FROM appoe_plugin_cms_content AS cc1 WHERE cc1.type = "HEADER" AND cc1.metaKey = "slug" AND cc1.idCms = ac.id AND cc1.lang = :lang) AS slug
-        FROM appoe_plugin_cms_menu AS acm 
-        LEFT JOIN appoe_plugin_cms AS ac 
+        (SELECT cc1.metaValue FROM '.TABLEPREFIX.'appoe_plugin_cms_content AS cc1 WHERE cc1.type = "HEADER" AND cc1.metaKey = "slug" AND cc1.idCms = ac.id AND cc1.lang = :lang) AS slug
+        FROM '.TABLEPREFIX.'appoe_plugin_cms_menu AS acm 
+        LEFT JOIN '.TABLEPREFIX.'appoe_plugin_cms AS ac 
         ON (acm.idCms = ac.id) 
         WHERE (ac.statut = 1 OR acm.idCms like "http%" OR acm.idCms like "%#%" OR acm.idCms REGEXP "^[a-zA-Z0-9/-]+$")' . $locationCondition . ' 
         ORDER BY acm.parentId ASC, acm.position ASC';
@@ -242,7 +242,7 @@ class CmsMenu
     public function save()
     {
 
-        $sql = 'INSERT INTO appoe_plugin_cms_menu (idCms, name, position, parentId, location) 
+        $sql = 'INSERT INTO '.TABLEPREFIX.'appoe_plugin_cms_menu (idCms, name, position, parentId, location) 
                 VALUES (:idCms, :name, :position, :parentId, :location)';
 
         $stmt = $this->dbh->prepare($sql);
@@ -271,7 +271,7 @@ class CmsMenu
     public function update()
     {
 
-        $sql = 'UPDATE appoe_plugin_cms_menu SET idCms = :idCms, name = :name, position = :position, parentId = :parentId, location = :location, statut = :statut WHERE id = :id';
+        $sql = 'UPDATE '.TABLEPREFIX.'appoe_plugin_cms_menu SET idCms = :idCms, name = :name, position = :position, parentId = :parentId, location = :location, statut = :statut WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':idCms', $this->idCms);
@@ -298,7 +298,7 @@ class CmsMenu
      */
     public function delete()
     {
-        $sql = 'DELETE FROM appoe_plugin_cms_menu WHERE id = :id';
+        $sql = 'DELETE FROM '.TABLEPREFIX.'appoe_plugin_cms_menu WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
@@ -319,7 +319,7 @@ class CmsMenu
      */
     public function existParent()
     {
-        $sql = 'SELECT * FROM appoe_plugin_cms_menu WHERE id = :id AND location = :location';
+        $sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_cms_menu WHERE id = :id AND location = :location';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->parentId);
         $stmt->bindParam(':location', $this->location);

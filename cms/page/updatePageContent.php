@@ -156,7 +156,7 @@ if ( ! empty( $_GET['id'] ) ):
                 </div>
             </div>
         </div>
-        <div id="loadMediaLibrary"></div>
+    <div id="loadMediaLibrary"></div>
         <script type="text/javascript">
 
 

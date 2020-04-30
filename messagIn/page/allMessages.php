@@ -1,50 +1,50 @@
-<?php require('header.php'); ?>
-<?= getTitle($Page->getName(), $Page->getSlug()); ?>
+<?php require( 'header.php' );
+echo getTitle(getAppPageName(), getAppPageSlug()); ?>
     <div class="container-fluid">
-        <?php $MessagIn = new \App\Plugin\MessagIn\MessagIn();
-        $MessagIn->setToUser(getUserIdSession());
-        $allMessages = $MessagIn->showAll();
-        $ALLUSERS = getAllUsers();
-        $counter = 0;
-        $displayList = ''; ?>
+		<?php $MessagIn = new \App\Plugin\MessagIn\MessagIn();
+		$MessagIn->setToUser( getUserIdSession() );
+		$allMessages = $MessagIn->showAll();
+		$ALLUSERS    = getAllUsers();
+		$counter     = 0;
+		$displayList = ''; ?>
         <div class="row">
             <div class="col-12 col-sm-4 col-lg-3 col-xl-2 mb-4">
-                <h2 class="h5 mb-3"><?= trans('Les utilisateurs'); ?></h2>
+                <h2 class="h5 mb-3"><?= trans( 'Les utilisateurs' ); ?></h2>
                 <div class="nav navUserMessages flex-column nav-pills" id="v-pills-tab" role="tablist">
-                    <?php foreach ($ALLUSERS as $userId => $user): ?>
-                        <?php if ($userId != getUserIdSession()): ?>
-                            <a class="nav-link userMessages" id="v-pills-user-<?= $userId; ?>-tab" data-toggle="pill"
+					<?php foreach ( $ALLUSERS as $userId => $user ):
+						if ( $userId != getUserIdSession() ): ?>
+                            <a class="nav-link userMessages sidebarLink" id="v-pills-user-<?= $userId; ?>-tab"
+                               data-toggle="pill"
                                href="#v-pills-user-<?= $userId; ?>"
                                role="tab" aria-controls="v-pills-user-<?= $userId; ?>"
                                aria-expanded="true"
                                data-iduser="<?= $userId; ?>"><?= $user->nom . ' ' . $user->prenom; ?> <span
                                         class="nbMessageSpan badge badge-light"></span></a>
-                        <?php endif; ?>
-                    <?php endforeach; ?>
+						<?php endif;
+					endforeach; ?>
                 </div>
             </div>
 
             <div class="col-12 col-sm-8 col-lg-9 col-xl-10 mb-4">
-                <h2 class="h5 mb-3"><?= trans('Les messages'); ?></h2>
-                <?php if ($allMessages): ?>
+                <h2 class="h5 mb-3"><?= trans( 'Les messages' ); ?></h2>
+				<?php if ( $allMessages ): ?>
                     <div class="tab-content" id="v-pills-tabContent">
-                        <?php foreach ($ALLUSERS as $userId => $user): ?>
-                            <?php $counter = 0;
-                            if ($userId != getUserIdSession()): ?>
+						<?php foreach ( $ALLUSERS as $userId => $user ):
+							$counter = 0;
+							if ( $userId != getUserIdSession() ): ?>
                                 <div class="tab-pane fade show msgContainer" id="v-pills-user-<?= $userId; ?>"
                                      role="tabpanel" aria-labelledby="v-pills-user-<?= $userId; ?>-tab">
                                     <div class="list-group" data-iduser="<?= $userId; ?>">
-                                        <?php foreach ($allMessages as $message): ?>
-                                            <?php if (!$message): ?>
+										<?php foreach ( $allMessages as $message ):
+											if ( ! $message ): ?>
                                                 <div class="list-group-item list-group-item-action">
-                                                    <p class="p-3"><?= trans('Pas de messages'); ?></p>
+                                                    <p class="p-3"><?= trans( 'Pas de messages' ); ?></p>
                                                 </div>
-                                            <?php else: ?>
-                                                <?php if ($message->fromUser == $userId): ?>
-                                                    <?php
-                                                    $counter++;
-                                                    $displayList = ($counter >= 11) ? 'tooMuchMessage' : 0;
-                                                    ?>
+											<?php else:
+												if ( $message->fromUser == $userId ):
+													$counter ++;
+													$displayList = ( $counter >= 11 ) ? 'tooMuchMessage' : 0;
+													?>
                                                     <div class="list-group-item list-group-item-action <?= $displayList; ?> fileContent msgContent">
                                                         <button type="button" class="deleteBtn deleteMessage"
                                                                 data-idmessage="<?= $message->id; ?>"
@@ -64,31 +64,31 @@
                                                         </div>
                                                         <div class="d-inline-block msgTextContainer">
                                                             <div>
-                                                                <small><?= formatDateDiff(new DateTime(date('Y-m-d')), new DateTime($message->created_at)); ?></small>
+                                                                <small><?= formatDateDiff( new DateTime( date( 'Y-m-d' ) ), new DateTime( $message->created_at ) ); ?></small>
                                                             </div>
-                                                            <p class="mb-1"><?= htmlSpeCharDecode($message->text); ?></p>
+                                                            <p class="mb-1"><?= htmlSpeCharDecode( $message->text ); ?></p>
                                                         </div>
                                                     </div>
-                                                <?php endif; ?>
-                                            <?php endif; ?>
-                                        <?php endforeach; ?>
+												<?php endif;
+											endif;
+										endforeach; ?>
                                         <div class="nbMessage d-none"
                                              data-iduser="<?= $userId; ?>"><?= $counter; ?></div>
-                                        <?php if ($counter > 10): ?>
+										<?php if ( $counter > 10 ): ?>
                                             <button class="list-group-item list-group-item-action seeMoreMessages">
-                                                <?= trans('Voir tous'); ?>
+												<?= trans( 'Voir tous' ); ?>
                                             </button>
-                                        <?php elseif ($counter == 0): ?>
-                                            <p class="p-3"><?= trans('Pas de messages'); ?></p>
-                                        <?php endif; ?>
+										<?php elseif ( $counter == 0 ): ?>
+                                            <p class="p-3"><?= trans( 'Pas de messages' ); ?></p>
+										<?php endif; ?>
                                     </div>
                                 </div>
-                            <?php endif; ?>
-                        <?php endforeach; ?>
+							<?php endif;
+						endforeach; ?>
                     </div>
-                <?php else: ?>
-                    <p class="p-3"><?= trans('Pas de messages'); ?></p>
-                <?php endif; ?>
+				<?php else: ?>
+                    <p class="p-3"><?= trans( 'Pas de messages' ); ?></p>
+				<?php endif; ?>
             </div>
         </div>
     </div>
@@ -147,7 +147,7 @@
                 var idMessage = $(this).data('idmessage');
                 var idUser = $(this).data('iduser');
 
-                if (confirm('<?= trans('Vous allez supprimer ce message'); ?>')) {
+                if (confirm('<?= trans( 'Vous allez supprimer ce message' ); ?>')) {
                     $.post(
                         '<?= MESSAGERIE_URL . 'process/ajaxProcess.php'; ?>',
                         {
@@ -194,4 +194,4 @@
             });
         });
     </script>
-<?php require('footer.php'); ?>
+<?php require( 'footer.php' ); ?>
