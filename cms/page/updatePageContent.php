@@ -203,7 +203,7 @@ if ( ! empty( $_GET['id'] ) ):
                 busyApp();
 
                 var idCms = '<?= $Cms->getId(); ?>';
-                var idCmsContent = $input.data('idcmscontent');
+                var idCmsContent = $input.attr('data-idcmscontent');
                 var metaKey = $input.attr('id');
 
                 delay(function () {
@@ -218,7 +218,7 @@ if ( ! empty( $_GET['id'] ) ):
                         function (data) {
                             if (data) {
                                 if ($.isNumeric(data)) {
-                                    $input.data('idcmscontent', data);
+                                    $input.attr('data-idcmscontent', data);
                                 }
 
                                 $('small.categoryIdFloatContenaire').stop().fadeOut(function () {
@@ -331,30 +331,12 @@ if ( ! empty( $_GET['id'] ) ):
                         }
                     });
 
-                    $('#libraryModal').on('click', '.copyLinkOnClick', function (e) {
-                        e.preventDefault();
-
-                        var src = $(this).parent().data('src');
-                        $('input#' + $('#libraryModal').data('inputid')).val(src).trigger('input');
-                        $('#libraryModal').modal('hide');
-                    });
-
-                    $('form#pageContentManageForm').submit(function (event) {
-                        event.preventDefault();
-                    });
-
                     $.each($('#pageContentManageForm input, #pageContentManageForm textarea, #pageContentManageForm select'), function () {
                         var id = $(this).attr('name');
                         $('<small class="' + id + ' categoryIdFloatContenaire">').insertAfter($(this));
                     });
 
-                    $('form#pageContentManageForm').on('input', 'input, textarea, select', function (event) {
-                        event.preventDefault();
-                        var $input = $(this);
-                        var metaValue = $input.val();
 
-                        updateCmsContent($input, metaValue);
-                    });
 
                 }).fail(function () {
                     $('#pageContentLoader').fadeOut().html('Une erreur s\'est produite').fadeIn();
@@ -371,6 +353,23 @@ if ( ! empty( $_GET['id'] ) ):
                             updateCmsContent($input, metaValue);
                         });
                     }
+                });
+
+                $(document.body).on('click', '#libraryModal .copyLinkOnClick', function (e) {
+                    e.preventDefault();
+                    var inputId = $('#libraryModal').attr('data-inputid');
+                    var src = $(this).parent().data('src');
+                    $('#pageContentManageForm input#' + inputId).val(src).trigger('input');
+                    $('#libraryModal').modal('hide');
+                });
+
+                $(document.body).on('submit', 'form#pageContentManageForm', function (event) {
+                    event.preventDefault();
+                });
+
+                $(document.body).on('input', 'form#pageContentManageForm input, form#pageContentManageForm textarea, form#pageContentManageForm select', function (event) {
+                    event.preventDefault();
+                    updateCmsContent($(this), $(this).val());
                 });
 
                 $('#updateSlugAuto').on('change', function () {
@@ -410,8 +409,7 @@ if ( ! empty( $_GET['id'] ) ):
                     event.preventDefault();
 
                     $('input[rel=cms-img-popover]').popover('hide');
-                    var idInput = $(this).attr('id');
-                    $('#libraryModal').attr('data-inputid', idInput);
+                    $('#libraryModal').attr('data-inputid', $(this).attr('id'));
                     $('#libraryModal').modal('show');
                 });
 
