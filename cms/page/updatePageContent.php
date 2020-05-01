@@ -232,7 +232,7 @@ if ( ! empty( $_GET['id'] ) ):
 
             $(document).ready(function () {
 
-                let pageSrc = $('#takeLookToPage').attr('href');
+                let pageSrc = $('#takeLookToPage').attr('href')+'?access_method=cmsIframe';
                 var zoning = true;
 
                 jQuery.ajaxSetup({async: false});
