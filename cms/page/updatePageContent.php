@@ -70,6 +70,10 @@ if ( ! empty( $_GET['id'] ) ):
                                class="btn btn-outline-info btn-sm" id="takeLookToPage" target="_blank">
                                 <i class="fas fa-external-link-alt"></i> <?= trans( 'Visualiser la page' ); ?>
                             </a>
+                            <button class="btn btn-sm btn-outline-danger"
+                                    data-page-lang="<?= APP_LANG; ?>" data-page-slug="<?= $Cms->getSlug(); ?>"
+                                    id="clearPageCache"><i class="fas fa-eraser"></i> Vider le cache
+                            </button>
 						<?php endif; ?>
                     </div>
                     <div class="col-12 col-lg-4 my-2 text-right">
@@ -233,7 +237,7 @@ if ( ! empty( $_GET['id'] ) ):
 
             $(document).ready(function () {
 
-                let pageSrc = $('#takeLookToPage').attr('href')+'?access_method=cmsIframe';
+                let pageSrc = $('#takeLookToPage').attr('href') + '?access_method=cmsIframe&access_lang=<?= APP_LANG; ?>';
                 var zoning = true;
                 var OpenIframe;
 
@@ -303,7 +307,7 @@ if ( ! empty( $_GET['id'] ) ):
 
                             let id = $(this).data('id');
                             $(this).fadeOut();
-                            if($('iframe.previewPageFrame[data-id="' + id + '"]').attr('data-content') == 'false') {
+                            if ($('iframe.previewPageFrame[data-id="' + id + '"]').attr('data-content') == 'false') {
 
                                 //Hide others iframe and show this
                                 hideElementsInFrame('body', 'hideElementInFrame', 'id', [id]);
@@ -434,6 +438,30 @@ if ( ! empty( $_GET['id'] ) ):
             $(window).on("load", function () {
                 if ($('input.urlFile').length) {
                     $('#loadMediaLibrary').load(WEB_APP_URL + 'lib/assets/mediaLibrary.php');
+                }
+            });
+
+            $(document.body).on('click', '#clearPageCache', function () {
+
+                if (confirm('Vous êtes sur le point de vider le cache de la page')) {
+
+                    var $btn = $(this);
+                    $btn.html(loaderHtml());
+
+                    busyApp(false);
+                    $.post('/app/ajax/config.php', {
+                        clearPageCache: 'OK',
+                        pageSlug: $btn.data('page-slug'),
+                        pageLang: $btn.data('page-lang')
+                    }).done(function (data) {
+                        if (data == 'true' || data === true) {
+                            $btn.html('<i class="fas fa-check"></i> Cache vidé!').blur()
+                                .removeClass('btn-outline-danger').addClass('btn-success');
+                        } else {
+                            alert('Un problème est survenu lors de la vidange du cache');
+                        }
+                        availableApp();
+                    });
                 }
             });
         </script>
