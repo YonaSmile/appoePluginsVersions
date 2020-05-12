@@ -1,6 +1,7 @@
 <?php
 require( 'header.php' );
 
+use App\Form;
 use App\Plugin\Cms\Cms;
 use App\Plugin\Cms\CmsContent;
 use App\Plugin\Cms\CmsMenu;
@@ -122,30 +123,30 @@ if ( ! empty( $_GET['id'] ) ):
                             <input type="hidden" name="id" value="<?= $Cms->getId(); ?>">
                             <div class="row my-2">
                                 <div class="col-12 my-2">
-									<?= \App\Form::text( 'Nom', 'name', 'text', $Cms->getName(), true, 70, 'data-seo="title"' ); ?>
+									<?= Form::text( 'Nom', 'name', 'text', $Cms->getName(), true, 70, 'data-seo="title"' ); ?>
                                 </div>
                                 <div class="col-12 my-2">
-									<?= \App\Form::textarea( 'Description', 'description', $Cms->getDescription(), 2, true, 'maxlength="158" data-seo="description"' ); ?>
+									<?= Form::textarea( 'Description', 'description', $Cms->getDescription(), 2, true, 'maxlength="158" data-seo="description"' ); ?>
                                 </div>
                                 <div class="col-12 my-2">
-									<?= \App\Form::text( 'Nom du menu', 'menuName', 'text', $Cms->getMenuName(), true, 70 ); ?>
+									<?= Form::text( 'Nom du menu', 'menuName', 'text', $Cms->getMenuName(), true, 70 ); ?>
                                 </div>
                                 <div class="col-12 my-2">
-									<?= \App\Form::text( 'Nom du lien URL' . ' (slug)', 'slug', 'text', $Cms->getSlug(), true, 70, 'data-seo="slug"' ); ?>
+									<?= Form::text( 'Nom du lien URL' . ' (slug)', 'slug', 'text', $Cms->getSlug(), true, 70, 'data-seo="slug"' ); ?>
                                 </div>
 								<?php if ( isTechnicien( getUserRoleId() ) ): ?>
                                     <hr class="hrStyle">
                                     <div class="col-12 my-2">
-										<?= \App\Form::select( 'Fichier', 'filename', array_combine( $files, $files ), $Cms->getFilename(), true ); ?>
+										<?= Form::select( 'Fichier', 'filename', array_combine( $files, $files ), $Cms->getFilename(), true ); ?>
                                     </div>
                                     <div class="col-12 my-2">
-										<?= \App\Form::select( 'Type de page', 'type', array_combine( CMS_TYPES, CMS_TYPES ), $Cms->getType(), true ); ?>
+										<?= Form::select( 'Type de page', 'type', array_combine( CMS_TYPES, CMS_TYPES ), $Cms->getType(), true ); ?>
                                     </div>
 								<?php endif; ?>
                             </div>
                         </div>
                         <div class="modal-footer">
-							<?= \App\Form::target( 'UPDATEPAGE' ); ?>
+							<?= Form::target( 'UPDATEPAGE' ); ?>
                             <button type="submit" name="UPDATEPAGESUBMIT"
                                     class="btn btn-outline-info"><?= trans( 'Enregistrer' ); ?></button>
                         </div>
