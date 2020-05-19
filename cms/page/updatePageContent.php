@@ -213,6 +213,7 @@ if ( ! empty( $_GET['id'] ) ):
                     $.post(
                         '<?= CMS_URL; ?>process/ajaxProcess.php',
                         {
+                            'UPDATECMS': 'OK',
                             id: idCmsContent,
                             idCms: idCms,
                             metaKey: metaKey,
@@ -290,7 +291,7 @@ if ( ! empty( $_GET['id'] ) ):
 
                             //Card
                             html += '<div class="card"><div class="card-header bgColorPrimary" id="heading' + id + '"><h2 class="mb-0"><button class="btn btn-link collapsed zoneTitleBtn" type="button" data-id="' + id + '" data-toggle="collapse" data-target="#collapse' + id + '" aria-expanded="false" aria-controls="collapse' + id + '">' + title + ' </button> </h2></div>';
-                            html += '<div id="collapse' + id + '" class="collapse" aria-labelledby="heading' + id + '" data-parent="#pageContentManageFormAccordion">';
+                            html += '<div id="collapse' + id + '" class="collapse collapseZone" aria-labelledby="heading' + id + '" data-parent="#pageContentManageFormAccordion">';
                             html += '<div class="card-body"><div class="previewZone" data-id="' + id + '" style="max-height: 500px;overflow-y: auto;border: 6px solid #CCC;padding-bottom: 30.25%;position: relative;display: none;">' + frame + '</div>';
                             html += '<button type="button" class="arrowDown seePreview" data-id="' + id + '">Voir le rendu</button>';
                             html += $(el).get(0).outerHTML;
@@ -319,12 +320,23 @@ if ( ! empty( $_GET['id'] ) ):
                                     $('iframe.previewPageFrame').attr('scrolling', 'no');
                                     $('iframe.previewPageFrame[data-id="' + id + '"]').removeAttr('scrolling');
                                 });
+
+                                OpenIframe.find('a, button, form, input, textarea, select').each(function(index) {
+                                    $(this).attr('disabled', 'disabled');
+                                    $(this).on("click input submit keyup keypress", function (event) {
+                                        event.preventDefault();
+                                        event.stopPropagation();
+                                        return false;
+                                    });
+                                });
+
+
                             }
                             $('.previewZone[data-id="' + id + '"]').slideDown();
                         });
 
                         let userNavbarHeight = $('#site header nav.navbar').height();
-                        $(document.body).on('shown.bs.collapse', '.collapse', function () {
+                        $(document.body).on('shown.bs.collapse', '.collapseZone', function () {
                             var $panel = $(this).closest('.card');
                             $('html,body').animate({
                                 scrollTop: $panel.offset().top - userNavbarHeight

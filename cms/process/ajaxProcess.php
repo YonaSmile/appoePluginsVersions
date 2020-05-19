@@ -37,7 +37,7 @@ if ( checkAjaxRequest() ) {
 			exit();
 		}
 
-		if ( isset( $_POST['id'] )
+		if ( isset( $_POST['UPDATECMS'] )
 		     && ! empty( $_POST['idCms'] )
 		     && ! empty( $_POST['metaKey'] )
 		     && isset( $_POST['metaValue'] ) ) {
