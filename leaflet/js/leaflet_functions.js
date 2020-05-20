@@ -12,7 +12,7 @@ function leaflet_getMap(lngLat, zoom, otherTile = '') {
 
         //Add tiles
         map.addLayer(new L.TileLayer(!otherTile.trim() ? 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png' : otherTile, {
-            attribution: '<a href="https://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> | <a href="https://aoe-communication.com" target="_blank" title="Art Of Event - Communication">AOE</a>',
+            attribution: '<a href="https://www.openstreetmap.org/" target="_blank">OSM</a> | <a href="https://aoe-communication.com" target="_blank" title="Art Of Event - Communication">AOE</a>',
             maxZoom: 22,
             maxNativeZoom: 22
         }));
@@ -25,8 +25,10 @@ function leaflet_marker_show(options = []) {
 
     var mapOptions = {
         lngLat: [],
-        title: '',
-        html: '',
+        title: null,
+        html: null,
+        markerName: null,
+        markerSize: 40,
         otherTile: '',
         zoom: 14,
         minWidth: 100,
@@ -44,10 +46,21 @@ function leaflet_marker_show(options = []) {
         if (map) {
 
             //Get marker
-            var marker = new L.Marker(mapOptions['lngLat'], {title: mapOptions['title']}).addTo(map);
+            var rootImg = WEB_PLUGIN_URL + 'leaflet/icons/';
+            var Icon = L.icon({
+                iconUrl: mapOptions.markerName ? rootImg + mapOptions.markerName + '.png' : rootImg + 'black.png',
+
+                iconSize: [mapOptions.markerSize, 'auto'],
+                iconAnchor: [(mapOptions.markerSize / 2), mapOptions.markerSize],
+                popupAnchor: [0, -mapOptions.markerSize]
+            });
+
+            var marker = new L.Marker(mapOptions['lngLat'], {title: mapOptions['title'], icon: Icon}).addTo(map);
 
             //Add popup
-            marker.bindPopup(mapOptions['html'], {minWidth: mapOptions['minWidth']}).openPopup();
+            if (mapOptions['html']) {
+                marker.bindPopup(mapOptions['html'], {minWidth: mapOptions['minWidth']}).openPopup();
+            }
 
             //Resize map
             map.invalidateSize();
