@@ -338,13 +338,13 @@ if (!empty($_GET['id'])):
                 if ($('#headerLinks').find('a').length) {
                     $(window).scroll(function () {
 
-                        $('#headerLinks').css('transform', 'translateX(0)');
+                        $('#headerLinks').css('transform', 'translate(0, -50%)');
 
                         clearTimeout($.data(this, 'scrollTimer'));
                         $.data(this, 'scrollTimer', setTimeout(function () {
                             if ($('#headerLinks a:hover').length == 0) {
                                 $('#headerLinks a').blur();
-                                $('#headerLinks').css('transform', 'translateX(100%)');
+                                $('#headerLinks').css('transform', 'translate(100%, -50%)');
                             }
                         }, 3000));
                     });

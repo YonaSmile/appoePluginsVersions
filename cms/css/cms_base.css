@@ -98,3 +98,12 @@
 #pageContentManageForm input,
 #pageContentManageForm select,
 #pageContentManageForm textarea {}
+
+#headerLinks {
+    position: fixed;
+    top: 50%;
+    right: 0;
+    transform-origin: center;
+    transform: translate(100%, -50%);
+    transition: all 0.4s;
+}
