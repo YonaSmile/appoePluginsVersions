@@ -1,48 +1,43 @@
 <?php
-require( 'header.php' );
+require('header.php');
 
 use App\Form;
 use App\Plugin\Cms\Cms;
 use App\Plugin\Cms\CmsContent;
-use App\Plugin\Cms\CmsMenu;
 use App\Template;
 
-require( CMS_PATH . 'process/postProcess.php' );
+require(CMS_PATH . 'process/postProcess.php');
 
-if ( ! empty( $_GET['id'] ) ):
+if (!empty($_GET['id'])):
 
-	$Cms = new Cms();
-	$Cms->setId( $_GET['id'] );
-	$Cms->setLang( APP_LANG );
+    $Cms = new Cms();
+    $Cms->setId($_GET['id']);
+    $Cms->setLang(APP_LANG);
 
-	if ( $Cms->show() ):
+    if ($Cms->show()):
 
-		// get page content
-		$CmsContent = new CmsContent( $Cms->getId(), APP_LANG );
+        // get page content
+        $CmsContent = new CmsContent($Cms->getId(), APP_LANG);
 
-		//get all pages for navigations
-		$allCmsPages = $Cms->showAll();
+        //get all pages for navigations
+        $allCmsPages = $Cms->showAll();
 
-		//get all html files
-		$files = getFilesFromDir( WEB_PUBLIC_PATH . 'html/', [
-			'onlyFiles'             => true,
-			'onlyExtension'         => 'php',
-			'noExtensionDisplaying' => true
-		] );
-		echo getTitle( trans( 'Contenu de la page' ) . '<strong> ' . $Cms->getName() . '</strong>', getAppPageSlug() );
-		showPostResponse(); ?>
+        //get all html files
+        $files = getFilesFromDir(WEB_PUBLIC_PATH . 'html/', ['onlyFiles' => true, 'onlyExtension' => 'php', 'noExtensionDisplaying' => true]);
+        echo getTitle(trans('Contenu de la page') . '<strong> ' . $Cms->getName() . '</strong>', getAppPageSlug());
+        showPostResponse(); ?>
         <div class="row my-2">
             <div class="table-responsive">
                 <table class="table noEffect">
                     <thead class="thead-light">
                     <tr>
                         <th>ID</th>
-                        <th><?= trans( 'Type' ); ?></th>
-                        <th><?= trans( 'Fichier' ); ?></th>
-                        <th><?= trans( 'Slug' ); ?></th>
-                        <th><?= trans( 'Nom du menu' ); ?></th>
-                        <th><?= trans( 'Nom de la page' ); ?></th>
-                        <th class="text-left"><?= trans( 'Description' ); ?></th>
+                        <th><?= trans('Type'); ?></th>
+                        <th><?= trans('Fichier'); ?></th>
+                        <th><?= trans('Slug'); ?></th>
+                        <th><?= trans('Nom du menu'); ?></th>
+                        <th><?= trans('Nom de la page'); ?></th>
+                        <th class="text-left"><?= trans('Description'); ?></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -63,47 +58,47 @@ if ( ! empty( $_GET['id'] ) ):
                     <div class="col-12 col-lg-8 my-2">
                         <button id="updatePageBtn" data-toggle="modal" data-target="#updatePageModal"
                                 class="btn btn-outline-warning btn-sm">
-                            <i class="fas fa-wrench"></i> <?= trans( 'Modifier les en têtes' ); ?>
+                            <i class="fas fa-wrench"></i> <?= trans('Modifier les en têtes'); ?>
                         </button>
-						<?php if ( $Cms->getType() === 'PAGE' ): ?>
-                            <a href="<?= webUrl( $Cms->getSlug() . '/' ); ?>"
+                        <?php if ($Cms->getType() === 'PAGE'): ?>
+                            <a href="<?= webUrl($Cms->getSlug() . '/'); ?>"
                                class="btn btn-outline-info btn-sm" id="takeLookToPage" target="_blank">
-                                <i class="fas fa-external-link-alt"></i> <?= trans( 'Visualiser la page' ); ?>
+                                <i class="fas fa-external-link-alt"></i> <?= trans('Visualiser la page'); ?>
                             </a>
                             <button class="btn btn-sm btn-outline-danger"
                                     data-page-lang="<?= APP_LANG; ?>" data-page-slug="<?= $Cms->getSlug(); ?>"
                                     id="clearPageCache"><i class="fas fa-eraser"></i> Vider le cache
                             </button>
-						<?php endif; ?>
+                        <?php endif; ?>
                     </div>
                     <div class="col-12 col-lg-4 my-2 text-right">
                         <select class="custom-select custom-select-sm otherPagesSelect"
-                                title="<?= trans( 'Parcourir les pages' ); ?>...">
-                            <option selected="selected" disabled><?= trans( 'Parcourir les pages' ); ?>...</option>
-							<?php foreach ( $allCmsPages as $pageSelect ):
-								if ( $Cms->getId() != $pageSelect->id ): ?>
-                                    <option data-href="<?= getPluginUrl( 'cms/page/pageContent/', $pageSelect->id ); ?>"><?= $pageSelect->menuName; ?></option>
-								<?php endif;
-							endforeach; ?>
+                                title="<?= trans('Parcourir les pages'); ?>...">
+                            <option selected="selected" disabled><?= trans('Parcourir les pages'); ?>...</option>
+                            <?php foreach ($allCmsPages as $pageSelect):
+                                if ($Cms->getId() != $pageSelect->id): ?>
+                                    <option data-href="<?= getPluginUrl('cms/page/pageContent/', $pageSelect->id); ?>"><?= $pageSelect->menuName; ?></option>
+                                <?php endif;
+                            endforeach; ?>
                         </select>
                     </div>
                 </div>
             </div>
         </div>
         <div class="row mb-2">
-			<?php if ( file_exists( WEB_PATH . $Cms->getFilename() . '.php' ) ): ?>
-                <span id="pageContentLoader" class="col-12"><i
-                            class="fas fa-circle-notch fa-spin"></i> Chargement...</span>
+            <?php if (file_exists(WEB_PATH . $Cms->getFilename() . '.php')): ?>
+                <span id="pageContentLoader" class="col-12">
+                    <i class="fas fa-circle-notch fa-spin"></i> Chargement...</span>
                 <form action="" method="post" class="col-12" id="pageContentManageForm" style="display:none;">
-					<?php
-					$Template = new Template( WEB_PATH . $Cms->getFilename() . '.php', $CmsContent->getData() );
-					$Template->show(); ?>
+                    <?php
+                    $Template = new Template(WEB_PATH . $Cms->getFilename() . '.php', $CmsContent->getData());
+                    $Template->show(); ?>
                 </form>
                 <nav id="headerLinks" class="btn-group-vertical"
-                     data-title="<?= ucfirst( mb_strtolower( $Cms->getMenuName() ) ); ?>"></nav>
-			<?php else: ?>
-                <p><?= trans( 'Model manquant' ); ?></p>
-			<?php endif; ?>
+                     data-title="<?= ucfirst(mb_strtolower($Cms->getMenuName())); ?>"></nav>
+            <?php else: ?>
+                <p><?= trans('Model manquant'); ?></p>
+            <?php endif; ?>
         </div>
         <div class="modal fade" id="updatePageModal" tabindex="-1" role="dialog"
              aria-labelledby="updatePageModalLabel" aria-hidden="true">
@@ -120,39 +115,39 @@ if ( ! empty( $_GET['id'] ) ):
                             <div class="custom-control custom-checkbox my-3">
                                 <input type="checkbox" class="custom-control-input" id="updateSlugAuto">
                                 <label class="custom-control-label"
-                                       for="updateSlugAuto"><?= trans( 'Mettre à jour le lien de la page automatiquement' ); ?></label>
+                                       for="updateSlugAuto"><?= trans('Mettre à jour le lien de la page automatiquement'); ?></label>
                             </div>
 
-							<?= getTokenField(); ?>
+                            <?= getTokenField(); ?>
                             <input type="hidden" name="id" value="<?= $Cms->getId(); ?>">
                             <div class="row my-2">
                                 <div class="col-12 my-2">
-									<?= Form::text( 'Nom', 'name', 'text', $Cms->getName(), true, 70, 'data-seo="title"' ); ?>
+                                    <?= Form::text('Nom', 'name', 'text', $Cms->getName(), true, 70, 'data-seo="title"'); ?>
                                 </div>
                                 <div class="col-12 my-2">
-									<?= Form::textarea( 'Description', 'description', $Cms->getDescription(), 2, true, 'maxlength="158" data-seo="description"' ); ?>
+                                    <?= Form::textarea('Description', 'description', $Cms->getDescription(), 2, true, 'maxlength="158" data-seo="description"'); ?>
                                 </div>
                                 <div class="col-12 my-2">
-									<?= Form::text( 'Nom du menu', 'menuName', 'text', $Cms->getMenuName(), true, 70 ); ?>
+                                    <?= Form::text('Nom du menu', 'menuName', 'text', $Cms->getMenuName(), true, 70); ?>
                                 </div>
                                 <div class="col-12 my-2">
-									<?= Form::text( 'Nom du lien URL' . ' (slug)', 'slug', 'text', $Cms->getSlug(), true, 70, 'data-seo="slug"' ); ?>
+                                    <?= Form::text('Nom du lien URL' . ' (slug)', 'slug', 'text', $Cms->getSlug(), true, 70, 'data-seo="slug"'); ?>
                                 </div>
-								<?php if ( isTechnicien( getUserRoleId() ) ): ?>
+                                <?php if (isTechnicien(getUserRoleId())): ?>
                                     <hr class="hrStyle">
                                     <div class="col-12 my-2">
-										<?= Form::select( 'Fichier', 'filename', array_combine( $files, $files ), $Cms->getFilename(), true ); ?>
+                                        <?= Form::select('Fichier', 'filename', array_combine($files, $files), $Cms->getFilename(), true); ?>
                                     </div>
                                     <div class="col-12 my-2">
-										<?= Form::select( 'Type de page', 'type', array_combine( CMS_TYPES, CMS_TYPES ), $Cms->getType(), true ); ?>
+                                        <?= Form::select('Type de page', 'type', array_combine(CMS_TYPES, CMS_TYPES), $Cms->getType(), true); ?>
                                     </div>
-								<?php endif; ?>
+                                <?php endif; ?>
                             </div>
                         </div>
                         <div class="modal-footer">
-							<?= Form::target( 'UPDATEPAGE' ); ?>
+                            <?= Form::target('UPDATEPAGE'); ?>
                             <button type="submit" name="UPDATEPAGESUBMIT"
-                                    class="btn btn-outline-info"><?= trans( 'Enregistrer' ); ?></button>
+                                    class="btn btn-outline-info"><?= trans('Enregistrer'); ?></button>
                         </div>
                     </form>
                 </div>
@@ -160,46 +155,6 @@ if ( ! empty( $_GET['id'] ) ):
         </div>
         <div id="loadMediaLibrary"></div>
         <script type="text/javascript">
-
-            function hideElementsInFrame(element, classeToMove, attributName, attributValues) {
-
-                element = $('.previewPageFrame[data-id="' + attributValues + '"]').contents().find(element);
-
-                for (const attributValue of attributValues) {
-                    if ($(element).attr(attributName) !== attributValue) { // si c'est pas le bon id -> add
-                        $(element).addClass(classeToMove);
-                    } else {
-                        $(element).removeClass(classeToMove); //si c'est c'est le bon -> remove
-                        removeClassForEveryParents(element, classeToMove); // -> remove pour les parents jusqu'a element
-                        removeClassForEveryChildren(element, classeToMove); // -> remove pour les gosses si un autre est passé par la
-                        return;
-                    }
-                    if ($(element).children().length > 0) { //je dig la suite du DOM
-                        for (const child of $(element).children()) {
-                            hideElementsInFrame(child, classeToMove, attributName, attributValues);
-                        }
-                    }
-                }
-                $('.previewPageFrame[data-id="' + attributValues + '"]').fadeIn();
-            }
-
-            function removeClassForEveryParents(element, classToRemove) {
-                for (const parent of $(element).parents()) {
-                    let tagNameParent = $(parent).prop('tagName').toLowerCase();
-                    if (tagNameParent !== element) {
-                        $(parent).removeClass(classToRemove);
-                    } else {
-                        $(parent).removeClass(classToRemove);
-                        break;
-                    }
-                }
-            }
-
-            function removeClassForEveryChildren(element, classeToAdd) {
-                for (const child of $(element).children()) {
-                    $(child).removeClass(classeToAdd);
-                }
-            }
 
             function updateCmsContent($input, metaValue) {
 
@@ -226,13 +181,13 @@ if ( ! empty( $_GET['id'] ) ):
                                 }
 
                                 $('small.categoryIdFloatContenaire').stop().fadeOut(function () {
-                                    $('small.' + metaKey).html('<?= trans( 'Enregistré' ); ?>').stop().fadeIn();
+                                    $('small.' + metaKey).html('<?= trans('Enregistré'); ?>').stop().fadeIn();
                                 });
                                 availableApp();
                             }
                         }
                     );
-                }, 300);
+                }, 700);
             }
 
 
@@ -240,7 +195,6 @@ if ( ! empty( $_GET['id'] ) ):
 
                 let pageSrc = $('#takeLookToPage').attr('href') + '?access_method=cmsIframe&access_lang=<?= APP_LANG; ?>';
                 var zoning = true;
-                var OpenIframe;
 
                 jQuery.ajaxSetup({async: false});
                 $.get(pageSrc, function (data) {
@@ -286,14 +240,11 @@ if ( ! empty( $_GET['id'] ) ):
 
                             let id = $(this).attr('id');
                             let title = $(this).find('h5').text();
-                            let frame = '<iframe src="' + pageSrc + '" scrolling="no" class="previewPageFrame" data-content="false" data-id="' + id + '" style="display:none;left: 0;top: 0;height: 100%;width: 100%;position: absolute;border: 0">your browser needs to be updated.</iframe>';
                             $(el).find('h5').remove();
 
                             //Card
                             html += '<div class="card"><div class="card-header bgColorPrimary" id="heading' + id + '"><h2 class="mb-0"><button class="btn btn-link collapsed zoneTitleBtn" type="button" data-id="' + id + '" data-toggle="collapse" data-target="#collapse' + id + '" aria-expanded="false" aria-controls="collapse' + id + '">' + title + ' </button> </h2></div>';
-                            html += '<div id="collapse' + id + '" class="collapse collapseZone" aria-labelledby="heading' + id + '" data-parent="#pageContentManageFormAccordion">';
-                            html += '<div class="card-body"><div class="previewZone" data-id="' + id + '" style="max-height: 500px;overflow-y: auto;border: 6px solid #CCC;padding-bottom: 30.25%;position: relative;display: none;">' + frame + '</div>';
-                            html += '<button type="button" class="arrowDown seePreview" data-id="' + id + '">Voir le rendu</button>';
+                            html += '<div id="collapse' + id + '" class="collapse collapseZone" aria-labelledby="heading' + id + '" data-parent="#pageContentManageFormAccordion"><div class="card-body">';
                             html += $(el).get(0).outerHTML;
                             html += '</div></div></div>';
                         });
@@ -301,39 +252,6 @@ if ( ! empty( $_GET['id'] ) ):
                         html += '</div>';
                         $('#pageContentLoader').css('opacity', 0).slideUp(500);
                         $('form#pageContentManageForm').html(html).fadeIn(500);
-
-                        $(document.body).on('click', 'button.seePreview', function () {
-                            $('.previewZone').slideUp();
-                            $('button.seePreview').fadeIn();
-
-                            let id = $(this).data('id');
-                            $(this).fadeOut();
-                            if ($('iframe.previewPageFrame[data-id="' + id + '"]').attr('data-content') == 'false') {
-
-                                //Hide others iframe and show this
-                                hideElementsInFrame('body', 'hideElementInFrame', 'id', [id]);
-                                $('iframe.previewPageFrame[data-id="' + id + '"]').attr('data-content', 'true');
-
-                                //Unblock scrolling on click and blocking others iframes
-                                OpenIframe = $('iframe.previewPageFrame[data-id="' + id + '"]').contents();
-                                OpenIframe.find('body').click(function () {
-                                    $('iframe.previewPageFrame').attr('scrolling', 'no');
-                                    $('iframe.previewPageFrame[data-id="' + id + '"]').removeAttr('scrolling');
-                                });
-
-                                OpenIframe.find('a, button, form, input, textarea, select').each(function(index) {
-                                    $(this).attr('disabled', 'disabled');
-                                    $(this).on("click input submit keyup keypress", function (event) {
-                                        event.preventDefault();
-                                        event.stopPropagation();
-                                        return false;
-                                    });
-                                });
-
-
-                            }
-                            $('.previewZone[data-id="' + id + '"]').slideDown();
-                        });
 
                         let userNavbarHeight = $('#site header nav.navbar').height();
                         $(document.body).on('shown.bs.collapse', '.collapseZone', function () {
@@ -477,10 +395,10 @@ if ( ! empty( $_GET['id'] ) ):
                 }
             });
         </script>
-	<?php else:
-		echo getContainerErrorMsg( trans( 'Cette page n\'existe pas' ) );
-	endif;
+    <?php else:
+        echo getContainerErrorMsg(trans('Cette page n\'existe pas'));
+    endif;
 else:
-	echo trans( 'Cette page n\'existe pas' );
+    echo trans('Cette page n\'existe pas');
 endif;
-require( 'footer.php' ); ?>
+require('footer.php'); ?>

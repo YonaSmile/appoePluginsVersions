@@ -14,35 +14,35 @@ use App\Plugin\ItemGlue\ArticleRelation;
  */
 function getArticlesDataById($articleId, $lang = LANG)
 {
-	if (is_numeric($articleId)) {
-		$Article = new Article($articleId);
+    if (is_numeric($articleId)) {
+        $Article = new Article($articleId);
 
-	} elseif (is_object($articleId)) {
-		$Article = $articleId;
-	} else {
-		$Article = false;
-	}
+    } elseif (is_object($articleId)) {
+        $Article = $articleId;
+    } else {
+        $Article = false;
+    }
 
-	if ($Article) {
+    if ($Article) {
 
-		//get article content
-		$Article->setContent(htmlSpeCharDecode($Article->getContent()));
+        //get article content
+        $Article->setContent(htmlSpeCharDecode($Article->getContent()));
 
-		//Get Media
-		$ArticleMedia = new ArticleMedia($Article->getId());
-		$Article->medias = $ArticleMedia->showFiles();
+        //Get Media
+        $ArticleMedia = new ArticleMedia($Article->getId());
+        $Article->medias = $ArticleMedia->showFiles();
 
-		//Get Metas
-		$ArticleMeta = new ArticleMeta($Article->getId(), $lang);
-		$Article->metas = $ArticleMeta->getData() ? extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue') : array();
+        //Get Metas
+        $ArticleMeta = new ArticleMeta($Article->getId(), $lang);
+        $Article->metas = $ArticleMeta->getData() ? extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue') : array();
 
-		//get all categories in relation with article
-		$Article->categories = extractFromObjToSimpleArr(getCategoriesByArticle($Article->getId()), 'categoryId', 'name');
+        //get all categories in relation with article
+        $Article->categories = extractFromObjToSimpleArr(getCategoriesByArticle($Article->getId()), 'categoryId', 'name');
 
-		return $Article;
-	}
+        return $Article;
+    }
 
-	return false;
+    return false;
 }
 
 /**
@@ -52,15 +52,15 @@ function getArticlesDataById($articleId, $lang = LANG)
 function getArticleData(stdClass $article)
 {
 
-	//Get Media
-	$ArticleMedia = new ArticleMedia($article->id);
-	$article->medias = $ArticleMedia->showFiles();
+    //Get Media
+    $ArticleMedia = new ArticleMedia($article->id);
+    $article->medias = $ArticleMedia->showFiles();
 
-	//Get Metas
-	$ArticleMeta = new ArticleMeta($article->id);
-	$article->metas = $ArticleMeta->getData() ? extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue') : array();
+    //Get Metas
+    $ArticleMeta = new ArticleMeta($article->id);
+    $article->metas = $ArticleMeta->getData() ? extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue') : array();
 
-	return $article;
+    return $article;
 }
 
 /**
@@ -72,16 +72,16 @@ function getArticleData(stdClass $article)
  */
 function getArticlesByCategory($categoryId, $parent = false, $length = false, $lang = LANG)
 {
-	$Article = new Article();
-	$allArticles = $Article->showByCategory($categoryId, $parent, $lang);
+    $Article = new Article();
+    $allArticles = $Article->showByCategory($categoryId, $parent, $lang);
 
-	if (!$allArticles) return false;
+    if (!$allArticles) return false;
 
-	foreach ($allArticles as &$article) {
-		$article = getArticleData($article);
-	}
+    foreach ($allArticles as &$article) {
+        $article = getArticleData($article);
+    }
 
-	return $length ? array_slice($allArticles, 0, $length, true) : $allArticles;
+    return $length ? array_slice($allArticles, 0, $length, true) : $allArticles;
 }
 
 
@@ -92,16 +92,16 @@ function getArticlesByCategory($categoryId, $parent = false, $length = false, $l
  */
 function getRecentArticles($length = false, $lang = LANG)
 {
-	$Article = new Article();
-	$allArticles = $Article->showAllByLang($length, $lang);
+    $Article = new Article();
+    $allArticles = $Article->showAllByLang($length, $lang);
 
-	if (!$allArticles) return false;
+    if (!$allArticles) return false;
 
-	foreach ($allArticles as &$article) {
-		$article = getArticleData($article);
-	}
+    foreach ($allArticles as &$article) {
+        $article = getArticleData($article);
+    }
 
-	return $allArticles;
+    return $allArticles;
 }
 
 /**
@@ -110,18 +110,18 @@ function getRecentArticles($length = false, $lang = LANG)
  */
 function getSearchingArticles($searching)
 {
-	$searching = cleanData($searching);
+    $searching = cleanData($searching);
 
-	$Article = new Article();
-	$allArticles = $Article->searchFor($searching);
+    $Article = new Article();
+    $allArticles = $Article->searchFor($searching);
 
-	if (!$allArticles) return false;
+    if (!$allArticles) return false;
 
-	foreach ($allArticles as &$article) {
-		$article = getArticleData($article);
-	}
+    foreach ($allArticles as &$article) {
+        $article = getArticleData($article);
+    }
 
-	return $allArticles;
+    return $allArticles;
 }
 
 /**
@@ -132,28 +132,28 @@ function getSearchingArticles($searching)
  */
 function getSimilarArticles($articleId, $categories, $length = false)
 {
-	$relatedArticles = array();
-	$allArticles = array();
+    $relatedArticles = array();
+    $allArticles = array();
 
-	if (is_numeric($categories)) {
-		$relatedArticles[$categories] = unsetSameKeyInArr(extractFromObjArr(getArticlesByCategory($categories, true), 'id'), $articleId);
+    if (is_numeric($categories)) {
+        $relatedArticles[$categories] = unsetSameKeyInArr(extractFromObjArr(getArticlesByCategory($categories, true), 'id'), $articleId);
 
-	} elseif (is_array($categories)) {
-		foreach ($categories as $key => $category) {
-			$relatedArticles[$key] = unsetSameKeyInArr(extractFromObjArr(getArticlesByCategory($key, true), 'id'), $articleId);
-		}
-	}
+    } elseif (is_array($categories)) {
+        foreach ($categories as $key => $category) {
+            $relatedArticles[$key] = unsetSameKeyInArr(extractFromObjArr(getArticlesByCategory($key, true), 'id'), $articleId);
+        }
+    }
 
-	foreach ($relatedArticles as $categoryId => $articles) {
-		foreach ($articles as $articleId => $article) {
+    foreach ($relatedArticles as $categoryId => $articles) {
+        foreach ($articles as $articleId => $article) {
 
-			if (!array_key_exists($articleId, $allArticles)) {
-				$allArticles[$articleId] = $article;
-			}
-		}
-	}
+            if (!array_key_exists($articleId, $allArticles)) {
+                $allArticles[$articleId] = $article;
+            }
+        }
+    }
 
-	return $length ? array_slice($allArticles, 0, $length, true) : $allArticles;
+    return $length ? array_slice($allArticles, 0, $length, true) : $allArticles;
 
 }
 
@@ -166,16 +166,16 @@ function getSimilarArticles($articleId, $categories, $length = false)
 function getNextArticle($id, $idCategory = false, $parent = false)
 {
 
-	if (is_numeric($id)) {
+    if (is_numeric($id)) {
 
-		$Article = new Article();
-		$Article->setId($id);
-		if ($Article->showNextArticle(LANG, $idCategory, $parent)) {
-			return getArticlesDataById($Article->getId());
-		}
-	}
+        $Article = new Article();
+        $Article->setId($id);
+        if ($Article->showNextArticle(LANG, $idCategory, $parent)) {
+            return getArticlesDataById($Article->getId());
+        }
+    }
 
-	return false;
+    return false;
 }
 
 /**
@@ -187,16 +187,16 @@ function getNextArticle($id, $idCategory = false, $parent = false)
 function getPreviousArticle($id, $idCategory = false, $parent = false)
 {
 
-	if (is_numeric($id)) {
+    if (is_numeric($id)) {
 
-		$Article = new Article();
-		$Article->setId($id);
-		if ($Article->showPreviousArticle(LANG, $idCategory, $parent)) {
-			return getArticlesDataById($Article->getId());
-		}
-	}
+        $Article = new Article();
+        $Article->setId($id);
+        if ($Article->showPreviousArticle(LANG, $idCategory, $parent)) {
+            return getArticlesDataById($Article->getId());
+        }
+    }
 
-	return false;
+    return false;
 }
 
 /**
@@ -211,22 +211,22 @@ function getPreviousArticle($id, $idCategory = false, $parent = false)
  */
 function getArticlesArchives($year, $month = false, $status = 1, $length = false, $lang = LANG, $idCategory = false, $parentCategory = false)
 {
-	if (is_numeric($year)) {
+    if (is_numeric($year)) {
 
-		$Article = new Article();
-		$Article->setStatut($status);
-		$allArticles = $Article->showArchives($year, $month, $length, $lang, $idCategory, $parentCategory);
+        $Article = new Article();
+        $Article->setStatut($status);
+        $allArticles = $Article->showArchives($year, $month, $length, $lang, $idCategory, $parentCategory);
 
-		if (!$allArticles) return false;
+        if (!$allArticles) return false;
 
-		foreach ($allArticles as $key => &$article) {
+        foreach ($allArticles as $key => &$article) {
 
-			$article = getArticleData($article);
-		}
+            $article = getArticleData($article);
+        }
 
-		return $allArticles;
-	}
-	return false;
+        return $allArticles;
+    }
+    return false;
 }
 
 /**
@@ -238,67 +238,67 @@ function getArticlesArchives($year, $month = false, $status = 1, $length = false
  */
 function getSpecificArticlesCategory($categoryId, $parentId = false, $favorite = 1, $archives = false)
 {
-	//get all articles categories
-	$Category = new Category();
-	$Category->setType('ITEMGLUE');
-	$allCategories = extractFromObjArr($Category->showByType(), 'id');
+    //get all articles categories
+    $Category = new Category();
+    $Category->setType('ITEMGLUE');
+    $allCategories = extractFromObjArr($Category->showByType(), 'id');
 
-	//get all articles
-	$Article = new Article();
-	$Article->setStatut($favorite);
-	$allArticles = !$archives ? extractFromObjArr($Article->showAll(), 'id') : extractFromObjArr($Article->showArchives($archives['year'], $archives['month']), 'id');
+    //get all articles
+    $Article = new Article();
+    $Article->setStatut($favorite);
+    $allArticles = !$archives ? extractFromObjArr($Article->showAll(), 'id') : extractFromObjArr($Article->showArchives($archives['year'], $archives['month']), 'id');
 
-	//get all categories in relation with all articles
-	$CategoryRelation = new CategoryRelations();
-	$CategoryRelation->setType('ITEMGLUE');
-	$allCategoriesRelations = extractFromObjArr($CategoryRelation->showAll(), 'id');
+    //get all categories in relation with all articles
+    $CategoryRelation = new CategoryRelations();
+    $CategoryRelation->setType('ITEMGLUE');
+    $allCategoriesRelations = extractFromObjArr($CategoryRelation->showAll(), 'id');
 
-	$all['articles'] = array();
-	$all['categories'] = array();
-	$all['countCategories'] = array();
+    $all['articles'] = array();
+    $all['categories'] = array();
+    $all['countCategories'] = array();
 
-	if ($allCategoriesRelations) {
+    if ($allCategoriesRelations) {
 
-		//search only in categories relations
-		foreach ($allCategoriesRelations as $relationId => $categoryRelation) {
+        //search only in categories relations
+        foreach ($allCategoriesRelations as $relationId => $categoryRelation) {
 
-			//check parent Id and Id
-			if (false !== $parentId) {
+            //check parent Id and Id
+            if (false !== $parentId) {
 
-				if ($allCategories[$categoryRelation->categoryId]->parentId != $categoryId) {
-					continue;
-				}
+                if ($allCategories[$categoryRelation->categoryId]->parentId != $categoryId) {
+                    continue;
+                }
 
-			} else {
-				if ($categoryRelation->id != $categoryId) {
-					continue;
-				}
-			}
+            } else {
+                if ($categoryRelation->id != $categoryId) {
+                    continue;
+                }
+            }
 
-			//count categories
-			if (!array_key_exists($allCategories[$categoryRelation->categoryId]->name, $all['countCategories'])) {
-				$all['countCategories'][$allCategories[$categoryRelation->categoryId]->name] = 0;
-			}
+            //count categories
+            if (!array_key_exists($allCategories[$categoryRelation->categoryId]->name, $all['countCategories'])) {
+                $all['countCategories'][$allCategories[$categoryRelation->categoryId]->name] = 0;
+            }
 
-			$all['countCategories'][$allCategories[$categoryRelation->categoryId]->name] += 1;
+            $all['countCategories'][$allCategories[$categoryRelation->categoryId]->name] += 1;
 
-			if (array_key_exists($categoryRelation->typeId, $allArticles)) {
+            if (array_key_exists($categoryRelation->typeId, $allArticles)) {
 
-				//push into Articles
-				if (!array_key_exists($categoryRelation->typeId, $all['articles'])) {
-					$all['articles'][$categoryRelation->typeId] = $allArticles[$categoryRelation->typeId];
-					$all['categories'][$categoryRelation->typeId] = array();
-				}
+                //push into Articles
+                if (!array_key_exists($categoryRelation->typeId, $all['articles'])) {
+                    $all['articles'][$categoryRelation->typeId] = $allArticles[$categoryRelation->typeId];
+                    $all['categories'][$categoryRelation->typeId] = array();
+                }
 
-				//push into categories
-				if (!in_array($categoryRelation->categoryId, $all['categories'][$categoryRelation->typeId])) {
-					$all['categories'][$categoryRelation->typeId][] = $allCategories[$categoryRelation->categoryId]->name;
-				}
-			}
-		}
-	}
+                //push into categories
+                if (!in_array($categoryRelation->categoryId, $all['categories'][$categoryRelation->typeId])) {
+                    $all['categories'][$categoryRelation->typeId][] = $allCategories[$categoryRelation->categoryId]->name;
+                }
+            }
+        }
+    }
 
-	return $all;
+    return $all;
 }
 
 /**
@@ -308,37 +308,37 @@ function getSpecificArticlesCategory($categoryId, $parentId = false, $favorite =
  */
 function getSpecificArticlesDetailsBySlug($slug)
 {
-	if (!empty($slug)) {
+    if (!empty($slug)) {
 
-		$slug = trad($slug, true);
+        $slug = trad($slug, true);
 
-		//get article
-		$Article = new Article();
-		$Article->setSlug($slug);
-		if ($Article->showBySlug()) {
+        //get article
+        $Article = new Article();
+        $Article->setSlug($slug);
+        if ($Article->showBySlug()) {
 
-			//get all categories in relation with article
-			$CategoryRelation = new CategoryRelations('ITEMGLUE', $Article->getId());
-			$allCategoriesRelations = $CategoryRelation->getData();
+            //get all categories in relation with article
+            $CategoryRelation = new CategoryRelations('ITEMGLUE', $Article->getId());
+            $allCategoriesRelations = $CategoryRelation->getData();
 
-			//get article metas
-			$ArticleMeta = new ArticleMeta($Article->getId());
-			$allArticleMeta = $ArticleMeta->getData();
+            //get article metas
+            $ArticleMeta = new ArticleMeta($Article->getId());
+            $allArticleMeta = $ArticleMeta->getData();
 
-			//get article medias
-			$ArticleMedia = new ArticleMedia($Article->getId());
-			$allArticleMedia = $ArticleMedia->showFiles();
+            //get article medias
+            $ArticleMedia = new ArticleMedia($Article->getId());
+            $allArticleMedia = $ArticleMedia->showFiles();
 
-			$all['article'] = $Article;
-			$all['content'] = $Article->getContent();
-			$all['meta'] = $allArticleMeta;
-			$all['categories'] = $allCategoriesRelations;
-			$all['media'] = $allArticleMedia;
+            $all['article'] = $Article;
+            $all['content'] = $Article->getContent();
+            $all['meta'] = $allArticleMeta;
+            $all['categories'] = $allCategoriesRelations;
+            $all['media'] = $allArticleMedia;
 
-			return $all;
-		}
-	}
-	return false;
+            return $all;
+        }
+    }
+    return false;
 }
 
 
@@ -348,33 +348,33 @@ function getSpecificArticlesDetailsBySlug($slug)
  */
 function getArticlesBySlug($slug)
 {
-	if (!empty($slug)) {
+    if (!empty($slug)) {
 
-		//get article
-		$Article = new Article();
-		$Article->setSlug($slug);
+        //get article
+        $Article = new Article();
+        $Article->setSlug($slug);
 
-		if ($Article->showBySlug()) {
-			return getArticlesDataById($Article);
-		}
+        if ($Article->showBySlug()) {
+            return getArticlesDataById($Article);
+        }
 
-		//Check for other languages
-		$testedLang = array(LANG);
+        //Check for other languages
+        $testedLang = array(LANG);
 
-		foreach (getLangs() as $minLang => $largeLang) {
-			if (!in_array($minLang, $testedLang)) {
+        foreach (getLangs() as $minLang => $largeLang) {
+            if (!in_array($minLang, $testedLang)) {
 
-				$testedLang[] = $minLang;
-				$Article->setLang($minLang);
+                $testedLang[] = $minLang;
+                $Article->setLang($minLang);
 
-				if ($Article->showBySlug()) {
-					return getArticlesDataById($Article, $minLang);
-					break;
-				}
-			}
-		}
-	}
-	return false;
+                if ($Article->showBySlug()) {
+                    return getArticlesDataById($Article, $minLang);
+                    break;
+                }
+            }
+        }
+    }
+    return false;
 }
 
 /**
@@ -384,9 +384,9 @@ function getArticlesBySlug($slug)
 function getCategoriesByArticle($articleId)
 {
 
-	//get all categories in relation with article
-	$CategoryRelation = new CategoryRelations('ITEMGLUE', $articleId);
-	return $CategoryRelation->getData();
+    //get all categories in relation with article
+    $CategoryRelation = new CategoryRelations('ITEMGLUE', $articleId);
+    return $CategoryRelation->getData();
 }
 
 /**
@@ -395,16 +395,16 @@ function getCategoriesByArticle($articleId)
  */
 function getAllCategoriesInArticles($articles)
 {
-	$categories = array();
+    $categories = array();
 
-	if ($articles && is_array($articles)) {
-		foreach ($articles as $article) {
-			$cat = (false !== strpos($article->categoryNames, '||')) ? explode('||', $article->categoryNames) : $article->categoryNames;
-			array_push($categories, $cat);
-		}
-		$categories = flatten($categories);
-	}
-	return $categories;
+    if ($articles) {
+        foreach ($articles as $article) {
+            $cat = (false !== strpos($article->categoryNames, '||')) ? explode('||', $article->categoryNames) : $article->categoryNames;
+            array_push($categories, $cat);
+        }
+        $categories = flatten($categories);
+    }
+    return $categories;
 }
 
 /**
@@ -414,16 +414,16 @@ function getAllCategoriesInArticles($articles)
  */
 function getCategoriesInArticle($article, $property = 'categoryNames')
 {
-	$categories = array();
+    $categories = array();
 
-	if ($article) {
-		if (false !== strpos($article->$property, '||')) {
-			$categories = explode('||', $article->$property);
-		} else {
-			$categories[] = $article->$property;
-		}
-	}
-	return $categories;
+    if ($article) {
+        if (false !== strpos($article->$property, '||')) {
+            $categories = explode('||', $article->$property);
+        } else {
+            $categories[] = $article->$property;
+        }
+    }
+    return $categories;
 }
 
 /**
@@ -434,12 +434,12 @@ function getCategoriesInArticle($article, $property = 'categoryNames')
 function getSlugifyCategories(string $categories, $separator = '||')
 {
 
-	if (false !== strpos($categories, $separator)) {
-		$categories = explode($separator, $categories);
-		$categories = array_map('slugify', $categories);
-		return implode(' ', $categories);
-	}
-	return slugify($categories);
+    if (false !== strpos($categories, $separator)) {
+        $categories = explode($separator, $categories);
+        $categories = array_map('slugify', $categories);
+        return implode(' ', $categories);
+    }
+    return slugify($categories);
 }
 
 /**
@@ -451,24 +451,35 @@ function getSlugifyCategories(string $categories, $separator = '||')
 function getArticleUrl(stdClass $Article, $meta = 'link', $page = '')
 {
 
-	if (!empty($Article->metas[$meta])) {
+    if (!empty($Article->metas[$meta])) {
 
-		/*
-		 * If (meta "link" contains "http") return "link"
-		 * Else return the website url with "link"
-		 */
-		return false !== strpos($Article->metas[$meta], 'http') ? $Article->metas[$meta] : webUrl($Article->metas[$meta] . DIRECTORY_SEPARATOR);
-	}
+        /*
+         * If (meta "link" contains "http") return "link"
+         * Else return the website url with "link"
+         */
+        return false !== strpos($Article->metas[$meta], 'http') ? $Article->metas[$meta] : webUrl($Article->metas[$meta] . DIRECTORY_SEPARATOR);
+    }
 
-	if (empty($page) && defined('DEFAULT_ARTICLES_PAGE')) {
+    if (empty($page) && defined('DEFAULT_ARTICLES_PAGE')) {
 
-		/*
-		 * Put Article in default articles page
-		 */
-		$page = DEFAULT_ARTICLES_PAGE . DIRECTORY_SEPARATOR;
-	}
+        /*
+         * Put Article in default articles page
+         */
+        $page = DEFAULT_ARTICLES_PAGE . DIRECTORY_SEPARATOR;
+    }
 
-	return articleUrl($Article->slug, $page);
+    return articleUrl($Article->slug, $page);
+}
+
+/**
+ * @param stdClass $Article
+ * @param int $templatePosition
+ * @param bool $forcedImg
+ * @return bool|string
+ */
+function getFeaturedImg(stdClass $Article, $templatePosition = 2, $forcedImg = true)
+{
+    return getFirstImage(getFileTemplatePosition($Article->medias, $templatePosition, $forcedImg));
 }
 
 /**
@@ -478,10 +489,10 @@ function getArticleUrl(stdClass $Article, $meta = 'link', $page = '')
  */
 function getArticleMeta($articleMetas, $key)
 {
-	if (is_array($articleMetas)) {
-		return !empty($articleMetas[$key]) ? htmlSpeCharDecode($articleMetas[$key]) : '';
-	}
-	return '';
+    if (is_array($articleMetas)) {
+        return !empty($articleMetas[$key]) ? htmlSpeCharDecode($articleMetas[$key]) : '';
+    }
+    return '';
 }
 
 /**
@@ -494,9 +505,9 @@ function getArticleMeta($articleMetas, $key)
  */
 function articleUrl($articleSlug, $articlePage = '')
 {
-	$articlePage = !empty($articlePage) ? $articlePage :
-		(defined('DEFAULT_ARTICLES_PAGE') ? DEFAULT_ARTICLES_PAGE . DIRECTORY_SEPARATOR : '/');
-	return webUrl($articlePage, $articleSlug);
+    $articlePage = !empty($articlePage) ? $articlePage :
+        (defined('DEFAULT_ARTICLES_PAGE') ? DEFAULT_ARTICLES_PAGE . DIRECTORY_SEPARATOR : '/');
+    return webUrl($articlePage, $articleSlug);
 }
 
 /**
@@ -507,14 +518,14 @@ function articleUrl($articleSlug, $articlePage = '')
 function getArticleRelation($articleId, $type = 'USERS')
 {
 
-	if (!empty($articleId)) {
-		$ArticleRelation = new ArticleRelation($articleId, $type);
-		if ($ArticleRelation->getData()) {
-			return extractFromObjToSimpleArr($ArticleRelation->getData(), 'id', 'typeId');
-		}
-	}
+    if (!empty($articleId)) {
+        $ArticleRelation = new ArticleRelation($articleId, $type);
+        if ($ArticleRelation->getData()) {
+            return extractFromObjToSimpleArr($ArticleRelation->getData(), 'id', 'typeId');
+        }
+    }
 
-	return false;
+    return false;
 }
 
 /**
@@ -523,19 +534,19 @@ function getArticleRelation($articleId, $type = 'USERS')
  */
 function getArticleUsers($articleId)
 {
-	$articleUsers = array();
-	if (!empty($articleId)) {
+    $articleUsers = array();
+    if (!empty($articleId)) {
 
-		$articleRelations = getArticleRelation($articleId);
-		if ($articleRelations) {
+        $articleRelations = getArticleRelation($articleId);
+        if ($articleRelations) {
 
-			foreach ($articleRelations as $relationId => $userId) {
-				$articleUsers[$userId] = getUserEntitled($userId);
-			}
-		}
-	}
+            foreach ($articleRelations as $relationId => $userId) {
+                $articleUsers[$userId] = getUserEntitled($userId);
+            }
+        }
+    }
 
-	return $articleUsers;
+    return $articleUsers;
 }
 
 /**
@@ -546,22 +557,22 @@ function getArticleUsers($articleId)
  */
 function showArticleUsers($articleId, $by = 'Par', $separator = 'et')
 {
-	$html = '';
+    $html = '';
 
-	if (!empty($articleId)) {
+    if (!empty($articleId)) {
 
-		$articleUsers = getArticleUsers($articleId);
-		if ($articleUsers) {
+        $articleUsers = getArticleUsers($articleId);
+        if ($articleUsers) {
 
-			$html = trans($by) . ' ';
-			$count = 1;
+            $html = trans($by) . ' ';
+            $count = 1;
 
-			foreach ($articleUsers as $userId => $userEntitled) {
-				$html .= ($count > 1 ? (' ' . trans($separator) . ' ') : '') . $userEntitled;
-				$count++;
-			}
-		}
-	}
+            foreach ($articleUsers as $userId => $userEntitled) {
+                $html .= ($count > 1 ? (' ' . trans($separator) . ' ') : '') . $userEntitled;
+                $count++;
+            }
+        }
+    }
 
-	return $html;
+    return $html;
 }
