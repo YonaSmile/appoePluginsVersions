@@ -477,9 +477,10 @@ function getArticleUrl(stdClass $Article, $meta = 'link', $page = '')
  * @param bool $forcedImg
  * @return bool|string
  */
-function getFeaturedImg(stdClass $Article, $templatePosition = 2, $forcedImg = true)
+function getFeaturedImg($Article, $templatePosition = 2, $forcedImg = true)
 {
-    return getFirstImage(getFileTemplatePosition($Article->medias, $templatePosition, $forcedImg));
+    return is_object($Article) && property_exists($Article, 'medias') ?
+        getFirstImage(getFileTemplatePosition($Article->medias, $templatePosition, $forcedImg)) : false;
 }
 
 /**
