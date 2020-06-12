@@ -473,14 +473,27 @@ function getArticleUrl(stdClass $Article, $meta = 'link', $page = '')
 
 /**
  * @param stdClass $Article
- * @param int $templatePosition
- * @param bool $forcedImg
+ * @param array $options
  * @return bool|string
  */
-function getFeaturedImg($Article, $templatePosition = 2, $forcedImg = true)
+function getArtFeaturedImg($Article, $options = array())
 {
+    $defaultOptions = array(
+        'tmpPos' => 2,
+        'forcedImg' => true,
+        'class' => '',
+        'thumbSize' => false,
+        'onlyUrl' => false,
+        'onlyPath' => false
+    );
+
+    $options = array_merge($defaultOptions, $options);
+
     return is_object($Article) && property_exists($Article, 'medias') ?
-        getFirstImage(getFileTemplatePosition($Article->medias, $templatePosition, $forcedImg)) : false;
+        getFirstImage(
+            getFileTemplatePosition($Article->medias, $options['tmpPos'], $options['forcedImg']),
+            $options['class'], $options['thumbSize'], $options['onlyUrl'], $options['onlyPath']
+        ) : false;
 }
 
 /**
