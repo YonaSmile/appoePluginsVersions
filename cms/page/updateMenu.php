@@ -53,7 +53,7 @@ showPostResponse(); ?>
                                                    value="<?= $menu->position; ?>">
                                             <input type="text" data-menuid="<?= $menu->id; ?>" class="updateMenuData"
                                                    data-column="name" value="<?= $menu->name; ?>"
-                                                   <?= is_numeric($menu->idCms) ? ' readonly ' : ''; ?>>
+                                                <?= is_numeric($menu->idCms) ? ' readonly ' : ''; ?>>
                                             <small class="inputInfo"></small>
                                             <?php if (empty($MENUS[$key][$menu->id])): ?>
                                                 <button type="button" class="close deleteMenu">
@@ -79,7 +79,7 @@ showPostResponse(); ?>
                                                     <input type="text" data-menuid="<?= $subMenu->id; ?>"
                                                            class="updateMenuData" data-column="name"
                                                            value="<?= $subMenu->name; ?>"
-                                                           <?= is_numeric($subMenu->idCms) ? ' readonly ' : ''; ?>>
+                                                        <?= is_numeric($subMenu->idCms) ? ' readonly ' : ''; ?>>
                                                     <small class="inputInfo"></small>
                                                     <?php if (empty($MENUS[$key][$subMenu->id])): ?>
                                                         <button type="button" class="close deleteMenu">
@@ -106,7 +106,7 @@ showPostResponse(); ?>
                                                             <input type="text" data-menuid="<?= $subSubMenu->id; ?>"
                                                                    class="updateMenuData" data-column="name"
                                                                    value="<?= $subSubMenu->name; ?>"
-                                                                   <?= is_numeric($subSubMenu->idCms) ? ' readonly ' : ''; ?>>
+                                                                <?= is_numeric($subSubMenu->idCms) ? ' readonly ' : ''; ?>>
                                                             <small class="inputInfo"></small>
                                                             <?php if (empty($MENUS[$key][$subSubMenu->id])): ?>
                                                                 <button type="button" class="close deleteMenu">

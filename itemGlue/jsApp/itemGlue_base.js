@@ -19,7 +19,9 @@ function deleteMetaArticle(idMetaArticle) {
 function resetMetas() {
     $('form#addArticleMetaForm input[name="UPDATEMETAARTICLE"]').val('');
     $('form#addArticleMetaForm input#metaKey').val('');
-    CKEDITOR.instances.metaValue.setData('');
+    $('form#addArticleMetaForm textarea#metaValue').val('');
+    var idEditor = $('textarea#metaValue').data('editor-id');
+    $('div.inlineAppoeditor[data-editor-id="'+idEditor+'"]').html('');
     $('form#addArticleMetaForm').trigger("reset").blur();
     return true;
 }
@@ -52,8 +54,6 @@ $(document).ready(function () {
             .addClass('d-flex flex-row justify-content-start flex-wrap my-3')
             .children('strong.inputLabel').addClass('w-100');
 
-        CKEDITOR.config.height = 300;
-
         $('#metaDataAvailable').change(function () {
             if ($('#metaDataAvailable').is(':checked')) {
                 $('form#addArticleMetaForm input#metaKey').val(convertToSlug($('form#addArticleMetaForm input#metaKey').val()));
@@ -71,6 +71,12 @@ $(document).ready(function () {
             resetMetas();
         });
 
+        $(document.body).on('input change', 'div.inlineAppoeditor', function (e) {
+            e.stopPropagation();
+            var id = $(this).data('editor-id');
+            $('textarea.appoeditor[data-editor-id="' + id + '"]').val($(this).html());
+        });
+
         $('form#addArticleMetaForm').on('submit', function (event) {
             event.preventDefault();
 
@@ -83,14 +89,17 @@ $(document).ready(function () {
             var $form = $(this);
             busyApp();
 
+            var idEditor = $('textarea#metaValue').data('editor-id');
+            var textareaEditor = $('div.inlineAppoeditor[data-editor-id="'+idEditor+'"]');
+
             var data = {
                 ADDARTICLEMETA: 'OK',
                 UPDATEMETAARTICLE: $('input[name="UPDATEMETAARTICLE"]').val(),
                 idArticle: $('input[name="idArticle"]').val(),
                 metaKey: $('input#metaKey').val(),
                 metaValue: $('#metaDataAvailable').is(':checked')
-                    ? CKEDITOR.instances.metaValue.document.getBody().getText()
-                    : CKEDITOR.instances.metaValue.getData()
+                    ? textareaEditor.html().replace(/(<([^>]+)>)/ig,"")
+                    : textareaEditor.html()
             };
 
             addMetaArticle(data).done(function (results) {
@@ -118,7 +127,9 @@ $(document).ready(function () {
 
             $('input[name="UPDATEMETAARTICLE"]').val(idMetaArticle);
             $('input#metaKey').val($.trim(title));
-            CKEDITOR.instances.metaValue.setData(content);
+            var idEditor = $('textarea#metaValue').data('editor-id');
+            $('div.inlineAppoeditor[data-editor-id="'+idEditor+'"]').html(content);
+            $('textarea#metaValue').val(content)
         });
 
         $articleMetaContainer.on('click', '.metaProductDeleteBtn', function () {

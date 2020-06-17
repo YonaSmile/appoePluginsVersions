@@ -187,119 +187,84 @@ if (!empty($_GET['id'])):
                             }
                         }
                     );
-                }, 700);
+                }, 1000);
             }
 
 
             $(document).ready(function () {
 
-                let pageSrc = $('#takeLookToPage').attr('href') + '?access_method=cmsIframe&access_lang=<?= APP_LANG; ?>';
                 var zoning = true;
 
-                jQuery.ajaxSetup({async: false});
-                $.get(pageSrc, function (data) {
-                    if ($('.templateZoneTitle').length) {
-                        var response = $('<html />').html(data);
-                        $('#pageContentManageForm .templateZoneTitle').each(function (num, el) {
-                            if (response.find('#' + $(el).attr('id')).length == 0) {
-                                zoning = false;
-                                return false;
-                            }
-                        });
-                    } else {
-                        zoning = false;
-                    }
+                if (!$('.templateZoneTitle').length) {
+                    zoning = false;
+                }
 
-                    if (!zoning) {
-                        $('#pageContentLoader').css('opacity', 0).slideUp(500);
-                        $('#pageContentManageForm').show().addClass('row');
-                    }
+                if (!zoning) {
+                    $('#pageContentLoader').css('opacity', 0).slideUp(500);
+                    $('#pageContentManageForm').show().addClass('row');
+                }
 
-                    $('#headerLinks').append('<small class="d-block text-center w-100"><strong>' + $('#headerLinks').data('title') + '</strong></small>');
-                    $.each($('.templateZoneTitle'), function () {
+                $('#headerLinks').append('<small class="d-block text-center w-100"><strong>' + $('#headerLinks').data('title') + '</strong></small>');
+                $.each($('.templateZoneTitle'), function () {
 
-                        //Add anchor
-                        let id = $(this).attr('id');
-
-                        if (zoning) {
-
-                            $(this).removeAttr('id');
-                            $('#headerLinks').append('<a class="btn btn-sm btn-outline-info" data-id="' + id + '" type="button" data-toggle="collapse" data-target="#collapse' + id + '">' + $(this).text() + '</a>');
-
-                            //Add zone
-                            $(this).nextUntil('.templateZoneTitle').addBack().wrapAll('<div id="' + id + '" class="templateZone row my-2"></div>');
-                        } else {
-                            $('#headerLinks').append('<a class="btn btn-sm btn-outline-info" href="#' + id + '">' + $(this).text() + '</a>');
-                        }
-                    });
+                    //Add anchor
+                    let id = $(this).attr('id');
 
                     if (zoning) {
-                        var html = '<div class="accordion" id="pageContentManageFormAccordion">';
 
-                        $('.templateZone').each(function (num, el) {
+                        $(this).removeAttr('id');
+                        $('#headerLinks').append('<a class="btn btn-sm btn-outline-info" data-id="' + id + '" type="button" data-toggle="collapse" data-target="#collapse' + id + '">' + $(this).text() + '</a>');
 
-                            let id = $(this).attr('id');
-                            let title = $(this).find('h5').text();
-                            $(el).find('h5').remove();
-
-                            //Card
-                            html += '<div class="card"><div class="card-header bgColorPrimary" id="heading' + id + '"><h2 class="mb-0"><button class="btn btn-link collapsed zoneTitleBtn" type="button" data-id="' + id + '" data-toggle="collapse" data-target="#collapse' + id + '" aria-expanded="false" aria-controls="collapse' + id + '">' + title + ' </button> </h2></div>';
-                            html += '<div id="collapse' + id + '" class="collapse collapseZone" aria-labelledby="heading' + id + '" data-parent="#pageContentManageFormAccordion"><div class="card-body">';
-                            html += $(el).get(0).outerHTML;
-                            html += '</div></div></div>';
-                        });
-
-                        html += '</div>';
-                        $('#pageContentLoader').css('opacity', 0).slideUp(500);
-                        $('form#pageContentManageForm').html(html).fadeIn(500);
-
-                        let userNavbarHeight = $('#site header nav.navbar').height();
-                        $(document.body).on('shown.bs.collapse', '.collapseZone', function () {
-                            var $panel = $(this).closest('.card');
-                            $('html,body').animate({
-                                scrollTop: $panel.offset().top - userNavbarHeight
-                            }, 500);
-                        })
-
-                        for (name in CKEDITOR.instances) {
-                            CKEDITOR.instances[name].destroy()
-                        }
-
-                        CKEDITOR.replaceAll('ckeditor');
+                        //Add zone
+                        $(this).nextUntil('.templateZoneTitle').addBack().wrapAll('<div id="' + id + '" class="templateZone row my-2"></div>');
+                    } else {
+                        $('#headerLinks').append('<a class="btn btn-sm btn-outline-info" href="#' + id + '">' + $(this).text() + '</a>');
                     }
-
-                    $('input[rel=cms-img-popover]').popover({
-                        container: 'body',
-                        html: true,
-                        trigger: 'hover',
-                        delay: 200,
-                        placement: 'top',
-                        content: function () {
-                            return '<img src="' + $(this).val() + '" />';
-                        }
-                    });
-
-                    $.each($('#pageContentManageForm input, #pageContentManageForm textarea, #pageContentManageForm select'), function () {
-                        var id = $(this).attr('name');
-                        $('<small class="' + id + ' categoryIdFloatContenaire">').insertAfter($(this));
-                    });
-
-
-                }).fail(function () {
-                    $('#pageContentLoader').fadeOut().html('Une erreur s\'est produite').fadeIn();
                 });
 
-                CKEDITOR.on("instanceReady", function (event) {
-                    for (var i in CKEDITOR.instances) {
+                if (zoning) {
+                    var html = '<div class="accordion" id="pageContentManageFormAccordion">';
 
-                        CKEDITOR.instances[i].on('blur', function () {
-                            var id = this.element.$.id;
-                            var $input = $('#' + id);
-                            var metaValue = this.getData();
+                    $('.templateZone').each(function (num, el) {
 
-                            updateCmsContent($input, metaValue);
-                        });
+                        let id = $(this).attr('id');
+                        let title = $(this).find('h5').text();
+                        $(el).find('h5').remove();
+
+                        //Card
+                        html += '<div class="card"><div class="card-header bgColorPrimary" id="heading' + id + '"><h2 class="mb-0"><button class="btn btn-link collapsed zoneTitleBtn" type="button" data-id="' + id + '" data-toggle="collapse" data-target="#collapse' + id + '" aria-expanded="false" aria-controls="collapse' + id + '">' + title + ' </button> </h2></div>';
+                        html += '<div id="collapse' + id + '" class="collapse collapseZone" aria-labelledby="heading' + id + '" data-parent="#pageContentManageFormAccordion"><div class="card-body">';
+                        html += $(el).get(0).outerHTML;
+                        html += '</div></div></div>';
+                    });
+
+                    html += '</div>';
+                    $('#pageContentLoader').css('opacity', 0).slideUp(500);
+                    $('form#pageContentManageForm').html(html).fadeIn(500);
+
+                    let userNavbarHeight = $('#site header nav.navbar').height();
+                    $(document.body).on('shown.bs.collapse', '.collapseZone', function () {
+                        var $panel = $(this).closest('.card');
+                        $('html,body').animate({
+                            scrollTop: $panel.offset().top - userNavbarHeight
+                        }, 500);
+                    })
+
+                }
+                $('input[rel=cms-img-popover]').popover({
+                    container: 'body',
+                    html: true,
+                    trigger: 'hover',
+                    delay: 200,
+                    placement: 'top',
+                    content: function () {
+                        return '<img src="' + $(this).val() + '" />';
                     }
+                });
+
+                $.each($('#pageContentManageForm input, #pageContentManageForm textarea, #pageContentManageForm select'), function () {
+                    var id = $(this).attr('name');
+                    $('<small class="' + id + ' categoryIdFloatContenaire">').insertAfter($(this));
                 });
 
                 $(document.body).on('click', '#libraryModal .copyLinkOnClick', function (e) {
@@ -314,9 +279,17 @@ if (!empty($_GET['id'])):
                     event.preventDefault();
                 });
 
-                $(document.body).on('input', 'form#pageContentManageForm input, form#pageContentManageForm textarea, form#pageContentManageForm select', function (event) {
+                $(document.body).on('input change', 'form#pageContentManageForm input, form#pageContentManageForm textarea, form#pageContentManageForm select', function (event) {
                     event.preventDefault();
                     updateCmsContent($(this), $(this).val());
+                });
+
+                $(document.body).on('input change', 'form#pageContentManageForm div.inlineAppoeditor', function () {
+                    var id = $(this).data('editor-id');
+                    var textarea = $('textarea[data-editor-id="' + id + '"]');
+
+                    textarea.val($(this).html());
+                    updateCmsContent(textarea, textarea.val());
                 });
 
                 $('#updateSlugAuto').on('change', function () {
@@ -363,35 +336,35 @@ if (!empty($_GET['id'])):
                     var otherEventslink = $('option:selected', this).data('href');
                     location.assign(otherEventslink);
                 });
+
+                $(document.body).on('click', '#clearPageCache', function () {
+
+                    if (confirm('Vous êtes sur le point de vider le cache de la page')) {
+
+                        var $btn = $(this);
+                        $btn.html(loaderHtml());
+
+                        busyApp(false);
+                        $.post('/app/ajax/config.php', {
+                            clearPageCache: 'OK',
+                            pageSlug: $btn.data('page-slug'),
+                            pageLang: $btn.data('page-lang')
+                        }).done(function (data) {
+                            if (data == 'true' || data === true) {
+                                $btn.html('<i class="fas fa-check"></i> Cache vidé!').blur()
+                                    .removeClass('btn-outline-danger').addClass('btn-success');
+                            } else {
+                                alert('Un problème est survenu lors de la vidange du cache');
+                            }
+                            availableApp();
+                        });
+                    }
+                });
             });
 
             $(window).on("load", function () {
                 if ($('input.urlFile').length) {
                     $('#loadMediaLibrary').load(WEB_APP_URL + 'lib/assets/mediaLibrary.php');
-                }
-            });
-
-            $(document.body).on('click', '#clearPageCache', function () {
-
-                if (confirm('Vous êtes sur le point de vider le cache de la page')) {
-
-                    var $btn = $(this);
-                    $btn.html(loaderHtml());
-
-                    busyApp(false);
-                    $.post('/app/ajax/config.php', {
-                        clearPageCache: 'OK',
-                        pageSlug: $btn.data('page-slug'),
-                        pageLang: $btn.data('page-lang')
-                    }).done(function (data) {
-                        if (data == 'true' || data === true) {
-                            $btn.html('<i class="fas fa-check"></i> Cache vidé!').blur()
-                                .removeClass('btn-outline-danger').addClass('btn-success');
-                        } else {
-                            alert('Un problème est survenu lors de la vidange du cache');
-                        }
-                        availableApp();
-                    });
                 }
             });
         </script>
