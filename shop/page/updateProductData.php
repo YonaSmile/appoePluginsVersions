@@ -87,7 +87,7 @@ if (!empty($_GET['id'])):
                                 </div>
                                 <div class="col-12">
                                         <textarea name="productContent" id="productContent"
-                                                  class="ckeditor"><?= html_entity_decode($ProductContent->getContent()); ?></textarea>
+                                                  class="appoeditor"><?= html_entity_decode($ProductContent->getContent()); ?></textarea>
                                 </div>
                                 <div class="my-2"></div>
                                 <div class="col-12">
@@ -226,7 +226,7 @@ if (!empty($_GET['id'])):
                                             <?= \App\Form::text('Titre', 'metaKey', 'text', '', true, 150); ?>
                                         </div>
                                         <div class="col-12 my-2">
-                                            <?= \App\Form::textarea('Contenu', 'metaValue', '', 5, true, '', 'ckeditor'); ?>
+                                            <?= \App\Form::textarea('Contenu', 'metaValue', '', 5, true, '', 'appoeditor'); ?>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -354,8 +354,6 @@ if (!empty($_GET['id'])):
                     $(this).text('<?= trans('copié'); ?>');
                 });
 
-                CKEDITOR.config.height = 300;
-
                 $('#metaProductContenair').load('/app/plugin/shop/page/getMetaProduct.php?idProduct=<?= $Product->getId(); ?>');
 
                 $('#metaDataAvailable').change(function () {
@@ -372,14 +370,20 @@ if (!empty($_GET['id'])):
 
                 $('#resetmeta').on('click', function () {
                     $('input[name="UPDATEMETAPRODUCT"]').val('');
-                    CKEDITOR.instances.metaValue.setData('');
+                    $('form#addMetaProductForm textarea#metaValue').val('');
+                    var idEditor = $('textarea#metaValue').data('editor-id');
+                    $('div.inlineAppoeditor[data-editor-id="' + idEditor + '"]').html('');
                     $('form#addMetaProductForm').trigger('reset');
                 });
+
 
                 $('form#addMetaProductForm').on('submit', function (event) {
                     event.preventDefault();
                     var $form = $(this);
                     busyApp();
+
+                    var idEditor = $('textarea#metaValue').data('editor-id');
+                    var textareaEditor = $('div.inlineAppoeditor[data-editor-id="' + idEditor + '"]');
 
                     var data = {
                         ADDMETAPRODUCT: 'OK',
@@ -387,8 +391,8 @@ if (!empty($_GET['id'])):
                         productId: $('input[name="productId"]').val(),
                         metaKey: $('input#metaKey').val(),
                         metaValue: $('#metaDataAvailable').is(':checked')
-                            ? CKEDITOR.instances.metaValue.document.getBody().getText()
-                            : CKEDITOR.instances.metaValue.getData()
+                            ? textareaEditor.html().replace(/(<([^>]+)>)/ig, "")
+                            : textareaEditor.html()
                     };
 
                     addMetaProduct(data).done(function (results) {
@@ -416,7 +420,9 @@ if (!empty($_GET['id'])):
 
                     $('input[name="UPDATEMETAPRODUCT"]').val(idMetaProduct);
                     $('input#metaKey').val($.trim(title));
-                    CKEDITOR.instances.metaValue.setData(content);
+                    var idEditor = $('textarea#metaValue').data('editor-id');
+                    $('div.inlineAppoeditor[data-editor-id="' + idEditor + '"]').html(content);
+                    $('textarea#metaValue').val(content);
                 });
 
                 $('#metaProductContenair').on('click', '.metaProductDeleteBtn', function () {

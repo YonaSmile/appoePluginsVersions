@@ -106,4 +106,5 @@
     transform-origin: center;
     transform: translate(100%, -50%);
     transition: all 0.4s;
+    z-index: 50 !important;
 }

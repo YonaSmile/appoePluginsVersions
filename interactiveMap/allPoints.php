@@ -36,7 +36,7 @@ if (!empty($_GET['id']) && !empty($_GET['level']) && isset($_GET['location'])):
                             <?= \App\Form::text('Titre', 'title', 'text', $location['title'], false, 250, '', '', 'form-control-sm mb-2'); ?>
                             <?= \App\Form::text('A Propos', 'about', 'text', !empty($location['about']) ? $location['about'] : '', false, 250, '', '', 'form-control-sm mb-2'); ?>
                             <div class="mb-2">
-                                <?= \App\Form::textarea('description', 'ckeditDescription', $location['description'], 5, false, '', 'ckeditorBasic'); ?>
+                                <?= \App\Form::textarea('description', 'ckeditDescription', $location['description'], 5, false, '', 'appoeditor'); ?>
                             </div>
                             <div class="mb-2">
                                 <?= \App\Form::file('Photo', 'thumbnail[]', false, '', 'form-control-sm'); ?>
@@ -207,21 +207,6 @@ if (!empty($_GET['id']) && !empty($_GET['level']) && isset($_GET['location'])):
                                 });
 
                             });
-
-
-                            CKEDITOR.replaceAll('ckeditorBasic');
-
-                            for (var i in CKEDITOR.instances) {
-
-                                CKEDITOR.instances[i].on('blur', function () {
-                                    var id = this.element.$.id;
-                                    var $input = $('#' + id);
-                                    var value = this.getData();
-                                    $('form.locationForm input#ckeditData').val(value);
-                                    updateInterMapData($input);
-                                });
-                            }
-
 
                             function updateInterMapData(input) {
                                 busyApp(false);

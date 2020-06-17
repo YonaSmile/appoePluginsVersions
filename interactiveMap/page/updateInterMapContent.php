@@ -297,6 +297,7 @@ if (!empty($_GET['id'])): ?>
                         var data = 'id=' + idMap + '&level=' + currentLevel + '&location=' + location;
                         $('#pointContenair').load(src + data, function () {
                             availableApp();
+                            appoEditor();
                         });
                     }
                 }
@@ -304,20 +305,6 @@ if (!empty($_GET['id'])): ?>
                 function uniqId() {
                     return Math.round(new Date().getTime() + (Math.random() * 100));
                 }
-
-                CKEDITOR.config.toolbar = [
-                    {
-                        name: 'basicstyles',
-                        groups: ['basicstyles', 'cleanup'],
-                        items: ['Bold', 'Italic', 'Underline', 'Strike', 'Superscript']
-                    },
-                    {
-                        name: 'links',
-                        items: ['Link', 'Unlink']
-                    },
-                    {name: 'styles', items: ['Styles']}
-                ];
-                CKEDITOR.config.height = 200;
             });
         </script>
     <?php else: ?>
