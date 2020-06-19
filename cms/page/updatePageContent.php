@@ -279,7 +279,7 @@ if (!empty($_GET['id'])):
                     event.preventDefault();
                 });
 
-                $(document.body).on('input change', 'form#pageContentManageForm input, form#pageContentManageForm textarea, form#pageContentManageForm select', function (event) {
+                $(document.body).on('input', 'form#pageContentManageForm input, form#pageContentManageForm textarea, form#pageContentManageForm select', function (event) {
                     event.preventDefault();
                     updateCmsContent($(this), $(this).val());
                 });
