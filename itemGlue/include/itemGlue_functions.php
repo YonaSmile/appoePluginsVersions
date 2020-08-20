@@ -484,7 +484,8 @@ function getArtFeaturedImg($Article, $options = array())
         'class' => '',
         'thumbSize' => false,
         'onlyUrl' => false,
-        'onlyPath' => false
+        'onlyPath' => false,
+        'webp' => false
     );
 
     $options = array_merge($defaultOptions, $options);
@@ -492,7 +493,7 @@ function getArtFeaturedImg($Article, $options = array())
     return is_object($Article) && property_exists($Article, 'medias') ?
         getFirstImage(
             getFileTemplatePosition($Article->medias, $options['tmpPos'], $options['forcedImg']),
-            $options['class'], $options['thumbSize'], $options['onlyUrl'], $options['onlyPath']
+            $options['class'], $options['thumbSize'], $options['onlyUrl'], $options['onlyPath'], $options['webp']
         ) : false;
 }
 
