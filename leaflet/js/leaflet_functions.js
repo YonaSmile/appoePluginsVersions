@@ -5,7 +5,7 @@ function leaflet_getMap(lngLat, zoom, otherTile = '') {
         //Create Map
         var map = new L.Map('mapOSM', {
             scrollWheelZoom: false,
-            zoom: 16,
+            zoom: zoom,
             maxZoom: 22,
             gestureHandling: true
         }).setView(lngLat, zoom);
