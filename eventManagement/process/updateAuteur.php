@@ -4,11 +4,7 @@ if (checkPostAndTokenRequest()) {
     //Clean data
     $_POST = cleanRequest($_POST);
 
-    $Response = new \App\Response();
-
-    if (
-        !empty($_POST['id'])
-        && !empty($_POST['name'])) {
+    if (!empty($_POST['id']) && !empty($_POST['name'])) {
 
         $Auteur = new \App\Plugin\EventManagement\Auteur();
 
@@ -20,28 +16,19 @@ if (checkPostAndTokenRequest()) {
 
                 //Delete post data
                 unset($_POST);
-
-                $Response->status = 'success';
-                $Response->error_code = 0;
-                $Response->error_msg = trans('L\'auteur a été mis à jour');
+                setPostResponse('L\'auteur a été mis à jour', 'success');
 
             } else {
 
-                $Response->status = 'danger';
-                $Response->error_code = 1;
-                $Response->error_msg = trans('Un problème est survenu lors de la mise à jour de l\'auteur');
+                setPostResponse('Un problème est survenu lors de la mise à jour de l\'auteur');
             }
         } else {
 
-            $Response->status = 'danger';
-            $Response->error_code = 1;
-            $Response->error_msg = trans('Le nom de l\'auteur est déjà utilisé');
+            setPostResponse('Le nom de l\'auteur est déjà utilisé');
         }
 
     } else {
 
-        $Response->status = 'danger';
-        $Response->error_code = 1;
-        $Response->error_msg = trans('Le nom de l\'auteur est obligatoire');
+        setPostResponse('Le nom de l\'auteur est obligatoire');
     }
 }

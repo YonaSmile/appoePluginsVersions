@@ -1,18 +1,8 @@
-<?php require('header.php'); ?>
-<?= getTitle($Page->getName(), $Page->getSlug()); ?>
+<?php require('header.php');
+require_once('../process/postProcess.php');
+getTitle(getAppPageName(), getAppPageSlug());
+showPostResponse(); ?>
     <div class="container">
-        <?php require_once('../process/postProcess.php'); ?>
-
-        <?php if (isset($Response)): ?>
-            <div class="row">
-                <div class="col-12">
-                    <div class="alert alert-<?= $Response->display()->status ?>" role="alert">
-                        <?= $Response->display()->error_msg; ?>
-                    </div>
-                </div>
-            </div>
-        <?php endif; ?>
-
         <form action="" method="post" id="addMessageForm">
             <?= getTokenField(); ?>
             <div class="my-4"></div>

@@ -1,7 +1,4 @@
-<?php if (empty($_GET['id'])): ?>
-    <?php session_start(); header('location:products.php'); ?>
-<?php else: ?>
-    <?php
+<?php if (!empty($_GET['id'])):
     require('header.php');
     $Product = new \App\Plugin\Shop\Product($_GET['id']);
 
@@ -13,8 +10,8 @@
 
     $CategoryRelation = new \App\CategoryRelations('SHOP', $Product->getId());
     $allCategoryRelations = extractFromObjToSimpleArr($CategoryRelation->getData(), 'categoryId', 'name');
-    ?>
-    <?= getTitle($Page->getName(), $Page->getSlug()); ?>
+    echo getTitle(getAppPageName(), getAppPageSlug());
+    showPostResponse(); ?>
     <div class="container">
         <div class="row">
             <div class="col-12">
@@ -24,16 +21,6 @@
                 </a>
             </div>
         </div>
-        <?php if (isset($Response)): ?>
-            <div class="row">
-                <div class="col-12">
-                    <div class="alert alert-<?= $Response->display()->status ?>" role="alert">
-                        <?= $Response->display()->error_msg; ?>
-                    </div>
-                </div>
-            </div>
-        <?php endif; ?>
-
         <div class="custom-control custom-checkbox my-3">
             <input type="checkbox" class="custom-control-input" id="updateSlugAuto">
             <label class="custom-control-label"
@@ -98,5 +85,5 @@
             });
         });
     </script>
-    <?php require('footer.php'); ?>
-<?php endif; ?>
+    <?php require('footer.php');
+endif; ?>

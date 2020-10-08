@@ -1,11 +1,10 @@
 <?php
+$mediaTabactive = false;
+
 if (checkPostAndTokenRequest()) {
 
     //Clean data
     $_POST = cleanRequest($_POST);
-
-    $Response = new \App\Response();
-    $Response->MediaTabactive = false;
 
     if (isset($_POST['SAVEPRODUCTCONTENT'])) {
 
@@ -17,17 +16,11 @@ if (checkPostAndTokenRequest()) {
 
             if (!empty($ProductContent->getId())) {
                 if ($ProductContent->update()) {
-
-                    $Response->status = 'success';
-                    $Response->error_code = 0;
-                    $Response->error_msg = trans('Le contenu du produit a été mise à jour');
+                    setPostResponse('Le contenu du produit a été mise à jour', 'success');
                 }
             } else {
                 if ($ProductContent->save()) {
-
-                    $Response->status = 'success';
-                    $Response->error_code = 0;
-                    $Response->error_msg = trans('Le contenu du produit a été enregistré');
+                    setPostResponse('Le contenu du produit a été enregistré', 'success');
                 }
             }
 
@@ -35,10 +28,7 @@ if (checkPostAndTokenRequest()) {
             unset($_POST);
 
         } else {
-
-            $Response->status = 'danger';
-            $Response->error_code = 1;
-            $Response->error_msg = trans('Le contenu du produit est obligatoire');
+            setPostResponse('Le contenu du produit est obligatoire');
         }
     }
 
@@ -76,9 +66,7 @@ if (checkPostAndTokenRequest()) {
             $html .= trans('Fichiers sélectionnés enregistrés') . ' <strong>' . $selectedFilesCount . '</strong>.';
         }
 
-        $Response->status = 'info';
-        $Response->error_code = 1;
-        $Response->error_msg = $html;
-        $Response->MediaTabactive = true;
+        setPostResponse($html, 'info');
+        $mediaTabactive = true;
     }
 }

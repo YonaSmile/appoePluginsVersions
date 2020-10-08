@@ -1,23 +1,16 @@
-<?php if (empty($_GET['id'])): ?>
-    <?php session_start(); header('location:products.php'); ?>
-<?php else: ?>
-    <?php require('header.php');
-    $Stock = new \App\Plugin\Shop\Stock($_GET['id']);
-    require_once('../process/updateStock.php');
-    $Product = new \App\Plugin\Shop\Product($Stock->getProductId());
-    ?>
-    <?= getTitle('Limite de stock pour ' . $Product->getName(), $Page->getSlug()); ?>
-    <div class="container">
-        <?php if (isset($Response)): ?>
-            <div class="row">
-                <div class="col-12">
-                    <div class="alert alert-<?= $Response->display()->status ?>" role="alert">
-                        <?= $Response->display()->error_msg; ?>
-                    </div>
-                </div>
-            </div>
-        <?php endif; ?>
+<?php
 
+use App\Plugin\Shop\Product;
+use App\Plugin\Shop\Stock;
+
+if (!empty($_GET['id'])):
+    require('header.php');
+    $Stock = new Stock($_GET['id']);
+    require_once('../process/updateStock.php');
+    $Product = new Product($Stock->getProductId());
+    echo getTitle('Limite de stock pour ' . $Product->getName(), getAppPageSlug());
+    showPostResponse(); ?>
+    <div class="container">
         <form action="" method="post">
             <input type="hidden" name="stock_id" value="<?= $Stock->getId(); ?>">
             <input type="hidden" name="product_id" value="<?= $Stock->getProductId(); ?>">
@@ -44,5 +37,5 @@
             </div>
         </form>
     </div>
-    <?php require('footer.php'); ?>
-<?php endif; ?>
+    <?php require('footer.php');
+endif; ?>

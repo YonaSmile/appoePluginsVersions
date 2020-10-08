@@ -1,22 +1,13 @@
 <?php
 require('header.php');
+require_once(SHOP_PATH . 'process/addProduct.php');
 $Category = new \App\Category();
 $Category->setType('SHOP');
 $listCatgories = extractFromObjToArrForList($Category->showByType(), 'id');
+echo getTitle( getAppPageName(), getAppPageSlug() );
+showPostResponse(getDataPostResponse());
 ?>
     <div class="container">
-        <?= getTitle($Page->getName(), $Page->getSlug()); ?>
-        <?php require_once(SHOP_PATH . 'process/addProduct.php'); ?>
-
-        <?php if (isset($Response)): ?>
-            <div class="row">
-                <div class="col-12">
-                    <div class="alert alert-<?= $Response->display()->status ?>" role="alert">
-                        <?= $Response->display()->error_msg; ?>
-                    </div>
-                </div>
-            </div>
-        <?php endif; ?>
         <form action="" method="post" id="addProductForm" enctype="multipart/form-data">
             <?= getTokenField(); ?>
             <div class="row d-flex align-items-start">

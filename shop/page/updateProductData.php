@@ -1,17 +1,18 @@
 <?php
 require('header.php');
 
+use App\Plugin\Shop\Product;
 use App\Plugin\Shop\ProductContent;
 use App\Plugin\Shop\ShopMedia;
 
 if (!empty($_GET['id'])):
 
     require(SHOP_PATH . 'process/postProcess.php');
-    $Product = new \App\Plugin\Shop\Product();
+    $Product = new Product();
     $Product->setId($_GET['id']);
 
     if ($Product->show()) :
-        $ProductBrowse = new \App\Plugin\Shop\Product();
+        $ProductBrowse = new Product();
         $ProductBrowse->setStatus(1);
         $allProduct = $ProductBrowse->showAll();
 
@@ -22,29 +23,21 @@ if (!empty($_GET['id'])):
         $allProductMedias = $ProductMedia->showFiles();
 
         echo getTitle($Product->getName(), getAppPageSlug());
-        if (isset($Response)): ?>
-            <div class="row">
-                <div class="col-12">
-                    <div class="alert alert-<?= $Response->display()->status ?>" role="alert">
-                        <?= $Response->display()->error_msg; ?>
-                    </div>
-                </div>
-            </div>
-        <?php endif; ?>
+        showPostResponse(); ?>
         <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                <a class="nav-item nav-link <?= empty($Response->MediaTabactive) ? 'active' : ''; ?>"
+                <a class="nav-item nav-link <?= !$mediaTabactive ? 'active' : ''; ?>"
                    id="nav-allLibraries-tab" data-toggle="tab"
                    href="#nav-allLibraries"
                    role="tab" aria-controls="nav-allLibraries"
                    aria-selected="true"><?= trans('Contenu de l\'article'); ?></a>
-                <a class="nav-item nav-link <?= !empty($Response->MediaTabactive) ? 'active' : ''; ?>"
+                <a class="nav-item nav-link <?= $mediaTabactive ? 'active' : ''; ?>"
                    id="nav-newFiles-tab" data-toggle="tab" href="#nav-newFiles" role="tab"
                    aria-controls="nav-newFiles" aria-selected="false"><?= trans('Les médias'); ?></a>
             </div>
         </nav>
         <div class="tab-content border border-top-0 bg-white py-3" id="nav-mediaTabContent">
-            <div class="tab-pane fade <?= empty($Response->MediaTabactive) ? 'active show' : ''; ?>"
+            <div class="tab-pane fade <?= !$mediaTabactive ? 'active show' : ''; ?>"
                  id="nav-allLibraries" role="tabpanel"
                  aria-labelledby="nav-home-tab">
                 <div class="container-fluid">
@@ -99,7 +92,7 @@ if (!empty($_GET['id'])):
                     </div>
                 </div>
             </div>
-            <div class="tab-pane fade <?= !empty($Response->MediaTabactive) ? 'active show' : ''; ?>"
+            <div class="tab-pane fade <?= $mediaTabactive ? 'active show' : ''; ?>"
                  id="nav-newFiles" role="tabpanel" aria-labelledby="nav-profile-tab">
                 <div class="container-fluid">
                     <form class="row" id="galleryArticleForm" action="" method="post" enctype="multipart/form-data">

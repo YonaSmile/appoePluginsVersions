@@ -4,8 +4,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     //Clean data
     $_POST = cleanRequest($_POST);
 
-    $Response = new \App\Response();
-
     if (!empty($_POST['UPDATESTOCK'])
         && !empty($_POST['stock_id'])
         && !empty($_POST['product_id'])
@@ -19,23 +17,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $Stock->setLimitQuantity($limitQuantity);
         $Stock->setDateLimit($limitDate);
 
-
         if ($Stock->update()) {
-
-            $Response->status = 'success';
-            $Response->error_msg = 'Le stock a été mis à jour.';
-
+            setPostResponse('Le stock a été mis à jour', 'success');
         } else {
-
-            $Response->status = 'danger';
-            $Response->error_code = 1;
-            $Response->error_msg = 'Un problème est survenu lors de la mise à jour du stock';
+            setPostResponse('Un problème est survenu lors de la mise à jour du stock');
         }
 
     } else {
-
-        $Response->status = 'danger';
-        $Response->error_code = 1;
-        $Response->error_msg = 'Tous les champs sont obligatoires';
+        setPostResponse('Tous les champs sont obligatoires');
     }
 }

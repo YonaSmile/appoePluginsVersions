@@ -1,14 +1,14 @@
-<?php require('header.php');
-if (!empty($_GET['id'])): ?>
-    <?php
-    $InteractiveMap = new \App\Plugin\InteractiveMap\InteractiveMap();
+<?php use App\Plugin\InteractiveMap\InteractiveMap;
+
+require('header.php');
+if (!empty($_GET['id'])):
+    $InteractiveMap = new InteractiveMap();
     $InteractiveMap->setId($_GET['id']);
-    if ($InteractiveMap->show()) : ?>
-        <?php
+    if ($InteractiveMap->show()) :
         require(INTERACTIVE_MAP_PATH . 'process/postProcess.php');
         interMap_writeMapFile($InteractiveMap->getData(), $InteractiveMap->getTitle());
-        ?>
-        <?= getTitle($Page->getName(), $Page->getSlug()); ?>
+        echo getTitle(getAppPageName(), getAppPageSlug());
+        showPostResponse(); ?>
         <div class="container">
             <div class="row">
                 <div class="col-12">
@@ -21,15 +21,6 @@ if (!empty($_GET['id'])): ?>
                     </button>
                 </div>
             </div>
-            <?php if (isset($Response)): ?>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="alert alert-<?= $Response->display()->status ?>" role="alert">
-                            <?= $Response->display()->error_msg; ?>
-                        </div>
-                    </div>
-                </div>
-            <?php endif; ?>
             <form action="" method="post" id="updatePageForm">
                 <?= getTokenField(); ?>
                 <input type="hidden" name="id" value="<?= $InteractiveMap->getId(); ?>">
@@ -78,8 +69,8 @@ if (!empty($_GET['id'])): ?>
                              data-parent="#accordion">
                             <div class="card-body">
 
-                                <?php if (!empty($mapContent['categories'])): ?>
-                                    <?php foreach ($mapContent['categories'] as $key => $content): ?>
+                                <?php if (!empty($mapContent['categories'])):
+                                    foreach ($mapContent['categories'] as $key => $content): ?>
                                         <div class="accordion" id="accordionCategories<?= $key; ?>">
                                             <div class="card">
                                                 <div class="card-header" id="headingCat<?= $key; ?>">
@@ -119,8 +110,8 @@ if (!empty($_GET['id'])): ?>
                                                 </div>
                                             </div>
                                         </div>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
+                                    <?php endforeach;
+                                endif; ?>
                                 <button class="btn btn-block btn-primary"
                                         data-toggle="modal" type="button"
                                         data-target="#modalAddInterMapCategorie">
@@ -142,8 +133,8 @@ if (!empty($_GET['id'])): ?>
                         <div id="interMapLevels" class="collapse" aria-labelledby="headingLev"
                              data-parent="#accordion">
                             <div class="card-body">
-                                <?php if (!empty($mapContent['levels'])): ?>
-                                    <?php foreach ($mapContent['levels'] as $key => $content): ?>
+                                <?php if (!empty($mapContent['levels'])):
+                                    foreach ($mapContent['levels'] as $key => $content): ?>
                                         <div class="accordion" id="accordionLevels<?= $key ?>">
                                             <div class="card">
                                                 <div class="card-header" id="headingLev<?= $key ?>">
@@ -177,8 +168,8 @@ if (!empty($_GET['id'])): ?>
                                                             <div class="col-12 col-lg-3">
                                                                 <img src="<?= $content['map']; ?>">
                                                             </div>
-                                                        <?php endif; ?>
-                                                        <?php if (!empty($content['minimap'])): ?>
+                                                        <?php endif;
+                                                        if (!empty($content['minimap'])): ?>
                                                             <div class="col-12 col-lg-3">
                                                                 <img src="<?= $content['minimap']; ?>">
                                                             </div>
@@ -187,8 +178,8 @@ if (!empty($_GET['id'])): ?>
                                                 </div>
                                             </div>
                                         </div>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
+                                    <?php endforeach;
+                                endif; ?>
                                 <button class="btn btn-block btn-primary"
                                         data-toggle="modal" type="button"
                                         data-target="#modalAddInterMapLevel">
@@ -469,10 +460,10 @@ if (!empty($_GET['id'])): ?>
                 });
             });
         </script>
-    <?php else: ?>
-        <?= getContainerErrorMsg(trans('Cette page n\'existe pas')); ?>
-    <?php endif; ?>
-<?php else: ?>
-    <?= trans('Cette page n\'existe pas'); ?>
-<?php endif; ?>
-<?php require('footer.php'); ?>
+    <?php else:
+        echo getContainerErrorMsg(trans('Cette page n\'existe pas'));
+    endif;
+else:
+    echo trans('Cette page n\'existe pas');
+endif;
+require('footer.php'); ?>

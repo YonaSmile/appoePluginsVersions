@@ -5,18 +5,9 @@ if (APP_LANG != "fr") {
     $Traduction = new \App\Plugin\Traduction\Traduction(APP_LANG);
     $allContent = $Traduction->getDbData();
 }
-?>
-<?= getTitle($Page->getName(), $Page->getSlug()); ?>
+echo getTitle(getAppPageName(), getAppPageSlug());
+showPostResponse(); ?>
     <div class="container-fluid">
-        <?php if (isset($Response)): ?>
-            <div class="row">
-                <div class="col-12">
-                    <div class="alert alert-<?= $Response->display()->status ?>" role="alert">
-                        <?= $Response->display()->error_msg; ?>
-                    </div>
-                </div>
-            </div>
-        <?php endif; ?>
         <div class="row">
             <div class="col-12 col-lg-6 form-inline">
                 <div class="input-group mb-2 mr-sm-2">

@@ -1,8 +1,10 @@
 <?php if (!empty($_GET['id'])): ?>
     <?php require('header.php');
     $Event = new \App\Plugin\EventManagement\Event($_GET['id']);
-    if ($Event->getStatut()) : ?>
-        <?= getTitle($Page->getName(), $Page->getSlug()); ?>
+    if ($Event->getStatut()) :
+        require_once(EVENTMANAGEMENT_PATH . 'process/updateEvent.php');
+        echo getTitle( getAppPageName(), getAppPageSlug() );
+        showPostResponse(); ?>
         <div class="container">
             <div class="row">
                 <div class="col-12">
@@ -13,18 +15,6 @@
                     </a>
                 </div>
             </div>
-            <?php require_once(EVENTMANAGEMENT_PATH . 'process/updateEvent.php'); ?>
-
-            <?php if (isset($Response)): ?>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="alert alert-<?= $Response->display()->status ?>" role="alert">
-                            <?= $Response->display()->error_msg; ?>
-                        </div>
-                    </div>
-                </div>
-            <?php endif; ?>
-
             <?php if (!empty($Event->getImage())): ?>
                 <div class="row">
                     <div class="col-12 d-flex justify-content-center">

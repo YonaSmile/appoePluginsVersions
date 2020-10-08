@@ -10,17 +10,9 @@ if (!empty($_GET['id'])):
     if ($People->show()) :
 
         require(PEOPLE_PATH . 'process/postProcess.php');
-        echo getTitle($Page->getName(), $Page->getSlug()); ?>
+        echo getTitle(getAppPageName(), getAppPageSlug());
+        showPostResponse() ?>
         <div class="container">
-            <?php if (isset($Response)): ?>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="alert alert-<?= $Response->display()->status ?>" role="alert">
-                            <?= $Response->display()->error_msg; ?>
-                        </div>
-                    </div>
-                </div>
-            <?php endif; ?>
             <form action="" method="post" id="updatePersonForm">
                 <?= getTokenField(); ?>
                 <input type="hidden" name="id" value="<?= $People->getId(); ?>">

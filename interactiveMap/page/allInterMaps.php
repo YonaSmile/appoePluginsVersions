@@ -1,9 +1,11 @@
 <?php
+
+use App\Plugin\InteractiveMap\InteractiveMap;
+
 require('header.php');
-$InteractiveMap = new \App\Plugin\InteractiveMap\InteractiveMap();
+$InteractiveMap = new InteractiveMap();
 $allCartes = extractFromObjArr($InteractiveMap->showAll(), 'id');
-?>
-<?= getTitle($Page->getName(), $Page->getSlug()); ?>
+echo getTitle(getAppPageName(), getAppPageSlug()); ?>
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
@@ -75,5 +77,5 @@ $allCartes = extractFromObjArr($InteractiveMap->showAll(), 'id');
             });
         });
     </script>
-<?php endif; ?>
-<?php require('footer.php'); ?>
+<?php endif;
+require('footer.php'); ?>

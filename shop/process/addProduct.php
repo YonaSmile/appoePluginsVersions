@@ -1,10 +1,11 @@
 <?php
+
+use App\Plugin\Shop\Product;
+
 if (checkPostAndTokenRequest()) {
 
     //Clean data
     $_POST = cleanRequest($_POST);
-
-    $Response = new \App\Response();
 
     if (isset($_POST['ADDPRODUCT'])
         && !empty($_POST['type'])
@@ -15,7 +16,7 @@ if (checkPostAndTokenRequest()) {
         && isset($_POST['dimension'])
         && isset($_POST['status'])) {
 
-        $Product = new \App\Plugin\Shop\Product();
+        $Product = new Product();
 
         //Add Produit
         $Product->feed($_POST);
@@ -44,26 +45,15 @@ if (checkPostAndTokenRequest()) {
 
                 //Delete post data
                 unset($_POST);
-
-                $Response->status = 'success';
-                $Response->error_msg = trans('Le produit a été enregistré') . ' <a href="' . getPluginUrl('shop/page/updateProductData/', $Product->getId()) . '">' . trans('Voir les détails du produit') . '</a>';
+                setPostResponse('Le produit a été enregistré', 'success', ('<a href="' . getPluginUrl('cms/page/updateProductData/', $Product->getId()) . '">' . trans('Voir les détails du produit') . '</a>'));
 
             } else {
-
-                $Response->status = 'danger';
-                $Response->error_code = 1;
-                $Response->error_msg = trans('Un problème est survenu lors de l\'enregistrement du produit');
+                setPostResponse('Un problème est survenu lors de l\'enregistrement du produit');
             }
         } else {
-
-            $Response->status = 'warning';
-            $Response->error_code = 2;
-            $Response->error_msg = trans('Ce produit exist déjà');
+            setPostResponse('Ce produit exist déjà', 'warning');
         }
     } else {
-
-        $Response->status = 'danger';
-        $Response->error_code = 1;
-        $Response->error_msg = trans('Tous les champs sont obligatoires');
+        setPostResponse('Tous les champs sont obligatoires');
     }
 }

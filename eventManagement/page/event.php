@@ -9,8 +9,7 @@
         $EventsDates = new \App\Plugin\EventManagement\EventsDates();
         $EventsDates->setEventId($Event->getId());
         $allEvents = $EventsDates->showAllEvent();
-        ?>
-        <?= getTitle($Event->getTitre(), $Page->getSlug()); ?>
+        echo getTitle($Event->getTitre(), getAppPageSlug()); ?>
         <div class="container">
             <div class="row">
                 <div class="col-12">

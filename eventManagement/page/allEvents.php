@@ -1,5 +1,5 @@
-<?php require('header.php'); ?>
-<?= getTitle($Page->getName(), $Page->getSlug()); ?>
+<?php require('header.php');
+echo getTitle( getAppPageName(), getAppPageSlug() ); ?>
     <div class="container-fluid">
         <?php
         $Event = new \App\Plugin\EventManagement\Event();

@@ -2,21 +2,11 @@
     <?php require('header.php'); ?>
     <?php $Auteur = new \App\Plugin\EventManagement\Auteur();
     $Auteur->setId($_GET['id']);
-    if ($Auteur->show()) : ?>
-        <?= getTitle($Page->getName(), $Page->getSlug()); ?>
+    if ($Auteur->show()) :
+        require_once(EVENTMANAGEMENT_PATH . 'process/updateAuteur.php');
+        echo getTitle( getAppPageName(), getAppPageSlug() );
+        showPostResponse(); ?>
         <div class="container">
-            <?php require_once(EVENTMANAGEMENT_PATH . 'process/updateAuteur.php'); ?>
-
-            <?php if (isset($Response)): ?>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="alert alert-<?= $Response->display()->status ?>" role="alert">
-                            <?= $Response->display()->error_msg; ?>
-                        </div>
-                    </div>
-                </div>
-            <?php endif; ?>
-
             <form action="" method="post" id="updateAuteurForm">
                 <?= getTokenField(); ?>
                 <input type="hidden" name="id" value="<?= $Auteur->getId() ?>">

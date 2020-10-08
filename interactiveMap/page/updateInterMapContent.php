@@ -1,13 +1,15 @@
 <?php
+
+use App\Plugin\InteractiveMap\InteractiveMap;
+
 require('header.php');
-if (!empty($_GET['id'])): ?>
-    <?php
+if (!empty($_GET['id'])):
     require(INTERACTIVE_MAP_PATH . 'process/postProcess.php');
-    $InteractiveMap = new \App\Plugin\InteractiveMap\InteractiveMap();
+    $InteractiveMap = new InteractiveMap();
     $InteractiveMap->setId($_GET['id']);
-    if ($InteractiveMap->show()) : ?>
-        <?php interMap_writeMapFile($InteractiveMap->getData(), $InteractiveMap->getTitle()); ?>
-        <?= getTitle($InteractiveMap->getTitle(), $Page->getSlug()); ?>
+    if ($InteractiveMap->show()) :
+        interMap_writeMapFile($InteractiveMap->getData(), $InteractiveMap->getTitle());
+        echo getTitle(getAppPageName(), getAppPageSlug()); ?>
         <div class="container">
             <div class="row">
                 <div class="col-12">
@@ -37,15 +39,7 @@ if (!empty($_GET['id'])): ?>
                 </div>
             </div>
             <div class="my-2"></div>
-            <?php if (isset($Response)): ?>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="alert alert-<?= $Response->display()->status ?>" role="alert">
-                            <?= $Response->display()->error_msg; ?>
-                        </div>
-                    </div>
-                </div>
-            <?php endif; ?>
+            <?php showPostResponse(); ?>
             <div class="my-1"></div>
             <div class="row">
                 <div class="col-12 col-lg-8">
@@ -265,8 +259,7 @@ if (!empty($_GET['id'])): ?>
                                                 '%; left: ' + parseFloat(left).toFixed(4) +
                                                 '%;" data-location="' + id + '"></a>');
                                         freeToAdd = true;
-                                    }
-                                    else if (data == 'false' || data === false) {
+                                    } else if (data == 'false' || data === false) {
                                         $('#pointContenair').html('<?= trans('Cet emplacement est déjà réservé'); ?>');
                                         freeToAdd = true;
                                     } else {
@@ -307,10 +300,10 @@ if (!empty($_GET['id'])): ?>
                 }
             });
         </script>
-    <?php else: ?>
-        <?= getContainerErrorMsg(trans('Cette page n\'existe pas')); ?>
-    <?php endif; ?>
-<?php else: ?>
-    <?= trans('Cette page n\'existe pas'); ?>
-<?php endif; ?>
-<?php require('footer.php'); ?>
+    <?php else:
+        echo getContainerErrorMsg(trans('Cette page n\'existe pas'));
+    endif;
+else:
+    echo trans('Cette page n\'existe pas');
+endif;
+require('footer.php'); ?>

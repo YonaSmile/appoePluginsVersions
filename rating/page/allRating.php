@@ -2,8 +2,7 @@
 require('header.php');
 $unconfirmedRating = getUnconfirmedRates();
 $allRating = getAllRates();
-?>
-<?= getTitle($Page->getName(), $Page->getSlug()); ?>
+echo getTitle( getAppPageName(), getAppPageSlug() ); ?>
     <div class="container">
         <div class="row">
             <div class="col-12" id="allRatingTable"><i class="fas fa-circle-notch fa-spin"></i></div>

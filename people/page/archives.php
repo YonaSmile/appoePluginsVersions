@@ -1,10 +1,9 @@
-<?php require('header.php'); ?>
-<?= getTitle($Page->getName(), $Page->getSlug()); ?>
+<?php require('header.php');
+echo getTitle( getAppPageName(), getAppPageSlug() );
+$People = new \App\Plugin\People\People();
+$People->setStatus(0);
+$allPersons = $People->showAll(); ?>
     <div class="container-fluid">
-        <?php $People = new \App\Plugin\People\People();
-        $People->setStatus(0);
-        $allPersons = $People->showAll();
-        ?>
         <div class="row">
             <div class="col-12">
                 <div class="table-responsive">

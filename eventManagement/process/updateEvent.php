@@ -4,8 +4,6 @@ if (checkPostAndTokenRequest()) {
     //Clean data
     $_POST = cleanRequest($_POST);
 
-    $Response = new \App\Response();
-
     if (!empty($_POST['id'])
         && !empty($_POST['titre'])
         && !empty($_POST['auteurId'])
@@ -25,22 +23,13 @@ if (checkPostAndTokenRequest()) {
 
             //Delete post data
             unset($_POST);
-
-            $Response->status = 'success';
-            $Response->error_code = 0;
-            $Response->error_msg = trans('L\'évènement a été mise à jour');
+            setPostResponse('L\'évènement a été mise à jour', 'success');
 
         } else {
-
-            $Response->status = 'danger';
-            $Response->error_code = 1;
-            $Response->error_msg = trans('Un problème est survenu lors de la mise à jour de l\'évènement');
+            setPostResponse('Un problème est survenu lors de la mise à jour de l\'évènement');
         }
 
     } else {
-
-        $Response->status = 'danger';
-        $Response->error_code = 1;
-        $Response->error_msg = trans('Le titre, la description, la durée et l\'auteur de l\'évènement sont obligatoires');
+        setPostResponse('Le titre, la description, la durée et l\'auteur de l\'évènement sont obligatoires');
     }
 }

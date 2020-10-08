@@ -42,6 +42,7 @@ if (checkAjaxRequest()) {
                 interMap_writeMapFile($InteractiveMap->getData(), $InteractiveMap->getTitle());
                 echo trans('La nouvelle catégorie a été enregistré');
             }
+            exit();
         }
 
         //Archive Map
@@ -52,6 +53,7 @@ if (checkAjaxRequest()) {
             if ($InteractiveMap->update()) {
                 echo 'true';
             }
+            exit();
         }
 
         //Update Map details
@@ -79,7 +81,7 @@ if (checkAjaxRequest()) {
                 interMap_writeMapFile($InteractiveMap->getData(), $InteractiveMap->getTitle());
                 echo 'true';
             }
-
+            exit();
         }
 
         //Delete primary details form Map
@@ -105,7 +107,7 @@ if (checkAjaxRequest()) {
                 interMap_writeMapFile($InteractiveMap->getData(), $InteractiveMap->getTitle());
                 echo 'true';
             }
-
+            exit();
         }
 
         // Add map location
@@ -157,6 +159,7 @@ if (checkAjaxRequest()) {
             } else {
                 echo 'false';
             }
+            exit();
         }
 
         //Update Map location details
@@ -190,6 +193,7 @@ if (checkAjaxRequest()) {
                 interMap_writeMapFile($InteractiveMap->getData(), $InteractiveMap->getTitle());
                 echo trans('Le point a été mis à jour');
             }
+            exit();
         }
 
         // Delete Map location
@@ -218,7 +222,7 @@ if (checkAjaxRequest()) {
                 interMap_writeMapFile($InteractiveMap->getData(), $InteractiveMap->getTitle());
                 echo trans('Le point a été supprimé');
             }
-
+            exit();
         }
 
         //Restart Map details
@@ -238,6 +242,7 @@ if (checkAjaxRequest()) {
                 interMap_writeMapFile($InteractiveMap->getData(), $InteractiveMap->getTitle());
                 echo 'true';
             }
+            exit();
         }
 
         // Add / Update location's thumbnail
@@ -285,6 +290,7 @@ if (checkAjaxRequest()) {
                 interMap_writeMapFile($InteractiveMap->getData(), $InteractiveMap->getTitle());
                 echo trans('L\'image a été enregistré');
             }
+            exit();
         }
     }
 }

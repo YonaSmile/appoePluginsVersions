@@ -4,8 +4,6 @@ if (checkPostAndTokenRequest()) {
     //Clean data
     $_POST = cleanRequest($_POST);
 
-    $Response = new \App\Response();
-
     if (isset($_POST['UPDATEPRODUCT'])
         && !empty($_POST['type'])
         && !empty($_POST['name'])
@@ -55,27 +53,16 @@ if (checkPostAndTokenRequest()) {
                 }
 
                 unset($_POST);
-
-                $Response->status = 'success';
-                $Response->error_msg = 'Le produit a été mis à jour';
+                setPostResponse('Le produit a été mis à jour', 'success');
 
             } else {
-
-                $Response->status = 'danger';
-                $Response->error_code = 1;
-                $Response->error_msg = 'Un problème est survenu lors de la mise à jour du produit';
+                setPostResponse('Un problème est survenu lors de la mise à jour du produit');
             }
         } else {
-
-            $Response->status = 'warning';
-            $Response->error_code = 2;
-            $Response->error_msg = trans('Le nom du produit exist déjà pour le même vendeur ou bien le lien du produit est déjà occupé');
+            setPostResponse('Le nom du produit exist déjà pour le même vendeur ou bien le lien du produit est déjà occupé', 'warning');
         }
 
     } else {
-
-        $Response->status = 'danger';
-        $Response->error_code = 1;
-        $Response->error_msg = trans('Tous les champs sont obligatoires');
+        setPostResponse('Tous les champs sont obligatoires');
     }
 }

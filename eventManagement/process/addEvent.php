@@ -4,8 +4,6 @@ if (checkPostAndTokenRequest()) {
     //Clean data
     $_POST = cleanRequest($_POST);
 
-    $Response = new \App\Response();
-
     if (!empty($_POST['titre'])
         && !empty($_POST['auteurId'])
         && !empty($_POST['description'])
@@ -26,27 +24,15 @@ if (checkPostAndTokenRequest()) {
 
                 //Delete post data
                 unset($_POST);
-
-                $Response->status = 'success';
-                $Response->error_code = 0;
-                $Response->error_msg = trans('Le nouvel évènement a été enregistré') . ' <a href="' . getPluginUrl('eventManagement/page/event/', $Event->getId()) . '">' . trans('Voir l\'évènement') . '</a>';
+                setPostResponse('Le nouvel évènement a été enregistré', 'success', ('<a href="' . getPluginUrl('eventManagement/page/event/', $Event->getId()) . '">' . trans('Voir l\'évènement') . '</a>'));
 
             } else {
-
-                $Response->status = 'danger';
-                $Response->error_code = 1;
-                $Response->error_msg = trans('Un problème est survenu lors de l\'enregistrement de l\'évènement');
+                setPostResponse('Un problème est survenu lors de l\'enregistrement de l\'évènement');
             }
         } else {
-
-            $Response->status = 'warning';
-            $Response->error_code = 2;
-            $Response->error_msg = trans('Cet évènement exist déjà');
+            setPostResponse('Cet évènement exist déjà', 'warning');
         }
     } else {
-
-        $Response->status = 'danger';
-        $Response->error_code = 1;
-        $Response->error_msg = trans('Le titre, la description, la durée et l\'auteur de l\'évènement sont obligatoires');
+        setPostResponse('Le titre, la description, la durée et l\'auteur de l\'évènement sont obligatoires');
     }
 }
