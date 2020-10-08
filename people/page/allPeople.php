@@ -36,7 +36,7 @@ echo getTitle( getAppPageName(), getAppPageSlug() ); ?>
                                 <td><?= $person->entitled ?></td>
                                 <td>
                                     <?php if (!empty($person->birthDate) && $person->birthDate != '0000-00-00'): ?>
-                                        <strong><?= $person->birthDate; ?></strong>
+                                        <strong><?= age($person->birthDate); ?></strong>
                                         <small>(<?= displayFrDate($person->birthDate); ?>)</small>
                                     <?php else: ?>
                                         -
