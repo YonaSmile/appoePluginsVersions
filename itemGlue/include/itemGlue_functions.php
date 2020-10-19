@@ -369,7 +369,6 @@ function getArticlesBySlug($slug)
 
                 if ($Article->showBySlug()) {
                     return getArticlesDataById($Article, $minLang);
-                    break;
                 }
             }
         }
