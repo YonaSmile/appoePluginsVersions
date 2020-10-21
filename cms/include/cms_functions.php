@@ -21,7 +21,7 @@ function loadPage($slug = 'home', $folder = 'html', $lang = LANG)
 
     //Check if Page exist and accessible
     if (!$existPage || $Cms->getStatut() != 1) {
-        if (inc(WEB_PUBLIC_PATH . $folder . DIRECTORY_SEPARATOR . $slug . '.php')) {
+        if (!inc(WEB_PUBLIC_PATH . $folder . DIRECTORY_SEPARATOR . $slug . '.php')) {
             return 'La page ' . $slug . ' n\'existe pas.';
         }
         return '';
