@@ -169,7 +169,7 @@ function mehoubarim_connectedUsers()
     //Get
     $parsed_json = mehoubarim_jsonRead();
 
-    return $parsed_json['users'];
+    return is_array($parsed_json) && array_key_exists('users', $parsed_json) ? $parsed_json['users'] : false;
 }
 
 /**
