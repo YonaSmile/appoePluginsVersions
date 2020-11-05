@@ -288,8 +288,10 @@ if (!empty($_GET['id'])):
                     var id = $(this).data('editor-id');
                     var textarea = $('textarea[data-editor-id="' + id + '"]');
 
-                    textarea.val($(this).html());
-                    updateCmsContent(textarea, textarea.val());
+                    if (getViewMode($(this)) === 'viewMode') {
+                        textarea.val($(this).html());
+                        updateCmsContent(textarea, textarea.val());
+                    }
                 });
 
                 $('#updateSlugAuto').on('change', function () {
