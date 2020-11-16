@@ -35,6 +35,31 @@ function loadPage($slug = 'home', $folder = 'html', $lang = LANG)
 }
 
 /**
+ * Load Page from public folder with param in array, who key is the name of the zone and value to replace it
+ * @param string $pathFromPublic
+ * @param array $params
+ * @example loadPageContent("html/header.php", ['en-tete' => $Article->getName()]);
+ */
+function loadPageContent(string $pathFromPublic, array $params)
+{
+    $path = WEB_PUBLIC_PATH . $pathFromPublic;
+
+    ob_start();
+    inc($path);
+    $pageContent = ob_get_clean();
+
+    if (preg_match_all("/{{(.*?)}}/", $pageContent, $match)) {
+
+        foreach ($match[1] as $i => $zone) {
+            $zone = strpos($zone, '_') ? strstr($zone, '_', true) : $zone;
+            $pageContent = str_replace($match[0][$i], sprintf('%s', !empty($params[$zone]) ? $params[$zone] : ''), $pageContent);
+        }
+    }
+
+    echo trim($pageContent);
+}
+
+/**
  * Load plugin page with "loadPage"
  *
  * @param string $slug
