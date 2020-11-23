@@ -162,7 +162,7 @@ if (!empty($_GET['id'])):
 
                 var idCms = '<?= $Cms->getId(); ?>';
                 var idCmsContent = $input.attr('data-idcmscontent');
-                var metaKey = $input.attr('id');
+                var metaKey = $input.attr('name');
 
                 delay(function () {
                     $.post(
