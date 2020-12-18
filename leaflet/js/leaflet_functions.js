@@ -32,34 +32,38 @@ function leaflet_marker_show(options = []) {
         otherTile: '',
         zoom: 14,
         minWidth: 100,
+        openPopup: true
     };
 
     //Merge options
     jQuery.extend(mapOptions, options);
 
     //Check for lngLat
-    if (!jQuery.isEmptyObject(mapOptions['lngLat'])) {
+    if (!jQuery.isEmptyObject(mapOptions.lngLat)) {
 
         //Get MAP
-        var map = leaflet_getMap(mapOptions['lngLat'], mapOptions['zoom'], mapOptions['otherTile']);
+        var map = leaflet_getMap(mapOptions.lngLat, mapOptions.zoom, mapOptions.otherTile);
 
         if (map) {
 
             //Get marker
             var rootImg = WEB_PLUGIN_URL + 'leaflet/icons/';
             var Icon = L.icon({
-                iconUrl: mapOptions.markerName ? rootImg + mapOptions.markerName + '.png' : rootImg + 'black.png',
+                iconUrl: mapOptions.markerName ? mapOptions.markerName : rootImg + 'black.png',
 
                 iconSize: [mapOptions.markerSize, 'auto'],
                 iconAnchor: [(mapOptions.markerSize / 2), mapOptions.markerSize],
                 popupAnchor: [0, -mapOptions.markerSize]
             });
 
-            var marker = new L.Marker(mapOptions['lngLat'], {title: mapOptions['title'], icon: Icon}).addTo(map);
+            var marker = new L.Marker(mapOptions.lngLat, {title: mapOptions.title, icon: Icon}).addTo(map);
 
             //Add popup
-            if (mapOptions['html']) {
-                marker.bindPopup(mapOptions['html'], {minWidth: mapOptions['minWidth']}).openPopup();
+            if (mapOptions.html) {
+                marker.bindPopup(mapOptions.html, {minWidth: mapOptions.minWidth});
+                if (mapOptions.openPopup) {
+                    marker.openPopup();
+                }
             }
 
             //Resize map
