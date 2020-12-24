@@ -220,7 +220,7 @@ class CmsMenu
         FROM ' . TABLEPREFIX . 'appoe_plugin_cms_menu AS acm 
         LEFT JOIN ' . TABLEPREFIX . 'appoe_plugin_cms AS ac 
         ON (acm.idCms = ac.id) 
-        WHERE ac.statut > 0 OR ac.statut IS NULL' . $locationCondition . ' 
+        WHERE (ac.statut > 0 OR ac.statut IS NULL)' . $locationCondition . ' 
         ORDER BY acm.parentId ASC, acm.position ASC';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':lang', $lang);
