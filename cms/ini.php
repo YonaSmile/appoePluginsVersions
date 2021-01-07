@@ -2,6 +2,10 @@
 define('CMS_PATH', WEB_PLUGIN_PATH . 'cms/');
 define('CMS_URL', WEB_PLUGIN_URL . 'cms/');
 
+if (!defined('CACHE_PATH')) {
+    define('CACHE_PATH', ROOT_PATH . 'static/');
+}
+
 const PLUGIN_TABLES = array(
 	TABLEPREFIX.'appoe_plugin_cms',
 	TABLEPREFIX.'appoe_plugin_cms_menu',

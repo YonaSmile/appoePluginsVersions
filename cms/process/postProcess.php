@@ -4,6 +4,8 @@ use App\Plugin\Cms\Cms;
 use App\Plugin\Cms\CmsContent;
 use App\Plugin\Cms\CmsMenu;
 
+require_once('../include/cms_functions.php');
+
 if (checkPostAndTokenRequest()) {
 
     //Clean data
@@ -81,6 +83,10 @@ if (checkPostAndTokenRequest()) {
             }
 
             if ($cmsUpdate) {
+
+                clearPageCache(APP_LANG, $_POST['slug'] . '.php');
+
+
                 $CmsContent = new CmsContent();
                 $CmsContent->setIdCms($_POST['id']);
                 $CmsContent->setType('HEADER');

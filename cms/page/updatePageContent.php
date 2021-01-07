@@ -45,7 +45,7 @@ if (!empty($_GET['id'])):
                         <td><?= $Cms->getId(); ?></td>
                         <td><?= $Cms->getType(); ?></td>
                         <td><?= $Cms->getFilename(); ?></td>
-                        <td><?= $Cms->getSlug(); ?></td>
+                        <td data-slug-page="<?= $Cms->getSlug(); ?>"><?= $Cms->getSlug(); ?></td>
                         <td><?= $Cms->getMenuName(); ?></td>
                         <td><?= $Cms->getName(); ?></td>
                         <td class="text-left"><?= $Cms->getDescription(); ?></td>
@@ -172,7 +172,8 @@ if (!empty($_GET['id'])):
                             id: idCmsContent,
                             idCms: idCms,
                             metaKey: metaKey,
-                            metaValue: metaValue
+                            metaValue: metaValue,
+                            pageSlug: $('td[data-slug-page]').data('slug-page')
                         },
                         function (data) {
                             if (data) {
@@ -347,7 +348,7 @@ if (!empty($_GET['id'])):
                         $btn.html(loaderHtml());
 
                         busyApp(false);
-                        $.post('/app/ajax/config.php', {
+                        $.post('<?= CMS_URL; ?>process/ajaxProcess.php', {
                             clearPageCache: 'OK',
                             pageSlug: $btn.data('page-slug'),
                             pageLang: $btn.data('page-lang')

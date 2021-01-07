@@ -4,6 +4,10 @@ use App\Plugin\Cms\Cms;
 use App\Plugin\Cms\CmsContent;
 use App\Template;
 
+if (!defined('CACHE_PATH')) {
+    define('CACHE_PATH', ROOT_PATH . 'static/');
+}
+
 /**
  * Load page as include
  *
@@ -82,4 +86,47 @@ function getCmsHeaders($idCms, $lang)
 {
     $CmsContent = new CmsContent($idCms, $lang, true);
     return $CmsContent->getData();
+}
+
+/**
+ * delete all cache in folders
+ */
+function clearCache()
+{
+
+    if (is_dir(CACHE_PATH)) {
+        foreach (getLangs() as $lang => $language) {
+            if (is_dir(CACHE_PATH . $lang)) {
+                foreach (glob(CACHE_PATH . $lang . '/*') as $file) {
+                    unlink($file);
+                }
+            }
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+/**
+ * delete cache file
+ *
+ * @param $lang
+ * @param $file
+ * @return bool
+ */
+function clearPageCache($lang, $file)
+{
+
+    if (is_dir(CACHE_PATH . $lang)) {
+
+        if (file_exists(CACHE_PATH . $lang . DIRECTORY_SEPARATOR . $file)) {
+            unlink(CACHE_PATH . $lang . DIRECTORY_SEPARATOR . $file);
+        }
+
+        return true;
+    }
+
+    return false;
 }
