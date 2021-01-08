@@ -21,7 +21,7 @@ function resetMetas() {
     $('form#addArticleMetaForm input#metaKey').val('');
     $('form#addArticleMetaForm textarea#metaValue').val('');
     var idEditor = $('textarea#metaValue').data('editor-id');
-    $('div.inlineAppoeditor[data-editor-id="'+idEditor+'"]').html('');
+    $('div.inlineAppoeditor[data-editor-id="' + idEditor + '"]').html('');
     $('form#addArticleMetaForm').trigger("reset").blur();
     return true;
 }
@@ -90,26 +90,33 @@ $(document).ready(function () {
             busyApp();
 
             var idEditor = $('textarea#metaValue').data('editor-id');
-            var textareaEditor = $('div.inlineAppoeditor[data-editor-id="'+idEditor+'"]');
+            var textareaEditor = $('div.inlineAppoeditor[data-editor-id="' + idEditor + '"]');
+            let idMeta = $('input[name="UPDATEMETAARTICLE"]').val();
 
             var data = {
                 ADDARTICLEMETA: 'OK',
-                UPDATEMETAARTICLE: $('input[name="UPDATEMETAARTICLE"]').val(),
+                UPDATEMETAARTICLE: idMeta,
                 idArticle: $('input[name="idArticle"]').val(),
                 metaKey: $('input#metaKey').val(),
                 metaValue: $('#metaDataAvailable').is(':checked')
-                    ? textareaEditor.html().replace(/(<([^>]+)>)/ig,"")
+                    ? textareaEditor.html().replace(/(<([^>]+)>)/ig, "")
                     : textareaEditor.html()
             };
 
             addMetaArticle(data).done(function (results) {
-                if (results == 'true') {
+                if (results == 'true' || results === true) {
+
+                    notification('<strong>' + $('input#metaKey').val() + '</strong> à été enregistré !');
 
                     //clear form
                     resetMetas();
 
                     $articleMetaContainer.html(loaderHtml())
-                        .load(WEB_ITEMGLUE_URL + 'page/getMetaArticle.php?idArticle=' + $articleMetaContainer.data('article-id'));
+                        .load(WEB_ITEMGLUE_URL + 'page/getMetaArticle.php?idArticle=' + $articleMetaContainer.data('article-id'), function (){
+                            $('button.metaProductTitle-' + idMeta).trigger('click');
+                        });
+                } else {
+                    notification('Une erreur est survenu lors de l\'enregistrement de ' + $('input#metaKey').val(), 'danger');
                 }
 
                 $('[type="submit"]', $form).attr('disabled', false).html('Enregistrer').removeClass('disabled');
@@ -128,7 +135,7 @@ $(document).ready(function () {
             $('input[name="UPDATEMETAARTICLE"]').val(idMetaArticle);
             $('input#metaKey').val($.trim(title));
             var idEditor = $('textarea#metaValue').data('editor-id');
-            $('div.inlineAppoeditor[data-editor-id="'+idEditor+'"]').html(content);
+            $('div.inlineAppoeditor[data-editor-id="' + idEditor + '"]').html(content);
             $('textarea#metaValue').val(content)
         });
 

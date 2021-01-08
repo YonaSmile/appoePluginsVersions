@@ -184,7 +184,7 @@ if (!empty($_GET['id'])):
                         <div class="col-12 col-lg-6">
                             <div id="metaArticleContenair" data-article-id="<?= $Article->getId(); ?>"></div>
                         </div>
-                        <div class="col-12 col-lg-6" style="box-shadow: -100px 0px 6px -100px #ccc;">
+                        <div class="col-12 col-lg-6" style="box-shadow: -100px 0 70px -100px #ccc;">
                             <div class="row">
                                 <div class="col-12 my-2">
                                     <div class="custom-control custom-checkbox">
