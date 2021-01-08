@@ -497,14 +497,16 @@ function getArtFeaturedImg($Article, $options = array())
 }
 
 /**
- * @param array $articleMetas
+ * @param object|array $article
  * @param $key
- * @return mixed|string
+ * @return string
  */
-function getArticleMeta($articleMetas, $key)
+function getArticleMeta($article, $key)
 {
-    if (is_array($articleMetas)) {
-        return !empty($articleMetas[$key]) ? htmlSpeCharDecode($articleMetas[$key]) : '';
+    if (is_object($article) && property_exists($article, 'metas')) {
+        return !empty($article->metas[$key]) ? htmlSpeCharDecode($article->metas[$key]) : '';
+    } elseif (is_array($article)) {
+        return !empty($article[$key]) ? htmlSpeCharDecode($article[$key]) : '';
     }
     return '';
 }
