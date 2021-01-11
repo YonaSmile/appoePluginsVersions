@@ -218,6 +218,7 @@ $(document).ready(function () {
                 function (data) {
                     if (data === true || data == 'true') {
                         $('tr[data-idarticle="' + idArticle + '"]').slideUp();
+                        $('div.card[data-idarticle="' + idArticle + '"]').fadeOut();
                         availableApp();
                     }
                 }
