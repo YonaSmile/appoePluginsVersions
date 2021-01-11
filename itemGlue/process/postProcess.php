@@ -260,7 +260,9 @@ if (checkPostAndTokenRequest()) {
         if (!empty($_FILES)) {
             $ArticleMedia->setUploadFiles($_FILES['inputFile']);
             $files = $ArticleMedia->upload();
-            $html .= trans('Fichiers importés') . ' : <strong>' . $files['countUpload'] . '</strong>. ' . (!empty($files['errors']) ? '<br><span class="text-danger">' . $files['errors'] . '</span>' : '');
+            $html .= trans('Fichiers importés') . ' : <strong>' . $files['countUpload'] . '</strong><br>'
+                . trans('Fichiers enregistrés dans la BDD') . ' : <strong>' . $files['countDbSaved'] . '</strong>'
+                . (!empty($files['errors']) ? '<br><span class="text-danger">' . $files['errors'] . '</span>' : '');
         }
 
         //Get selected files
