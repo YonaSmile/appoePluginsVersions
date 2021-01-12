@@ -118,6 +118,8 @@ if (checkPostAndTokenRequest()) {
                     //Update Headers
                     if ($ArticleContent->updateHeaders($headers)) {
 
+                        clearPageCache(APP_LANG, $_POST['slug'] . '.php');
+
                         //Delete post data
                         unset($_POST);
                         setPostResponse('Les en têtes de l\'article ont étés mises à jour', 'success');
