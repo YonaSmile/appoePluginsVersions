@@ -90,6 +90,10 @@ if (!empty($_GET['id'])):
                                    class="btn btn-primary btn-sm" target="_blank">
                                     <span class="fas fa-external-link-alt"></span> <?= trans('Visualiser l\'article'); ?>
                                 </a>
+                                <button class="btn btn-sm btn-outline-danger"
+                                        data-page-lang="<?= APP_LANG; ?>" data-page-slug="<?= $Article->getSlug(); ?>"
+                                        id="clearArticleCache"><i class="fas fa-eraser"></i> Vider le cache
+                                </button>
                                 <?php if (pluginExist('twitter')): ?>
                                     <button type="button" class="btn btn-primary btn-sm notPrint float-right ml-1"
                                             id="articleTwitterShareButton"

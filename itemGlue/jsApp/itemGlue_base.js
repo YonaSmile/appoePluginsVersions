@@ -162,6 +162,30 @@ $(document).ready(function () {
             location.assign(otherEventslink);
         });
 
+        $(document.body).on('click', '#clearArticleCache', function () {
+
+            if (confirm('Vous êtes sur le point de vider le cache de l\'article')) {
+
+                var $btn = $(this);
+                $btn.html(loaderHtml());
+
+                busyApp(false);
+                $.post('/app/plugin/cms/process/ajaxProcess.php', {
+                    clearPageCache: 'OK',
+                    pageSlug: $btn.data('page-slug'),
+                    pageLang: $btn.data('page-lang')
+                }).done(function (data) {
+                    if (data == 'true' || data === true) {
+                        $btn.html('<i class="fas fa-check"></i> Cache vidé!').blur()
+                            .removeClass('btn-outline-danger').addClass('btn-success');
+                    } else {
+                        alert('Un problème est survenu lors de la vidange du cache');
+                    }
+                    availableApp();
+                });
+            }
+        });
+
         $('#updateSlugAuto').on('change', function () {
             $('form#updateArticleHeadersForm input#slug').val(convertToSlug($('form#updateArticleHeadersForm input#name').val()));
         });
