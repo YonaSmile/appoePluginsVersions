@@ -426,6 +426,29 @@ function getCategoriesInArticle($article, $property = 'categoryNames')
 }
 
 /**
+ * @param $article
+ * @param $property
+ * @return string
+ */
+function slugifyCategoriesInArticle($article, $property = 'categoryNames')
+{
+    $categories = '';
+
+    if ($article) {
+        if (false !== strpos($article->$property, '||')) {
+            $categoriesArr = explode('||', $article->$property);
+            foreach($categoriesArr as &$cat){
+                $cat = slugify($cat);
+            }
+            $categories = implode('||', $categoriesArr);
+        } else {
+            $categories = slugify($article->$property);
+        }
+    }
+    return $categories;
+}
+
+/**
  * @param string $categories
  * @param string $separator
  * @return string
