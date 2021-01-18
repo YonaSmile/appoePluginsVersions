@@ -85,7 +85,7 @@ if (!empty($_GET['id'])):
                                class="btn btn-warning btn-sm">
                                 <span class="fas fa-wrench"></span> <?= trans('Modifier les en-têtes'); ?>
                             </a>
-                            <?php if (defined('DEFAULT_ARTICLES_PAGE')): ?>
+                            <?php if (defined('DEFAULT_ARTICLES_PAGE') && !empty(DEFAULT_ARTICLES_PAGE)): ?>
                                 <a href="<?= webUrl(DEFAULT_ARTICLES_PAGE . '/', $Article->getSlug()); ?>"
                                    class="btn btn-primary btn-sm" target="_blank">
                                     <span class="fas fa-external-link-alt"></span> <?= trans('Visualiser l\'article'); ?>
