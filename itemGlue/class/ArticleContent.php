@@ -112,7 +112,7 @@ class ArticleContent
 
     public function createTable()
     {
-        $sql = 'CREATE TABLE IF NOT EXISTS `'.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles_content` (
   					`id` INT(11) NOT NULL AUTO_INCREMENT,
                 	PRIMARY KEY (`id`),
                 	`idArticle` INT(11) NOT NULL,
@@ -139,7 +139,7 @@ class ArticleContent
     public function show()
     {
 
-        $sql = 'SELECT * FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content WHERE idArticle = :idArticle AND type = :type AND lang = :lang';
+        $sql = 'SELECT * FROM ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles_content WHERE idArticle = :idArticle AND type = :type AND lang = :lang';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':idArticle', $this->idArticle);
         $stmt->bindParam(':type', $this->type);
@@ -171,7 +171,7 @@ class ArticleContent
     public function save()
     {
 
-        $sql = 'INSERT INTO '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content (idArticle, type, content, lang) 
+        $sql = 'INSERT INTO ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles_content (idArticle, type, content, lang) 
                 VALUES (:idArticle, :type, :content, :lang)';
 
         $stmt = $this->dbh->prepare($sql);
@@ -205,7 +205,7 @@ class ArticleContent
         if (!isArrayEmpty($headers)) {
 
 
-            $sql = 'INSERT INTO '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content (idArticle, type, content, lang) 
+            $sql = 'INSERT INTO ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles_content (idArticle, type, content, lang) 
                 VALUES (?, ?, ?, ?)';
 
             $stmt = $this->dbh->prepare($sql);
@@ -236,7 +236,7 @@ class ArticleContent
     public function update()
     {
 
-        $sql = 'UPDATE '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content SET content = :content WHERE id = :id';
+        $sql = 'UPDATE ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles_content SET content = :content WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':content', $this->content);
@@ -264,7 +264,7 @@ class ArticleContent
 
         if (!isArrayEmpty($headers)) {
 
-            $sql = 'UPDATE '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content 
+            $sql = 'UPDATE ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles_content 
             SET content = :content WHERE idArticle = :idArticle AND type = :type AND lang = :lang';
 
             $stmt = $this->dbh->prepare($sql);
@@ -292,7 +292,7 @@ class ArticleContent
     public function delete()
     {
 
-        $sql = 'DELETE FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content WHERE idArticle = :idArticle';
+        $sql = 'DELETE FROM ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles_content WHERE idArticle = :idArticle';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':idArticle', $this->idArticle);
@@ -308,6 +308,16 @@ class ArticleContent
         }
     }
 
+    /**
+     * @param $slug
+     * @return bool
+     */
+    public function usedSlug($slug)
+    {
+        $sql = 'SELECT id FROM ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles_content WHERE type = "SLUG" AND content = :slug AND lang = :lang';
+        return DB::exec($sql, [':slug' => $slug, ':lang' => $this->lang])->rowCount() > 0;
+    }
+
 
     /**
      * @param bool $forUpdate
@@ -317,7 +327,7 @@ class ArticleContent
     public function notExist($forUpdate = false)
     {
 
-        $sql = 'SELECT id FROM '.TABLEPREFIX.'appoe_plugin_itemGlue_articles_content WHERE idArticle = :idArticle AND type = :type AND lang = :lang';
+        $sql = 'SELECT id FROM ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles_content WHERE idArticle = :idArticle AND type = :type AND lang = :lang';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':idArticle', $this->idArticle);
         $stmt->bindParam(':type', $this->type);

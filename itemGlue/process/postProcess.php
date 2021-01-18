@@ -34,44 +34,49 @@ if (checkPostAndTokenRequest()) {
                 $_POST['slug'] = substr($_POST['slug'], 0, -1);
             }
 
-            //Add Article
-            $Article->setStatut($_POST['statut']);
-            if ($Article->save()) {
+            $ArticleContent = new ArticleContent();
+            if (!$ArticleContent->usedSlug($_POST['slug'])) {
 
-                $ArticleContent = new ArticleContent();
-                $ArticleContent->setIdArticle($Article->getId());
+                //Add Article
+                $Article->setStatut($_POST['statut']);
+                if ($Article->save()) {
 
-                $headers = array(
-                    'NAME' => $_POST['name'],
-                    'DESCRIPTION' => $_POST['description'],
-                    'SLUG' => $_POST['slug']
-                );
+                    $ArticleContent->setIdArticle($Article->getId());
 
-                $ArticleContent->saveHeaders($headers);
+                    $headers = array(
+                        'NAME' => $_POST['name'],
+                        'DESCRIPTION' => $_POST['description'],
+                        'SLUG' => $_POST['slug']
+                    );
 
-                //Add Meta
-                if (defined('ARTICLE_META') && is_array(ARTICLE_META)) {
+                    $ArticleContent->saveHeaders($headers);
 
-                    $ArticleMeta = new ArticleMeta();
+                    //Add Meta
+                    if (defined('ARTICLE_META') && is_array(ARTICLE_META)) {
 
-                    foreach (getLangs() as $minLang => $largeLang) {
-                        foreach (ARTICLE_META as $metaKey => $metaValue) {
-                            $ArticleMeta->setIdArticle($Article->getId());
-                            $ArticleMeta->setMetaKey($metaKey);
-                            $ArticleMeta->setMetaValue($metaValue);
-                            $ArticleMeta->setLang($minLang);
-                            $ArticleMeta->save();
+                        $ArticleMeta = new ArticleMeta();
+
+                        foreach (getLangs() as $minLang => $largeLang) {
+                            foreach (ARTICLE_META as $metaKey => $metaValue) {
+                                $ArticleMeta->setIdArticle($Article->getId());
+                                $ArticleMeta->setMetaKey($metaKey);
+                                $ArticleMeta->setMetaValue($metaValue);
+                                $ArticleMeta->setLang($minLang);
+                                $ArticleMeta->save();
+                            }
                         }
+
                     }
 
+                    //Delete post data
+                    unset($_POST);
+                    setPostResponse('L\'article a été enregistré', 'success', ('<a href="' . getPluginUrl('itemGlue/page/articleContent/', $Article->getId()) . '">' . trans('Voir l\'article') . '</a>'));
+
+                } else {
+                    setPostResponse('Un problème est survenu lors de l\'enregistrement de l\'article');
                 }
-
-                //Delete post data
-                unset($_POST);
-                setPostResponse('L\'article a été enregistré', 'success', ('<a href="' . getPluginUrl('itemGlue/page/articleContent/', $Article->getId()) . '">' . trans('Voir l\'article') . '</a>'));
-
             } else {
-                setPostResponse('Un problème est survenu lors de l\'enregistrement de l\'article');
+                setPostResponse('Le slug "' . $_POST['slug'] . '" est déjà utilisé');
             }
 
         } else {
