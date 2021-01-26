@@ -20,7 +20,7 @@ echo getTitle(getAppPageName(), getAppPageSlug(), '', '<div class="position-abso
                         <tbody>
                         <?php foreach ($allArticles as $article): ?>
                             <tr data-idarticle="<?= $article->id ?>" data-description="<?= $article->description ?>"
-                                data-img="<?= getFirstImage(getFileTemplatePosition($article->medias, 1, true), '', 370, true); ?>">
+                                data-img="<?= getArtFeaturedImg($article, ['tempPos' => 1, 'thumbSize' => 370, 'onlyUrl' => true, 'webp' => true]); ?>">
                                 <td data-col="name"><?= $article->name ?></td>
                                 <td data-col="slug"><?= $article->slug ?></td>
                                 <td data-col="categories"><?= implode(', ', extractFromObjToSimpleArr(getCategoriesByArticle($article->id), 'name')); ?></td>
