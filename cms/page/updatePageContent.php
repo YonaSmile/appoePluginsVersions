@@ -198,9 +198,6 @@ if (!empty($_GET['id'])):
 
                 if (!$('.templateZoneTitle').length) {
                     zoning = false;
-                }
-
-                if (!zoning) {
                     $('#pageContentLoader').css('opacity', 0).slideUp(500);
                     $('#pageContentManageForm').show().addClass('row');
                 }
