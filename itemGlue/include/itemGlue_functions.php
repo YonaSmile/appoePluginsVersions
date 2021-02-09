@@ -15,34 +15,29 @@ use App\Plugin\ItemGlue\ArticleRelation;
 function getArticlesDataById($articleId, $lang = LANG)
 {
     if (is_numeric($articleId)) {
-        $Article = new Article($articleId);
+        $Article = new Article($articleId, $lang);
 
     } elseif (is_object($articleId)) {
         $Article = $articleId;
     } else {
-        $Article = false;
+        return false;
     }
 
-    if ($Article) {
+    //get article content
+    $Article->setContent(htmlSpeCharDecode($Article->getContent()));
 
-        //get article content
-        $Article->setContent(htmlSpeCharDecode($Article->getContent()));
+    //Get Media
+    $ArticleMedia = new ArticleMedia($Article->getId());
+    $Article->medias = $ArticleMedia->showFiles();
 
-        //Get Media
-        $ArticleMedia = new ArticleMedia($Article->getId());
-        $Article->medias = $ArticleMedia->showFiles();
+    //Get Metas
+    $ArticleMeta = new ArticleMeta($Article->getId(), $Article->getLang());
+    $Article->metas = $ArticleMeta->getData() ? extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue') : array();
 
-        //Get Metas
-        $ArticleMeta = new ArticleMeta($Article->getId(), $lang);
-        $Article->metas = $ArticleMeta->getData() ? extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue') : array();
+    //get all categories in relation with article
+    $Article->categories = extractFromObjToSimpleArr(getCategoriesByArticle($Article->getId()), 'categoryId', 'name');
 
-        //get all categories in relation with article
-        $Article->categories = extractFromObjToSimpleArr(getCategoriesByArticle($Article->getId()), 'categoryId', 'name');
-
-        return $Article;
-    }
-
-    return false;
+    return $Article;
 }
 
 /**
@@ -304,7 +299,7 @@ function getSpecificArticlesCategory($categoryId, $parentId = false, $favorite =
 /**
  * Obsolète function
  * @param $slug
- * @return bool
+ * @return bool|array
  */
 function getSpecificArticlesDetailsBySlug($slug)
 {
@@ -353,24 +348,8 @@ function getArticlesBySlug($slug)
         //get article
         $Article = new Article();
         $Article->setSlug($slug);
-
-        if ($Article->showBySlug()) {
-            return getArticlesDataById($Article);
-        }
-
-        //Check for other languages
-        $testedLang = array(LANG);
-
-        foreach (getLangs() as $minLang => $largeLang) {
-            if (!in_array($minLang, $testedLang)) {
-
-                $testedLang[] = $minLang;
-                $Article->setLang($minLang);
-
-                if ($Article->showBySlug()) {
-                    return getArticlesDataById($Article, $minLang);
-                }
-            }
+        if ($ArticleBySlug = $Article->getBySlug()) {
+            return getArticlesDataById($ArticleBySlug->idArticle, $ArticleBySlug->lang);
         }
     }
     return false;
@@ -437,7 +416,7 @@ function slugifyCategoriesInArticle($article, $property = 'categoryNames')
     if ($article) {
         if (false !== strpos($article->$property, '||')) {
             $categoriesArr = explode('||', $article->$property);
-            foreach($categoriesArr as &$cat){
+            foreach ($categoriesArr as &$cat) {
                 $cat = slugify($cat);
             }
             $categories = implode('||', $categoriesArr);

@@ -17,11 +17,12 @@ class Article
     private $createdAt;
     private $updatedAt;
 
-    private $lang = LANG;
+    private $lang;
 
-    public function __construct($idArticle = null)
+    public function __construct($idArticle = null, $lang = LANG)
     {
         $this->userId = getUserIdSession();
+        $this->lang = $lang;
 
         if (!is_null($idArticle)) {
             $this->id = $idArticle;
@@ -248,6 +249,23 @@ class Article
             return true;
         }
 
+        return false;
+    }
+
+    /**
+     * @return bool|array
+     */
+    public function getBySlug()
+    {
+
+        $sql = 'SELECT AC.*, A.statut FROM ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles_content AS AC
+        INNER JOIN ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles AS A
+        ON(AC.idArticle = A.id)
+        WHERE AC.type = "SLUG" AND AC.content = :slug AND A.statut >= :statut';
+
+        if ($return = DB::exec($sql, [':slug' => $this->slug, ':statut' => $this->statut])) {
+            return $return->fetch(PDO::FETCH_OBJ);
+        }
         return false;
     }
 
