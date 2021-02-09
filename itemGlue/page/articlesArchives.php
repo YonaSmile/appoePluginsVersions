@@ -35,14 +35,12 @@ echo getTitle(getAppPageName(), getAppPageSlug());
                                        class="btn btn-sm" title="<?= trans('Consulter'); ?>">
                                         <span class="btnUpdate"><i class="fas fa-cog"></i></span>
                                     </a>
-                                    <?php if (isTechnicien(getUserRoleId())): ?>
-                                        <button type="button" class="btn btn-sm deleteArticle"
-                                                title="<?= trans('Supprimer'); ?>"
-                                                data-idarticle="<?= $article->id ?>"
-                                                data-confirm-msg="<?= trans('Vous allez supprimer définitivement cet article'); ?>">
-                                            <span class="btnArchive"><i class="fas fa-times"></i></span>
-                                        </button>
-                                    <?php endif; ?>
+                                    <button type="button" class="btn btn-sm deleteArticle"
+                                            title="<?= trans('Supprimer'); ?>"
+                                            data-idarticle="<?= $article->id ?>"
+                                            data-confirm-msg="<?= trans('Vous allez supprimer définitivement cet article'); ?>">
+                                        <span class="btnArchive"><i class="fas fa-times"></i></span>
+                                    </button>
                                     <button type="button" class="btn btn-sm unpackArticle"
                                             data-confirm-msg="<?= trans('Vous allez désarchiver cet article'); ?>"
                                             title="<?= trans('désarchiver'); ?>"
