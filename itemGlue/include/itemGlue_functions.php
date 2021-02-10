@@ -349,7 +349,7 @@ function getArticlesBySlug($slug)
         $Article = new Article();
         $Article->setSlug($slug);
         if ($ArticleBySlug = $Article->getBySlug()) {
-            return getArticlesDataById($ArticleBySlug->idArticle, $ArticleBySlug->lang);
+            return getArticlesDataById($ArticleBySlug->idArticle);
         }
     }
     return false;
