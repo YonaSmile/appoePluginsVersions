@@ -2,7 +2,7 @@
 
 use App\Plugin\Cms\Cms;
 use App\Plugin\Cms\CmsContent;
-use App\Template;
+use App\Plugin\Cms\CmsTemplate;
 
 if (!defined('CACHE_PATH')) {
     define('CACHE_PATH', ROOT_PATH . 'static/');
@@ -34,7 +34,7 @@ function loadPage($slug = 'home', $folder = 'html', $lang = LANG)
     $CmsContent = new CmsContent($Cms->getId(), $lang);
 
     //Get page content in template
-    $Template = new Template(WEB_PATH . $Cms->getFilename() . '.php', $CmsContent->getData(), true);
+    $Template = new CmsTemplate(WEB_PATH . $Cms->getFilename() . '.php', $CmsContent->getData(), true);
     return $Template->get();
 }
 

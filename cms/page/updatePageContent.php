@@ -4,7 +4,7 @@ require('header.php');
 use App\Form;
 use App\Plugin\Cms\Cms;
 use App\Plugin\Cms\CmsContent;
-use App\Template;
+use App\Plugin\Cms\CmsTemplate;
 
 require(CMS_PATH . 'process/postProcess.php');
 
@@ -96,7 +96,7 @@ if (!empty($_GET['id'])):
                     <i class="fas fa-circle-notch fa-spin"></i> Chargement...</span>
                 <form action="" method="post" class="col-12" id="pageContentManageForm" style="display:none;">
                     <?php
-                    $Template = new Template(WEB_PATH . $Cms->getFilename() . '.php', $CmsContent->getData());
+                    $Template = new CmsTemplate(WEB_PATH . $Cms->getFilename() . '.php', $CmsContent->getData());
                     $Template->show(); ?>
                 </form>
                 <nav id="headerLinks" class="btn-group-vertical"
