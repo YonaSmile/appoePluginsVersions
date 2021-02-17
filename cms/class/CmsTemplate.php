@@ -1,6 +1,9 @@
 <?php
 
 namespace App\Plugin\Cms;
+
+use App\Form;
+
 class CmsTemplate
 {
     protected $pageDbData;
