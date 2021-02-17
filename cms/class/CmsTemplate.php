@@ -111,6 +111,7 @@ class CmsTemplate
     public function buildHtmlAdminZone($zone)
     {
         $html = '';
+        $added = '';
         $col = $this->defaultCol;
 
         //Check for form types
@@ -129,6 +130,9 @@ class CmsTemplate
 
                 $zoneAddedOptions = $this->getParams($match[1][0]);
 
+                $added .= array_key_exists('size', $zoneAddedOptions) ? '<span class="badge badge-info">' . $zoneAddedOptions['size'] . 'px</span>&nbsp' : '';
+                $added .= $zoneAddedOptions['webp'] ? '<span class="badge badge-info">webp</span>' : '';
+
                 if (array_key_exists('col', $zoneAddedOptions)) {
                     $col = $zoneAddedOptions['col'];
                 }
@@ -138,7 +142,7 @@ class CmsTemplate
             }
 
             //Display input zone
-            $html .= '<div class="col-12 col-lg-' . $col . ' my-2 templateZoneInput">';
+            $html .= '<div class="col-12 col-lg-' . $col . ' my-2 templateZoneInput"><span class="float-right">' . $added . '</span>';
 
 
             //Check unique input
