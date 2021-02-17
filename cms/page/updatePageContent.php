@@ -85,15 +85,13 @@ if (!empty($_GET['id'])):
                 </div>
                 <div class="row my-2">
                     <div class="col-12 my-2">
-                        <div id="pageStatus"></div>
+                        <div id="pageStatus"><i class="fas fa-circle-notch fa-spin"></i> Chargement...</div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="row mb-2">
             <?php if (file_exists(WEB_PATH . $Cms->getFilename() . '.php')): ?>
-                <span id="pageContentLoader" class="col-12">
-                    <i class="fas fa-circle-notch fa-spin"></i> Chargement...</span>
                 <form action="" method="post" class="col-12" id="pageContentManageForm" style="display:none;">
                     <?php
                     $Template = new CmsTemplate(WEB_PATH . $Cms->getFilename() . '.php', $CmsContent->getData());

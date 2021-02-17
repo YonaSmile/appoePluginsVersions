@@ -82,7 +82,7 @@ class CmsTemplate
                 //Get data
                 list($metaKey, $formType, $params) = array_pad(explode('_', $adminZone), 3, '');
 
-                $DbZone = $this->pageDbData[$metaKey];
+                $DbZone = array_key_exists($metaKey, $this->pageDbData) ? $this->pageDbData[$metaKey] : false;
                 $value = !empty($DbZone) ? $this->formatText($DbZone->metaValue, $formType) : '';
 
                 //Get input params

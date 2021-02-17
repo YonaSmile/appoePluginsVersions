@@ -46,7 +46,7 @@ jQuery(document).ready(function ($) {
 
     if (!$('.templateZoneTitle').length) {
         zoning = false;
-        $('#pageContentLoader').css('opacity', 0).slideUp(500);
+        $pageStatus.html('');
         $('#pageContentManageForm').show().addClass('row');
     }
 
@@ -85,7 +85,7 @@ jQuery(document).ready(function ($) {
         });
 
         html += '</div>';
-        $('#pageContentLoader').css('opacity', 0).slideUp(500);
+        $pageStatus.html('');
         $('form#pageContentManageForm').html(html).fadeIn(500);
 
         let userNavbarHeight = $('#site header nav.navbar').height();
