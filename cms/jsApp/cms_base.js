@@ -74,8 +74,8 @@ jQuery(document).ready(function ($) {
         $('.templateZone').each(function (num, el) {
 
             let id = $(this).attr('id');
-            let title = $(this).find('h5').text();
-            $(el).find('h5').remove();
+            let title = $(this).find('h5.templateZoneTitle').text();
+            $(el).find('h5.templateZoneTitle').remove();
 
             //Card
             html += '<div class="card"><div class="card-header bgColorPrimary" id="heading' + id + '"><h2 class="mb-0"><button class="btn btn-link collapsed zoneTitleBtn" type="button" data-id="' + id + '" data-toggle="collapse" data-target="#collapse' + id + '" aria-expanded="false" aria-controls="collapse' + id + '">' + title + ' </button> </h2></div>';
