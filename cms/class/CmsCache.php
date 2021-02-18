@@ -98,8 +98,8 @@ class CmsCache
      */
     public function minifyHtml($buffer)
     {
-        $search = array("/\>[^\S ]+/s", "/[^\S ]+\</s", "/<!--(.|\s)*?-->/", "/\s+\n/", "/\n\s+/", "/ +/");
-        $replace = array(">", "<", "", "\n", "\n ", " ");
+        $search = array('/<!--(.*)-->/Uis','/[[:blank:]]+/');
+        $replace = array('', ' ');
         $buffer = preg_replace($search, $replace, $buffer);
         return $buffer;
     }
