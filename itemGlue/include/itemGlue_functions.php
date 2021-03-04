@@ -35,7 +35,8 @@ function getArticlesDataById($articleId, $lang = LANG)
     $Article->metas = $ArticleMeta->getData() ? extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue') : array();
 
     //get all categories in relation with article
-    $Article->categories = extractFromObjToSimpleArr(getCategoriesByArticle($Article->getId()), 'categoryId', 'name');
+    $Article->categoriesDetails = getCategoriesByArticle($Article->getId());
+    $Article->categories = extractFromObjToSimpleArr($Article->categoriesDetails, 'categoryId', 'name');
 
     return $Article;
 }
@@ -365,6 +366,24 @@ function getCategoriesByArticle($articleId)
     //get all categories in relation with article
     $CategoryRelation = new CategoryRelations('ITEMGLUE', $articleId);
     return $CategoryRelation->getData();
+}
+
+/**
+ * @param Article $Article
+ * @param $parentId
+ * @return array
+ */
+function getCategoriesInArticleByParent(App\Plugin\ItemGlue\Article $Article, $parentId)
+{
+    $categories = array();
+    if (property_exists($Article, 'categoriesDetails')) {
+        foreach ($Article->categoriesDetails as $category) {
+            if (is_object($category) && $category->parentId == $parentId) {
+                $categories[$category->categoryId] = $category->name;
+            }
+        }
+    }
+    return $categories;
 }
 
 /**
