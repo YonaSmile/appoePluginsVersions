@@ -7,13 +7,11 @@ if (checkAjaxRequest() && getUserIdSession()) {
 
     if (isset($_POST['updateTimeline'])) {
 
-        if (defined('INSTAGRAM_USERNAME') && !empty(INSTAGRAM_USERNAME)
-        && defined('INSTAGRAM_TOKEN') && !empty(INSTAGRAM_TOKEN)) {
+        if (defined('INSTAGRAM_TOKEN') && !empty(INSTAGRAM_TOKEN)) {
 
             $content = json_decode(instagram_getRecentMedia(), true);
             if (is_array($content)) {
                 $content['lastUpdate'] = date('Y-m-d H:i');
-                $content['link'] = 'https://www.instagram.com/' . INSTAGRAM_USERNAME . '/p/';
 
                 echo putJsonContent(WEB_PLUGIN_PATH . 'instagram/timeline.json', $content) ? json_encode(true) : json_encode(false);
                 exit();
