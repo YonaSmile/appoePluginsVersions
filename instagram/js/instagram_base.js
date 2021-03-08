@@ -9,9 +9,9 @@ function showInstagramTimeline(preferences = {}) {
         container: '#instagramTimelineContainer',
         thumbnail: false
     }
+    $.extend(options, preferences);
     let obj;
     let $timelineContainer = $(options.container);
-    $.merge(options, preferences);
 
     getInstagramTimelineFile().done(function (timeline) {
         if (timeline) {
