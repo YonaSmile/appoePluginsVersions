@@ -27,5 +27,7 @@ function showInstagramTimeline(preferences = {}) {
                 }
             }
         }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR, textStatus, errorThrown);
     });
 }
