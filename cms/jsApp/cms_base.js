@@ -207,7 +207,9 @@ jQuery(document).ready(function ($) {
             });
         }
     });
+});
 
+jQuery(window).on('load', function (){
     if ($('input.urlFile').length) {
         $pageStatus.html(loaderHtml() + ' Chargement des média.');
         $libraryContainer.load(WEB_APP_URL + 'lib/assets/mediaLibrary.php', function () {
