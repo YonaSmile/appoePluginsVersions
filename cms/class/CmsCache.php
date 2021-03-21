@@ -59,9 +59,9 @@ class CmsCache
      */
     public function start()
     {
-
-        $AppConfig = new \App\AppConfig();
-        if ('false' === $AppConfig->get('options', 'cacheProcess') || 'true' === $AppConfig->get('options', 'maintenance')) {
+        $maintenance = getOptionPreference('maintenance');
+        $cacheProcess = getOptionPreference('cacheProcess');
+        if ('false' === $cacheProcess || 'true' === $maintenance) {
             return false;
         }
 
@@ -98,7 +98,7 @@ class CmsCache
      */
     public function minifyHtml($buffer)
     {
-        $search = array('/<!--(.*)-->/Uis','/[[:blank:]]+/');
+        $search = array('/<!--(.*)-->/Uis', '/[[:blank:]]+/');
         $replace = array('', ' ');
         $buffer = preg_replace($search, $replace, $buffer);
         return $buffer;
