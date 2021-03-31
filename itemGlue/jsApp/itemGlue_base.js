@@ -293,7 +293,7 @@ $(document).ready(function () {
         }
     });
 
-    let artcileGridPreference = getCookie('articleGridPreferences');
+    let artcileGridPreference = window.localStorage.getItem('articleGridPreferences');
     if (artcileGridPreference === 'grid') {
         createArticleGridView();
         showArticlesGrid();
@@ -311,7 +311,7 @@ $(document).ready(function () {
     function showArticlesTable() {
 
         $('#displayArticleAsTable').prop('disabled', true);
-        setCookie('articleGridPreferences', 'table', 365);
+        window.localStorage.setItem('articleGridPreferences' , 'table');
 
         $('#articlesGridContainer').fadeOut('fast', function () {
             if (!$('#articlesTable').is(":visible")) {
@@ -324,8 +324,7 @@ $(document).ready(function () {
     function showArticlesGrid() {
 
         $('#displayArticleAsGrid').prop('disabled', true);
-        setCookie('articleGridPreferences', 'grid', 365);
-
+        window.localStorage.setItem('articleGridPreferences' , 'grid');
         $('#articlesTable').fadeOut('fast', function () {
             if (!$('#articlesGridContainer').is(":visible")) {
                 $('#articlesGridContainer').fadeIn('slow');
