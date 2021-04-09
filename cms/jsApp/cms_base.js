@@ -6,36 +6,41 @@ const idCms = $('table td[data-cms="id"]').text();
 const $headerLinks = $('#headerLinks');
 const $libraryContainer = $('#loadMediaLibrary');
 
+function updateCms($input, metaValue) {
+
+    let idCmsContent = $input.attr('data-idcmscontent');
+    let metaKey = $input.attr('name');
+    $.post(
+        WEB_CMS_PROCESS_URL + 'ajaxProcess.php',
+        {
+            'UPDATECMS': 'OK',
+            id: idCmsContent,
+            idCms: idCms,
+            metaKey: metaKey,
+            metaValue: metaValue,
+            pageSlug: $('td[data-slug-page]').data('slug-page')
+        },
+        function (data) {
+            if (data) {
+                if ($.isNumeric(data)) {
+                    $input.attr('data-idcmscontent', data);
+                }
+
+                $('small.categoryIdFloatContenaire').stop().fadeOut(function () {
+                    $('small.' + metaKey).html('Enregistré').stop().fadeIn();
+                });
+            }
+        }
+    );
+}
+
 function updateCmsContent($input, metaValue) {
 
     busyApp();
-    let idCmsContent = $input.attr('data-idcmscontent');
-    let metaKey = $input.attr('name');
-
     delay(function () {
-        $.post(
-            WEB_CMS_PROCESS_URL + 'ajaxProcess.php',
-            {
-                'UPDATECMS': 'OK',
-                id: idCmsContent,
-                idCms: idCms,
-                metaKey: metaKey,
-                metaValue: metaValue,
-                pageSlug: $('td[data-slug-page]').data('slug-page')
-            },
-            function (data) {
-                if (data) {
-                    if ($.isNumeric(data)) {
-                        $input.attr('data-idcmscontent', data);
-                    }
+        updateCms($input, metaValue);
+        availableApp();
 
-                    $('small.categoryIdFloatContenaire').stop().fadeOut(function () {
-                        $('small.' + metaKey).html('Enregistré').stop().fadeIn();
-                    });
-                    availableApp();
-                }
-            }
-        );
     }, 1000);
 }
 
@@ -124,6 +129,36 @@ jQuery(document).ready(function ($) {
         event.preventDefault();
     });
 
+    $(document.body).on('click', '#fillBlahBlah', function (event) {
+        event.preventDefault();
+        let $btn = $(this);
+
+        if (confirm('Vous allez préremplir tous les champs vide !')) {
+
+            $btn.html(loaderHtml() + ' Remplissage en cours');
+            let $allInput = $('form#pageContentManageForm input, form#pageContentManageForm textarea');
+            let count = 0;
+
+            $allInput.each(function (index, el) {
+                if (!$(el).val()) {
+                    let val;
+                    if ($(el).hasClass('urlFile')) {
+                        val = 'https://via.placeholder.com/1024x600';
+                    } else {
+                        val = 'Blabla blabla...';
+                    }
+                    $(el).val(val);
+                    updateCms($(el), val);
+                }
+                count++;
+            });
+
+            if ($allInput.length === count) {
+                $btn.html('Préremplie').removeClass('btn-outline-info').addClass('btn-outline-success disabled').attr('disabled', 'disabled');
+            }
+        }
+    });
+
     $(document.body).on('input', 'form#pageContentManageForm input, form#pageContentManageForm textarea, form#pageContentManageForm select', function (event) {
         event.preventDefault();
         updateCmsContent($(this), $(this).val());
@@ -209,7 +244,7 @@ jQuery(document).ready(function ($) {
     });
 });
 
-jQuery(window).on('load', function (){
+jQuery(window).on('load', function () {
     if ($('input.urlFile').length) {
         $pageStatus.html(loaderHtml() + ' Chargement des média.');
         $libraryContainer.load(WEB_APP_URL + 'lib/assets/mediaLibrary.php', function () {

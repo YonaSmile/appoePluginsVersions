@@ -89,6 +89,21 @@ function getCmsHeaders($idCms, $lang)
 }
 
 /**
+ * @param $idCms
+ * @return Cms|bool
+ */
+function getCmsById($idCms)
+{
+    $Cms = new Cms();
+    $Cms->setId($idCms);
+    $Cms->setLang(LANG);
+    if ($Cms->show()) {
+        return $Cms;
+    }
+    return false;
+}
+
+/**
  * delete all cache in folders
  */
 function clearCache()

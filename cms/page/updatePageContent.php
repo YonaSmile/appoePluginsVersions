@@ -69,7 +69,13 @@ if (!empty($_GET['id'])):
                                     data-page-lang="<?= APP_LANG; ?>" data-page-slug="<?= $Cms->getSlug(); ?>"
                                     id="clearPageCache"><i class="fas fa-eraser"></i> Vider le cache
                             </button>
-                        <?php endif; ?>
+                            <?php if (isTechnicien(getUserRoleId())): ?>
+                                <button class="btn btn-sm btn-outline-info"
+                                        data-page-lang="<?= APP_LANG; ?>" data-page-id="<?= $Cms->getId(); ?>"
+                                        id="fillBlahBlah"><i class="fas fa-paint-roller"></i> Préremplir la page
+                                </button>
+                            <?php endif;
+                        endif; ?>
                     </div>
                     <div class="col-12 col-lg-4 my-2 text-right">
                         <select class="custom-select custom-select-sm otherPagesSelect"
