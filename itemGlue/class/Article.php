@@ -478,13 +478,7 @@ class Article
             }
         }
 
-        $sql = 'SELECT ART.*, 
-        (SELECT cc1.content FROM ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = ART.id AND cc1.lang = :lang) AS name,
-        (SELECT cc2.content FROM ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles_content AS cc2 WHERE cc2.type = "DESCRIPTION" AND cc2.idArticle = ART.id AND cc2.lang = :lang) AS description,
-        (SELECT cc3.content FROM ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles_content AS cc3 WHERE cc3.type = "SLUG" AND cc3.idArticle = ART.id AND cc3.lang = :lang) AS slug,
-        (SELECT cc4.content FROM ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = ART.id AND cc4.lang = :lang) AS content,
-        GROUP_CONCAT(DISTINCT C.id SEPARATOR "||") AS categoryIds, GROUP_CONCAT(DISTINCT C.name SEPARATOR "||") AS categoryNames 
-        FROM ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles AS ART
+        $sql = 'SELECT ART.* FROM ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles AS ART
         INNER JOIN ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles_content AS AC
         ON(ART.id = AC.idArticle)
         INNER JOIN ' . TABLEPREFIX . 'appoe_categoryRelations AS CR 
@@ -500,7 +494,7 @@ class Article
         INNER JOIN ' . TABLEPREFIX . 'appoe_categories AS C
         ON(C.id = CR.categoryId)
         WHERE ART.id > :id AND CR.type = "ITEMGLUE" AND ART.statut >= 1 AND C.status > 0 AND AC.lang = :lang ' . $addSql . ')
-        AND AC.lang = :lang';
+        GROUP BY ART.id LIMIT 1';
 
         $params = array(':id' => $this->id, ':lang' => $lang);
 
@@ -509,8 +503,10 @@ class Article
         }
 
         if ($return = DB::exec($sql, $params)) {
-            $this->feed($return->fetch(PDO::FETCH_OBJ));
-            return true;
+            if ($return->rowCount() == 1) {
+                $this->feed($return->fetch(PDO::FETCH_OBJ));
+                return true;
+            }
         }
         return false;
     }
@@ -531,13 +527,7 @@ class Article
             }
         }
 
-        $sql = 'SELECT ART.*,
-        (SELECT cc1.content FROM ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = ART.id AND cc1.lang = :lang) AS name,
-        (SELECT cc2.content FROM ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles_content AS cc2 WHERE cc2.type = "DESCRIPTION" AND cc2.idArticle = ART.id AND cc2.lang = :lang) AS description,
-        (SELECT cc3.content FROM ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles_content AS cc3 WHERE cc3.type = "SLUG" AND cc3.idArticle = ART.id AND cc3.lang = :lang) AS slug,
-        (SELECT cc4.content FROM ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = ART.id AND cc4.lang = :lang) AS content,
-        GROUP_CONCAT(DISTINCT C.id SEPARATOR "||") AS categoryIds, GROUP_CONCAT(DISTINCT C.name SEPARATOR "||") AS categoryNames 
-        FROM ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles AS ART
+        $sql = 'SELECT ART.* FROM ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles AS ART
         INNER JOIN ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles_content AS AC
         ON(ART.id = AC.idArticle)
         INNER JOIN ' . TABLEPREFIX . 'appoe_categoryRelations AS CR 
@@ -553,7 +543,7 @@ class Article
         INNER JOIN ' . TABLEPREFIX . 'appoe_categories AS C
         ON(C.id = CR.categoryId)
         WHERE ART.id < :id AND CR.type = "ITEMGLUE" AND ART.statut >= 1 AND C.status > 0 AND AC.lang = :lang ' . $addSql . ')
-        AND AC.lang = :lang';
+        GROUP BY ART.id LIMIT 1';
 
         $params = array(':id' => $this->id, ':lang' => $lang);
 
@@ -562,8 +552,10 @@ class Article
         }
 
         if ($return = DB::exec($sql, $params)) {
-            $this->feed($return->fetch(PDO::FETCH_OBJ));
-            return true;
+            if ($return->rowCount() == 1) {
+                $this->feed($return->fetch(PDO::FETCH_OBJ));
+                return true;
+            }
         }
         return false;
     }
