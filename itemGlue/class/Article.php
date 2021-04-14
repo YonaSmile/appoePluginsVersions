@@ -508,14 +508,9 @@ class Article
             $params[':idCategory'] = $idCategory;
         }
 
-        $return = DB::exec($sql, $params);
-        if ($return) {
-
-            if ($return->rowCount() == 1) {
-
-                $this->feed($return->fetch(PDO::FETCH_OBJ));
-                return true;
-            }
+        if ($return = DB::exec($sql, $params)) {
+            $this->feed($return->fetch(PDO::FETCH_OBJ));
+            return true;
         }
         return false;
     }
@@ -566,14 +561,9 @@ class Article
             $params[':idCategory'] = $idCategory;
         }
 
-        $return = DB::exec($sql, $params);
-        if ($return) {
-
-            if ($return->rowCount() == 1) {
-
-                $this->feed($return->fetch(PDO::FETCH_OBJ));
-                return true;
-            }
+        if ($return = DB::exec($sql, $params)) {
+            $this->feed($return->fetch(PDO::FETCH_OBJ));
+            return true;
         }
         return false;
     }
