@@ -140,12 +140,25 @@ jQuery(document).ready(function ($) {
             let count = 0;
 
             $allInput.each(function (index, el) {
-                if (!$(el).val()) {
+                if (!$(el).val() || $(el).val() === '<br>') {
                     let val;
-                    if ($(el).hasClass('urlFile')) {
-                        val = 'https://via.placeholder.com/1024x600';
-                    } else {
-                        val = 'Blabla blabla...';
+                    if ($(el).prop('tagName') === 'INPUT') {
+                        if ($(el).hasClass('urlFile')) {
+                            val = 'https://via.placeholder.com/1024x600';
+                        } else if ($(el).attr('type') === 'url') {
+                            val = 'https://aoe-communication.com';
+                        } else if ($(el).attr('type') === 'tel') {
+                            val = '01 23 45 67 89';
+                        } else if ($(el).attr('type') === 'email') {
+                            val = 'exemple@domain.fr';
+                        } else {
+                            val = 'Lorem ipsum dolor sit amet';
+                        }
+                    } else if ($(el).prop('tagName') === 'TEXTAREA') {
+                        val = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi vehicula sed quam ut iaculis. Sed eu ligula rhoncus, viverra turpis nec, malesuada dui. Aliquam sed urna ut nisi facilisis luctus ut ut neque. Mauris ultricies auctor arcu id suscipit. Etiam non aliquet purus. Donec nunc tortor, eleifend a facilisis in, finibus at eros. Curabitur id tristique erat. In hac habitasse platea dictumst. Curabitur sed faucibus sapien. Maecenas faucibus ultricies nulla, id gravida elit faucibus nec. Nam pretium libero at ex tincidunt lacinia. Praesent sem odio, tempus quis iaculis sit amet, venenatis id dolor. Cras at nisi eget lacus rhoncus mattis eget sit amet dui. Praesent fringilla urna libero. Curabitur ut ultricies justo. ';
+                        if ($(el).hasClass('appoeditor')) {
+                            $('div.inlineAppoeditor[data-editor-id="' + $(el).data('editor-id') + '"]').html(val);
+                        }
                     }
                     $(el).val(val);
                     updateCms($(el), val);
@@ -154,7 +167,7 @@ jQuery(document).ready(function ($) {
             });
 
             if ($allInput.length === count) {
-                $btn.html('Préremplie').removeClass('btn-outline-info').addClass('btn-outline-success disabled').attr('disabled', 'disabled');
+                $btn.html('Préremplie').removeClass('btn-outline-dark').addClass('btn-outline-success disabled').attr('disabled', 'disabled');
             }
         }
     });

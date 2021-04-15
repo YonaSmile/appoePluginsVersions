@@ -70,7 +70,7 @@ if (!empty($_GET['id'])):
                                     id="clearPageCache"><i class="fas fa-eraser"></i> Vider le cache
                             </button>
                             <?php if (isTechnicien(getUserRoleId())): ?>
-                                <button class="btn btn-sm btn-outline-info"
+                                <button class="btn btn-sm btn-outline-dark"
                                         data-page-lang="<?= APP_LANG; ?>" data-page-id="<?= $Cms->getId(); ?>"
                                         id="fillBlahBlah"><i class="fas fa-paint-roller"></i> Préremplir la page
                                 </button>
