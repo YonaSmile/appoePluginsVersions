@@ -40,8 +40,8 @@ showPostResponse(); ?>
         </div>
         <div class="my-4"></div>
         <?php if (!empty($allContent)): ?>
-            <form action="" method="post" id="pageContentManageForm">
-                <div class="row" id="tradContainer">
+            <form id="pageTradManageForm" action="" method="post">
+                <div id="tradContainer" class="row">
                     <?php foreach ($allContent as $metaKey => $content): ?>
                         <div class="col-12 fileContent bg_grey_hover tradContent my-2">
                             <?= \App\Form::text($metaKey, $metaKey, 'text', $content['metaValue'], false, 250, 'data-idtrad="' . $content['id'] . '" autocomplet="off"'); ?>
@@ -52,12 +52,6 @@ showPostResponse(); ?>
                             </button>
                         </div>
                     <?php endforeach; ?>
-                </div>
-                <div class="my-3"></div>
-                <div class="row">
-                    <div class="col-12">
-                        <?= \App\Form::submit('Enregistrer', 'TRADSUBMIT'); ?>
-                    </div>
                 </div>
             </form>
         <?php else: ?>
@@ -106,11 +100,11 @@ showPostResponse(); ?>
     <script type="text/javascript">
         $(document).ready(function () {
 
-            $('form#pageContentManageForm').submit(function (event) {
+            $('form#pageTradManageForm').submit(function (event) {
                 event.preventDefault();
             });
 
-            $.each($('form#pageContentManageForm input, form#pageContentManageForm textarea'), function () {
+            $.each($('form#pageTradManageForm input, form#pageTradManageForm textarea'), function () {
                 var id = $(this).data('idtrad');
                 $('<small class="trad' + id + ' categoryIdFloatContenaire">').insertAfter($(this));
             });
@@ -128,7 +122,7 @@ showPostResponse(); ?>
                 $('input#metaValue-fr').val($('#metaKeySingle').val());
             });
 
-            $('form#pageContentManageForm').on('input', 'input', function (event) {
+            $('form#pageTradManageForm').on('input', 'input', function (event) {
                 event.preventDefault();
                 var $input = $(this);
                 var idContent = $input.data('idtrad');
@@ -152,10 +146,10 @@ showPostResponse(); ?>
                             }
                         }
                     )
-                }, 300);
+                }, 1000);
             });
 
-            $('form#pageContentManageForm').on('click', '.deleteTraduction', function (event) {
+            $('form#pageTradManageForm').on('click', '.deleteTraduction', function (event) {
                 event.preventDefault();
                 var $btn = $(this);
                 var keytrad = $btn.data('keytrad');
