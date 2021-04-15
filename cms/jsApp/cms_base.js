@@ -129,7 +129,7 @@ jQuery(document).ready(function ($) {
         event.preventDefault();
     });
 
-    $(document.body).on('click', '#fillBlahBlah', function (event) {
+    $(document.body).on('click', '#fillLorem', function (event) {
         event.preventDefault();
         let $btn = $(this);
 

@@ -72,7 +72,7 @@ if (!empty($_GET['id'])):
                             <?php if (isTechnicien(getUserRoleId())): ?>
                                 <button class="btn btn-sm btn-outline-dark"
                                         data-page-lang="<?= APP_LANG; ?>" data-page-id="<?= $Cms->getId(); ?>"
-                                        id="fillBlahBlah"><i class="fas fa-paint-roller"></i> Préremplir la page
+                                        id="fillLorem"><i class="fas fa-paint-roller"></i> Préremplir la page
                                 </button>
                             <?php endif;
                         endif; ?>
