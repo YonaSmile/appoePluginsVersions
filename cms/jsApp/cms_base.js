@@ -117,14 +117,6 @@ jQuery(document).ready(function ($) {
         $('<small class="' + $(this).attr('name') + ' categoryIdFloatContenaire">').insertAfter($(this));
     });
 
-    $(document.body).on('click', '#libraryModal .copyLinkOnClick', function (e) {
-        e.preventDefault();
-        var inputId = $libraryContainer.attr('data-inputid');
-        var src = $(this).parent().data('src');
-        $('#pageContentManageForm input#' + inputId).val(src).trigger('input');
-        $('#libraryModal').modal('hide');
-    });
-
     $(document.body).on('submit', 'form#pageContentManageForm', function (event) {
         event.preventDefault();
     });
@@ -218,15 +210,6 @@ jQuery(document).ready(function ($) {
             }, 3000));
         });
     }
-
-    $(document).on('dblclick', 'input.urlFile', function (event) {
-        event.stopPropagation();
-        event.preventDefault();
-
-        $('input[rel=cms-img-popover]').popover('hide');
-        $libraryContainer.attr('data-inputid', $(this).attr('id'));
-        $('#libraryModal').modal('show');
-    });
 
     $(document.body).on('change', '.otherPagesSelect', function () {
         location.assign($('option:selected', this).data('href'));
