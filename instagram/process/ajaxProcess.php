@@ -11,7 +11,7 @@ if (checkAjaxRequest() && getUserIdSession()) {
 
             $content = json_decode(instagram_getRecentMedia(), true);
             if (is_array($content)) {
-                $content['lastUpdate'] = date('Y-m-d H:i');
+                $content['lastUpdate'] = date('Y-m-d H:i:s');
 
                 echo putJsonContent(WEB_PLUGIN_PATH . 'instagram/timeline.json', $content) ? json_encode(true) : json_encode(false);
                 exit();

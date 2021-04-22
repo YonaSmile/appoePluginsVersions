@@ -3,7 +3,6 @@ require_once('header.php');
 if (!empty($_GET['resetStats']) && $_GET['resetStats'] === 'OK') mehoubarim_cleanVisitor();
 
 $visitors = mehoubarim_getVisitor();
-$globalData = mehoubarim_getGlobal();
 if ($visitors && is_array($visitors['visitors'])):
     foreach (MEHOUBARIM_TYPES as &$name) {
         if (array_key_exists($name, $visitors) && !isArrayEmpty($visitors[$name])) {
@@ -15,7 +14,7 @@ if ($visitors && is_array($visitors['visitors'])):
             <strong>
         <span class="colorSecondary">
             <i class="fas fa-clock"></i>
-        </span> <?= trans('Depuis'); ?> <?= !empty($globalData['dateBegin']) ? displayCompleteDate($globalData['dateBegin'], true) : ""; ?>
+        </span> <?= trans('Depuis'); ?> <?= !empty($visitors['dateBegin']) ? displayCompleteDate($visitors['dateBegin'], true) : ""; ?>
             </strong>
             <div class="my-4">
                 <div class="my-2 ml-0 ml-lg-4" style="position: relative;">

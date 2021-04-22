@@ -4,7 +4,6 @@ use App\ShinouiKatan;
 
 define('MEHOUBARIM_JSON', WEB_PLUGIN_PATH . 'mehoubarim/mehoubarim.json');
 define('VISITORS_JSON', WEB_PLUGIN_PATH . 'mehoubarim/visitors.json');
-define('GLOBAL_JSON', WEB_PLUGIN_PATH . 'mehoubarim/global.json');
 
 const STATUS_CONNECTED_USER = array(
     1 => 'success',
@@ -76,6 +75,7 @@ function mehoubarim_checkExistingFiles($file = null)
         }
 
         //Edit
+        $parsed_json['dateBegin'] = date('Y-m-d H:i:s');
         $parsed_json_visitors['visitors'] = array();
         foreach (MEHOUBARIM_TYPES as $type => $key) {
             $parsed_json_visitors[$key] = array();
@@ -83,19 +83,6 @@ function mehoubarim_checkExistingFiles($file = null)
 
         //Write
         mehoubarim_jsonWrite($parsed_json_visitors, VISITORS_JSON);
-    }
-
-    //Global File
-    if (!file_exists(GLOBAL_JSON)) {
-        if (false === fopen(GLOBAL_JSON, 'w+')) {
-            return mehoubarim_checkExistingFiles(GLOBAL_JSON);
-        }
-
-        //Edit
-        $parsed_json_global['dateBegin'] = date('Y-m-d H:i');
-
-        //Write
-        mehoubarim_jsonWrite($parsed_json_global, GLOBAL_JSON);
     }
 
     return true;
@@ -374,6 +361,7 @@ function mehoubarim_cleanVisitor()
     $parsed_json = mehoubarim_jsonRead(VISITORS_JSON);
 
     //Edit
+    $parsed_json['dateBegin'] = date('Y-m-d H:i:s');
     $parsed_json['visitors'] = array();
     foreach (MEHOUBARIM_TYPES as $type => $key) {
         $parsed_json[$key] = array();
@@ -381,25 +369,6 @@ function mehoubarim_cleanVisitor()
 
     //Write
     mehoubarim_jsonWrite($parsed_json, VISITORS_JSON);
-
-    //Get
-    $parsed_json = mehoubarim_jsonRead(GLOBAL_JSON);
-
-    //Edit
-    $parsed_json['dateBegin'] = date('Y-m-d H:i');
-
-    //Write
-    mehoubarim_jsonWrite($parsed_json, GLOBAL_JSON);
-
-}
-
-/**
- * get globals data
- */
-function mehoubarim_getGlobal()
-{
-    //Get
-    return mehoubarim_jsonRead(GLOBAL_JSON);
 }
 
 /**
