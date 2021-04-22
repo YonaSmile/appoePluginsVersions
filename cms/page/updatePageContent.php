@@ -89,11 +89,6 @@ if (!empty($_GET['id'])):
                         </select>
                     </div>
                 </div>
-                <div class="row my-2">
-                    <div class="col-12 my-2">
-                        <div id="pageStatus"><i class="fas fa-circle-notch fa-spin"></i> Chargement...</div>
-                    </div>
-                </div>
             </div>
         </div>
         <div class="row mb-2">
@@ -162,7 +157,6 @@ if (!empty($_GET['id'])):
                 </div>
             </div>
         </div>
-        <div id="loadMediaLibrary"></div>
     <?php else:
         echo getContainerErrorMsg(trans('Cette page n\'existe pas'));
     endif;

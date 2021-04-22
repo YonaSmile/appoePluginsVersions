@@ -1,10 +1,7 @@
 const WEB_CMS_URL = WEB_APP_URL + 'plugin/cms/';
 const WEB_CMS_PROCESS_URL = WEB_CMS_URL + 'process/';
-
-const $pageStatus = $('#pageStatus');
 const idCms = $('table td[data-cms="id"]').text();
 const $headerLinks = $('#headerLinks');
-const $libraryContainer = $('#loadMediaLibrary');
 
 function updateCms($input, metaValue) {
 
@@ -238,13 +235,4 @@ jQuery(document).ready(function ($) {
             });
         }
     });
-});
-
-jQuery(window).on('load', function () {
-    if ($('input.urlFile').length) {
-        $pageStatus.html(loaderHtml() + ' Chargement des média.');
-        $libraryContainer.load(WEB_APP_URL + 'lib/assets/mediaLibrary.php', function () {
-            $pageStatus.html('');
-        });
-    }
 });
