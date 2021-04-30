@@ -22,7 +22,7 @@ $.fn.mappoe = function () {
                 otherTile: $container.attr('data-other-tile') ? $container.attr('data-other-tile') : '',
                 zoom: $container.attr('data-zoom') ? parseInt($container.attr('data-zoom')) : 14,
                 minWidth: $container.attr('data-min-width') ? parseInt($container.attr('data-min-width')) : 100,
-                openPopup: !($container.attr('data-open-popup') && $container.attr('data-open-popup') === 'close')
+                openPopup: !($container.attr('data-popup') && $container.attr('data-popup') === 'close')
             };
 
             //Check for lngLat
