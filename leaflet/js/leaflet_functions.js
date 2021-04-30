@@ -8,7 +8,9 @@ $.fn.mappoe = function () {
                 let randomId = Math.floor((Math.random() * 1000) + 1);
                 $container.attr('id', randomId);
             }
-            $container.addClass('mappoe');
+            if(!$container.hasClass('mappoe')) {
+                $container.addClass('mappoe');
+            }
 
             let mapOptions = {
                 lng: $container.attr('data-lng'),
