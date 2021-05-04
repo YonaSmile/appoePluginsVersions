@@ -50,8 +50,7 @@ jQuery(document).ready(function ($) {
         zoning = false;
         $('#pageContentManageForm').show().addClass('row');
     }
-
-    $headerLinks.append('<small class="d-block text-center w-100"><strong>' + $headerLinks.data('title') + '</strong></small>');
+    $('#headerLinks').width($('#headerLinks').parent().width());
     $.each($('.templateZoneTitle'), function () {
 
         //Add anchor
@@ -60,12 +59,12 @@ jQuery(document).ready(function ($) {
         if (zoning) {
 
             $(this).removeAttr('id');
-            $('#headerLinks').append('<a class="btn btn-sm btn-outline-info" data-id="' + id + '" type="button" data-toggle="collapse" data-target="#collapse' + id + '">' + $(this).text() + '</a>');
+            $('#headerLinks').append('<a class="list-group-item list-group-item-action" data-id="' + id + '" type="button" data-toggle="collapse" data-target="#collapse' + id + '">' + $(this).text() + '</a>');
 
             //Add zone
             $(this).nextUntil('.templateZoneTitle').addBack().wrapAll('<div id="' + id + '" class="templateZone row my-2"></div>');
         } else {
-            $('#headerLinks').append('<a class="btn btn-sm btn-outline-info" href="#' + id + '">' + $(this).text() + '</a>');
+            $('#headerLinks').append('<a class="list-group-item list-group-item-action" href="#' + id + '">' + $(this).text() + '</a>');
         }
     });
 
@@ -189,22 +188,6 @@ jQuery(document).ready(function ($) {
     $('form#updatePageForm input#slug').on('focus', function () {
         $('form#updatePageForm input#name').unbind('keyup');
     });
-
-
-    if ($headerLinks.find('a').length) {
-        $(window).scroll(function () {
-
-            $headerLinks.css('transform', 'translate(0, -50%)');
-
-            clearTimeout($.data(this, 'scrollTimer'));
-            $.data(this, 'scrollTimer', setTimeout(function () {
-                if ($('a:hover', $headerLinks).length === 0) {
-                    $('a', $headerLinks).blur();
-                    $headerLinks.css('transform', 'translate(100%, -50%)');
-                }
-            }, 3000));
-        });
-    }
 
     $(document.body).on('change', '.otherPagesSelect', function () {
         location.assign($('option:selected', this).data('href'));

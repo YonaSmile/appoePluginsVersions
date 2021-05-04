@@ -27,9 +27,9 @@ if (!empty($_GET['id'])):
         echo getTitle(trans('Contenu de la page') . '<strong> ' . $Cms->getName() . '</strong>', getAppPageSlug());
         showPostResponse(); ?>
         <div class="row my-2">
-            <div class="table-responsive">
-                <table class="table noEffect">
-                    <thead class="thead-light">
+            <div class="col-12 table-responsive">
+                <table class="table table-sm">
+                    <thead>
                     <tr>
                         <th>ID</th>
                         <th><?= trans('Type'); ?></th>
@@ -91,19 +91,24 @@ if (!empty($_GET['id'])):
                 </div>
             </div>
         </div>
+
+        <?php if (file_exists(WEB_PATH . $Cms->getFilename() . '.php')): ?>
         <div class="row mb-2">
-            <?php if (file_exists(WEB_PATH . $Cms->getFilename() . '.php')): ?>
-                <form action="" method="post" class="col-12" id="pageContentManageForm" style="display:none;">
+            <div class="col-12 col-lg-10">
+                <form action="" method="post" id="pageContentManageForm" style="display:none;">
                     <?php
                     $Template = new CmsTemplate(WEB_PATH . $Cms->getFilename() . '.php', $CmsContent->getData());
                     $Template->show(); ?>
                 </form>
-                <nav id="headerLinks" class="btn-group-vertical"
-                     data-title="<?= ucfirst(mb_strtolower($Cms->getMenuName())); ?>"></nav>
-            <?php else: ?>
-                <p><?= trans('Model manquant'); ?></p>
-            <?php endif; ?>
+            </div>
+            <div class="d-none d-lg-block col-2 positionRelative">
+                <nav id="headerLinks" class="list-group list-group-flush"></nav>
+            </div>
         </div>
+    <?php else: ?>
+        <p><?= trans('Model manquant'); ?></p>
+    <?php endif; ?>
+
         <div class="modal fade" id="updatePageModal" tabindex="-1" role="dialog"
              aria-labelledby="updatePageModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
