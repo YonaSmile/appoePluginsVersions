@@ -4,6 +4,7 @@ use App\Plugin\ItemGlue\Article;
 
 $Article = new Article();
 $Article->setStatut(0);
+$Article->setLang(APP_LANG);
 $allArticles = $Article->showAll();
 
 echo getTitle(getAppPageName(), getAppPageSlug());
