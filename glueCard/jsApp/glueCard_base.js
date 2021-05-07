@@ -94,7 +94,7 @@ jQuery(document).ready(function ($) {
                 if (data === 'true' || data === true) {
                     loadHandles(handleId, true);
                 } else {
-                    showPageStatus('Un problème est survenu lors de la mise à jour de la catégorie', {delay:'5000'});
+                    notification('Un problème est survenu lors de la mise à jour de la catégorie', 'danger');
                 }
                 availableApp();
             });
@@ -118,7 +118,7 @@ jQuery(document).ready(function ($) {
                         loadHandles(0, true);
 
                     } else {
-                        showPageStatus('Un problème est survenu lors de l\'archivage de la catégorie', {delay:'5000'});
+                        notification('Un problème est survenu lors de l\'archivage de la catégorie', 'danger');
                     }
                     availableApp();
                 });
@@ -143,7 +143,7 @@ jQuery(document).ready(function ($) {
                         loadHandles(0, true);
 
                     } else {
-                        showPageStatus('Un problème est survenu lors de la suppression de la catégorie', {delay:'5000'});
+                        notification('Un problème est survenu lors de la suppression de la catégorie', 'danger');
                     }
                     availableApp();
                 });
@@ -167,7 +167,7 @@ jQuery(document).ready(function ($) {
                     if (data === 'true' || data === true) {
                         loadHandles(handleId, true);
                     } else {
-                        showPageStatus('Un problème est survenu lors du désarchivage de la catégorie', {delay:'5000'});
+                        notification('Un problème est survenu lors du désarchivage de la catégorie', 'danger');
                     }
                     availableApp();
                 });
@@ -187,7 +187,7 @@ jQuery(document).ready(function ($) {
                 if ($.isNumeric(newIdHandle)) {
                     loadHandles(newIdHandle, true);
                 } else {
-                    showPageStatus('Un problème est survenu lors de l\'enregistrement de la nouvelle catégorie', {delay:'5000'});
+                    notification('Un problème est survenu lors de l\'enregistrement de la nouvelle catégorie', 'danger');
                 }
                 availableApp();
             });
@@ -237,7 +237,7 @@ jQuery(document).ready(function ($) {
                 if (data === 'true' || data === true) {
                     loadHandles(newPlanHandleId, true);
                 } else {
-                    showPageStatus('Un problème est survenu lors de l\'enregistrement du nouveau plan', {delay:'5000'});
+                    notification('Un problème est survenu lors de l\'enregistrement du nouveau plan', 'danger');
                 }
                 availableApp();
             });
@@ -286,7 +286,7 @@ jQuery(document).ready(function ($) {
                 if (data === 'true' || data === true) {
                     loadHandles(handleId, true);
                 } else {
-                    showPageStatus('Un problème est survenu lors de la mise à jour du plan', {delay:'5000'});
+                    notification('Un problème est survenu lors de la mise à jour du plan', 'danger');
                 }
                 availableApp();
             });
@@ -310,7 +310,7 @@ jQuery(document).ready(function ($) {
                 if (data === 'true' || data === true) {
                     loadHandles(handleId, true);
                 } else {
-                    showPageStatus('Un problème est survenu lors de la mise à jour du plan', {delay:'5000'});
+                    notification('Un problème est survenu lors de la mise à jour du plan', 'danger');
                 }
                 availableApp();
             });
@@ -333,7 +333,7 @@ jQuery(document).ready(function ($) {
                 if (data === 'true' || data === true) {
                     loadCards(newItemHandleId);
                 } else {
-                    showPageStatus('Un problème est survenu lors de l\'enregistrement de la nouvelle carte', {delay:'5000'});
+                    notification('Un problème est survenu lors de l\'enregistrement de la nouvelle carte', 'danger');
                 }
                 availableApp();
             });
@@ -357,7 +357,7 @@ jQuery(document).ready(function ($) {
                 if (data === 'true' || data === true) {
                     loadCards(handleId);
                 } else {
-                    showPageStatus('Un problème est survenu lors de l\'archivage de la carte', {delay:'5000'});
+                    notification('Un problème est survenu lors de l\'archivage de la carte', 'danger');
                 }
                 availableApp();
             });
@@ -381,7 +381,7 @@ jQuery(document).ready(function ($) {
                 if (data === 'true' || data === true) {
                     loadCards(handleId);
                 } else {
-                    showPageStatus('Un problème est survenu lors de la suppression de la carte', {delay:'5000'});
+                    notification('Un problème est survenu lors de la suppression de la carte', 'danger');
                 }
                 availableApp();
             });
@@ -405,7 +405,7 @@ jQuery(document).ready(function ($) {
                 if (data === 'true' || data === true) {
                     loadCards(handleId);
                 } else {
-                    showPageStatus('Un problème est survenu lors du désarchivage de la carte', {delay:'5000'});
+                    notification('Un problème est survenu lors du désarchivage de la carte', 'danger');
                 }
                 availableApp();
             });
@@ -452,7 +452,7 @@ jQuery(document).ready(function ($) {
                     if (data === 'true' || data === true) {
                         loadCards(handleId);
                     } else {
-                        showPageStatus('Un problème est survenu lors de l\'enregistrement', {delay:'5000'});
+                        notification('Un problème est survenu lors de l\'enregistrement', 'danger');
                     }
                     availableApp();
                 });
@@ -496,7 +496,7 @@ jQuery(document).ready(function ($) {
                     if (data === 'true' || data === true) {
                         $input.addClass('successInput');
                     } else {
-                        showPageStatus('Un problème est survenu lors de l\'enregistrement', {delay:'5000'});
+                        notification('Un problème est survenu lors de l\'enregistrement', 'danger');
                     }
                     availableApp();
                 });
