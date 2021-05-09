@@ -1,20 +1,8 @@
 function mehoubarim_getUsersVisites(reset = false) {
-
+    let $icon = $('#refreshVisites').find('i');
+    $icon.addClass('fa-spin');
     jQuery('#visitorsStats').load('/app/plugin/mehoubarim/visites.php' + (true === reset ? '?resetStats=OK' : ''), function () {
-
-        jQuery('#visitorsStats #visitsLoader')
-            .animate(
-                {
-                    width: '100%',
-                    valuenow: 100
-                },
-                {
-                    duration: 60000,
-                    step: function (now) {
-                        jQuery(this).attr('aria-valuenow', now)
-                    }
-                }
-            );
+        $icon.removeClass('fa-spin');
     });
 }
 
@@ -28,21 +16,18 @@ jQuery(document).ready(function () {
         if (data == 'true') {
 
             mehoubarim_getUserStatus();
+            mehoubarim_getUsersVisites();
+
             setInterval(function () {
                 mehoubarim_getUserStatus();
             }, 15000);
-
-            mehoubarim_getUsersVisites();
-            setInterval(function () {
-                if (jQuery('#visitorsStats:hover').length === 0) {
-                    mehoubarim_getUsersVisites();
-                }
-            }, 60000);
         }
     });
 
     var userId = 0;
-
+    $(document).on('click', '#refreshVisites', function () {
+        mehoubarim_getUsersVisites();
+    });
 
     $(document).on('click', '#resetStats', function () {
         if (confirm('Vous allez réinitialiser les statistiques')) {

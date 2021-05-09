@@ -69,10 +69,6 @@ if ($visitors && is_array($visitors['visitors'])):
                     <?= trans('Réinitialiser les statistiques'); ?>
                 </button>
             </div>
-            <div class="progress my-2" style="height: 1px;">
-                <div class="progress-bar bgColorSecondary" role="progressbar" id="visitsLoader" style="width: 0;"
-                     aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-            </div>
         </div>
     </div>
 <?php endif; ?>
