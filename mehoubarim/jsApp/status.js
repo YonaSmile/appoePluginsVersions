@@ -20,7 +20,7 @@ jQuery(document).ready(function () {
 
             setInterval(function () {
                 mehoubarim_getUserStatus();
-            }, 15000);
+            }, 30000);
         }
     });
 
