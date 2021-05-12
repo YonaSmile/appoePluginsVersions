@@ -100,7 +100,8 @@
 #pageContentManageForm textarea {}
 
 #headerLinks {
-    position: fixed;
-    top: auto;
+    position: sticky;
+    top: 0;
     left: auto;
+    z-index: 9;
 }

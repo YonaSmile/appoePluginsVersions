@@ -50,7 +50,7 @@ jQuery(document).ready(function ($) {
         zoning = false;
         $('#pageContentManageForm').show().addClass('row');
     }
-    $('#headerLinks').width($('#headerLinks').parent().width());
+
     $.each($('.templateZoneTitle'), function () {
 
         //Add anchor
