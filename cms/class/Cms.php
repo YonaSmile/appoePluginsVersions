@@ -187,7 +187,7 @@ class Cms
   					`statut` BOOLEAN NOT NULL DEFAULT TRUE,
                 	`created_at` DATE NOT NULL,
                 	`updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-				) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=11;';
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8;ALTER TABLE `' . TABLEPREFIX . 'appoe_plugin_cms` AUTO_INCREMENT = 11;';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();

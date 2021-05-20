@@ -156,7 +156,7 @@ class CmsMenu
                 UNIQUE  (`idCms`, `name`, `parentId`, `location`),
                 `statut` TINYINT(1) NOT NULL DEFAULT 1,
                 `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=11';
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;ALTER TABLE `' . TABLEPREFIX . 'appoe_plugin_cms_menu` AUTO_INCREMENT = 11;';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();
