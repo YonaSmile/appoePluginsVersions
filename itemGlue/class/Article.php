@@ -306,7 +306,7 @@ class Article
      */
     public function showByCategory($idCategory, $showParent = false, $lang = LANG)
     {
-        $categorySQL = $showParent ? ' AND (C.id = :idCategory OR C.parentId = :idCategory OR C2.parentId = :idCategory) ' : ' AND C.id = :idCategory ';
+        $categorySQL = $showParent ? ' AND (C.id = :idCategory OR (C.parentId > 10 AND (C.parentId = :idCategory OR C2.parentId = :idCategory))) ' : ' AND C.id = :idCategory ';
 
         $sql = 'SELECT DISTINCT ART.id, 
          (SELECT cc1.content FROM ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = ART.id AND cc1.lang = :lang) AS name,
