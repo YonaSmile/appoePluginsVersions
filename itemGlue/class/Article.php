@@ -306,10 +306,7 @@ class Article
      */
     public function showByCategory($idCategory, $showParent = false, $lang = LANG)
     {
-        $categorySQL = ' AND C.id = :idCategory ';
-        if (true === $showParent) {
-            $categorySQL = ' AND (C.id = :idCategory OR C.parentId = :idCategory) ';
-        }
+        $categorySQL = $showParent ? ' AND (C.id = :idCategory OR C.parentId = :idCategory OR C2.parentId = :idCategory) ' : ' AND C.id = :idCategory ';
 
         $sql = 'SELECT DISTINCT ART.id, 
          (SELECT cc1.content FROM ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = ART.id AND cc1.lang = :lang) AS name,
@@ -319,13 +316,14 @@ class Article
          ART.userId, ART.created_at, ART.updated_at, ART.statut, 
         GROUP_CONCAT(DISTINCT C.id SEPARATOR "||") AS categoryIds, GROUP_CONCAT(DISTINCT C.name SEPARATOR "||") AS categoryNames
         FROM ' . TABLEPREFIX . 'appoe_categoryRelations AS CR 
-        RIGHT JOIN ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles AS ART 
+        INNER JOIN ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles AS ART 
         ON(CR.typeId = ART.id) 
         INNER JOIN ' . TABLEPREFIX . 'appoe_categories AS C
         ON(C.id = CR.categoryId)
+        ' . ($showParent ? ' INNER JOIN ' . TABLEPREFIX . 'appoe_categories C2 ON(C2.id = C.parentId) ' : '') . '
         INNER JOIN ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles_content AS AC
         ON(AC.idArticle = ART.id)
-        WHERE CR.type = "ITEMGLUE" AND ART.statut > 0 AND C.status > 0 AND AC.lang = :lang' . $categorySQL . '
+        WHERE CR.type = "ITEMGLUE" AND ART.statut > 0 AND C.status > 0 AND AC.lang = :lang ' . $categorySQL . '
         GROUP BY ART.id ORDER BY ART.statut DESC, ART.created_at DESC';
 
         $params = array(':idCategory' => $idCategory, ':lang' => $lang);
