@@ -225,7 +225,7 @@ class CmsTemplate
                 if (false !== strpos($adminZone, '#')) {
 
                     //Get data
-                    list($htmlTag, $text, $zoneName) = array_pad(explode('#', $adminZone), 3, random_int(999, 9999));
+                    list($htmlTag, $text, $zoneName) = array_pad(explode('#', $adminZone), 3, random_int(99, 99999999));
 
                     //Get Container Classes
                     $extract = $this->extractClassFromHtmlTag($htmlTag);
