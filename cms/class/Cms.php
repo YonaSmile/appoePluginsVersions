@@ -238,6 +238,31 @@ class Cms
     }
 
     /**
+     * @return bool
+     */
+    public function showByFilename()
+    {
+        $sql = 'SELECT C.*,
+        (SELECT cc1.metaValue FROM ' . TABLEPREFIX . 'appoe_plugin_cms_content AS cc1 WHERE cc1.type = "HEADER" AND cc1.metaKey = "slug" AND cc1.idCms = C.id AND cc1.lang = :lang) AS slug,
+        (SELECT cc2.metaValue FROM ' . TABLEPREFIX . 'appoe_plugin_cms_content AS cc2 WHERE cc2.type = "HEADER" AND cc2.metaKey = "description" AND cc2.idCms = C.id AND cc2.lang = :lang) AS description,
+        (SELECT cc3.metaValue FROM ' . TABLEPREFIX . 'appoe_plugin_cms_content AS cc3 WHERE cc3.type = "HEADER" AND cc3.metaKey = "name" AND cc3.idCms = C.id AND cc3.lang = :lang) AS name,
+        (SELECT cc4.metaValue FROM ' . TABLEPREFIX . 'appoe_plugin_cms_content AS cc4 WHERE cc4.type = "HEADER" AND cc4.metaKey = "menuName" AND cc4.idCms = C.id AND cc4.lang = :lang) AS menuName
+        FROM ' . TABLEPREFIX . 'appoe_plugin_cms AS C
+        WHERE C.filename = :filename';
+
+        if ($result = DB::exec($sql, [':filename' => $this->filename, ':lang' => $this->lang])) {
+            if($result->rowCount() == 1) {
+                $row = $result->fetch(PDO::FETCH_OBJ);
+                $this->feed($row);
+                $result->closeCursor();
+                unset($this->dbh);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * @param $slug
      * @param bool|mixed|string $lang
      * @return bool

@@ -64,6 +64,27 @@ function loadPageContent(string $pathFromPublic, array $params)
 }
 
 /**
+ * @param $filename
+ * @param mixed|string $lang
+ * @return Cms|false
+ */
+function getPageByFilename($filename, $lang = LANG)
+{
+    if (!empty($filename)) {
+
+        $Cms = new Cms();
+        $Cms->setFilename($filename);
+        $Cms->setLang($lang);
+
+        //Get Page parameters
+        if ($Cms->showByFilename()) {
+            return $Cms;
+        }
+    }
+    return false;
+}
+
+/**
  * Load plugin page with "loadPage"
  *
  * @param string $slug
