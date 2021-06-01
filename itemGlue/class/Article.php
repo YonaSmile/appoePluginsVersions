@@ -318,9 +318,9 @@ class Article
         FROM ' . TABLEPREFIX . 'appoe_categoryRelations AS CR 
         INNER JOIN ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles AS ART 
         ON(CR.typeId = ART.id) 
-        INNER JOIN ' . TABLEPREFIX . 'appoe_categories AS C
+        LEFT JOIN ' . TABLEPREFIX . 'appoe_categories AS C
         ON(C.id = CR.categoryId)
-        ' . ($showParent ? ' INNER JOIN ' . TABLEPREFIX . 'appoe_categories C2 ON(C2.id = C.parentId) ' : '') . '
+        ' . ($showParent ? ' LEFT JOIN ' . TABLEPREFIX . 'appoe_categories C2 ON(C2.id = C.parentId) ' : '') . '
         INNER JOIN ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles_content AS AC
         ON(AC.idArticle = ART.id)
         WHERE CR.type = "ITEMGLUE" AND ART.statut > 0 AND C.status > 0 AND AC.lang = :lang ' . $categorySQL . '
