@@ -15,7 +15,6 @@ if ($trackerData): ?>
                 <div class="d-inline-block mx-1"><input type="date" id="dateStart" class="noBorder" max="<?= date('Y-m-d'); ?>" value="<?= $dateStart; ?>"></div>
                 <div class="d-inline-block mx-1"><?= trans('Jusqu\'à'); ?> <input type="date" id="dateEnd" class="noBorder" max="<?= date('Y-m-d'); ?>" value="<?= $dateEnd; ?>"></div>
             </strong>
-            <small class="text-muted d-block">Cliquez sur l'icone <i class="fas fa-sync-alt fa-sm mx-1"></i> pour appliquer les changements</small>
             <div class="my-4">
                 <div class="my-2 ml-0 ml-lg-4 position-relative">
                     <span class="mr-2"><?= trans('Visiteurs'); ?></span>
