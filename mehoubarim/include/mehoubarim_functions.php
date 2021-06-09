@@ -3,7 +3,6 @@
 use App\ShinouiKatan;
 
 define('MEHOUBARIM_JSON', WEB_PLUGIN_PATH . 'mehoubarim/mehoubarim.json');
-define('VISITORS_JSON', WEB_PLUGIN_PATH . 'mehoubarim/visitors.json');
 
 const STATUS_CONNECTED_USER = array(
     1 => 'success',
@@ -11,30 +10,6 @@ const STATUS_CONNECTED_USER = array(
     3 => 'secondary',
     4 => 'danger'
 );
-
-const MEHOUBARIM_TYPES = array(
-    'PAGE' => 'totalPagesViews',
-    'ARTICLE' => 'totalArticlesViews',
-    'SHOP' => 'totalShopViews'
-);
-
-/**
- * @return array
- */
-function getMehoubarimType()
-{
-
-    $mehoubarimType = array(
-        'PAGE' => 'Pages',
-        'ARTICLE' => 'Articles'
-    );
-
-    if (defined('MEHOUBARIM_TYPES_DISPLAY') && !isArrayEmpty(MEHOUBARIM_TYPES_DISPLAY)) {
-        $mehoubarimType = array_merge($mehoubarimType, MEHOUBARIM_TYPES_DISPLAY);
-    }
-
-    return $mehoubarimType;
-}
 
 /**
  * check and create necessarily files
@@ -66,23 +41,6 @@ function mehoubarim_checkExistingFiles($file = null)
 
         //Write
         mehoubarim_jsonWrite($parsed_json_mehoubarim);
-    }
-
-    //Visitor File
-    if (!file_exists(VISITORS_JSON)) {
-        if (false === fopen(VISITORS_JSON, 'w+')) {
-            return mehoubarim_checkExistingFiles(VISITORS_JSON);
-        }
-
-        //Edit
-        $parsed_json['dateBegin'] = date('Y-m-d H:i:s');
-        $parsed_json_visitors['visitors'] = array();
-        foreach (MEHOUBARIM_TYPES as $type => $key) {
-            $parsed_json_visitors[$key] = array();
-        }
-
-        //Write
-        mehoubarim_jsonWrite($parsed_json_visitors, VISITORS_JSON);
     }
 
     return true;
@@ -350,74 +308,4 @@ function mehoubarim_connectedUserStatus()
 
     //Write
     mehoubarim_jsonWrite($parsed_json);
-}
-
-/**
- * clean visitors & visits
- */
-function mehoubarim_cleanVisitor()
-{
-    //Get
-    $parsed_json = mehoubarim_jsonRead(VISITORS_JSON);
-
-    //Edit
-    $parsed_json['dateBegin'] = date('Y-m-d H:i:s');
-    $parsed_json['visitors'] = array();
-    foreach (MEHOUBARIM_TYPES as $type => $key) {
-        $parsed_json[$key] = array();
-    }
-
-    //Write
-    mehoubarim_jsonWrite($parsed_json, VISITORS_JSON);
-}
-
-/**
- * get visitors & visits
- */
-function mehoubarim_getVisitor()
-{
-    //Get
-    return mehoubarim_jsonRead(VISITORS_JSON);
-}
-
-/**
- * @param $pageData
- * update visitors & visits
- */
-function mehoubarim_updateVisitor(array $pageData)
-{
-    if (!empty($_SERVER['REMOTE_ADDR'])) {
-
-        $visitorIP = $_SERVER['REMOTE_ADDR'];
-
-        //Get
-        $parsed_json = mehoubarim_jsonRead(VISITORS_JSON);
-
-        //update visitor
-        if (!isset($parsed_json['visitors'][$visitorIP])) {
-
-            //Edit
-            $parsed_json['visitors'][$visitorIP] = 1;
-
-        } else {
-
-            //Edit
-            $parsed_json['visitors'][$visitorIP] += 1;
-        }
-
-        //update pages views
-        if (!empty($parsed_json[MEHOUBARIM_TYPES[$pageData['type']]][$pageData['name']])) {
-
-            //Edit
-            $parsed_json[MEHOUBARIM_TYPES[$pageData['type']]][$pageData['name']] += 1;
-
-        } else {
-
-            //Edit
-            $parsed_json[MEHOUBARIM_TYPES[$pageData['type']]][$pageData['name']] = 1;
-        }
-
-        //Write
-        mehoubarim_jsonWrite($parsed_json, VISITORS_JSON);
-    }
 }

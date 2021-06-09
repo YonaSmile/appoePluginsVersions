@@ -1,7 +1,7 @@
 $.fn.mappoe = function () {
-    return this.each(function () {
+    return this.each(function (i, el) {
 
-        let $container = $(this);
+        let $container = $(el);
         if ($container.length) {
 
             if(!$container.attr('id')){

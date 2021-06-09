@@ -1,11 +1,3 @@
-function mehoubarim_getUsersVisites(reset = false) {
-    let $icon = $('#refreshVisites').find('i');
-    $icon.addClass('fa-spin');
-    jQuery('#visitorsStats').load('/app/plugin/mehoubarim/visites.php' + (true === reset ? '?resetStats=OK' : ''), function () {
-        $icon.removeClass('fa-spin');
-    });
-}
-
 function mehoubarim_getUserStatus() {
     jQuery('#usersStatsSubMenu').load('/app/plugin/mehoubarim/index.php');
 }
@@ -16,7 +8,6 @@ jQuery(document).ready(function () {
         if (data == 'true') {
 
             mehoubarim_getUserStatus();
-            mehoubarim_getUsersVisites();
 
             setInterval(function () {
                 mehoubarim_getUserStatus();
@@ -25,20 +16,6 @@ jQuery(document).ready(function () {
     });
 
     var userId = 0;
-    $(document).on('click', '#refreshVisites', function () {
-        mehoubarim_getUsersVisites();
-    });
-
-    $(document).on('click', '#resetStats', function () {
-        if (confirm('Vous allez réinitialiser les statistiques')) {
-            $(this).attr('disabled', 'disabled').addClass('disabled')
-                .html('<i class="fas fa-circle-notch fa-spin"></i> Chargement...');
-
-            $('#visitorsStats').html('');
-            mehoubarim_getUsersVisites(true);
-        }
-    });
-
     $(document).on('dblclick', 'span.activeUser', function () {
         let $user = $(this);
         userId = $user.data('userid');
