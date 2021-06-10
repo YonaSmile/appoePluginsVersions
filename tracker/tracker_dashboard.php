@@ -1,5 +1,5 @@
 <?php
-require('main.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/app/main.php');
 
 $monthAgo = date('Y-m-d', mktime(0, 0, 0, 1, 1, date('Y')));
 $dateStart = !empty($_GET['dateStart']) ? $_GET['dateStart'] : $monthAgo;
