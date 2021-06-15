@@ -16,16 +16,21 @@ function showInstagramTimeline(preferences = {}) {
     getInstagramTimelineFile().done(function (timeline) {
         if (timeline) {
             let realC = 0;
+            let item, img, imgUrl, video;
             for (let c = 0; c < timeline.data.length; c++) {
                 if (timeline.data[c] && realC < options.count) {
                     obj = timeline.data[c];
                     if (obj.media_type !== 'VIDEO') {
-                        let imgUrl = (options.thumbnail && obj.thumbnail_url) ? obj.thumbnail_url : obj.media_url;
-                        let img = '<img src="' + imgUrl + '" alt="' + obj.caption + '">';
-                        let item = '<a href="' + obj.permalink + '" target="_blank">' + img + '</a>';
-                        $timelineContainer.append(item);
-                        realC++;
+                        imgUrl = (options.thumbnail && obj.thumbnail_url) ? obj.thumbnail_url : obj.media_url;
+                        img = '<img src="' + imgUrl + '" alt="' + obj.caption + '">';
+                        item = '<a href="' + obj.permalink + '" target="_blank">' + img + '</a>';
+                    } else {
+                        video = '<video autoplay="autoplay"><source src="' + obj.media_url + '" type="video/mp4"></video>';
+                        item = '<a href="' + obj.permalink + '" target="_blank">' + video + '</a>';
+
                     }
+                    $timelineContainer.append(item);
+                    realC++;
                 }
             }
         }
