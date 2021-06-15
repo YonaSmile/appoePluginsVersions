@@ -7,7 +7,8 @@ function showInstagramTimeline(preferences = {}) {
     let options = {
         count: 5,
         container: '#instagramTimelineContainer',
-        thumbnail: false
+        thumbnail: false,
+        onlyImg: true
     }
     $.extend(options, preferences);
     let obj;
@@ -20,6 +21,11 @@ function showInstagramTimeline(preferences = {}) {
             for (let c = 0; c < timeline.data.length; c++) {
                 if (timeline.data[c] && realC < options.count) {
                     obj = timeline.data[c];
+
+                    if (options.onlyImg && obj.media_type === 'VIDEO') {
+                        continue
+                    }
+
                     if (obj.media_type !== 'VIDEO') {
                         imgUrl = (options.thumbnail && obj.thumbnail_url) ? obj.thumbnail_url : obj.media_url;
                         img = '<img src="' + imgUrl + '" alt="' + obj.caption + '">';

@@ -78,7 +78,7 @@ if (defined('INSTAGRAM_USERNAME') && !empty(INSTAGRAM_USERNAME)):
                 });
 
             });
-            showInstagramTimeline({container: '#instagramTimelineContainer', thumbnail: true});
+            showInstagramTimeline({container: '#instagramTimelineContainer', thumbnail: true, onlyImg: false});
         });
     </script>
 <?php endif; ?>
