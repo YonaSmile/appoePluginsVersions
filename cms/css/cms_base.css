@@ -59,7 +59,7 @@
     z-index: 5;
 }
 
-#pageContentManageFormAccordion h2 button{
+#pageContentManageFormAccordion h2 button {
     color: #FFF;
     font-size: 1.2rem;
     font-weight: 300;
@@ -78,7 +78,7 @@
 .templateZoneInput:hover,
 .templateZoneInput:focus,
 .templateZoneInput:active {
-    background: rgba(0,0,0,0.03);
+    background: rgba(0, 0, 0, 0.03);
 }
 
 .templateZoneInput div.form-group {
@@ -86,7 +86,8 @@
     margin-bottom: 20px;
 }
 
-#pageContentManageForm label {}
+#pageContentManageForm label {
+}
 
 #pageContentManageForm input,
 #pageContentManageForm select,
@@ -97,11 +98,12 @@
 
 #pageContentManageForm input,
 #pageContentManageForm select,
-#pageContentManageForm textarea {}
+#pageContentManageForm textarea {
+}
 
 #headerLinks {
     position: sticky;
-    top: 0;
+    top: 55px;
     left: auto;
     z-index: 9;
 }
