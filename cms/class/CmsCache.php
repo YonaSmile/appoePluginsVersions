@@ -11,6 +11,7 @@ class CmsCache
     public $dirname = CACHE_PATH . LANG . DIRECTORY_SEPARATOR;
     public $filename;
     public $file;
+    public $htmlFile;
     public $duration = CACHE_DURATION; // In minutes
 
     private $buffer = false;
@@ -22,6 +23,7 @@ class CmsCache
         }
         $this->filename = $filename;
         $this->file = $this->dirname . $this->filename;
+        $this->htmlFile = $this->dirname . substr($this->filename, 0, strrpos($this->filename, '.')) . '.html';
     }
 
     /**
@@ -31,13 +33,13 @@ class CmsCache
     public function read()
     {
 
-        if (file_exists($this->file)) {
-            $lifetime = (time() - filemtime($this->file)) / 60;
+        if (file_exists($this->htmlFile)) {
+            $lifetime = (time() - filemtime($this->htmlFile)) / 60;
             if ($lifetime > $this->duration) {
                 return false;
             }
 
-            return file_get_contents($this->file);
+            return file_get_contents($this->htmlFile);
         }
 
         return false;
@@ -50,7 +52,7 @@ class CmsCache
      */
     public function write($content)
     {
-        file_put_contents($this->file, $content);
+        file_put_contents($this->htmlFile, $content);
     }
 
     /**
@@ -111,8 +113,8 @@ class CmsCache
     public function delete()
     {
 
-        if (file_exists($this->file)) {
-            unlink($this->file);
+        if (file_exists($this->htmlFile)) {
+            unlink($this->htmlFile);
         }
     }
 }

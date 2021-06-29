@@ -115,7 +115,7 @@ if (checkAjaxRequest()) {
 
         if (!empty($_POST['clearPageCache']) && !empty($_POST['pageSlug']) && !empty($_POST['pageLang'])) {
 
-            if (clearPageCache($_POST['pageLang'], $_POST['pageSlug'] . '.php')) {
+            if (clearPageCache($_POST['pageLang'], $_POST['pageSlug'] . '.html')) {
 
                 echo json_encode(true);
                 exit();
