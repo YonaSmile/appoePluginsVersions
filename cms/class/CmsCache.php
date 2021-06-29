@@ -85,7 +85,7 @@ class CmsCache
         if (!$this->buffer) {
             return false;
         }
-        $content = $this->minifyHtml(ob_get_clean());
+        $content = ob_get_clean();
         echo $content;
         $this->write($content);
 
