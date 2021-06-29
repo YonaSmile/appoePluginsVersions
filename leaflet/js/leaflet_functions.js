@@ -4,11 +4,11 @@ $.fn.mappoe = function () {
         let $container = $(el);
         if ($container.length) {
 
-            if(!$container.attr('id')){
+            if (!$container.attr('id')) {
                 let randomId = Math.floor((Math.random() * 1000) + 1);
-                $container.attr('id', randomId);
+                $container.attr('id', 'mappoe-' + randomId);
             }
-            if(!$container.hasClass('mappoe')) {
+            if (!$container.hasClass('mappoe')) {
                 $container.addClass('mappoe');
             }
 
@@ -19,8 +19,9 @@ $.fn.mappoe = function () {
                 html: $container.attr('data-html') ? $container.attr('data-html') : null,
                 markerName: $container.attr('data-marker-name') ? $container.attr('data-marker-name') : null,
                 markerSize: $container.attr('data-marker-size') ? parseInt($container.attr('data-marker-size')) : 40,
-                otherTile: $container.attr('data-other-tile') ? $container.attr('data-other-tile') : '',
+                otherTile: $container.attr('data-other-tile') ? $container.attr('data-other-tile') : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                 zoom: $container.attr('data-zoom') ? parseInt($container.attr('data-zoom')) : 14,
+                maxZoom: $container.attr('data-max-zoom') ? parseInt($container.attr('data-max-zoom')) : 19,
                 minWidth: $container.attr('data-min-width') ? parseInt($container.attr('data-min-width')) : 100,
                 openPopup: !($container.attr('data-popup') && $container.attr('data-popup') === 'close')
             };
@@ -29,7 +30,13 @@ $.fn.mappoe = function () {
             if (mapOptions.lng && mapOptions.lat) {
 
                 //Get MAP
-                var map = leaflet_getMap([mapOptions.lng, mapOptions.lat], mapOptions.zoom, $container.attr('id'), mapOptions.otherTile);
+                var map = mappoe_getMap({
+                    lngLat: [mapOptions.lng, mapOptions.lat],
+                    zoom: mapOptions.zoom,
+                    maxZoom: mapOptions.maxZoom,
+                    id: $container.attr('id'),
+                    otherTile: mapOptions.otherTile
+                });
 
                 if (map) {
 
@@ -64,12 +71,41 @@ $.fn.mappoe = function () {
     });
 }
 
+function mappoe_getMap(options = {}) {
+
+    jQuery.extend({
+        lngLat: '',
+        zoom: 14,
+        maxZoom: 19,
+        id: '',
+        otherTile: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+    }, options);
+
+    //Create Map
+    var map = new L.Map(options.id, {
+        scrollWheelZoom: false,
+        attributionControl: false,
+        zoom: options.zoom,
+        maxZoom: options.maxZoom,
+        gestureHandling: true
+    }).setView(options.lngLat, options.zoom);
+
+    //Add tiles
+    map.addLayer(new L.TileLayer(options.otherTile, {
+        attribution: '',
+        maxZoom: options.maxZoom,
+        maxNativeZoom: options.maxZoom
+    }));
+
+    return map;
+}
+
 function leaflet_getMap(lngLat, zoom, id, otherTile = '') {
 
     //Create Map
     var map = new L.Map(id, {
         scrollWheelZoom: false,
-        attributionControl:false,
+        attributionControl: false,
         zoom: zoom,
         maxZoom: 22,
         gestureHandling: true
