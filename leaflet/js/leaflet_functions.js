@@ -100,7 +100,7 @@ function mappoe_getMap(options = {}) {
     return map;
 }
 
-function leaflet_getMap(lngLat, zoom, id, otherTile = '') {
+function leaflet_getMap(lngLat, zoom, id = 'mapOSM', otherTile = '') {
 
     //Create Map
     var map = new L.Map(id, {
