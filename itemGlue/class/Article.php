@@ -307,7 +307,6 @@ class Article
     public function showByCategory($idCategory, $showParent = false, $lang = LANG)
     {
         $categorySQL = $showParent ? ' AND (C.id = :idCategory OR (C.parentId = :idCategory OR (C2.parentId >= 10 AND C2.parentId = :idCategory))) ' : ' AND C.id = :idCategory ';
-
         $sql = 'SELECT DISTINCT ART.id, 
          (SELECT cc1.content FROM ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = ART.id AND cc1.lang = :lang) AS name,
         (SELECT cc2.content FROM ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles_content AS cc2 WHERE cc2.type = "DESCRIPTION" AND cc2.idArticle = ART.id AND cc2.lang = :lang) AS description,
@@ -315,8 +314,8 @@ class Article
         (SELECT cc4.content FROM ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = ART.id AND cc4.lang = :lang) AS content,
          ART.userId, ART.created_at, ART.updated_at, ART.statut, 
         GROUP_CONCAT(DISTINCT C.id SEPARATOR "||") AS categoryIds, GROUP_CONCAT(DISTINCT C.name SEPARATOR "||") AS categoryNames
-        FROM ' . TABLEPREFIX . 'appoe_categoryRelations AS CR 
-        INNER JOIN ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles AS ART 
+        FROM ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles AS ART 
+        LEFT JOIN ' . TABLEPREFIX . 'appoe_categoryRelations AS CR
         ON(CR.typeId = ART.id) 
         LEFT JOIN ' . TABLEPREFIX . 'appoe_categories AS C
         ON(C.id = CR.categoryId)

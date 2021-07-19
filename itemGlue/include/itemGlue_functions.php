@@ -463,6 +463,36 @@ function getSlugifyCategories(string $categories, $separator = '||')
 }
 
 /**
+ * @param $Article
+ * @param array|string $categories
+ * @return bool
+ */
+function articleHasCategories($Article, $categories)
+{
+    if (property_exists($Article, 'categories')) {
+        if (is_array($categories)) {
+            foreach ($categories as $category) {
+                if (array_key_exists($category, $Article->categories)) {
+                    return true;
+                }
+            }
+        } else {
+            return array_key_exists($categories, $Article->categories);
+        }
+    }
+
+    if (property_exists($Article, 'categoryIds')) {
+        if (false !== strpos($Article->categoryIds, '||')) {
+            $ArticleCategoryIds = explode('||', $Article->categoryIds);
+            return in_array($categories, $ArticleCategoryIds);
+        } else {
+            return $categories == $Article->categoryIds;
+        }
+    }
+    return false;
+}
+
+/**
  * @param stdClass $Article
  * @param string $meta
  * @param string $page
@@ -530,6 +560,21 @@ function getArticleMeta($article, $key)
         return !empty($article[$key]) ? htmlSpeCharDecode($article[$key]) : '';
     }
     return '';
+}
+
+/**
+ * @param $article
+ * @param $key
+ * @return bool
+ */
+function articleHasMeta($article, $key)
+{
+    if (is_object($article) && property_exists($article, 'metas')) {
+        return !empty($article->metas[$key]);
+    } elseif (is_array($article)) {
+        return !empty($article[$key]);
+    }
+    return false;
 }
 
 /**
