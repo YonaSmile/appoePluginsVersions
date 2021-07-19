@@ -56,6 +56,10 @@ function getArticleData(stdClass $article)
     $ArticleMeta = new ArticleMeta($article->id);
     $article->metas = $ArticleMeta->getData() ? extractFromObjToSimpleArr($ArticleMeta->getData(), 'metaKey', 'metaValue') : array();
 
+    //get all categories in relation with article
+    $article->categoriesDetails = getCategoriesByArticle($article->id);
+    $article->categories = extractFromObjToSimpleArr($article->categoriesDetails, 'categoryId', 'name');
+
     return $article;
 }
 
@@ -480,15 +484,6 @@ function articleHasCategories($Article, $categories)
             return array_key_exists($categories, $Article->categories);
         }
     }
-
-    if (property_exists($Article, 'categoryIds')) {
-        if (false !== strpos($Article->categoryIds, '||')) {
-            $ArticleCategoryIds = explode('||', $Article->categoryIds);
-            return in_array($categories, $ArticleCategoryIds);
-        } else {
-            return $categories == $Article->categoryIds;
-        }
-    }
     return false;
 }
 
@@ -528,7 +523,7 @@ function getArticleUrl(stdClass $Article, $meta = 'link', $page = '')
  */
 function getArtFeaturedImg($Article, $options = array())
 {
-    $defaultOptions = array(
+    $options = array_merge(array(
         'tmpPos' => 2,
         'forcedImg' => true,
         'class' => '',
@@ -536,9 +531,7 @@ function getArtFeaturedImg($Article, $options = array())
         'onlyUrl' => false,
         'onlyPath' => false,
         'webp' => false
-    );
-
-    $options = array_merge($defaultOptions, $options);
+    ), $options);
 
     return is_object($Article) && property_exists($Article, 'medias') ?
         getFirstImage(
