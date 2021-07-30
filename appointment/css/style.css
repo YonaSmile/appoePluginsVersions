@@ -45,6 +45,7 @@ section.appointmentAppoe #appointmentNextWeek {
     width: 30px !important;
     height: 25px !important;
     text-align: center !important;
+    cursor: pointer;
 }
 
 section.appointmentAppoe #appointmentPrevWeek:hover,
@@ -264,7 +265,7 @@ section.appointmentAppoe #appointmentFormulaire button:hover {
     width: 64px;
     height: 64px;
     margin: 8px;
-    border-radius:50%;
+    border-radius: 50%;
     animation: appointmentLoader 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
     animation-delay: 0s;
     border-color: #dedede transparent transparent transparent;

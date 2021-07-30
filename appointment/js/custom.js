@@ -88,7 +88,7 @@ function owlCarouselInit() {
     });
 
     jQuery('#appointmentCurrentWeek').click(function () {
-        owl.trigger('to.owl.carousel', [0, 400]);
+        owl.trigger('to.owl.carousel', [0, 400, true]);
     });
 
     jQuery('#appointmentNextWeek').click(function () {
@@ -296,7 +296,7 @@ jQuery(window).on('load', function () {
                         if($('section#agendaForm').length === 0) {
                             $('div#appointment-appoe').append(data);
                         }
-                        scrollSmooth($btn.closest('section').next().offset().top - 100);
+                        scrollSmooth($btn.closest('section').offset().top - 100);
                     } else {
                         $('div#appointment-appoe').append('<p id="emptyAgenda">Pas d\'identification possible</p>');
                     }
@@ -325,8 +325,8 @@ jQuery(window).on('load', function () {
                     '<strong>Votre rendez-vous a été enregistré.</strong>' +
                     '<em style="font-size: 16px;line-height: 24px;display: block;margin-top: 10px;">' +
                     'Première fois que vous prenez rendez-vous chez nous ?<br>' +
-                    'Un email vous a été envoyé afin de confirmer votre adresse.<br>' +
-                    'Consultez votre messagerie et suivez les étapes indiquées dans l\'email de confirmation.</em></div>')
+                    'Par mesure de sécurité, confirmez vos coordonnées de contact pour finaliser notre rendez-vous.<br>' +
+                    'Un email vous a été envoyé, merci de le consulter et de suivre les instructions indiquées.</em></div>')
             }
 
             postFormRequest($form, function () {

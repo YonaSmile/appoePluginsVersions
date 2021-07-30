@@ -24,8 +24,8 @@ const APPOINTMENT_TABLES = array(
 const APPOINTMENT_TIMEOUT_VALIDATION = 24; // in hours
 const APPOINTMENT_AGENDA_CHOICE_TITLE = 'Choisir l\'agenda';
 const APPOINTMENT_RDVTYPE_CHOICE_TITLE = 'Choisir le type de rendez-vous';
-const APPOINTMENT_DATES_CHOICE_TITLE = 'Prendre rendez-vous';
-const APPOINTMENT_FORM_TITLE = 'Remplir le formulaire';
+const APPOINTMENT_DATES_CHOICE_TITLE = 'Choisir votre rendez-vous';
+const APPOINTMENT_FORM_TITLE = 'Vos coordonnées de contact';
 
 Hook::add_action('cron', 'appointment_cron');
 

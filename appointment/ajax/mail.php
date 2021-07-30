@@ -95,15 +95,16 @@ if (!empty($_POST['formType']) && valideAjaxToken()) {
 
         } else {
 
-            $html = '<p>Bonjour,<br><br>Veuillez cliquer sur le bouton ci-dessous pour confirmer votre rendez-vous.
+            $html = '<p>Bonjour,<br><br>Afin de finaliser notre premier rendez-vous, veuillez cliquer sur le bouton ci-dessous.
         <br>Faites vite ! Ce lien expirera dans 24 heures.<br>Le délai est dépassé ? <a href="' . $_SESSION['appointmentSlug'] . '">Redemandez un rendez-vous</a> sur notre site.</p>';
 
             $data = array(
                 'toEmail' => $clientEmail,
-                'object' => 'Confirmez votre adresse email',
+                'object' => 'Finalisez votre rendez-vous',
                 'message' => $html,
                 'params' => ['idClient' => base64_encode($Client->getId())],
-                'confirmationPageSlug' => basename($_SESSION['appointmentSlug'])
+                'confirmationPageSlug' => basename($_SESSION['appointmentSlug']),
+                'confirmationBtnText' => 'Confirmer'
             );
 
             if (emailVerification($data, [], ['viewSenderSource' => false])) {
