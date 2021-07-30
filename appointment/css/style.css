@@ -1,5 +1,7 @@
 section.appointmentAppoe {
-    margin-bottom: 50px
+    margin-bottom: 30px;
+    text-align: left;
+    padding: 20px 10px;
 }
 
 section.appointmentAppoe .center {
@@ -28,7 +30,7 @@ section.appointmentAppoe .btn-round {
     border: none;
     font-weight: 500;
     background-color: #FFF;
-
+    cursor: pointer;
 }
 
 
