@@ -12,7 +12,7 @@ class Client
     private $lastName;
     private $firstName;
     private $email;
-    private $tel = null;
+    private $tel;
     private $options;
     private $status = 0;
     private $updatedAt;
@@ -168,7 +168,7 @@ class Client
                 `lastName` VARCHAR(100) NOT NULL,
                 `firstName` VARCHAR(100) NOT NULL,
                 `email` VARCHAR(100) NOT NULL,
-                `tel` VARCHAR(30) NULL DEFAULT NULL,
+                `tel` VARCHAR(30) NOT NULL,
                 UNIQUE (`email`),
                 `options` TEXT NULL DEFAULT NULL,
                 `status` BOOLEAN NOT NULL DEFAULT FALSE,
