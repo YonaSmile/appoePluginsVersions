@@ -118,9 +118,12 @@ function owlCarouselInit() {
     });
 }
 
-jQuery(window).on('load', function (){
+jQuery(window).on('load', function () {
 
-    if($('section#agendas.appointmentAppoe').length) {
+    if ($('section#agendas.appointmentAppoe').length
+        || $('section#agendaRdvType.appointmentAppoe').length
+        || $('section#agendaDatesRdv.appointmentAppoe').length) {
+
         appointment_getLoader();
         let loadedTimer = setInterval(function () {
             if (jQuery.isFunction(jQuery.fn.owlCarousel)) {
