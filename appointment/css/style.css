@@ -1,5 +1,5 @@
 section.appointmentAppoe {
-    margin-bottom: 30px;
+    margin-bottom: 10px;
     text-align: left;
     padding: 20px 10px;
 }
@@ -9,8 +9,9 @@ section.appointmentAppoe .center {
 }
 
 section.appointmentAppoe h2 {
+    margin-top: 8px;
     font-size: 27px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     text-transform: uppercase;
 }
 
@@ -89,7 +90,7 @@ section.appointmentAppoe .inactive:hover {
 }
 
 section.appointmentAppoe #appointmentSwipeCalendar {
-    margin: 20px 0;
+    margin: 20px 0 0 0;
 }
 
 section.appointmentAppoe .week {
