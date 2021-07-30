@@ -293,7 +293,9 @@ jQuery(window).on('load', function () {
                 }).done(function (data) {
                     if (data) {
                         $('.appointmentAppoeReminder.hoursRemind').fadeIn(200).find('strong').html(rdvDateReminder + ' à ' + minutesToHours(rdvBegin));
-                        $('div#appointment-appoe').append(data);
+                        if($('section#agendaForm').length === 0) {
+                            $('div#appointment-appoe').append(data);
+                        }
                         scrollSmooth($btn.closest('section').next().offset().top - 100);
                     } else {
                         $('div#appointment-appoe').append('<p id="emptyAgenda">Pas d\'identification possible</p>');

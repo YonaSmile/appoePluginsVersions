@@ -544,7 +544,7 @@ function appointment_rdvTypeForm_get($idRdvType)
     $html .= '<div id="defaultFields"><label for="appointment_lastName">Nom *<input type="text" name="appointment_lastName" id="appointment_lastName" required="true" value="' . $lastName . '" placeholder="Entrez votre nom"></label>';
     $html .= '<label for="appointment_firstName">Prénom *<input type="text" id="appointment_firstName" name="appointment_firstName" required="true"  value="' . $firstName . '" placeholder="Entrez votre prénom"></label>';
     $html .= '<label for="appointment_email">Adresse mail *<input type="email" name="appointment_email" id="appointment_email" required="true"  value="' . $email . '" placeholder="Entrez votre e-mail"></label>';
-    $html .= '<label for="appointment_tel">Téléphone<input type="tel" name="appointment_tel" id="appointment_tel"  value="' . $tel . '" placeholder="Entrez votre téléphone"></label></div>';
+    $html .= '<label for="appointment_tel">Téléphone *<input type="tel" name="appointment_tel" id="appointment_tel" required="true" value="' . $tel . '" placeholder="Entrez votre téléphone"></label></div>';
 
     $RdvTypeForm = new RdvTypeForm();
     $RdvTypeForm->setIdRdvType($idRdvType);

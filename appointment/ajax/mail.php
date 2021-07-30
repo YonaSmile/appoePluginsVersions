@@ -9,13 +9,14 @@ if (!empty($_POST['formType']) && valideAjaxToken()) {
     /************************ APPOINTMENT **********************/
     if ($_POST['formType'] == 'appointment' && !empty($_POST['idAgenda']) && !empty($_POST['idRdvType']) && !empty($_POST['rdvDate'])
         && !empty($_POST['rdvBegin']) && !empty($_POST['rdvEnd']) && !empty($_POST['appointment_lastName']) && !empty($_POST['appointment_firstName'])
-        && !empty($_POST['appointment_email']) && isEmail($_POST['appointment_email']) && is_numeric($_POST['idAgenda']) && is_numeric($_POST['idRdvType'])
+        && !empty($_POST['appointment_email']) && isEmail($_POST['appointment_email']) && !empty($_POST['appointment_tel'])
+        && isTel($_POST['appointment_tel']) && is_numeric($_POST['idAgenda']) && is_numeric($_POST['idRdvType'])
         && is_numeric($_POST['rdvBegin']) && is_numeric($_POST['rdvEnd'])) {
 
         $clientEmail = $_POST['appointment_email'];
         $clientLastName = $_POST['appointment_lastName'];
         $clientFirstNameName = $_POST['appointment_firstName'];
-        $clientTel = (!empty($_POST['appointment_tel']) && isTel($_POST['appointment_tel'])) ? $_POST['appointment_tel'] : null;
+        $clientTel = $_POST['appointment_tel'];
 
         //Get custom form
         $options = array();
@@ -51,7 +52,6 @@ if (!empty($_POST['formType']) && valideAjaxToken()) {
                 exit();
             }
 
-            $Client->setTel($clientTel);
             $Client->setOptions(serialize(array_merge(unserialize($Client->getOptions()), $options)));
             $Client->update();
 
