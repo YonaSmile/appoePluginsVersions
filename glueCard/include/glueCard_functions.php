@@ -9,15 +9,15 @@ use App\Plugin\GlueCard\Plan;
  * @param array $options
  * @return array
  */
-function getCardsByHandle($idHandle, $options = [])
+function getCardsByHandle($idHandle, array $options = [])
 {
     $cards = array();
-    $defaultOptions = array(
-        'archives' => false,
-        'count' => null
-    );
 
-    $options = array_merge($defaultOptions, $options);
+    $options = array_merge(array(
+        'archives' => false,
+        'count' => null,
+        'lang' => APP_LANG
+    ), $options);
 
     $Plan = new Plan();
     $Plan->setIdHandle($idHandle);
@@ -41,6 +41,7 @@ function getCardsByHandle($idHandle, $options = [])
             }
 
             $Content->setIdItem($item->id);
+            $Content->setLang($options['lang']);
             $content = extractFromObjArr($Content->showByItem(), 'id_plan');
 
             foreach ($plans as $plan) {
@@ -56,7 +57,7 @@ function getCardsByHandle($idHandle, $options = [])
  * @param array $options
  * @return array
  */
-function getCardsByHandles(array $idHandles, $options = [])
+function getCardsByHandles(array $idHandles, array $options = [])
 {
     $cards = array();
     foreach ($idHandles as $idHandle) {
