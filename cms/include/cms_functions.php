@@ -39,6 +39,39 @@ function loadPage($slug = 'home', $folder = 'html', $lang = LANG)
 }
 
 /**
+ * Display file as include
+ *
+ * @param string $filename
+ * @param string $folder
+ * @param string $lang
+ * @return mixed|string
+ */
+function LoadFile($filename = 'index', $folder = 'html', $lang = LANG)
+{
+    $Cms = new Cms();
+
+    //Get Page parameters
+    $Cms->setFilename($filename);
+    $Cms->setLang($lang);
+    $existPage = $Cms->incByFilename();
+
+    //Check if Page exist and accessible
+    if (!$existPage || $Cms->getStatut() != 1) {
+        if (!inc(WEB_PUBLIC_PATH . $folder . DIRECTORY_SEPARATOR . $filename . '.php')) {
+            return 'Le fichier ' . $filename . ' n\'existe pas.';
+
+        }
+        return '';
+    }
+
+    $CmsContent = new CmsContent($Cms->getId(), $lang);
+
+    //Get page content in template
+    $Template = new CmsTemplate(WEB_PATH . $Cms->getFilename() . '.php', $CmsContent->getData(), true);
+    return $Template->get();
+}
+
+/**
  * Load Page from public folder with param in array, who key is the name of the zone and value to replace it
  * @param string $pathFromPublic
  * @param array $params

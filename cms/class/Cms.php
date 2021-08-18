@@ -251,9 +251,33 @@ class Cms
         WHERE C.filename = :filename';
 
         if ($result = DB::exec($sql, [':filename' => $this->filename, ':lang' => $this->lang])) {
-            if($result->rowCount() == 1) {
+            if ($result->rowCount() == 1) {
                 $row = $result->fetch(PDO::FETCH_OBJ);
                 $this->feed($row);
+                $result->closeCursor();
+                unset($this->dbh);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function incByFilename()
+    {
+        $sql = 'SELECT C.* FROM ' . TABLEPREFIX . 'appoe_plugin_cms AS C WHERE C.filename = :filename';
+
+        if ($result = DB::exec($sql, [':filename' => $this->filename])) {
+            if ($result->rowCount() == 1) {
+
+                $row = $result->fetch(PDO::FETCH_OBJ);
+                $this->feed($row);
+
+                $CmsContent = new CmsContent($this->id, $this->lang, true);
+                $this->feed($CmsContent->getData());
+
                 $result->closeCursor();
                 unset($this->dbh);
                 return true;
