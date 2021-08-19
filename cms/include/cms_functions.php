@@ -50,12 +50,12 @@ function LoadFile($filename = 'index', $folder = 'html', $lang = LANG)
 {
     $Cms = new Cms();
 
-    //Get Page parameters
+    //Get file parameters
     $Cms->setFilename($filename);
     $Cms->setLang($lang);
-    $existPage = $Cms->incByFilename();
+    $existPage = $Cms->showByFilename();
 
-    //Check if Page exist and accessible
+    //Check if file exist and accessible
     if (!$existPage || $Cms->getStatut() != 1) {
         if (!inc(WEB_PUBLIC_PATH . $folder . DIRECTORY_SEPARATOR . $filename . '.php')) {
             return 'Le fichier ' . $filename . ' n\'existe pas.';
@@ -66,7 +66,7 @@ function LoadFile($filename = 'index', $folder = 'html', $lang = LANG)
 
     $CmsContent = new CmsContent($Cms->getId(), $lang);
 
-    //Get page content in template
+    //Get file content in template
     $Template = new CmsTemplate(WEB_PATH . $Cms->getFilename() . '.php', $CmsContent->getData(), true);
     return $Template->get();
 }
