@@ -313,8 +313,8 @@ class Cms
          WHERE CC.type = "HEADER" AND CC.metaKey = "slug" AND CC.metaValue = :slug';
 
         if ($return = DB::exec($sql, [':slug' => $slug])) {
-            if($filename = $return->fetch(PDO::FETCH_OBJ)) {
-                return $filename;
+            if($row = $return->fetch(PDO::FETCH_OBJ)) {
+                return $row->filename;
             }
         }
         return false;
