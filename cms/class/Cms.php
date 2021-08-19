@@ -307,14 +307,14 @@ class Cms
     public function getFilenameBySlug($slug)
     {
 
-        $sql = 'SELECT CC.*, C.filename, C.statut FROM ' . TABLEPREFIX . 'appoe_plugin_cms_content AS CC
-        INNER JOIN ' . TABLEPREFIX . 'appoe_plugin_cms AS C
+        $sql = 'SELECT C.filename FROM ' . TABLEPREFIX . 'appoe_plugin_cms AS C
+        INNER JOIN ' . TABLEPREFIX . 'appoe_plugin_cms_content AS CC
          ON(C.id = CC.idCms)
          WHERE CC.type = "HEADER" AND CC.metaKey = "slug" AND CC.metaValue = :slug';
 
         if ($return = DB::exec($sql, [':slug' => $slug])) {
-            if($row = $return->fetch(PDO::FETCH_OBJ)) {
-                return $row->filename;
+            if($filename = $return->fetch(PDO::FETCH_OBJ)) {
+                return $filename;
             }
         }
         return false;
