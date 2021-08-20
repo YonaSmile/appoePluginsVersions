@@ -1,8 +1,9 @@
 <?php
 require_once($_SERVER['DOCUMENT_ROOT'] . '/app/main.php');
 
-$monthAgo = date('Y-m-d', mktime(0, 0, 0, 1, 1, date('Y')));
-$dateStart = !empty($_GET['dateStart']) ? $_GET['dateStart'] : $monthAgo;
+$MonthAgo = new DateTime();
+$MonthAgo->sub(new DateInterval('P1M'));
+$dateStart = !empty($_GET['dateStart']) ? $_GET['dateStart'] : $MonthAgo->format('Y-m-d');
 $dateEnd = !empty($_GET['dateEnd']) ? $_GET['dateEnd'] : date('Y-m-d');
 
 $Tracker = new App\Plugin\Tracker\Tracker();
@@ -18,11 +19,11 @@ if ($trackerData): ?>
             <div class="my-4">
                 <div class="my-2 ml-0 ml-lg-4 position-relative">
                     <span class="mr-2"><?= trans('Visiteurs'); ?></span>
-                    <span class="visitsStatsBadge bgColorSecondary"><?= count($trackerData['visitorsIp']); ?></span>
+                    <span class="visitsStatsBadge bgColorSecondary"><?= $trackerData['visitors']->ips; ?></span>
                 </div>
                 <div class="my-2 ml-0 ml-lg-4 position-relative">
                     <span class="mr-2"> <?= trans('Pages consultées'); ?></span>
-                    <span class="visitsStatsBadge bgColorSecondary"><?= $trackerData['countPagesVisited']; ?></span>
+                    <span class="visitsStatsBadge bgColorSecondary"><?= $trackerData['visitors']->consultedPages; ?></span>
                 </div>
             </div>
             <strong>
@@ -31,7 +32,7 @@ if ($trackerData): ?>
             <div class="my-3" id="statsDetails">
                 <nav>
                     <div class="nav nav-tabs" role="tablist">
-                        <?php foreach ($trackerData['pageTypeVisited'] as $type => $count): ?>
+                        <?php foreach ($trackerData['pagesType'] as $type => $count): if($count == 0) continue; ?>
                             <a class="nav-item sidebarLink colorSecondary nav-link <?= $type === 'PAGE' ? 'active' : ''; ?>"
                                id="nav-<?= $type; ?>-tab"
                                data-toggle="tab" href="#nav-tracker-<?= $type; ?>" role="tab"
@@ -41,14 +42,15 @@ if ($trackerData): ?>
                     </div>
                 </nav>
                 <div class="tab-content mt-3">
-                    <?php foreach ($trackerData['pageTypeVisited'] as $type => $count): ?>
+                    <?php foreach ($trackerData['pagesType'] as $type => $count): if($count == 0) continue; ?>
                         <div class="tab-pane fade <?= $type === 'PAGE' ? ' show active ' : ''; ?>"
                              id="nav-tracker-<?= $type; ?>"
                              role="tabpanel" aria-labelledby="nav-<?= $type; ?>-tab">
-                            <?php foreach (array_slice($trackerData['pagesVisited'][$type], 0, 5, true) as $name => $nb): ?>
+                            <?php
+                            foreach (array_slice($trackerData['pagesName'][$type], 0, 5, true) as $page): ?>
                                 <div class="my-2 ml-0 ml-lg-4" style="position: relative;">
-                                    <span class="mr-2"><?= shortenText($name, 54); ?></span>
-                                    <span class="visitsStatsBadge bgColorSecondary"><?= $nb; ?></span>
+                                    <span class="mr-2"><?= shortenText($page->pageName, 54); ?></span>
+                                    <span class="visitsStatsBadge bgColorSecondary"><?= $page->count; ?></span>
                                 </div>
                             <?php endforeach; ?>
                         </div>

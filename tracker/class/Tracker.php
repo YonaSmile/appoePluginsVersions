@@ -275,7 +275,8 @@ class Tracker
                 `browserVersion` VARCHAR(50) NULL DEFAULT NULL,
                 `osName` VARCHAR(50) NULL DEFAULT NULL,
                 `osVersion` VARCHAR(50) NULL DEFAULT NULL
-				) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;';
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+				CREATE INDEX date ON ' . $this->tableName . ' (`date`);';
         return !DB::exec($sql) ? false : true;
     }
 
@@ -303,7 +304,7 @@ class Tracker
     public function showBetweenDates($dateStart = null, $dateEnd = null)
     {
         $params = [];
-        $sql = 'SELECT * FROM ' . $this->tableName;
+        $sql = 'SELECT date, ip, pageType, pageName FROM ' . $this->tableName;
 
         $sql .= !is_null($dateStart) || !is_null($dateEnd) ? ' WHERE ' : '';
 
@@ -326,6 +327,100 @@ class Tracker
     }
 
     /**
+     * @param bool|mixed $dateStart
+     * @param bool|mixed $dateEnd
+     * @return bool|mixed
+     */
+    public function showCountVisitorsBetweenDates($dateStart = null, $dateEnd = null)
+    {
+        $params = [];
+        $sql = 'SELECT COUNT(`date`) AS consultedPages, COUNT(DISTINCT `ip`) AS ips FROM ' . $this->tableName;
+
+        $sql .= !is_null($dateStart) || !is_null($dateEnd) ? ' WHERE ' : '';
+
+        if (!is_null($dateStart)) {
+            $sql .= ' date >= :dateStart ';
+            $params[':dateStart'] = $dateStart;
+        }
+
+        $sql .= !is_null($dateStart) && !is_null($dateEnd) ? ' AND ' : '';
+
+        if (!is_null($dateEnd)) {
+            $sql .= ' date <= :dateEnd ';
+            $params[':dateEnd'] = $dateEnd;
+        }
+
+        if ($return = DB::exec($sql, $params)) {
+            return $return->fetch(PDO::FETCH_OBJ);
+        }
+        return false;
+    }
+
+    /**
+     * @param bool|mixed $dateStart
+     * @param bool|mixed $dateEnd
+     * @return bool|mixed
+     */
+    public function showCountPagesTypeBetweenDates($dateStart = null, $dateEnd = null)
+    {
+        $params = [];
+        $sql = 'SELECT COUNT( CASE WHEN `pageType` = "PAGE" THEN 1 END) AS PAGE, 
+        COUNT( CASE WHEN `pageType` = "ARTICLE" THEN 1 END) as ARTICLE, 
+        COUNT( CASE WHEN `pageType` = "PRODUCT" THEN 1 END) as PRODUCT FROM ' . $this->tableName;
+
+        $sql .= !is_null($dateStart) || !is_null($dateEnd) ? ' WHERE ' : '';
+
+        if (!is_null($dateStart)) {
+            $sql .= ' date >= :dateStart ';
+            $params[':dateStart'] = $dateStart;
+        }
+
+        $sql .= !is_null($dateStart) && !is_null($dateEnd) ? ' AND ' : '';
+
+        if (!is_null($dateEnd)) {
+            $sql .= ' date <= :dateEnd ';
+            $params[':dateEnd'] = $dateEnd;
+        }
+
+        if ($return = DB::exec($sql, $params)) {
+            return $return->fetch(PDO::FETCH_OBJ);
+        }
+        return false;
+    }
+
+    /**
+     * @param bool|mixed $dateStart
+     * @param bool|mixed $dateEnd
+     * @return bool|mixed
+     */
+    public function showCountPagesBetweenDates($dateStart = null, $dateEnd = null)
+    {
+        $params = [];
+        $sql = 'SELECT `pageType`, `pageName`, COUNT(`pageName`) AS count FROM ' . $this->tableName;
+
+        $sql .= !is_null($dateStart) || !is_null($dateEnd) ? ' WHERE ' : '';
+
+        if (!is_null($dateStart)) {
+            $sql .= ' date >= :dateStart ';
+            $params[':dateStart'] = $dateStart;
+        }
+
+        $sql .= !is_null($dateStart) && !is_null($dateEnd) ? ' AND ' : '';
+
+        if (!is_null($dateEnd)) {
+            $sql .= ' date <= :dateEnd ';
+            $params[':dateEnd'] = $dateEnd;
+        }
+
+        $sql .= ' GROUP BY `pageName` ';
+
+        if ($return = DB::exec($sql, $params)) {
+            return $return->fetchAll(PDO::FETCH_OBJ);
+        }
+        return false;
+    }
+
+    /**
      * @param mixed $dateStart
      * @param mixed $dateEnd
      * @return array
@@ -333,39 +428,13 @@ class Tracker
     public function getData($dateStart = null, $dateEnd = null)
     {
 
-        $data['countPagesVisited'] = 0;
-        $data['visitorsIp'] = [];
-        $data['pageTypeVisited'] = [];
-        $data['pagesVisited'] = [];
-        $allTrackers = $this->showBetweenDates($dateStart, $dateEnd);
+        $data['visitors'] = $this->showCountVisitorsBetweenDates($dateStart, $dateEnd);
+        $data['pagesType'] = $this->showCountPagesTypeBetweenDates($dateStart, $dateEnd);
+        $data['pagesName'] = $this->showCountPagesBetweenDates($dateStart, $dateEnd);
 
-        if ($allTrackers) {
-
-            $data['countPagesVisited'] = count($allTrackers);
-
-            foreach ($allTrackers as $tracker) {
-
-                //IP
-                if (!in_array($tracker->ip, $data['visitorsIp'])) {
-                    $data['visitorsIp'][] = $tracker->ip;
-                }
-
-                //Page type
-                if (!array_key_exists($tracker->pageType, $data['pageTypeVisited'])) {
-                    $data['pageTypeVisited'][$tracker->pageType] = 0;
-                    $data['pagesVisited'][$tracker->pageType] = [];
-                }
-                $data['pageTypeVisited'][$tracker->pageType] += 1;
-
-                //Page visits type
-                if (!array_key_exists($tracker->pageName, $data['pagesVisited'][$tracker->pageType])) {
-                    $data['pagesVisited'][$tracker->pageType][$tracker->pageName] = 0;
-                }
-                $data['pagesVisited'][$tracker->pageType][$tracker->pageName] += 1;
-
-                //Sort data
-                arsort($data['pagesVisited'][$tracker->pageType]);
-            }
+        if (is_array($data['pagesName'])) {
+            $data['pagesName'] = array_sort($data['pagesName'], 'count', SORT_DESC);
+            $data['pagesName'] = groupMultipleKeysObjectsArray($data['pagesName'], 'pageType');
         }
 
         return $data;
