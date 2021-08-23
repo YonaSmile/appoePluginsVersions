@@ -1169,8 +1169,8 @@ function appointment_admin_availabilities_get($allRdv, $allExceptions, $start, $
             }
 
             $html .= '<hr class="my-1 mx-0" style="width:50px;">';
-            $html .= '<strong>Email : </strong>'.$Client->getEmail();
-            $html .= '<br><strong>Tel : </strong>'.$Client->getTel();
+            $html .= '<strong>Email : </strong>' . $Client->getEmail();
+            $html .= '<br><strong>Tel : </strong>' . $Client->getTel();
 
             if (!empty($Client->getOptions())) {
                 $options = unserialize($Client->getOptions());
@@ -1303,6 +1303,25 @@ function appointment_getRdvByDate($idAgenda, $date)
     $Rdv->setDate($date);
     if ($allRdv = $Rdv->showAll()) {
         return $allRdv;
+    }
+
+    return false;
+}
+
+/**
+ * @param $email
+ * @return int|false
+ */
+function appointment_client_check($email)
+{
+    $Client = new Client();
+    $Client->setEmail($email);
+    if ($Client->exist()) {
+        $Client->showByEmail();
+
+        if ($Client->getStatus()) {
+            return $Client->getId();
+        }
     }
 
     return false;

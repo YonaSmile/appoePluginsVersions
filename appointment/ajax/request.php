@@ -213,5 +213,10 @@ if (checkAjaxRequest() && !bot_detected()) {
         echo appointment_rdvTypeForm_get($_POST['idRdvType']);
         exit();
     }
+
+    if (isset($_POST['checkClientKnown']) && !empty($_POST['email']) && isEmail($_POST['email'])) {
+        echo appointment_client_check($_POST['email']);
+        exit();
+    }
 }
 echo json_encode(false);

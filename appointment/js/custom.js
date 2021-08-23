@@ -125,16 +125,20 @@ jQuery(window).on('load', function () {
         || $('section#agendaDatesRdv.appointmentAppoe').length) {
 
         appointment_getLoader();
-        let loadedTimer = setInterval(function () {
+        var loadedTimer = setInterval(function () {
             if (jQuery.isFunction(jQuery.fn.owlCarousel)) {
                 owlCarouselInit();
                 clearInterval(loadedTimer);
                 appointment_removeLoader();
             }
-            var owlScript = document.createElement("script");
-            owlScript.src = '/app/plugin/appointment/assets/owl.carousel.min.js';
-            owlScript.type = 'text/javascript';
-            document.getElementsByTagName("head")[0].appendChild(owlScript);
+
+            if($('script[src*="owl.carousel.min.js"]').length === 0) {
+                var owlScript = document.createElement("script");
+                owlScript.src = '/app/plugin/appointment/assets/owl.carousel.min.js';
+                owlScript.type = 'text/javascript';
+                document.getElementsByTagName("head")[0].appendChild(owlScript);
+            }
+
         }, 300);
 
         var idAgenda, idClient, idRdvType, rdvDateReminder, rdvDate, rdvDuration, rdvBegin, rdvEnd;
@@ -293,7 +297,7 @@ jQuery(window).on('load', function () {
                 }).done(function (data) {
                     if (data) {
                         $('.appointmentAppoeReminder.hoursRemind').fadeIn(200).find('strong').html(rdvDateReminder + ' à ' + minutesToHours(rdvBegin));
-                        if($('section#agendaForm').length === 0) {
+                        if ($('section#agendaForm').length === 0) {
                             $('div#appointment-appoe').append(data);
                         }
                         scrollSmooth($btn.closest('section').offset().top - 100);
@@ -306,7 +310,29 @@ jQuery(window).on('load', function () {
             }
         });
 
-        $(document.body).on('submit', '#appointmentFormulaire', function (e) {
+        $(document.body).on('blur', 'form#appointmentFormulaire input#appointment_email', function (e) {
+            e.preventDefault();
+
+            let input = $(this);
+            let email = input.val();
+            let form = input.closest('form#appointmentFormulaire');
+            $('input[name="idClientKnown"], .unkownClient').remove();
+
+            if (email !== '') {
+                appointment_ajax({
+                    checkClientKnown: 'OK',
+                    email: email
+                }).done(function (idClient) {
+                    if (idClient && $.isNumeric(idClient)) {
+                        form.prepend('<input name="idClientKnown" type="hidden" value="' + idClient + '">');
+                    } else {
+                        input.closest('div#defaultFields').append('<div class="unkownClient">Vous devez confirmer votre adresse email après l\'enregistrement du rendez-vous</div>');
+                    }
+                });
+            }
+        });
+
+        $(document.body).on('submit', 'form#appointmentFormulaire', function (e) {
             e.preventDefault();
 
             let $form = $(this);
@@ -321,12 +347,19 @@ jQuery(window).on('load', function () {
                     'Votre rendez-vous du <strong>' + rdvDateReminder + '</strong>' +
                     ' a bien été modifié.<br>Vous recevrez bientôt un email récapitulatif de votre rendez vous.</div>');
             } else {
-                $form.attr('data-success', '<div class="appointmentAppoeReminder"><img src="/app/plugin/appointment/img/check.svg" width="30px">' +
-                    '<strong>Votre rendez-vous a été enregistré.</strong>' +
-                    '<em style="font-size: 16px;line-height: 24px;display: block;margin-top: 10px;">' +
-                    'Première fois que vous prenez rendez-vous chez nous ?<br>' +
-                    'Par mesure de sécurité, confirmez vos coordonnées de contact pour finaliser notre rendez-vous.<br>' +
-                    'Un email vous a été envoyé, merci de le consulter et de suivre les instructions indiquées.</em></div>')
+
+                if ($form.find('input[name="idClientKnown"]').length > 0) {
+                    $form.attr('data-success', '<div class="appointmentAppoeReminder"><img src="/app/plugin/appointment/img/check.svg" width="30px">' +
+                        'Votre rendez-vous du <strong>' + rdvDateReminder + '</strong>' +
+                        ' a bien été enregistré.<br>Vous recevrez bientôt un email récapitulatif de votre rendez vous.</div>');
+                } else {
+                    $form.attr('data-success', '<div class="appointmentAppoeReminder"><img src="/app/plugin/appointment/img/check.svg" width="30px">' +
+                        '<strong>Votre rendez-vous a été enregistré, mais vous devez confirmer votre adresse email.</strong>' +
+                        '<em style="font-size: 16px;line-height: 24px;display: block;margin-top: 10px;">' +
+                        'Par mesure de sécurité, confirmez vos coordonnées de contact pour finaliser notre rendez-vous.<br>' +
+                        'Un email vous a été envoyé, merci de le consulter et de suivre les instructions indiquées.</em></div>');
+                }
+
             }
 
             postFormRequest($form, function () {

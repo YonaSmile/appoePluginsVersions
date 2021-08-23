@@ -52,6 +52,12 @@ if (!empty($_POST['formType']) && valideAjaxToken()) {
                 exit();
             }
 
+            /** TODO
+            $Client->setLastName($clientLastName);
+            $Client->setFirstName($clientFirstNameName);
+            $Client->setTel($clientTel);
+            */
+
             $Client->setOptions(serialize(array_merge(unserialize($Client->getOptions()), $options)));
             $Client->update();
 

@@ -211,6 +211,13 @@ section.appointmentAppoe #defaultFields {
     justify-content: space-between;
 }
 
+section.appointmentAppoe #defaultFields div.unkownClient {
+    margin-bottom: 15px;
+    text-align: center;
+    width: 100%;
+    color: #FF394F;
+}
+
 section.appointmentAppoe #defaultFields label {
     flex-basis: 49%;
 }
