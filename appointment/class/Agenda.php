@@ -110,9 +110,14 @@ class Agenda
         return DB::show($this);
     }
 
-    public function showAll()
+    public function showByStatus()
     {
         return DB::showAll($this, ['status']);
+    }
+
+    public function showAll()
+    {
+        return DB::showAll($this);
     }
 
     /**
@@ -120,7 +125,7 @@ class Agenda
      */
     public function save()
     {
-        if (DB::save($this, ['name'])) {
+        if (DB::save($this, ['name', 'status'])) {
             appLog('Add agenda -> name: ' . $this->name);
             return true;
         }

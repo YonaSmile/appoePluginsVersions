@@ -15,6 +15,7 @@ class Exception
     private $endDate = null;
     private $start;
     private $end;
+    private $availablity = 'UNAVAILABLE';
     private $updatedAt;
 
     /**
@@ -122,6 +123,22 @@ class Exception
     }
 
     /**
+     * @return string
+     */
+    public function getAvailablity()
+    {
+        return $this->availablity;
+    }
+
+    /**
+     * @param string $availablity
+     */
+    public function setAvailablity($availablity)
+    {
+        $this->availablity = $availablity;
+    }
+
+    /**
      * @return mixed
      */
     public function getUpdatedAt()
@@ -155,6 +172,7 @@ class Exception
                 `endDate` DATE NULL DEFAULT NULL,
                 `start` SMALLINT UNSIGNED NOT NULL,
                 `end` SMALLINT UNSIGNED NOT NULL,
+                `availablity` VARCHAR(50)  NOT NULL DEFAULT "UNAVAILABLE",
                 UNIQUE (`idAgenda`,`date`,`start`,`end`),
                 `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 				) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;';
@@ -197,7 +215,7 @@ class Exception
      */
     public function save()
     {
-        if (DB::save($this, ['idAgenda', 'date', 'start', 'end'])) {
+        if (DB::save($this, ['idAgenda', 'date', 'start', 'end', 'availablity'])) {
             appLog('Add agenda exception -> idAgenda: ' . $this->idAgenda . ' date:' . $this->date . ' endDate:' . $this->endDate . ' start:' . $this->start . ' end:' . $this->end);
             return true;
         }
@@ -209,7 +227,7 @@ class Exception
      */
     public function update()
     {
-        if (DB::update($this, ['idAgenda', 'date', 'endDate', 'start', 'end'], ['id'])) {
+        if (DB::update($this, ['idAgenda', 'date', 'endDate', 'start', 'end', 'availablity'], ['id'])) {
             appLog('Update agenda exception -> idAgenda: ' . $this->idAgenda . ' date:' . $this->date . ' endDate:' . $this->endDate . ' start:' . $this->start . ' end:' . $this->end);
             return true;
         }

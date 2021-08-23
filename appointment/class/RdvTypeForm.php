@@ -12,6 +12,7 @@ class RdvTypeForm
     private $idAgenda;
     private $idRdvType;
     private $name;
+    private $slug;
     private $type;
     private $placeholder;
     private $required = 1;
@@ -89,6 +90,22 @@ class RdvTypeForm
     public function setName($name)
     {
         $this->name = $name;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    /**
+     * @param mixed $slug
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
     }
 
     /**
@@ -186,6 +203,7 @@ class RdvTypeForm
                 `idAgenda` TINYINT UNSIGNED NOT NULL,
                 `idRdvType` TINYINT UNSIGNED NOT NULL,
                 `name` VARCHAR(100) NOT NULL,
+                `slug` VARCHAR(100) NOT NULL,
                 `type` VARCHAR(100) NOT NULL,
                 `placeholder` VARCHAR(250) NULL DEFAULT NULL,
                 `required` BOOLEAN NOT NULL DEFAULT TRUE,
@@ -211,7 +229,7 @@ class RdvTypeForm
      */
     public function save()
     {
-        if (DB::save($this, ['idAgenda', 'idRdvType', 'name', 'type', 'placeholder', 'required', 'position'])) {
+        if (DB::save($this, ['idAgenda', 'idRdvType', 'name', 'slug', 'type', 'placeholder', 'required', 'position'])) {
             appLog('Add RdvTypeForm -> idAgenda: ' . $this->idAgenda . ' idRdvType:' . $this->idRdvType . ' name:' . $this->name);
             return true;
         }
@@ -223,7 +241,7 @@ class RdvTypeForm
      */
     public function update()
     {
-        if (DB::update($this, ['name', 'type', 'placeholder', 'required', 'position'], ['id'])) {
+        if (DB::update($this, ['name', 'slug', 'type', 'placeholder', 'required', 'position'], ['id'])) {
             appLog('Update RdvTypeForm -> id: ' . $this->id . ' name:' . $this->name);
             return true;
         }
@@ -235,7 +253,7 @@ class RdvTypeForm
      */
     public function exist()
     {
-        return DB::exist($this, ['idAgenda', 'idRdvType', 'name']);
+        return DB::exist($this, ['idAgenda', 'idRdvType', 'slug']);
     }
 
     /**

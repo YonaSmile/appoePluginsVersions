@@ -219,7 +219,8 @@ section.appointmentAppoe label {
     width: 100%;
 }
 
-section.appointmentAppoe input {
+section.appointmentAppoe input,
+section.appointmentAppoe textarea {
     padding: 7px 17px;
     border-radius: 15px;
     border: 1px solid #ccc;
@@ -227,9 +228,11 @@ section.appointmentAppoe input {
     display: block;
     margin-bottom: 20px;
     margin-top: 5px;
+    resize: none;
 }
 
-section.appointmentAppoe input::placeholder {
+section.appointmentAppoe input::placeholder,
+section.appointmentAppoe textarea::placeholder {
     color: #888;
     font-weight: 200;
 }

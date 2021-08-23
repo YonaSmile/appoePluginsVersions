@@ -24,11 +24,11 @@ if (!empty($_POST['formType']) && valideAjaxToken()) {
         $RdvTypeForm->setIdRdvType($_POST['idRdvType']);
         if ($forms = $RdvTypeForm->showAll()) {
             foreach ($forms as $form) {
-                if (($form->required && empty($_POST['appointment_' . slugify($form->name)])) || !isset($_POST['appointment_' . slugify($form->name)])) {
+                if (($form->required && empty($_POST['appointment_' . $form->slug])) || !isset($_POST['appointment_' . $form->slug])) {
                     echo json_encode('<div class="appointmentAppoeReminder">Le champs <strong>' . $form->name . '</strong> est manquant</div>');
                     exit();
                 }
-                $options[slugify($form->name)] = $_POST['appointment_' . slugify($form->name)];
+                $options[$form->slug] = $_POST['appointment_' . $form->slug];
             }
         }
 

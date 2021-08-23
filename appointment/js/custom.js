@@ -10,7 +10,7 @@
     }
 })();
 
-function appointment_get(params) {
+function appointment_ajax(params) {
     return jQuery.post(WEB_PLUGIN_URL + 'appointment/ajax/request.php', params);
 }
 
@@ -160,7 +160,7 @@ jQuery(window).on('load', function () {
                     $($parent).wrap('<div id="appointment-appoe"></div>');
                 }
 
-                appointment_get({
+                appointment_ajax({
                     getRdvTypeByAgenda: 'OK',
                     idAgenda: idAgenda
                 }).done(function (data) {
@@ -213,7 +213,7 @@ jQuery(window).on('load', function () {
                     return;
                 }
 
-                appointment_get({
+                appointment_ajax({
                     getDateByRdvType: 'OK',
                     idAgenda: idAgenda,
                     idRdvType: idRdvType
@@ -258,7 +258,7 @@ jQuery(window).on('load', function () {
                     return;
                 }
 
-                appointment_get({
+                appointment_ajax({
                     getAvailabilitiesByDate: 'OK',
                     idAgenda: $btn.attr('data-id-agenda'),
                     dateChoice: $btn.attr('data-date-choice'),
@@ -287,7 +287,7 @@ jQuery(window).on('load', function () {
                 $('button.availabilityChoice').removeClass('activeAgendaBtn');
                 $btn.addClass('activeAgendaBtn');
 
-                appointment_get({
+                appointment_ajax({
                     getFormByRdvType: 'OK',
                     idRdvType: idRdvType
                 }).done(function (data) {

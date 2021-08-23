@@ -164,9 +164,14 @@ class RdvType
         return DB::show($this);
     }
 
-    public function showAll()
+    public function showByStatus()
     {
         return DB::showAll($this, ['idAgenda', 'status']);
+    }
+
+    public function showAll()
+    {
+        return DB::showAll($this, ['idAgenda']);
     }
 
     /**
@@ -186,8 +191,8 @@ class RdvType
      */
     public function update()
     {
-        if (DB::update($this, ['idAgenda', 'name', 'duration', 'information'], ['id'])) {
-            appLog('Update RdvType -> idAgenda: ' . $this->idAgenda . ' name:' . $this->name . ' duration:' . $this->duration . ' information:' . $this->information);
+        if (DB::update($this, ['idAgenda', 'name', 'duration', 'information', 'status'], ['id'])) {
+            appLog('Update RdvType -> idAgenda: ' . $this->idAgenda . ' name:' . $this->name . ' duration:' . $this->duration . ' information:' . $this->information . ' status:' . $this->status);
             return true;
         }
         return false;

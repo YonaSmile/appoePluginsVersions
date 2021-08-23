@@ -200,7 +200,7 @@ class Availabilities
     public function delete()
     {
         if (DB::delete($this, ['id'])) {
-            appLog('Delete agenda -> id: ' . $this->id);
+            appLog('Delete agenda availability -> id: ' . $this->id);
             return true;
         }
         return false;
