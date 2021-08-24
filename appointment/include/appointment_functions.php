@@ -324,7 +324,7 @@ function appointment_rdv_admin_getAvailabilities($idRdvType, $date)
     $html = '';
     $RdvType = new RdvType();
     $RdvType->setId($idRdvType);
-    if ($RdvType->show()) {
+    if ($RdvType->show()):
 
         $Date = new DateTime($date);
 
@@ -341,31 +341,70 @@ function appointment_rdv_admin_getAvailabilities($idRdvType, $date)
         $html .= '<div id="rdvList" data-id-agenda="' . $RdvType->getIdAgenda() . '" 
         data-id-rdv-type="' . $idRdvType . '" data-date="' . $Date->format('Y-m-d') . '">';
         $html .= '<div class="d-flex justify-content-between align-items-center">';
-        $html .= '<h5 class="agendaTitle">' . displayCompleteDate($Date->format('Y-m-d'), false, '%A %d %B') . '</h5>';
+        $html .= '<h5 id="currentDateTitle" class="agendaTitle my-0">' . displayCompleteDate($Date->format('Y-m-d'), false, '%A %d %B') . '</h5>';
 
         if (appointment_isAvailableDay($Date->format('Y-m-d'), $availabilities, $allExceptions)) {
             $html .= '<button type="button" class="btn btn-sm btn-secondary makeTheDayUnavailable">Rendre ce jour indisponible</button>';
         } else {
+
+            if (appointment_isAvailableDay($Date->format('Y-m-d'), $availabilities, [], true)) {
+                $html .= '<button type="button" class="btn btn-sm btn-secondary makeTheDayAvailable">Rendre ce jour disponible</button>';
+            }
             $availabilities = false;
-            $html .= '<button type="button" class="btn btn-sm btn-secondary makeTheDayAvailable">Rendre ce jour disponible</button>';
         }
+
         $html .= '</div>';
 
-        if ($availabilities) {
+        if ($availabilities):
 
             $allRdv = appointment_getRdvByDate($RdvType->getIdAgenda(), $Date->format('Y-m-d'));
 
             ob_start();
 
+            $nbTimeSlots = 0;
+            $dayTimeSlotStart = 0;
+            $dayTimeSlotEnd = 1440;
             foreach ($availabilities as $availability) {
+                $nbTimeSlots++;
+
+                if($nbTimeSlots === 1){ $dayTimeSlotStart = $availability->start; }
                 $html .= appointment_admin_availabilities_get($allRdv, $allExceptions, $availability->start, $availability->end, $RdvType->getDuration(), false);
+                if($nbTimeSlots == count($availabilities)){ $dayTimeSlotEnd = $availability->end; }
             }
 
-            $html .= ob_get_clean();
-        }
+            $Client = new Client();
+            $allClients = extractFromObjToSimpleArr($Client->showAll(), 'id', 'lastName', 'firstName');
+            $allClients[0] = 'Aucun';
+            ?>
 
+            <div class="modal fade" id="addNewRdvForm" tabindex="-1" aria-labelledby="addNewRdvFormLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content rounded-0">
+                        <div class="modal-header py-0 border-0">
+                            <h5 class="modal-title agendaTitle" id="addNewRdvFormLabel">Nouveau rendez-vous</h5>
+                            <button type="button" class="close m-0" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row d-flex flex-wrap align-items-center justify-content-between">
+                                <div class="col-12 col-lg-4" id="addNewRdvFormDate"></div>
+                                <div class="col-12 col-lg-4"><?= Form::selectTimeSlot('start', ['title' => 'Heure début', 'required' => true, 'stepMin' => $RdvType->getDuration(), 'startMin' => $dayTimeSlotStart, 'endMin' => $dayTimeSlotEnd]); ?></div>
+                                <div class="col-12 col-lg-4"><?= Form::selectTimeSlot('end', ['title' => 'Heure fin', 'required' => true, 'stepMin' => $RdvType->getDuration(), 'startMin' => $dayTimeSlotStart, 'endMin' => $dayTimeSlotEnd]); ?></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12"><?= Form::select('Client existant', 'idClient', $allClients, 0); ?></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <?php $html .= ob_get_clean();
+        endif;
         $html .= '</div>';
-    }
+    endif;
 
     return $html;
 }
@@ -680,10 +719,7 @@ function appointment_deleteRdv($idRdv)
             'message' => $html,
         );
 
-        if (sendMail($data, [], ['viewSenderSource' => false])) {
-            echo json_encode(true);
-        }
-
+        sendMail($data, [], ['viewSenderSource' => false]);
         return true;
     }
 
@@ -754,7 +790,9 @@ function appointment_makeTheTimeSlotAvailable($id, $date, $start, $end)
 {
     $Exception = new Exception();
     $Exception->setId($id);
-    if ($Exception->show()) {
+    return $Exception->delete();
+
+    /*if ($Exception->show()) {
 
         //If the exception is for only one time slot
         if ($Exception->getStart() == $start && $Exception->getEnd() == $end) {
@@ -774,8 +812,7 @@ function appointment_makeTheTimeSlotAvailable($id, $date, $start, $end)
             $Exception->setAvailability('AVAILABLE');
             return $Exception->update();
         }
-    }
-    return false;
+    }*/
 }
 
 function appointment_makeTheDayAvailable($idAgenda, $date)
@@ -1309,9 +1346,9 @@ function appointment_availabilities_getBtns($idAgenda, $date, $booking, $start, 
  * @param $compressHour
  * @return string
  */
-function appointment_admin_availabilities_get($allRdv, $allExceptions, $start, $end, $rdvTypeDuration, $compressHour = true)
+function appointment_admin_availabilities_get($allRdv, $allExceptions, $start, $end, $rdvTypeDuration, $compressHour = false)
 {
-    $html = '<ul class="list-group my-3">';
+    $html = '<ul class="list-group mt-4 mb-3">';
     $time = $start;
 
     $Client = new Client();
@@ -1378,7 +1415,7 @@ function appointment_admin_availabilities_get($allRdv, $allExceptions, $start, $
             }
 
             $time = $rdv->end;
-            if (!$compressHour) {
+            if (!$compressHour && !in_array($time, range($start, $end, $rdvTypeDuration))) {
                 $time += (60 - ($rdv->end - $rdv->start)) % $rdvTypeDuration;
             }
 
@@ -1386,8 +1423,8 @@ function appointment_admin_availabilities_get($allRdv, $allExceptions, $start, $
         }
 
         $html .= minutesToHours($time) . ' - ' . minutesToHours($time + $rdvTypeDuration);
-        $html .= '<div><button class="btn btn-sm btn-outline-primary addNewRdv" data-start="' . $time . '" 
-        data-end="' . ($time + $rdvTypeDuration) . '">Ajouter un rdv</button> ';
+        $html .= '<div><button class="btn btn-sm btn-outline-primary addNewRdv" data-toggle="modal" 
+        data-target="#addNewRdvForm" data-start="' . $time . '" data-end="' . ($time + $rdvTypeDuration) . '">Ajouter un rdv</button> ';
         $html .= '<button class="btn btn-sm btn-secondary MakeTheTimeSlotUnavailable " data-start="' . $time . '" 
         data-end="' . ($time + $rdvTypeDuration) . '">Rendre indisponible</button></div>';
         $time += $rdvTypeDuration;
@@ -1395,8 +1432,8 @@ function appointment_admin_availabilities_get($allRdv, $allExceptions, $start, $
         $html .= '</li>';
     }
 
-
     $html .= '</ul>';
+
     return $html;
 }
 
@@ -1516,7 +1553,7 @@ function appointment_client_check($email)
  * @param array $exceptions
  * @return bool
  */
-function appointment_isAvailableDay($day, array $availabilities, array $exceptions = [])
+function appointment_isAvailableDay($day, array $availabilities, array $exceptions = [], $onlyAvailability = false)
 {
     $dayInWeek = date('w', strtotime($day));
 
@@ -1525,10 +1562,12 @@ function appointment_isAvailableDay($day, array $availabilities, array $exceptio
         foreach ($availabilities as $availability) {
             if ($availability->day == $dayInWeek) {
 
-                foreach ($exceptions as $exception) {
-                    if (($exception->date == $day || ($exception->endDate && $exception->date <= $day && $exception->endDate >= $day))
-                        && $exception->start == 0 && $exception->end == 1440) {
-                        return false;
+                if (!$onlyAvailability) {
+                    foreach ($exceptions as $exception) {
+                        if (($exception->date == $day || ($exception->endDate && $exception->date <= $day && $exception->endDate >= $day))
+                            && $exception->start == 0 && $exception->end == 1440) {
+                            return false;
+                        }
                     }
                 }
 
@@ -1649,41 +1688,4 @@ function appointment_admin_isUnvailableHour($time, $allExceptions, $rdvDuration)
 function appointment_getWeekDays()
 {
     return array(0 => 'Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi');
-}
-
-/**
- * @param $hours
- * @return float|int|mixed|string
- */
-function hoursToMinutes($hours)
-{
-    $minutes = 0;
-    if (strpos($hours, ':') !== false) {
-        list($hours, $minutes) = explode(':', $hours);
-        settype($minutes, 'integer');
-    }
-    settype($hours, 'integer');
-    return $hours * 60 + $minutes;
-}
-
-/**
- * @param $time
- * @param string $format
- * @return int|string
- */
-function minutesToHours($time, $format = '%s:%s')
-{
-    settype($time, 'integer');
-    if ($time < 0 || $time >= 1440) {
-        return 0;
-    }
-    $hours = floor($time / 60);
-    $minutes = $time % 60;
-    if ($hours < 10) {
-        $hours = '0' . $hours;
-    }
-    if ($minutes < 10) {
-        $minutes = '0' . $minutes;
-    }
-    return sprintf($format, $hours, $minutes);
 }

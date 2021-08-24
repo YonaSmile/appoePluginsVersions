@@ -405,7 +405,7 @@ jQuery(window).on('load', function () {
             }).done(function (data) {
                 if (data === 'true') {
                     $btn.fadeOut(500, function () {
-                        $('table#calendar td.day[data-date="'+date+'"]').addClass('disabledDay');
+                        $('table#calendar td.day[data-date="' + date + '"]').addClass('disabledDay');
                         notification('La journée est enregistrée comme indisponible');
                         getAdminRdvAvailabilities(date, idRdvType);
                     });
@@ -427,12 +427,28 @@ jQuery(window).on('load', function () {
             }).done(function (data) {
                 if (data === 'true') {
                     $btn.fadeOut(500, function () {
-                        $('table#calendar td.day[data-date="'+date+'"]').removeClass('disabledDay');
+                        $('table#calendar td.day[data-date="' + date + '"]').removeClass('disabledDay');
                         notification('La journée est enregistrée comme disponible');
                         getAdminRdvAvailabilities(date, idRdvType);
                     });
                 }
             });
+        });
+
+        $(document.body).on('click', 'button.addNewRdv', function () {
+            let $btn = $(this);
+            let start = $btn.attr('data-start');
+            let end = $btn.attr('data-end');
+            let $parentContainer = $btn.closest('div#rdvList');
+            let idAgenda = $parentContainer.attr('data-id-agenda');
+            let idRdvType = $parentContainer.attr('data-id-rdv-type');
+            let date = $parentContainer.attr('data-date');
+            let dateRemind = $parentContainer.find('#currentDateTitle').text();
+
+            let modal = $('div#addNewRdvForm');
+            modal.find('div#addNewRdvFormDate').html(dateRemind);
+            modal.find('select#start').val(start);
+            modal.find('select#end').val(end);
         });
 
         $(document.body).on('click', 'button.MakeTheTimeSlotAvailable', function () {
@@ -564,7 +580,9 @@ jQuery(window).on('load', function () {
             let date = $el.data('date');
             let idRdvType = $el.closest('table#calendar').data('id-rdv-type');
 
-            getAdminRdvAvailabilities(date, idRdvType);
+            if(!$('div#rdvList').length || date !== $('div#rdvList').data('date')) {
+                getAdminRdvAvailabilities(date, idRdvType);
+            }
         });
 
         $(document.body).on('show.bs.modal', '#dedicatedForm', function (event) {
