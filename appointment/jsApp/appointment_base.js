@@ -11,6 +11,22 @@ function getAdminAgendas() {
     });
 }
 
+function getAdminRdvAvailabilities(date, idRdvType) {
+    if (date && idRdvType) {
+        appointment_getLoader();
+        appointment_ajax({
+            getRdvAvailabilities: 'OK',
+            date: date,
+            idRdvType: idRdvType,
+        }).done(function (data) {
+            if (data) {
+                $('#rdvAvailabilities').html(data);
+            }
+            appointment_removeLoader();
+        });
+    }
+}
+
 function getAdminListManage(idAgenda, list) {
     return appointment_ajax({getManageList: list, idAgenda: idAgenda});
 }
@@ -291,7 +307,154 @@ jQuery(window).on('load', function () {
             appointment_ajax({deleteAdminRdvType: 'OK', idRdvType: idRdvType}).done(function (data) {
                 if (data === 'true') {
                     $parent.fadeOut(500, function () {
-                        $parent.remove()
+                        $parent.remove();
+                    });
+                }
+            });
+        });
+
+        $(document.body).on('click', 'button.deleteRdv', function () {
+            let $btn = $(this);
+            let idRdv = $btn.attr('data-id-rdv');
+            let $parent = $btn.closest('li');
+            let $parentContainer = $btn.closest('div#rdvList');
+            let idRdvType = $parentContainer.attr('data-id-rdv-type');
+            let date = $parentContainer.attr('data-date');
+
+            appointment_ajax({deleteAdminRdv: 'OK', idRdv: idRdv}).done(function (data) {
+                if (data === 'true') {
+                    $parent.fadeOut(500, function () {
+                        notification('Rendez-vous annulé');
+                        getAdminRdvAvailabilities(date, idRdvType);
+                    });
+                }
+            });
+        });
+
+        $(document.body).on('click', 'button.confirmRdv', function () {
+            let $btn = $(this);
+            let idRdv = $btn.attr('data-id-rdv');
+            let $parent = $btn.closest('li');
+            let $parentContainer = $btn.closest('div#rdvList');
+            let idRdvType = $parentContainer.attr('data-id-rdv-type');
+            let date = $parentContainer.attr('data-date');
+
+            appointment_ajax({confirmAdminRdv: 'OK', idRdv: idRdv}).done(function (data) {
+                if (data === 'true') {
+                    $parent.fadeOut(500, function () {
+                        notification('Rendez-vous confirmé');
+                        getAdminRdvAvailabilities(date, idRdvType);
+                    });
+                }
+            });
+        });
+
+        $(document.body).on('click', 'button.confirmClient', function () {
+            let $btn = $(this);
+            let idClient = $btn.attr('data-id-client');
+
+            appointment_ajax({confirmAdminClient: 'OK', idClient: idClient}).done(function (data) {
+                if (data === 'true') {
+                    $btn.fadeOut(500, function () {
+                        notification('Client confirmé');
+                    });
+                }
+            });
+        });
+
+        $(document.body).on('click', 'button.MakeTheTimeSlotUnavailable', function () {
+            let $btn = $(this);
+            let start = $btn.attr('data-start');
+            let end = $btn.attr('data-end');
+            let $parentContainer = $btn.closest('div#rdvList');
+            let idAgenda = $parentContainer.attr('data-id-agenda');
+            let idRdvType = $parentContainer.attr('data-id-rdv-type');
+            let date = $parentContainer.attr('data-date');
+
+            appointment_ajax({
+                makeTheTimeSlotUnavailable: 'OK',
+                idAgenda: idAgenda,
+                date: date,
+                start: start,
+                end: end
+            }).done(function (data) {
+                if (data === 'true') {
+                    $btn.fadeOut(500, function () {
+                        notification('Le créneau est enregistré comme indisponible');
+                        getAdminRdvAvailabilities(date, idRdvType);
+                    });
+                }
+            });
+        });
+
+        $(document.body).on('click', 'button.makeTheDayUnavailable', function () {
+            let $btn = $(this);
+            let start = 0;
+            let end = 1440;
+            let $parentContainer = $btn.closest('div#rdvList');
+            let idAgenda = $parentContainer.attr('data-id-agenda');
+            let idRdvType = $parentContainer.attr('data-id-rdv-type');
+            let date = $parentContainer.attr('data-date');
+
+            appointment_ajax({
+                makeTheTimeSlotUnavailable: 'OK',
+                idAgenda: idAgenda,
+                date: date,
+                start: start,
+                end: end
+            }).done(function (data) {
+                if (data === 'true') {
+                    $btn.fadeOut(500, function () {
+                        $('table#calendar td.day[data-date="'+date+'"]').addClass('disabledDay');
+                        notification('La journée est enregistrée comme indisponible');
+                        getAdminRdvAvailabilities(date, idRdvType);
+                    });
+                }
+            });
+        });
+
+        $(document.body).on('click', 'button.makeTheDayAvailable', function () {
+            let $btn = $(this);
+            let $parentContainer = $btn.closest('div#rdvList');
+            let idAgenda = $parentContainer.attr('data-id-agenda');
+            let idRdvType = $parentContainer.attr('data-id-rdv-type');
+            let date = $parentContainer.attr('data-date');
+
+            appointment_ajax({
+                makeTheDayAvailable: 'OK',
+                idAgenda: idAgenda,
+                date: date,
+            }).done(function (data) {
+                if (data === 'true') {
+                    $btn.fadeOut(500, function () {
+                        $('table#calendar td.day[data-date="'+date+'"]').removeClass('disabledDay');
+                        notification('La journée est enregistrée comme disponible');
+                        getAdminRdvAvailabilities(date, idRdvType);
+                    });
+                }
+            });
+        });
+
+        $(document.body).on('click', 'button.MakeTheTimeSlotAvailable', function () {
+            let $btn = $(this);
+            let start = $btn.attr('data-start');
+            let end = $btn.attr('data-end');
+            let idException = $btn.attr('data-id-exception');
+            let $parentContainer = $btn.closest('div#rdvList');
+            let idRdvType = $parentContainer.attr('data-id-rdv-type');
+            let date = $parentContainer.attr('data-date');
+
+            appointment_ajax({
+                makeTheTimeSlotAvailable: 'OK',
+                idException: idException,
+                date: date,
+                start: start,
+                end: end
+            }).done(function (data) {
+                if (data === 'true') {
+                    $btn.fadeOut(500, function () {
+                        notification('Le créneau est enregistré comme disponible');
+                        getAdminRdvAvailabilities(date, idRdvType);
                     });
                 }
             });
@@ -375,7 +538,7 @@ jQuery(window).on('load', function () {
             let year = $parent.find('select#rdvYear').val();
             let month = $parent.find('select#rdvMonth').val();
 
-            if(idRdvType && year && month) {
+            if (idRdvType && year && month) {
                 appointment_getLoader();
                 appointment_ajax({
                     getRdvGrid: 'OK',
@@ -391,6 +554,7 @@ jQuery(window).on('load', function () {
             }
         });
 
+
         $(document.body).on('click', 'table#calendar td.day:not(".other-month")', function () {
             let $el = $(this);
 
@@ -400,19 +564,7 @@ jQuery(window).on('load', function () {
             let date = $el.data('date');
             let idRdvType = $el.closest('table#calendar').data('id-rdv-type');
 
-            if(date && idRdvType) {
-                appointment_getLoader();
-                appointment_ajax({
-                    getRdvAvailabilities: 'OK',
-                    idRdvType: idRdvType,
-                    date: date,
-                }).done(function (data) {
-                    if (data) {
-                        $('#rdvAvailabilities').html(data);
-                    }
-                    appointment_removeLoader();
-                });
-            }
+            getAdminRdvAvailabilities(date, idRdvType);
         });
 
         $(document.body).on('show.bs.modal', '#dedicatedForm', function (event) {

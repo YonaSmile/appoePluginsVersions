@@ -68,6 +68,9 @@ if (checkAjaxRequest() && !bot_detected()) {
     if (isset($_POST['getManageList']) && !empty($_POST['idAgenda']) && is_numeric($_POST['idAgenda'])) {
 
         switch ($_POST['getManageList']) {
+            case 'settings':
+                echo appointment_settings_admin_getAll($_POST['idAgenda']);
+                break;
             case 'availabilities':
                 echo appointment_availabilities_admin_getAll($_POST['idAgenda']);
                 break;
@@ -166,6 +169,59 @@ if (checkAjaxRequest() && !bot_detected()) {
     if (isset($_POST['deleteAdminRdvType']) && !empty($_POST['idRdvType']) && is_numeric($_POST['idRdvType'])) {
 
         if (appointment_deleteRdvType($_POST['idRdvType'])) {
+            echo 'true';
+        }
+        exit();
+    }
+
+    if (isset($_POST['deleteAdminRdv']) && !empty($_POST['idRdv']) && is_numeric($_POST['idRdv'])) {
+
+        if (appointment_deleteRdv($_POST['idRdv'])) {
+            echo 'true';
+        }
+        exit();
+    }
+
+    if (isset($_POST['confirmAdminRdv']) && !empty($_POST['idRdv']) && is_numeric($_POST['idRdv'])) {
+
+        if (appointment_confirmRdv($_POST['idRdv'])) {
+            echo 'true';
+        }
+        exit();
+    }
+
+    if (isset($_POST['confirmAdminClient']) && !empty($_POST['idClient']) && is_numeric($_POST['idClient'])) {
+
+        if (appointment_confirmClient($_POST['idClient'])) {
+            echo 'true';
+        }
+        exit();
+    }
+
+    if (isset($_POST['makeTheTimeSlotUnavailable']) && !empty($_POST['idAgenda']) && is_numeric($_POST['idAgenda'])
+        && !empty($_POST['date']) && isset($_POST['start']) && !empty($_POST['end']) && is_numeric($_POST['start'])
+        && is_numeric($_POST['end'])) {
+
+        if ($_POST['start'] < 1440 && $_POST['end'] > 0 && appointment_makeTheTimeSlotUnavailable($_POST['idAgenda'], $_POST['date'], $_POST['start'], $_POST['end'])) {
+            echo 'true';
+        }
+        exit();
+    }
+
+    if (isset($_POST['makeTheTimeSlotAvailable']) && !empty($_POST['idException']) && is_numeric($_POST['idException'])
+        && !empty($_POST['date']) && isset($_POST['start']) && !empty($_POST['end'])
+        && is_numeric($_POST['start']) && is_numeric($_POST['end'])) {
+
+        if (appointment_makeTheTimeSlotAvailable($_POST['idException'], $_POST['date'], $_POST['start'], $_POST['end'])) {
+            echo 'true';
+        }
+        exit();
+    }
+
+    if (isset($_POST['makeTheDayAvailable']) && !empty($_POST['idAgenda']) && is_numeric($_POST['idAgenda'])
+        && !empty($_POST['date'])) {
+
+        if (appointment_makeTheDayAvailable($_POST['idAgenda'], $_POST['date'])) {
             echo 'true';
         }
         exit();

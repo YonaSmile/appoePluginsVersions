@@ -6,6 +6,7 @@ use App\Plugin\Appointment\Agenda;
 use App\Plugin\Appointment\AgendaMeta;
 use App\Plugin\Appointment\Availabilities;
 use App\Plugin\Appointment\Client;
+use App\Plugin\Appointment\Exception;
 use App\Plugin\Appointment\Rdv;
 use App\Plugin\Appointment\RdvType;
 use App\Plugin\Appointment\RdvTypeForm;
@@ -50,6 +51,24 @@ function appointment_agenda_admin_getAll()
             </div>
         <?php endforeach;
         $html .= ob_get_clean();
+    endif;
+
+    return $html;
+}
+
+/**
+ * @param $idAgenda
+ * @return string
+ */
+function appointment_settings_admin_getAll($idAgenda)
+{
+    $html = '';
+    $Agenda = new Agenda();
+    $Agenda->setId($idAgenda);
+    if ($Agenda->show()):
+
+        $html .= '<h5 class="agendaTitle">Paramètres</h5><p class="text-muted">Gérer vos paramètres.</p>';
+
     endif;
 
     return $html;
@@ -233,7 +252,7 @@ function appointment_rdv_admin_getGrid($idRdvType, $year, $month)
         $Availability->setIdAgenda($RdvType->getIdAgenda());
         $allAvailabilities = $Availability->showAll();
 
-        $Exception = new \App\Plugin\Appointment\Exception();
+        $Exception = new Exception();
         $Exception->setIdAgenda($RdvType->getIdAgenda());
         $Exception->setDate($Date->format('Y-m-d'));
         $allExceptions = $Exception->showAllFromDate();
@@ -302,33 +321,37 @@ function appointment_rdv_admin_getGrid($idRdvType, $year, $month)
  */
 function appointment_rdv_admin_getAvailabilities($idRdvType, $date)
 {
-    $html = $availabilities = '';
+    $html = '';
     $RdvType = new RdvType();
     $RdvType->setId($idRdvType);
-    if ($RdvType->show()):
-
-        $html .= '<div class="d-flex justify-content-between align-items-center">';
-        $html .= '<h5 class="agendaTitle">' . displayCompleteDate($date, false, '%A %d %B') . '</h5>';
-        $html .= '<button type="button" class="btn btn-sm btn-secondary">Rendre ce jour indisponible</button>';
-        $html .= '</div>';
+    if ($RdvType->show()) {
 
         $Date = new DateTime($date);
-        $weekDays = appointment_getWeekDays();
-        $currentDay = date('d');
-        $currentMonth = date('m');
-        $currentYear = date('Y');
-
 
         $Availability = new Availabilities();
         $Availability->setIdAgenda($RdvType->getIdAgenda());
         $Availability->setDay($Date->format('w'));
+        $availabilities = $Availability->showAllByDay();
 
-        if ($availabilities = $Availability->showAllByDay()) {
+        $Exception = new Exception();
+        $Exception->setIdAgenda($RdvType->getIdAgenda());
+        $Exception->setDate($Date->format('Y-m-d'));
+        $allExceptions = $Exception->showAllFromDateRecurrence();
 
-            $Exception = new \App\Plugin\Appointment\Exception();
-            $Exception->setIdAgenda($RdvType->getIdAgenda());
-            $Exception->setDate($Date->format('Y-m-d'));
-            $allExceptions = $Exception->showAllFromDateRecurrence();
+        $html .= '<div id="rdvList" data-id-agenda="' . $RdvType->getIdAgenda() . '" 
+        data-id-rdv-type="' . $idRdvType . '" data-date="' . $Date->format('Y-m-d') . '">';
+        $html .= '<div class="d-flex justify-content-between align-items-center">';
+        $html .= '<h5 class="agendaTitle">' . displayCompleteDate($Date->format('Y-m-d'), false, '%A %d %B') . '</h5>';
+
+        if (appointment_isAvailableDay($Date->format('Y-m-d'), $availabilities, $allExceptions)) {
+            $html .= '<button type="button" class="btn btn-sm btn-secondary makeTheDayUnavailable">Rendre ce jour indisponible</button>';
+        } else {
+            $availabilities = false;
+            $html .= '<button type="button" class="btn btn-sm btn-secondary makeTheDayAvailable">Rendre ce jour disponible</button>';
+        }
+        $html .= '</div>';
+
+        if ($availabilities) {
 
             $allRdv = appointment_getRdvByDate($RdvType->getIdAgenda(), $Date->format('Y-m-d'));
 
@@ -339,9 +362,11 @@ function appointment_rdv_admin_getAvailabilities($idRdvType, $date)
             }
 
             $html .= ob_get_clean();
-        } ?>
+        }
 
-    <?php endif;
+        $html .= '</div>';
+    }
+
     return $html;
 }
 
@@ -366,7 +391,7 @@ function appointment_rdvTypeForm_admin_getAll($idAgenda, $idRdvType)
         $html .= '<div class="col-12 col-lg-3">' . Form::input('placeholder', ['title' => 'Placeholder']) . '</div>';
         $html .= '<div class="col-12 col-lg-1"><div>Obligatoire</div>' . Form::switch('required', ['val' => 'false', 'parentClass' => 'd-flex justify-content-center align-items-center']) . '</div>';
         $html .= '<div class="col-12 col-lg-1">' . Form::select('Position', 'position', $positions, 1, true) . '</div>';
-        $html .= '<div class="col-12 col-lg-1 d-flex align-items-end">' . Form::btn('OK', 'ADDAVAILIBILITYSUBMIT') . '</div>';
+        $html .= '<div class="col-12 col-lg-1 d-flex align-items-end">' . Form::btn('OK', 'ADDTYPERDVFORMSUBMIT') . '</div>';
         $html .= '</div></form>';
 
         $RdvTypeForm = new RdvTypeForm();
@@ -621,6 +646,153 @@ function appointment_deleteRdvType($idRdvType)
 }
 
 /**
+ * @param $idRdv
+ * @return bool
+ */
+function appointment_deleteRdv($idRdv)
+{
+    $Rdv = new Rdv();
+    $Rdv->setId($idRdv);
+
+    $Client = new Client();
+    $Client->setId($Rdv->getIdClient());
+    $Client->show();
+
+    if ($Rdv->delete() && $Client->getStatus() == 1) {
+
+        $Agenda = new Agenda();
+        $Agenda->setId($Rdv->getIdAgenda());
+        $Agenda->show();
+
+        $RdvType = new RdvType();
+        $RdvType->setId($Rdv->getIdTypeRdv());
+        $RdvType->show();
+
+        $rdvRemind = displayCompleteDate($Rdv->getDate()) . ' à ' . minutesToHours($Rdv->getStart());
+
+        $html = '<p>Bonjour,<br><br>Votre rendez-vous du ' . $rdvRemind . ' pour ' . $RdvType->getName() . ' chez ' . $Agenda->getName() . ' a été <strong>annulé</strong>.
+        <br>Vous pouvez  <a href="' . urlAppointment() . '">redemander un rendez-vous</a> sur notre site.</p>';
+
+        $data = array(
+            'toEmail' => $Client->getEmail(),
+            'toName' => $Client->getLastName() . ' ' . $Client->getFirstName(),
+            'object' => 'Votre rendez-vous chez ' . $Agenda->getName() . ' a été annulé',
+            'message' => $html,
+        );
+
+        if (sendMail($data, [], ['viewSenderSource' => false])) {
+            echo json_encode(true);
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+/**
+ * @param $idRdv
+ * @return bool
+ */
+function appointment_confirmRdv($idRdv)
+{
+    $Rdv = new Rdv();
+    $Rdv->setId($idRdv);
+    if ($Rdv->show() && $Rdv->getStatus() == 0) {
+        $Rdv->setStatus(1);
+        return $Rdv->update();
+    }
+    return false;
+}
+
+/**
+ * @param $idClient
+ * @return bool
+ */
+function appointment_confirmClient($idClient)
+{
+    $Client = new Client();
+    $Client->setId($idClient);
+    if ($Client->show() && $Client->getStatus() == 0) {
+        $Client->setStatus(1);
+
+        $Option = new \App\Option();
+        $Option->setType('CONFIRMATIONMAIL');
+        $Option->setKey($Client->getEmail());
+        if ($confirmEmail = $Option->showByKey()) {
+            $Option->setId($confirmEmail->id);
+
+            if ($Client->update() && $Option->delete()) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+function appointment_makeTheTimeSlotUnavailable($idAgenda, $date, $start, $end)
+{
+    $Exception = new Exception();
+    $Exception->setIdAgenda($idAgenda);
+    $Exception->setDate($date);
+    $Exception->setStart($start);
+    $Exception->setEnd($end);
+
+    if (!$Exception->exist()) {
+        return $Exception->save();
+    }
+
+    if ($Exception->showByTime()) {
+        $Exception->setAvailability('UNAVAILABLE');
+        return $Exception->update();
+    }
+
+    return false;
+}
+
+function appointment_makeTheTimeSlotAvailable($id, $date, $start, $end)
+{
+    $Exception = new Exception();
+    $Exception->setId($id);
+    if ($Exception->show()) {
+
+        //If the exception is for only one time slot
+        if ($Exception->getStart() == $start && $Exception->getEnd() == $end) {
+            return $Exception->delete();
+        }
+
+        $Exception->setDate($date);
+        $Exception->setStart($start);
+        $Exception->setEnd($end);
+        $Exception->setAvailability('AVAILABLE');
+
+        if (!$Exception->exist()) {
+            return $Exception->save();
+        }
+
+        if ($Exception->showByTime()) {
+            $Exception->setAvailability('AVAILABLE');
+            return $Exception->update();
+        }
+    }
+    return false;
+}
+
+function appointment_makeTheDayAvailable($idAgenda, $date)
+{
+    $Exception = new Exception();
+
+    $Exception->setIdAgenda($idAgenda);
+    $Exception->setDate($date);
+    $Exception->setStart(0);
+    $Exception->setEnd(1440);
+    if ($Exception->showByTime()) {
+        return $Exception->delete();
+    }
+    return false;
+}
+
+/**
  * @param $idRdvTypeForm
  * @return bool
  */
@@ -659,6 +831,15 @@ function appointment_cron()
             }
         }
     }
+}
+
+function urlAppointment()
+{
+    if (defined('APPOINTMENT_FILENAME') && function_exists('getPageByFilename')) {
+        $Cms = getPageByFilename(APPOINTMENT_FILENAME);
+        return WEB_DIR_URL . $Cms->getSlug() . DIRECTORY_SEPARATOR;
+    }
+    return null;
 }
 
 /**
@@ -700,9 +881,8 @@ function appointment_sendInfosEmail($idRdv, $url = null)
                 $message .= '<p style="margin-bottom:15px;">' . $RdvType->getInformation() . '</p>';
             }
 
-            if (is_null($url) && defined('APPOINTMENT_FILENAME') && function_exists('getPageByFilename')) {
-                $Cms = getPageByFilename(APPOINTMENT_FILENAME);
-                $url = WEB_DIR_URL . $Cms->getSlug() . DIRECTORY_SEPARATOR;
+            if (is_null($url)) {
+                $url = urlAppointment();
             }
 
             if (!is_null($url)) {
@@ -1007,7 +1187,7 @@ function appointment_dates_get($idAgenda, $idRdvType)
     $RdvType->setId($idRdvType);
     $RdvType->show();
 
-    $Exception = new \App\Plugin\Appointment\Exception();
+    $Exception = new Exception();
     $Exception->setIdAgenda($idAgenda);
     $Exception->setDate($Date->format('Y-m-d'));
     $allExceptions = $Exception->showAllFromDate();
@@ -1080,7 +1260,7 @@ function appointment_availabilities_getBtns($idAgenda, $date, $booking, $start, 
     $html = '<section class="agendaAvailabilities appointmentAppoe">';
     $availabilities = 0;
     $time = $start;
-    $Exception = new \App\Plugin\Appointment\Exception();
+    $Exception = new Exception();
     $Exception->setIdAgenda($idAgenda);
     $Exception->setDate($date);
     $allExceptions = $Exception->showAllFromDateRecurrence();
@@ -1126,12 +1306,12 @@ function appointment_availabilities_getBtns($idAgenda, $date, $booking, $start, 
  * @param $start
  * @param $end
  * @param $rdvTypeDuration
- * @param bool $compressHour
+ * @param $compressHour
  * @return string
  */
 function appointment_admin_availabilities_get($allRdv, $allExceptions, $start, $end, $rdvTypeDuration, $compressHour = true)
 {
-    $html = '<ul class="list-group">';
+    $html = '<ul class="list-group my-3">';
     $time = $start;
 
     $Client = new Client();
@@ -1145,8 +1325,9 @@ function appointment_admin_availabilities_get($allRdv, $allExceptions, $start, $
         $html .= '<li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">';
 
         if ($exception = appointment_admin_isUnvailableHour($time, $allExceptions, $rdvTypeDuration)) {
-            $html .= minutesToHours($time) . ' - ' . minutesToHours($time + $rdvTypeDuration) . ' INDISPONIBLE';
-            $html .= '<div><button class="btn btn-sm btn-dark">Rendre disponible</button></div>';
+            $html .= minutesToHours($time) . ' - ' . minutesToHours($time + $rdvTypeDuration);
+            $html .= '<div><button class="btn btn-sm btn-dark MakeTheTimeSlotAvailable" data-start="' . $time . '" 
+            data-end="' . ($time + $rdvTypeDuration) . '" data-id-exception="' . $exception->id . '">Rendre disponible</button></div>';
             $time += $rdvTypeDuration;
             continue;
         }
@@ -1165,7 +1346,7 @@ function appointment_admin_availabilities_get($allRdv, $allExceptions, $start, $
             $html .= $Client->getLastName() . ' ' . $Client->getFirstName();
 
             if (!$Client->getStatus()) {
-                $html .= '<button class="btn btn-sm btn-link p-0 ml-2">Confirmer le client</button>';
+                $html .= '<button class="btn btn-sm btn-link p-0 ml-2 confirmClient" data-id-client="' . $Client->getId() . '">Confirmer le client</button>';
             }
 
             $html .= '<hr class="my-1 mx-0" style="width:50px;">';
@@ -1191,9 +1372,9 @@ function appointment_admin_availabilities_get($allRdv, $allExceptions, $start, $
             $html .= '</div>';
 
             if ($rdv->status) {
-                $html .= '<div><button class="btn btn-sm btn-outline-danger">Annuler ce rdv</button></div>';
+                $html .= '<div><button class="btn btn-sm btn-outline-danger deleteRdv" data-id-rdv="' . $rdv->id . '">Annuler ce rdv</button></div>';
             } else {
-                $html .= '<div><button class="btn btn-sm btn-warning">Confirmer le rdv</button></div>';
+                $html .= '<div><button class="btn btn-sm btn-warning confirmRdv" data-id-rdv="' . $rdv->id . '">Confirmer le rdv</button></div>';
             }
 
             $time = $rdv->end;
@@ -1205,8 +1386,10 @@ function appointment_admin_availabilities_get($allRdv, $allExceptions, $start, $
         }
 
         $html .= minutesToHours($time) . ' - ' . minutesToHours($time + $rdvTypeDuration);
-        $html .= '<div><button class="btn btn-sm btn-outline-primary">Ajouter un rdv</button> ';
-        $html .= '<button class="btn btn-sm btn-secondary">Rendre indisponible</button></div>';
+        $html .= '<div><button class="btn btn-sm btn-outline-primary addNewRdv" data-start="' . $time . '" 
+        data-end="' . ($time + $rdvTypeDuration) . '">Ajouter un rdv</button> ';
+        $html .= '<button class="btn btn-sm btn-secondary MakeTheTimeSlotUnavailable " data-start="' . $time . '" 
+        data-end="' . ($time + $rdvTypeDuration) . '">Rendre indisponible</button></div>';
         $time += $rdvTypeDuration;
 
         $html .= '</li>';
@@ -1418,16 +1601,11 @@ function appointment_isUnvailableHour(&$time, $allExceptions, $rdvDuration, $com
                 ($exception->start > $time && $exception->start < ($time + $rdvDuration)) ||
                 ($exception->start < $time && ($exception->start + $rdvDuration) > $time)) {
 
-                if ($item = isValInMultiArrObj($allExceptions, 'availablity', 'AVAILABLE', 'obj')) {
-                    if (($item->start <= $time && ($time + $rdvDuration) <= $item->end)) {
-                        return false;
-                    }
-                }
-
-                $time = $exception->end;
+                $time = ($exception->start != 0 && $exception->end != 1440) ? $exception->end : ($time + $rdvDuration);
                 if (!$compressHour) {
                     $time += (60 - ($exception->end - $exception->start)) % $rdvDuration;
                 }
+
                 return true;
             }
         }
@@ -1439,24 +1617,24 @@ function appointment_isUnvailableHour(&$time, $allExceptions, $rdvDuration, $com
  * @param $time
  * @param $allExceptions
  * @param $rdvDuration
- * @return bool
+ * @return bool|object
  */
 function appointment_admin_isUnvailableHour($time, $allExceptions, $rdvDuration)
 {
-
     if (!empty($allExceptions)) {
         foreach ($allExceptions as $exception) {
 
-            if ($exception->availablity == 'UNAVAILABLE' && (($exception->start >= $time && $exception->end < $time) ||
-                    ($exception->start <= $time && $exception->end > $time) ||
-                    ($exception->start > $time && $exception->start < ($time + $rdvDuration)) ||
-                    ($exception->start < $time && ($exception->start + $rdvDuration) > $time))) {
+            if (($exception->start >= $time && $exception->end < $time) ||
+                ($exception->start <= $time && $exception->end > $time) ||
+                ($exception->start > $time && $exception->start < ($time + $rdvDuration)) ||
+                ($exception->start < $time && ($exception->start + $rdvDuration) > $time)) {
 
-                if ($item = isValInMultiArrObj($allExceptions, 'availablity', 'AVAILABLE', 'obj')) {
-                    if (($item->start <= $time && ($time + $rdvDuration) <= $item->end)) {
+                /*if ($item = isValInMultiArrObj($allExceptions, 'start', $time, 'obj')) {
+                    if ($item->availability == 'AVAILABLE' && ($item->start == $time && ($time + $rdvDuration) == $item->end)) {
+
                         return false;
                     }
-                }
+                }*/
 
                 return $exception;
             }

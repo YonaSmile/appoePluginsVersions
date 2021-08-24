@@ -12,12 +12,18 @@ if (!empty($_GET['id']) && is_numeric($_GET['id'])):
     <div class="row">
         <div class="col-12 col-lg-4 my-3" id="manageList" data-id-agenda="<?= $Agenda->getId(); ?>">
             <div class="btn-group-vertical btnGroupAgendaManager">
+                <button class="btn btn-block btnAgendaManager" data-manage="settings">Paramètres générales</button>
                 <button class="btn btn-block btnAgendaManager" data-manage="availabilities">Disponibilités</button>
                 <button class="btn btn-block btnAgendaManager" data-manage="typeRdv">Type de RDV</button>
                 <button class="btn btn-block btnAgendaManager" data-manage="rdv">Gérer ses RDV</button>
             </div>
         </div>
-        <div class="col-12 col-lg-8 my-3" id="manageType"></div>
+        <div class="col-12 col-lg-8 my-3" id="manageType">
+            <h5 class="agendaTitle">Bienvenue dans la gestion de votre agenda</h5>
+            <p class="text-muted">A votre gauche se trouve les paramètres de votre agenda</p>
+            <h6>Disponibilités</h6>
+            <p class="text-muted">Vous pouvez modifier en temps réel les créneaux disponibles pour vos rendez-vous.</p>
+        </div>
     </div>
 
 
