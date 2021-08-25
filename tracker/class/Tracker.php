@@ -366,7 +366,7 @@ class Tracker
         $params = [];
         $sql = 'SELECT COUNT( CASE WHEN `pageType` = "PAGE" THEN 1 END) AS PAGE, 
         COUNT( CASE WHEN `pageType` = "ARTICLE" THEN 1 END) as ARTICLE, 
-        COUNT( CASE WHEN `pageType` = "PRODUCT" THEN 1 END) as PRODUCT FROM ' . $this->tableName;
+        COUNT( CASE WHEN `pageType` = "SHOP" THEN 1 END) as SHOP FROM ' . $this->tableName;
 
         $sql .= !is_null($dateStart) || !is_null($dateEnd) ? ' WHERE ' : '';
 
@@ -412,7 +412,7 @@ class Tracker
             $params[':dateEnd'] = $dateEnd;
         }
 
-        $sql .= ' GROUP BY `pageName` ';
+        $sql .= ' GROUP BY `pageName`, `pageType` ';
 
         if ($return = DB::exec($sql, $params)) {
             return $return->fetchAll(PDO::FETCH_OBJ);
