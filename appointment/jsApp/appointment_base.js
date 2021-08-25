@@ -425,6 +425,10 @@ jQuery(window).on('load', function () {
             postFormRequest($form, function () {
                 $('#addNewRdvForm').modal('hide');
                 setTimeout(function (){
+                    let $box = $('table#calendar td.selectedDay');
+                    if(!$box.find('span.shapeRdv').length){
+                        $box.append('<span class="shapeRdv"></span>');
+                    }
                     getAdminRdvAvailabilities($form.find('input[name="rdvDate"]').val(), $form.find('input[name="idRdvType"]').val());
                 }, 300);
             });
