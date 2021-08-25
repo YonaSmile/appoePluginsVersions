@@ -118,21 +118,21 @@ if (!empty($_POST['formType']) && valideAjaxToken()) {
         //Send infos or confirmation email
         if ($Client->getStatus()) {
 
-            if (appointment_sendInfosEmail($Rdv->getId(), $_SESSION['appointmentSlug'])) {
+            if (appointment_sendInfosEmail($Rdv->getId(), urlAppointment())) {
                 echo json_encode(true);
             }
 
         } else {
 
             $html = '<p>Bonjour,<br><br>Afin de finaliser notre premier rendez-vous, veuillez cliquer sur le bouton ci-dessous.
-        <br>Faites vite ! Ce lien expirera dans 24 heures.<br>Le délai est dépassé ? <a href="' . $_SESSION['appointmentSlug'] . '">Redemandez un rendez-vous</a> sur notre site.</p>';
+        <br>Faites vite ! Ce lien expirera dans 24 heures.<br>Le délai est dépassé ? <a href="' . urlAppointment() . '">Redemandez un rendez-vous</a> sur notre site.</p>';
 
             $data = array(
                 'toEmail' => $clientEmail,
                 'object' => 'Finalisez votre rendez-vous',
                 'message' => $html,
                 'params' => ['idClient' => base64_encode($Client->getId())],
-                'confirmationPageSlug' => basename($_SESSION['appointmentSlug']),
+                'confirmationPageSlug' => basename(urlAppointment()),
                 'confirmationBtnText' => 'Confirmer'
             );
 

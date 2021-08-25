@@ -93,23 +93,24 @@ if (checkAjaxRequest() && !bot_detected()) {
     }
 
     if (isset($_POST['setAdminAvailability']) && !empty($_POST['idAgenda']) && is_numeric($_POST['idAgenda'])
-        && isset($_POST['day']) && !empty($_POST['start']) && !empty($_POST['end'])) {
+        && isset($_POST['day']) && isset($_POST['start']) && !empty($_POST['end']) && is_numeric($_POST['start'])
+        && is_numeric($_POST['end']) && is_numeric($_POST['day'])) {
 
-        if (false !== strpos($_POST['start'], ':') && false !== strpos($_POST['start'], ':')) {
-            $start = hoursToMinutes($_POST['start']);
-            $end = hoursToMinutes($_POST['end']);
+        $start = $_POST['start'];
+        $end = $_POST['end'];
 
-            if ($start === $end || $end < $start) {
-                echo 'L\'heure du début doit être antérieur à l\'heure de fin';
+        if ($end == 0 || $start === $end || $end < $start) {
+            echo 'L\'heure du début doit être antérieur à l\'heure de fin';
+        } else {
+            $addAvailability = appointment_addAvailability($_POST['idAgenda'], $_POST['day'], $start, $end);
+            if (true === $addAvailability) {
+                echo 'true';
             } else {
-                $addAvailability = appointment_addAvailability($_POST['idAgenda'], $_POST['day'], $start, $end);
-                if (true === $addAvailability) {
-                    echo 'true';
-                } else {
-                    echo $addAvailability;
-                }
+                echo $addAvailability;
             }
+            exit();
         }
+        echo 'Certaines données sont manquant au créneau';
         exit();
     }
 

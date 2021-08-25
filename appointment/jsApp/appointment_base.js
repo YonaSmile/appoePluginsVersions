@@ -140,7 +140,7 @@ jQuery(window).on('load', function () {
             let start = $form.find('select#start').val();
             let end = $form.find('select#end').val();
 
-            if (idAgenda && day !== '' && start !== '' && end !== '') {
+            if (idAgenda && $.isNumeric(day) && $.isNumeric(start) && $.isNumeric(end)) {
 
                 busyApp();
                 appointment_ajax({
@@ -156,6 +156,8 @@ jQuery(window).on('load', function () {
                                 $('#manageType').html(data);
                             }
                         });
+                    } else if(data === 'false') {
+                        notification('Certaines données sont manquant au créneau', 'danger');
                     } else {
                         notification(data, 'danger');
                     }

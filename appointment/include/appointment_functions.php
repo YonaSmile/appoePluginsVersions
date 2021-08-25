@@ -31,6 +31,15 @@ const APPOINTMENT_FORM_TITLE = 'Vos coordonnées de contact';
 
 Hook::add_action('cron', 'appointment_cron');
 
+function urlAppointment()
+{
+    if (defined('APPOINTMENT_FILENAME') && function_exists('getPageByFilename')) {
+        $Cms = getPageByFilename(APPOINTMENT_FILENAME);
+        return WEB_DIR_URL . $Cms->getSlug() . DIRECTORY_SEPARATOR;
+    }
+    return null;
+}
+
 /********************************** BACK **************************************/
 function appointment_agenda_admin_getAll()
 {
@@ -88,9 +97,9 @@ function appointment_availabilities_admin_getAll($idAgenda)
         $week = appointment_getWeekDays();
         $html .= '<h5 class="agendaTitle">Disponibilités</h5><p class="text-muted">Gérer ses disponibilités en renseignant les jours et les horaires de prise de rendez-vous disponible.</p>';
         $html .= '<form id="addAvailability" class="mt-4 mb-5" data-id-agenda="' . $idAgenda . '"><div class="form-row">';
-        $html .= '<div class="col-12 col-lg-4">' . Form::select('Jour', 'day', $week) . '</div>';
-        $html .= '<div class="col-12 col-lg-3">' . Form::selectTime('Heure début', 'start', true, 0, 24, 50, 10) . '</div>';
-        $html .= '<div class="col-12 col-lg-3">' . Form::selectTime('Heure fin', 'end', true, 0, 24, 50, 10) . '</div>';
+        $html .= '<div class="col-12 col-lg-4">' . Form::select('Jour', 'day', $week, 'no', true) . '</div>';
+        $html .= '<div class="col-12 col-lg-3">' . Form::selectTimeSlot('start', ['title' => 'Heure début', 'required' => true, 'stepMin' => 5, 'startMin' => 0, 'endMin' => 1440]) . '</div>';
+        $html .= '<div class="col-12 col-lg-3">' . Form::selectTimeSlot('end', ['title' => 'Heure fin', 'required' => true, 'stepMin' => 5, 'startMin' => 0, 'endMin' => 1440]) . '</div>';
         $html .= '<div class="col-12 col-lg-2 d-flex align-items-end">' . Form::btn('OK', 'ADDAVAILIBILITYSUBMIT') . '</div>';
         $html .= '</div></form>';
 
@@ -950,15 +959,6 @@ function appointment_cron()
     }
 }
 
-function urlAppointment()
-{
-    if (defined('APPOINTMENT_FILENAME') && function_exists('getPageByFilename')) {
-        $Cms = getPageByFilename(APPOINTMENT_FILENAME);
-        return WEB_DIR_URL . $Cms->getSlug() . DIRECTORY_SEPARATOR;
-    }
-    return null;
-}
-
 /**
  * @param $idRdv
  * @param $url
@@ -1062,7 +1062,6 @@ function appointment_sendInfosEmail($idRdv, $url = null)
  */
 function appointment_agenda_getBtns($idAgenda = '')
 {
-    $_SESSION['appointmentSlug'] = WEB_DIR_URL . getPageSlug() . '/';
     $html = '';
 
     //Remove unconfirmed RDV
@@ -1126,7 +1125,7 @@ function appointment_agenda_getBtns($idAgenda = '')
 
                         if ($rdv->date > date('Y-m-d')) {
 
-                            $url = $_SESSION['appointmentSlug'] . '?idRdv=' . base64_encode($rdv->id);
+                            $url = urlAppointment() . '?idRdv=' . base64_encode($rdv->id);
                             $removeRdv = $url . '&removeRdv=OK';
                             $editRdv = $url . '&editRdv=OK';
 
@@ -1203,7 +1202,7 @@ function appointment_agenda_getBtns($idAgenda = '')
                                 $html .= 'Votre rendez-vous du <strong>' . displayCompleteDate($Rdv->getDate()) . '</strong>';
                                 $html .= ' à <strong>' . minutesToHours($Rdv->getStart()) . '</strong> est enregistré.<br>';
                                 $html .= '<br>Vous recevrez bientôt un email récapitulatif.';
-                                appointment_sendInfosEmail($Rdv->getId(), $_SESSION['appointmentSlug']);
+                                appointment_sendInfosEmail($Rdv->getId(), urlAppointment());
                             }
                         } else {
                             $html .= 'Votre rendez-vous n\'a pas été enregistré !';
@@ -1214,7 +1213,7 @@ function appointment_agenda_getBtns($idAgenda = '')
                     }
                 }
             } else {
-                $html .= 'Le délai d\'attente a expiré ! Vous pouvez reprendre un <a href="' . $_SESSION['appointmentSlug'] . '">rendez-vous</a>.';
+                $html .= 'Le délai d\'attente a expiré ! Vous pouvez reprendre un <a href="' . urlAppointment() . '">rendez-vous</a>.';
             }
 
             return $html;
@@ -1479,7 +1478,7 @@ function appointment_admin_availabilities_get($allRdv, $allExceptions, $start, $
                     $rdvForm = extractFromObjToSimpleArr($rdvForm, 'slug', 'name');
 
                     foreach ($options as $key => $val) {
-                        if (!empty($val)) {
+                        if (!empty($val) && array_key_exists($key, $rdvForm)) {
                             $html .= '<br><strong>' . $rdvForm[$key] . ' : </strong>' . $val;
                         }
                     }
