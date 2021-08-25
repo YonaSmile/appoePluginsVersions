@@ -321,7 +321,9 @@ jQuery(window).on('load', function () {
             let idRdvType = $parentContainer.attr('data-id-rdv-type');
             let date = $parentContainer.attr('data-date');
 
-            if(confirm('Voulez vous vraiment annuler ce rendez-vous ?')) {
+            if (confirm('Voulez vous vraiment annuler ce rendez-vous ?')) {
+
+                busyApp();
                 appointment_ajax({deleteAdminRdv: 'OK', idRdv: idRdv}).done(function (data) {
                     if (data === 'true') {
                         $parent.fadeOut(500, function () {
@@ -329,6 +331,7 @@ jQuery(window).on('load', function () {
                             getAdminRdvAvailabilities(date, idRdvType);
                         });
                     }
+                    availableApp();
                 });
             }
         });
@@ -361,6 +364,69 @@ jQuery(window).on('load', function () {
                         notification('Client confirmé');
                     });
                 }
+            });
+        });
+
+        $(document.body).on('click', 'button.addNewRdv', function () {
+            let $btn = $(this);
+            let start = $btn.attr('data-start');
+            let end = $btn.attr('data-end');
+            let modal = $('div#addNewRdvForm');
+            let dateRemind = modal.find('div#addNewRdvFormDate').data('date-reminder');
+            let dateSlice = dateRemind.split(' ');
+            modal.find('div#addNewRdvFormDate').html('<div class="dateTitleForm">' + dateSlice[0] + '</div><div>' + dateSlice[1] + ' ' + dateSlice[2] + ' ' + dateSlice[3] + '</div>');
+            modal.find('select#rdvBegin').val(start);
+            modal.find('select#rdvEnd').val(end);
+        });
+
+        $(document.body).on('change', 'div#addNewRdvForm select#selectClient', function () {
+            let select = $(this);
+            let selectedIdClient = select.val();
+            let $form = $('form#addNewRdvClientForm');
+            let idAgenda = $form.find('input[name="idAgenda"]').val();
+            let idRdvType = $form.find('input[name="idRdvType"]').val();
+            let rdvDate = $form.find('input[name="rdvDate"]').val();
+            let rdvBegin = $form.find('select#rdvBegin').val();
+            let rdvEnd = $form.find('select#rdvEnd').val();
+
+            $form.trigger('reset');
+            $form.find('input[name="idAgenda"]').val(idAgenda);
+            $form.find('input[name="idRdvType"]').val(idRdvType);
+            $form.find('input[name="rdvDate"]').val(rdvDate);
+            $form.find('select#rdvBegin').val(rdvBegin);
+            $form.find('select#rdvEnd').val(rdvEnd);
+            $form.find('select#selectClient').val(selectedIdClient);
+
+            if (selectedIdClient > 0) {
+                appointment_getLoader();
+                appointment_ajax({
+                    getClientData: 'OK',
+                    idClient: selectedIdClient,
+                }).done(function (data) {
+                    if (data) {
+                        data = JSON.parse(data);
+                        $.each(data, function (i, val) {
+                            if ($('#' + i, $form).length) {
+                                $('#' + i, $form).val(val);
+                            }
+                        });
+                    }
+                    appointment_removeLoader();
+                });
+            }
+        });
+
+        $(document.body).on('submit', 'form#addNewRdvClientForm', function (e) {
+            e.preventDefault();
+
+            let $form = $(this);
+            $form.prepend('<input name="appointmentFromAdmin" type="hidden" value="OK">');
+
+            postFormRequest($form, function () {
+                $('#addNewRdvForm').modal('hide');
+                setTimeout(function (){
+                    getAdminRdvAvailabilities($form.find('input[name="rdvDate"]').val(), $form.find('input[name="idRdvType"]').val());
+                }, 300);
             });
         });
 
@@ -435,22 +501,6 @@ jQuery(window).on('load', function () {
                     });
                 }
             });
-        });
-
-        $(document.body).on('click', 'button.addNewRdv', function () {
-            let $btn = $(this);
-            let start = $btn.attr('data-start');
-            let end = $btn.attr('data-end');
-            let $parentContainer = $btn.closest('div#rdvList');
-            let idAgenda = $parentContainer.attr('data-id-agenda');
-            let idRdvType = $parentContainer.attr('data-id-rdv-type');
-            let date = $parentContainer.attr('data-date');
-            let dateRemind = $parentContainer.find('#currentDateTitle').text();
-
-            let modal = $('div#addNewRdvForm');
-            modal.find('div#addNewRdvFormDate').html(dateRemind);
-            modal.find('select#start').val(start);
-            modal.find('select#end').val(end);
         });
 
         $(document.body).on('click', 'button.MakeTheTimeSlotAvailable', function () {
@@ -582,7 +632,7 @@ jQuery(window).on('load', function () {
             let date = $el.data('date');
             let idRdvType = $el.closest('table#calendar').data('id-rdv-type');
 
-            if(!$('div#rdvList').length || date !== $('div#rdvList').data('date')) {
+            if (!$('div#rdvList').length || date !== $('div#rdvList').data('date')) {
                 getAdminRdvAvailabilities(date, idRdvType);
             }
         });

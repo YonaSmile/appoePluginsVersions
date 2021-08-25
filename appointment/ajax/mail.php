@@ -1,4 +1,9 @@
 <?php
+
+use App\Plugin\Appointment\Client;
+use App\Plugin\Appointment\Rdv;
+use App\Plugin\Appointment\RdvTypeForm;
+
 require_once($_SERVER['DOCUMENT_ROOT'] . '/app/main.php');
 includePluginsFiles();
 
@@ -13,6 +18,24 @@ if (!empty($_POST['formType']) && valideAjaxToken()) {
         && isTel($_POST['appointment_tel']) && is_numeric($_POST['idAgenda']) && is_numeric($_POST['idRdvType'])
         && is_numeric($_POST['rdvBegin']) && is_numeric($_POST['rdvEnd'])) {
 
+        if (isset($_POST['appointmentFromAdmin'])) {
+
+            $start = $_POST['rdvBegin'];
+            $end = $_POST['rdvEnd'];
+
+            if ($end <= $start) {
+                echo json_encode('Ce créneau n\'est pas disponible');
+                exit();
+            }
+
+
+            $allRdv = appointment_getRdvByDate($_POST['idAgenda'], $_POST['rdvDate']);
+            if (appointment_admin_isBooked($start, $allRdv, $end - $start)) {
+                echo json_encode('Le créneau est occupé par un autre rendez-vous');
+                exit();
+            }
+        }
+
         $clientEmail = $_POST['appointment_email'];
         $clientLastName = $_POST['appointment_lastName'];
         $clientFirstNameName = $_POST['appointment_firstName'];
@@ -20,7 +43,7 @@ if (!empty($_POST['formType']) && valideAjaxToken()) {
 
         //Get custom form
         $options = array();
-        $RdvTypeForm = new \App\Plugin\Appointment\RdvTypeForm();
+        $RdvTypeForm = new RdvTypeForm();
         $RdvTypeForm->setIdRdvType($_POST['idRdvType']);
         if ($forms = $RdvTypeForm->showAll()) {
             foreach ($forms as $form) {
@@ -33,7 +56,7 @@ if (!empty($_POST['formType']) && valideAjaxToken()) {
         }
 
         //Prepare RDV
-        $Rdv = new \App\Plugin\Appointment\Rdv();
+        $Rdv = new Rdv();
         $Rdv->setIdAgenda($_POST['idAgenda']);
         $Rdv->setIdTypeRdv($_POST['idRdvType']);
         $Rdv->setDate($_POST['rdvDate']);
@@ -42,7 +65,7 @@ if (!empty($_POST['formType']) && valideAjaxToken()) {
         $Rdv->setOptions(serialize($options));
 
         //Save Client
-        $Client = new \App\Plugin\Appointment\Client();
+        $Client = new Client();
         $Client->setEmail($clientEmail);
         if ($Client->exist()) {
             $Client->showByEmail();
@@ -53,10 +76,10 @@ if (!empty($_POST['formType']) && valideAjaxToken()) {
             }
 
             /** TODO
-            $Client->setLastName($clientLastName);
-            $Client->setFirstName($clientFirstNameName);
-            $Client->setTel($clientTel);
-            */
+             * $Client->setLastName($clientLastName);
+             * $Client->setFirstName($clientFirstNameName);
+             * $Client->setTel($clientTel);
+             */
 
             $Client->setOptions(serialize(array_merge(unserialize($Client->getOptions()), $options)));
             $Client->update();

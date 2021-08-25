@@ -377,8 +377,15 @@ function appointment_rdv_admin_getAvailabilities($idRdvType, $date)
             }
 
             $Client = new Client();
-            $allClients = extractFromObjToSimpleArr($Client->showAll(), 'id', 'lastName', 'firstName');
-            $allClients[0] = 'Aucun';
+            $allClients = $Client->showAll();
+            $selectClient[0] = 'Aucun';
+            foreach ($allClients as $client) {
+                $selectClient[$client->id] = $client->lastName . ' ' . $client->firstName . ' : ' . $client->email;
+            }
+
+            $RdvTypeForm = new RdvTypeForm();
+            $RdvTypeForm->setIdRdvType($RdvType->getId());
+            $forms = $RdvTypeForm->showAll();
             ?>
 
             <div class="modal fade" id="addNewRdvForm" tabindex="-1" aria-labelledby="addNewRdvFormLabel"
@@ -392,14 +399,59 @@ function appointment_rdv_admin_getAvailabilities($idRdvType, $date)
                             </button>
                         </div>
                         <div class="modal-body">
-                            <div class="row d-flex flex-wrap align-items-center justify-content-between">
-                                <div class="col-12 col-lg-4" id="addNewRdvFormDate"></div>
-                                <div class="col-12 col-lg-4"><?= Form::selectTimeSlot('start', ['title' => 'Heure début', 'required' => true, 'stepMin' => 5, 'startMin' => $dayTimeSlotStart, 'endMin' => $dayTimeSlotEnd]); ?></div>
-                                <div class="col-12 col-lg-4"><?= Form::selectTimeSlot('end', ['title' => 'Heure fin', 'required' => true, 'stepMin' => 5, 'startMin' => $dayTimeSlotStart, 'endMin' => $dayTimeSlotEnd]); ?></div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12"><?= Form::select('Client existant', 'idClient', $allClients, 0); ?></div>
-                            </div>
+                            <form id="addNewRdvClientForm" method="post" data-ftype="appointment" action="<?= APPOINTMENT_URL; ?>ajax/mail.php">
+                                <input type="hidden" name="idAgenda" value="<?= $RdvType->getIdAgenda(); ?>">
+                                <input type="hidden" name="idRdvType" value="<?= $RdvType->getId(); ?>">
+                                <input type="hidden" name="rdvDate" value="<?= $Date->format('Y-m-d'); ?>">
+                                <div class="row d-flex flex-wrap align-items-center justify-content-between">
+                                    <div class="col-12 col-lg-4 mb-3" data-date-reminder="<?= displayCompleteDate($Date->format('Y-m-d')); ?>"
+                                         id="addNewRdvFormDate"></div>
+                                    <div class="col-12 col-lg-4 mb-3"><?= Form::selectTimeSlot('rdvBegin', ['title' => 'Heure début', 'required' => true, 'stepMin' => 5, 'startMin' => $dayTimeSlotStart, 'endMin' => $dayTimeSlotEnd]); ?></div>
+                                    <div class="col-12 col-lg-4 mb-3"><?= Form::selectTimeSlot('rdvEnd', ['title' => 'Heure fin', 'required' => true, 'stepMin' => 5, 'startMin' => $dayTimeSlotStart, 'endMin' => $dayTimeSlotEnd]); ?></div>
+                                </div>
+                                <div class="row my-4 py-3 bg-light">
+                                    <div class="col-12"><?= Form::select('Client existant', 'selectClient', $selectClient, 0); ?></div>
+                                </div>
+                                <div class="row my-2">
+                                    <div class="col-12 col-lg-6 mb-3">
+                                        <?= Form::input('appointment_lastName', ['title' => 'Nom *', 'required' => true]); ?>
+                                    </div>
+                                    <div class="col-12 col-lg-6 mb-3">
+                                        <?= Form::input('appointment_firstName', ['title' => 'Prénom *', 'required' => true]); ?>
+                                    </div>
+                                    <div class="col-12 col-lg-6 mb-3">
+                                        <?= Form::input('appointment_email', ['title' => 'Adresse Email *', 'type' => 'email', 'required' => true]); ?>
+                                    </div>
+                                    <div class="col-12 col-lg-6 mb-3">
+                                        <?= Form::input('appointment_tel', ['title' => 'Téléphone *', 'type' => 'tel', 'required' => true]); ?>
+                                    </div>
+                                </div>
+                                <div class="row my-2">
+                                    <?php foreach ($forms as $form): ?>
+                                        <div class="col-12 col-lg-6 mb-3">
+                                            <div class="form-group">
+                                                <label for="appointment_<?= $form->slug; ?>"><?= $form->name . ($form->required ? ' *' : ''); ?></label>
+                                                <?php if ($form->type === 'textarea'): ?>
+                                                    <textarea rows="4" id="appointment_<?= $form->slug; ?>"
+                                                              name="appointment_<?= $form->slug; ?>"
+                                                              class="form-control"
+                                                              placeholder="<?= $form->placeholder; ?>"<?= ($form->required ? 'required="true"' : ''); ?>></textarea>
+                                                <?php else: ?>
+                                                    <input type="<?= $form->type; ?>"
+                                                           id="appointment_<?= $form->slug; ?>"
+                                                           name="appointment_<?= $form->slug; ?>" value=""
+                                                           class="form-control"
+                                                           placeholder="<?= $form->placeholder; ?>" <?= ($form->required ? 'required="true"' : ''); ?>>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                                <?= getTokenField(); ?>
+                                <div class="row my-2">
+                                    <div class="col-12"><?= Form::btn('OK', 'ADDRDVSUBMIT'); ?></div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -411,6 +463,27 @@ function appointment_rdv_admin_getAvailabilities($idRdvType, $date)
     endif;
 
     return $html;
+}
+
+function appointment_getFormClientById($idClient)
+{
+    $clientData = array();
+
+    $Client = new Client();
+    $Client->setId($idClient);
+    if ($Client->show() && $Client->getStatus()) {
+        $clientData['appointment_lastName'] = $Client->getLastName();
+        $clientData['appointment_firstName'] = $Client->getFirstName();
+        $clientData['appointment_email'] = $Client->getEmail();
+        $clientData['appointment_tel'] = $Client->getTel();
+
+        if ($options = unserialize($Client->getOptions())) {
+            foreach ($options as $key => $val) {
+                $clientData['appointment_' . $key] = $val;
+            }
+        }
+    }
+    return $clientData;
 }
 
 /**

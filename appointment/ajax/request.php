@@ -246,6 +246,11 @@ if (checkAjaxRequest() && !bot_detected()) {
         exit();
     }
 
+    if (isset($_POST['getClientData']) && !empty($_POST['idClient']) && is_numeric($_POST['idClient'])) {
+        echo json_encode(appointment_getFormClientById($_POST['idClient']));
+        exit();
+    }
+
 
     /** FRONT **/
     if (isset($_POST['getRdvTypeByAgenda']) && !empty($_POST['idAgenda']) && is_numeric($_POST['idAgenda'])) {

@@ -230,3 +230,8 @@ button.btnAgendaManager.active {
 #rdvCalendar #calendar .disabledDay {
     background: #EDEDED;
 }
+
+div.dateTitleForm{
+    font-size: 20px;
+    font-weight: 300;
+}
