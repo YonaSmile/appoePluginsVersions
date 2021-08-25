@@ -321,14 +321,16 @@ jQuery(window).on('load', function () {
             let idRdvType = $parentContainer.attr('data-id-rdv-type');
             let date = $parentContainer.attr('data-date');
 
-            appointment_ajax({deleteAdminRdv: 'OK', idRdv: idRdv}).done(function (data) {
-                if (data === 'true') {
-                    $parent.fadeOut(500, function () {
-                        notification('Rendez-vous annulé');
-                        getAdminRdvAvailabilities(date, idRdvType);
-                    });
-                }
-            });
+            if(confirm('Voulez vous vraiment annuler ce rendez-vous ?')) {
+                appointment_ajax({deleteAdminRdv: 'OK', idRdv: idRdv}).done(function (data) {
+                    if (data === 'true') {
+                        $parent.fadeOut(500, function () {
+                            notification('Rendez-vous annulé');
+                            getAdminRdvAvailabilities(date, idRdvType);
+                        });
+                    }
+                });
+            }
         });
 
         $(document.body).on('click', 'button.confirmRdv', function () {

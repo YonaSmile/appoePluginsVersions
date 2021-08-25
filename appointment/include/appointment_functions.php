@@ -367,9 +367,13 @@ function appointment_rdv_admin_getAvailabilities($idRdvType, $date)
             foreach ($availabilities as $availability) {
                 $nbTimeSlots++;
 
-                if($nbTimeSlots === 1){ $dayTimeSlotStart = $availability->start; }
+                if ($nbTimeSlots === 1) {
+                    $dayTimeSlotStart = $availability->start;
+                }
                 $html .= appointment_admin_availabilities_get($allRdv, $allExceptions, $availability->start, $availability->end, $RdvType->getDuration(), false);
-                if($nbTimeSlots == count($availabilities)){ $dayTimeSlotEnd = $availability->end; }
+                if ($nbTimeSlots == count($availabilities)) {
+                    $dayTimeSlotEnd = $availability->end;
+                }
             }
 
             $Client = new Client();
@@ -390,8 +394,8 @@ function appointment_rdv_admin_getAvailabilities($idRdvType, $date)
                         <div class="modal-body">
                             <div class="row d-flex flex-wrap align-items-center justify-content-between">
                                 <div class="col-12 col-lg-4" id="addNewRdvFormDate"></div>
-                                <div class="col-12 col-lg-4"><?= Form::selectTimeSlot('start', ['title' => 'Heure début', 'required' => true, 'stepMin' => $RdvType->getDuration(), 'startMin' => $dayTimeSlotStart, 'endMin' => $dayTimeSlotEnd]); ?></div>
-                                <div class="col-12 col-lg-4"><?= Form::selectTimeSlot('end', ['title' => 'Heure fin', 'required' => true, 'stepMin' => $RdvType->getDuration(), 'startMin' => $dayTimeSlotStart, 'endMin' => $dayTimeSlotEnd]); ?></div>
+                                <div class="col-12 col-lg-4"><?= Form::selectTimeSlot('start', ['title' => 'Heure début', 'required' => true, 'stepMin' => 5, 'startMin' => $dayTimeSlotStart, 'endMin' => $dayTimeSlotEnd]); ?></div>
+                                <div class="col-12 col-lg-4"><?= Form::selectTimeSlot('end', ['title' => 'Heure fin', 'required' => true, 'stepMin' => 5, 'startMin' => $dayTimeSlotStart, 'endMin' => $dayTimeSlotEnd]); ?></div>
                             </div>
                             <div class="row">
                                 <div class="col-12"><?= Form::select('Client existant', 'idClient', $allClients, 0); ?></div>
@@ -692,38 +696,41 @@ function appointment_deleteRdv($idRdv)
 {
     $Rdv = new Rdv();
     $Rdv->setId($idRdv);
+    if ($Rdv->show()) {
 
-    $Client = new Client();
-    $Client->setId($Rdv->getIdClient());
-    $Client->show();
+        $Client = new Client();
+        $Client->setId($Rdv->getIdClient());
 
-    if ($Rdv->delete() && $Client->getStatus() == 1) {
+        if ($Client->show()) {
 
-        $Agenda = new Agenda();
-        $Agenda->setId($Rdv->getIdAgenda());
-        $Agenda->show();
+            if ($Client->getStatus() == 1 && $Rdv->getDate() >= date('Y-m-d')) {
 
-        $RdvType = new RdvType();
-        $RdvType->setId($Rdv->getIdTypeRdv());
-        $RdvType->show();
+                $Agenda = new Agenda();
+                $Agenda->setId($Rdv->getIdAgenda());
+                $Agenda->show();
 
-        $rdvRemind = displayCompleteDate($Rdv->getDate()) . ' à ' . minutesToHours($Rdv->getStart());
+                $RdvType = new RdvType();
+                $RdvType->setId($Rdv->getIdTypeRdv());
+                $RdvType->show();
 
-        $html = '<p>Bonjour,<br><br>Votre rendez-vous du ' . $rdvRemind . ' pour ' . $RdvType->getName() . ' chez ' . $Agenda->getName() . ' a été <strong>annulé</strong>.
+                $rdvRemind = displayCompleteDate($Rdv->getDate()) . ' à ' . minutesToHours($Rdv->getStart());
+
+                $html = '<p>Bonjour,<br><br>Votre rendez-vous du ' . $rdvRemind . ' pour ' . $RdvType->getName() . ' chez ' . $Agenda->getName() . ' a été <strong>annulé</strong>.
         <br>Vous pouvez  <a href="' . urlAppointment() . '">redemander un rendez-vous</a> sur notre site.</p>';
 
-        $data = array(
-            'toEmail' => $Client->getEmail(),
-            'toName' => $Client->getLastName() . ' ' . $Client->getFirstName(),
-            'object' => 'Votre rendez-vous chez ' . $Agenda->getName() . ' a été annulé',
-            'message' => $html,
-        );
+                $data = array(
+                    'toEmail' => $Client->getEmail(),
+                    'toName' => $Client->getLastName() . ' ' . $Client->getFirstName(),
+                    'object' => 'Votre rendez-vous chez ' . $Agenda->getName() . ' a été annulé',
+                    'message' => $html,
+                );
 
-        sendMail($data, [], ['viewSenderSource' => false]);
-        return true;
+                sendMail($data, [], ['viewSenderSource' => false]);
+            }
+        }
     }
 
-    return false;
+    return $Rdv->delete();
 }
 
 /**
@@ -1415,8 +1422,15 @@ function appointment_admin_availabilities_get($allRdv, $allExceptions, $start, $
             }
 
             $time = $rdv->end;
-            if (!$compressHour && !in_array($time, range($start, $end, $rdvTypeDuration))) {
-                $time += (60 - ($rdv->end - $rdv->start)) % $rdvTypeDuration;
+
+            $timeSlotRange = range($start, $end, $rdvTypeDuration);
+            if (!$compressHour && !in_array($time, $timeSlotRange)) {
+                foreach ($timeSlotRange as $timeSlot) {
+                    if ($time < $timeSlot) {
+                        $time = $timeSlot;
+                        break;
+                    }
+                }
             }
 
             continue;
