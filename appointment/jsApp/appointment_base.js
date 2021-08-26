@@ -156,7 +156,7 @@ jQuery(window).on('load', function () {
                                 $('#manageType').html(data);
                             }
                         });
-                    } else if(data === 'false') {
+                    } else if (data === 'false') {
                         notification('Certaines données sont manquant au créneau', 'danger');
                     } else {
                         notification(data, 'danger');
@@ -264,6 +264,31 @@ jQuery(window).on('load', function () {
                     }
                     availableApp();
                 });
+            }
+        });
+
+        $(document.body).on('input', 'input.agendaSettingInput', function (e) {
+            e.preventDefault();
+
+            let $input = $(this);
+
+            if ($input.val() !== '') {
+
+                busyApp();
+                delay(function () {
+                    appointment_ajax({
+                        adminAgendaSetting: 'OK',
+                        key: $input.attr('name'),
+                        val: $input.val()
+                    }).done(function (data) {
+                        if (data === 'true') {
+                            notification('Paramètre enregistré');
+                        } else {
+                            notification('Erreur', 'danger');
+                        }
+                        availableApp();
+                    });
+                }, 1000);
             }
         });
 
@@ -426,9 +451,9 @@ jQuery(window).on('load', function () {
 
             postFormRequest($form, function () {
                 $('#addNewRdvForm').modal('hide');
-                setTimeout(function (){
+                setTimeout(function () {
                     let $box = $('table#calendar td.selectedDay');
-                    if(!$box.find('span.shapeRdv').length){
+                    if (!$box.find('span.shapeRdv').length) {
                         $box.append('<span class="shapeRdv"></span>');
                     }
                     getAdminRdvAvailabilities($form.find('input[name="rdvDate"]').val(), $form.find('input[name="idRdvType"]').val());

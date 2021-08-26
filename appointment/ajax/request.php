@@ -252,6 +252,13 @@ if (checkAjaxRequest() && !bot_detected()) {
         exit();
     }
 
+    if (isset($_POST['adminAgendaSetting']) && !empty($_POST['key']) && !empty($_POST['val'])) {
+        if (appointment_updateAgendaSetting($_POST['key'], $_POST['val'])) {
+            echo 'true';
+        }
+        exit();
+    }
+
 
     /** FRONT **/
     if (isset($_POST['getRdvTypeByAgenda']) && !empty($_POST['idAgenda']) && is_numeric($_POST['idAgenda'])) {

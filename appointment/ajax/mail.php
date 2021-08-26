@@ -36,6 +36,13 @@ if (!empty($_POST['formType']) && valideAjaxToken()) {
             }
         }
 
+        $Agenda = new \App\Plugin\Appointment\Agenda();
+        $Agenda->setId($_POST['idAgenda']);
+        if(!$Agenda->show()){
+            echo json_encode('Erreur inconnu');
+            exit();
+        }
+
         $clientEmail = $_POST['appointment_email'];
         $clientLastName = $_POST['appointment_lastName'];
         $clientFirstNameName = $_POST['appointment_firstName'];
@@ -116,7 +123,7 @@ if (!empty($_POST['formType']) && valideAjaxToken()) {
         unset($_SESSION['editRdv']);
 
         //Send infos or confirmation email
-        if ($Client->getStatus()) {
+        if ($Client->getStatus() > 0) {
 
             if (appointment_sendInfosEmail($Rdv->getId(), urlAppointment(), isset($_POST['appointmentFromAdmin']))) {
                 echo json_encode(true);
@@ -129,7 +136,7 @@ if (!empty($_POST['formType']) && valideAjaxToken()) {
 
             $data = array(
                 'toEmail' => $clientEmail,
-                'object' => 'Finalisez votre rendez-vous',
+                'object' => 'Finalisez votre rendez-vous '.$Agenda->getName(),
                 'message' => $html,
                 'params' => ['idClient' => base64_encode($Client->getId())],
                 'confirmationPageSlug' => basename(urlAppointment()),

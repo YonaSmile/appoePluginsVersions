@@ -326,7 +326,7 @@ jQuery(window).on('load', function () {
                     if (idClient && $.isNumeric(idClient)) {
                         form.prepend('<input name="idClientKnown" type="hidden" value="' + idClient + '">');
                     } else {
-                        input.closest('div#defaultFields').append('<div class="unkownClient">Vous devez confirmer votre adresse email après l\'enregistrement du rendez-vous</div>');
+                        input.closest('div#defaultFields').append('<div class="unkownClient">ATTENTION !<br>Pour votre premier rendez-vous, vous devrez confirmer votre adresse email après validation</div>');
                     }
                 });
             }
@@ -354,10 +354,10 @@ jQuery(window).on('load', function () {
                         ' a bien été enregistré.<br>Vous recevrez bientôt un email récapitulatif de votre rendez vous.</div>');
                 } else {
                     $form.attr('data-success', '<div class="appointmentAppoeReminder"><img src="/app/plugin/appointment/img/check.svg" width="30px">' +
-                        '<strong>Vous devez confirmer votre adresse email.</strong>' +
+                        '<strong>Un email vous a été envoyé</strong>' +
                         '<em style="font-size: 16px;line-height: 24px;display: block;margin-top: 10px;">' +
-                        'Par mesure de sécurité, merci de confirmer vos coordonnées de contact pour finaliser notre rendez-vous.<br>' +
-                        'Un email vous a été envoyé, merci de le consulter et de suivre les instructions indiquées.</em></div>');
+                        'Afin de s\'assurer de la validité de vos coordonnées de contact et ainsi finaliser notre premier rendez-vous, ' +
+                        'veuillez consulter l\'email et laissez-vous guider.</em></div>');
                 }
 
             }

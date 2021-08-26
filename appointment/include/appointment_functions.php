@@ -2,6 +2,7 @@
 
 use App\Form;
 use App\Hook;
+use App\Option;
 use App\Plugin\Appointment\Agenda;
 use App\Plugin\Appointment\AgendaMeta;
 use App\Plugin\Appointment\Availabilities;
@@ -23,11 +24,13 @@ const APPOINTMENT_TABLES = array(
     TABLEPREFIX . 'appoe_plugin_appointment_clients',
     TABLEPREFIX . 'appoe_plugin_appointment_exception',
 );
+
 const APPOINTMENT_TIMEOUT_VALIDATION = 24; // in hours
 const APPOINTMENT_AGENDA_CHOICE_TITLE = 'Choisir l\'agenda';
 const APPOINTMENT_RDVTYPE_CHOICE_TITLE = 'Choisir le type de rendez-vous';
 const APPOINTMENT_DATES_CHOICE_TITLE = 'Choisir votre rendez-vous';
 const APPOINTMENT_FORM_TITLE = 'Vos coordonnées de contact';
+const APPOINTMENT_EMAIL_IMAGE = APPOINTMENT_URL . 'img/rappel-de-rdv-professionnel.png';
 
 Hook::add_action('cron', 'appointment_cron');
 
@@ -53,9 +56,9 @@ function appointment_agenda_admin_getAll()
                         ['val' => $agenda->name, 'class' => 'font-weight-normal']); ?></div>
                 <div><?= Form::switch('agendaStatus-' . $agenda->id,
                         ['val' => $agenda->status ? 'true' : '', 'parentClass' => 'd-inline ml-3']); ?></div>
-                <div class="ml-auto"><a
-                            href="<?= WEB_PLUGIN_URL . 'appointment/page/agendaManager/' . $agenda->id . '/'; ?>"
-                            class="btn btn-sm btn-outline-info">Gérer cet agenda</a></div>
+                <div class="ml-auto">
+                    <a href="<?= WEB_PLUGIN_URL . 'appointment/page/agendaManager/' . $agenda->id . '/'; ?>"
+                       class="btn btn-sm btn-outline-info">Gérer cet agenda</a></div>
                 <button type="button" class="btn deleteAgenda"><i class="far fa-trash-alt"></i></button>
             </div>
         <?php endforeach;
@@ -78,6 +81,21 @@ function appointment_settings_admin_getAll($idAgenda)
 
         $html .= '<h5 class="agendaTitle">Paramètres</h5><p class="text-muted">Gérer vos paramètres.</p>';
 
+        $agendaTitle = getOption('APPOINTMENT', 'agendaTitle');
+        $rdvTypeTitle = getOption('APPOINTMENT', 'rdvTypeTitle');
+        $dateTitle = getOption('APPOINTMENT', 'dateTitle');
+        $formTitle = getOption('APPOINTMENT', 'formTitle');
+
+        $html .= '<div class="row my-3"><div class="col-12 mb-2"><h6>Les titres</h6></div>';
+        $html .= '<div class="col-12 col-lg-6 mb-2">' . Form::input('agendaTitle', ['title' => 'Choix de l\'agenda', 'class' => 'agendaSettingInput', 'val' => $agendaTitle ?: APPOINTMENT_AGENDA_CHOICE_TITLE]) . '</div>';
+        $html .= '<div class="col-12 col-lg-6 mb-2">' . Form::input('rdvTypeTitle', ['title' => 'Choix du type de RDV', 'class' => 'agendaSettingInput', 'val' => $rdvTypeTitle ?: APPOINTMENT_RDVTYPE_CHOICE_TITLE]) . '</div>';
+        $html .= '<div class="col-12 col-lg-6 mb-2">' . Form::input('dateTitle', ['title' => 'Choix de la date', 'class' => 'agendaSettingInput', 'val' => $dateTitle ?: APPOINTMENT_DATES_CHOICE_TITLE]) . '</div>';
+        $html .= '<div class="col-12 col-lg-6 mb-2">' . Form::input('formTitle', ['title' => 'Formulaire de RDV', 'class' => 'agendaSettingInput', 'val' => $formTitle ?: APPOINTMENT_FORM_TITLE]) . '</div>';
+        $html .= '</div>';
+
+        $emailImage = getOption('APPOINTMENT', 'emailImage');
+        $html .= '<div class="row my-3"><div class="col-12 mb-2"><h6>Personnalisation des ressources</h6></div>';
+        $html .= '<div class="col-12 col-lg-6 mb-2">' . Form::input('emailImage', ['title' => 'Image du mail de RDV', 'class' => 'urlFile agendaSettingInput', 'val' => $emailImage ?: APPOINTMENT_EMAIL_IMAGE]) . '</div>';
     endif;
 
     return $html;
@@ -408,12 +426,14 @@ function appointment_rdv_admin_getAvailabilities($idRdvType, $date)
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form id="addNewRdvClientForm" method="post" data-ftype="appointment" action="<?= APPOINTMENT_URL; ?>ajax/mail.php">
+                            <form id="addNewRdvClientForm" method="post" data-ftype="appointment"
+                                  action="<?= APPOINTMENT_URL; ?>ajax/mail.php">
                                 <input type="hidden" name="idAgenda" value="<?= $RdvType->getIdAgenda(); ?>">
                                 <input type="hidden" name="idRdvType" value="<?= $RdvType->getId(); ?>">
                                 <input type="hidden" name="rdvDate" value="<?= $Date->format('Y-m-d'); ?>">
                                 <div class="row d-flex flex-wrap align-items-center justify-content-between">
-                                    <div class="col-12 col-lg-4 mb-3" data-date-reminder="<?= displayCompleteDate($Date->format('Y-m-d')); ?>"
+                                    <div class="col-12 col-lg-4 mb-3"
+                                         data-date-reminder="<?= displayCompleteDate($Date->format('Y-m-d')); ?>"
                                          id="addNewRdvFormDate"></div>
                                     <div class="col-12 col-lg-4 mb-3"><?= Form::selectTimeSlot('rdvBegin', ['title' => 'Heure début', 'required' => true, 'stepMin' => 5, 'startMin' => $dayTimeSlotStart, 'endMin' => $dayTimeSlotEnd]); ?></div>
                                     <div class="col-12 col-lg-4 mb-3"><?= Form::selectTimeSlot('rdvEnd', ['title' => 'Heure fin', 'required' => true, 'stepMin' => 5, 'startMin' => $dayTimeSlotStart, 'endMin' => $dayTimeSlotEnd]); ?></div>
@@ -738,6 +758,25 @@ function appointment_changeRdvTypeStatus($idRdvType)
 }
 
 /**
+ * @param $key
+ * @param $val
+ * @return bool
+ */
+function appointment_updateAgendaSetting($key, $val)
+{
+    $Option = new Option();
+    $Option->setType('APPOINTMENT');
+    $Option->setKey($key);
+    $Option->setVal($val);
+
+    if (!$Option->exist()) {
+        return $Option->save();
+    } else {
+        return $Option->update();
+    }
+}
+
+/**
  * @param $idAgenda
  * @return bool
  */
@@ -841,7 +880,7 @@ function appointment_confirmClient($idClient)
     if ($Client->show() && $Client->getStatus() == 0) {
         $Client->setStatus(1);
 
-        $Option = new \App\Option();
+        $Option = new Option();
         $Option->setType('CONFIRMATIONMAIL');
         $Option->setKey($Client->getEmail());
         if ($confirmEmail = $Option->showByKey()) {
@@ -1009,7 +1048,7 @@ function appointment_sendInfosEmail($idRdv, $url = null, $fromAdmin = false)
                 $removeRdv = $url . '&removeRdv=OK';
                 $editRdv = $url . '&editRdv=OK';
 
-                $message .= '<p><img src="' . APPOINTMENT_URL . 'img/rappel-de-rdv-professionnel.png"></p>';
+                $message .= '<p><img src="' . APPOINTMENT_EMAIL_IMAGE . '"></p>';
                 $message .= '<p style="text-align:center;margin-bottom:15px;"><a class="btn" style="margin:10px;" href="' . $editRdv . '" title="Déplacer le rendez vous">Déplacer le rendez-vous</a>';
                 $message .= '<a class="btn" style="background-color:#ff394f;border-color:#ff394f;" href="' . $removeRdv . '" title="Annuler le rendez vous">Annuler le rendez-vous</a></p>';
                 $message .= '<p style="text-align:center;margin-top:30px;margin-bottom:30px;">Vous pouvez modifier ou annuler votre rendez-vous à tout moment à partir de cet email.<br>
@@ -1048,7 +1087,7 @@ function appointment_sendInfosEmail($idRdv, $url = null, $fromAdmin = false)
 
             if ($data && sendMail($data, [], ['viewSenderSource' => false, 'priority' => 1])) {
 
-                if(!$fromAdmin) {
+                if (!$fromAdmin) {
 
                     $defaultEmail = getOptionData('defaultEmail');
                     if ($defaultEmail && !empty($defaultEmail)) {
@@ -1108,7 +1147,7 @@ function appointment_agenda_getBtns($idAgenda = '')
         foreach ($pendingClient as $client) {
             if ((strtotime($client->updated_at) + (APPOINTMENT_TIMEOUT_VALIDATION * 60 * 60)) < time()) {
 
-                $Option = new \App\Option();
+                $Option = new Option();
                 $Option->setType('CONFIRMATIONMAIL');
                 $Option->setKey($client->email);
                 $Option->deleteByTypeAndKey();
@@ -1224,9 +1263,9 @@ function appointment_agenda_getBtns($idAgenda = '')
                         if ($Rdv->showByPendingClient()) {
                             $Rdv->setStatus(1);
                             if ($Rdv->update()) {
-                                $html .= 'Votre rendez-vous du <strong>' . displayCompleteDate($Rdv->getDate()) . '</strong>';
-                                $html .= ' à <strong>' . minutesToHours($Rdv->getStart()) . '</strong> est enregistré.<br>';
-                                $html .= '<br>Vous recevrez bientôt un email récapitulatif.';
+                                $html .= 'Nous vous attendons <strong>' . lcfirst(displayCompleteDate($Rdv->getDate())) . '</strong>';
+                                $html .= ' à <strong>' . minutesToHours($Rdv->getStart()) . '</strong>.<br>';
+                                $html .= '<br>Un email récapitulatif vous a été envoyé.<br>À bientôt';
                                 appointment_sendInfosEmail($Rdv->getId(), urlAppointment());
                             }
                         } else {
@@ -1249,7 +1288,7 @@ function appointment_agenda_getBtns($idAgenda = '')
         if ($agendas = $Agenda->showByStatus()) {
 
             if (count($agendas) > 1) {
-                $html .= '<section id="agendas" class="appointmentAppoe"><h2>' . APPOINTMENT_AGENDA_CHOICE_TITLE . '</h2>';
+                $html .= '<section id="agendas" class="appointmentAppoe"><h2>' .  (getOption('APPOINTMENT', 'agendaTitle') ?: APPOINTMENT_AGENDA_CHOICE_TITLE) . '</h2>';
                 foreach ($agendas as $agenda) {
                     $html .= '<button class="button btn-round grey agendaChoice ' . (count($agendas) == 1 ? 'activeAgendaBtn' : '') . '" data-id-agenda="' . $agenda->id . '">' . $agenda->name . '</button>';
                 }
@@ -1284,7 +1323,7 @@ function appointment_rdvType_getBtns($idAgenda)
     $RdvType->setIdAgenda($idAgenda);
     if ($rdvTypes = $RdvType->showByStatus()) {
         if (count($rdvTypes) > 1) {
-            $html .= '<section id="agendaRdvType" class="appointmentAppoe"><h2>' . APPOINTMENT_RDVTYPE_CHOICE_TITLE . '</h2>';
+            $html .= '<section id="agendaRdvType" class="appointmentAppoe"><h2>' . (getOption('APPOINTMENT', 'rdvTypeTitle') ?: APPOINTMENT_RDVTYPE_CHOICE_TITLE) . '</h2>';
             foreach ($rdvTypes as $rdvType) {
                 $html .= '<button class="button btn-round grey rdvTypeChoice" data-id-agenda="' . $idAgenda . '" 
                 data-rdv-duration="' . $rdvType->duration . '" data-id-rdv-type="' . $rdvType->id . '">' . $rdvType->name . '</button>';
@@ -1300,7 +1339,6 @@ function appointment_rdvType_getBtns($idAgenda)
     return $html;
 }
 
-
 /**
  * @param $idAgenda
  * @param $idRdvType
@@ -1315,7 +1353,7 @@ function appointment_dates_get($idAgenda, $idRdvType)
     $NextWeek = new DateTime();
     $NextWeek->add(new DateInterval('P7D'));
 
-    $html = '<section id="agendaDatesRdv" class="appointmentAppoe"><h2>' . APPOINTMENT_DATES_CHOICE_TITLE . '</h2>';
+    $html = '<section id="agendaDatesRdv" class="appointmentAppoe"><h2>' . (getOption('APPOINTMENT', 'dateTitle') ?: APPOINTMENT_DATES_CHOICE_TITLE) . '</h2>';
     $html .= '<button id="appointmentPrevWeek">‹</button> <button id="appointmentCurrentWeek" style="color:#ff394f !important;">•</button> <button id="appointmentNextWeek">›</button> ';
     $html .= '<small id="appointmentNextWeekInfos">' . $Date->format('d') . ' - ' . displayCompleteDate($NextWeek->format('Y-m-d'), false, '%d %B %Y') . '</small>';
     $html .= '<div id="appointmentSwipeCalendar" class="owl-carousel owl-theme center">';
@@ -1556,7 +1594,7 @@ function appointment_admin_availabilities_get($allRdv, $allExceptions, $start, $
  */
 function appointment_rdvTypeForm_get($idRdvType)
 {
-    $html = '<section id="agendaForm" class="appointmentAppoe" data-id-rdv-type="' . $idRdvType . '"><h2>' . APPOINTMENT_FORM_TITLE . '</h2>';
+    $html = '<section id="agendaForm" class="appointmentAppoe" data-id-rdv-type="' . $idRdvType . '"><h2>' . (getOption('APPOINTMENT', 'formTitle') ?: APPOINTMENT_FORM_TITLE) . '</h2>';
     $html .= '<form id="appointmentFormulaire" data-ftype="appointment" action="' . APPOINTMENT_URL . 'ajax/mail.php">';
 
     $lastName = $firstName = $email = $tel = $options = '';
@@ -1601,7 +1639,7 @@ function appointment_rdvTypeForm_get($idRdvType)
     }
 
     $html .= '<div class="mb-20"><strong>* Champs obligatoires</strong></div>' . getTokenField();
-    $html .= '<button type="submit" class="btn-round">Enregistrez mon RDV</button></form></section>';
+    $html .= '<button type="submit" class="btn-round">Valider mon RDV</button></form></section>';
     return $html;
 }
 
