@@ -961,11 +961,11 @@ function appointment_cron()
 
 /**
  * @param $idRdv
- * @param $url
+ * @param null $url
+ * @param bool $fromAdmin
  * @return bool
- * @throws Exception
  */
-function appointment_sendInfosEmail($idRdv, $url = null)
+function appointment_sendInfosEmail($idRdv, $url = null, $fromAdmin = false)
 {
 
     $Rdv = new Rdv();
@@ -1047,6 +1047,31 @@ function appointment_sendInfosEmail($idRdv, $url = null)
             );
 
             if ($data && sendMail($data, [], ['viewSenderSource' => false, 'priority' => 1])) {
+
+                if(!$fromAdmin) {
+
+                    $defaultEmail = getOptionData('defaultEmail');
+                    if ($defaultEmail && !empty($defaultEmail)) {
+
+                        $message = '<h2>Nouveau RDV chez ' . $Agenda->getName() . '</h2>';
+                        $message .= '<p>Date :<strong> ' . $rdvRemind . '</strong><br>';
+                        $message .= 'Raison :<strong> ' . $RdvType->getName() . '</strong></p>';
+                        $message .= '<p>Par :<br>';
+                        $message .= 'Nom :<strong> ' . $Client->getLastName() . ' ' . $Client->getFirstName() . '</strong><br>';
+                        $message .= 'Email :<strong> ' . $Client->getEmail() . '</strong><br>';
+                        $message .= 'Tel :<strong> ' . $Client->getTel() . '</strong></p>';
+
+                        $data = array(
+                            'fromEmail' => 'noreply@' . $_SERVER['HTTP_HOST'],
+                            'fromName' => WEB_TITLE,
+                            'toName' => 'Administrateur APPOE',
+                            'toEmail' => $defaultEmail,
+                            'object' => 'Nouveau RDV pour le ' . $rdvRemind,
+                            'message' => $message
+                        );
+                        sendMail($data, [], ['viewSenderSource' => false, 'priority' => 1]);
+                    }
+                }
                 return true;
             }
 
@@ -1485,6 +1510,8 @@ function appointment_admin_availabilities_get($allRdv, $allExceptions, $start, $
                 }
             }
 
+            $html .= '<hr class="my-1 mx-0" style="width:50px;">';
+            $html .= '<strong>RDV pris le : </strong>' . displayCompleteDate($rdv->updated_at, true);
             $html .= '</div>';
 
             if ($rdv->status) {

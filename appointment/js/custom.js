@@ -354,9 +354,9 @@ jQuery(window).on('load', function () {
                         ' a bien été enregistré.<br>Vous recevrez bientôt un email récapitulatif de votre rendez vous.</div>');
                 } else {
                     $form.attr('data-success', '<div class="appointmentAppoeReminder"><img src="/app/plugin/appointment/img/check.svg" width="30px">' +
-                        '<strong>Votre rendez-vous a été enregistré, mais vous devez confirmer votre adresse email.</strong>' +
+                        '<strong>Vous devez confirmer votre adresse email.</strong>' +
                         '<em style="font-size: 16px;line-height: 24px;display: block;margin-top: 10px;">' +
-                        'Par mesure de sécurité, confirmez vos coordonnées de contact pour finaliser notre rendez-vous.<br>' +
+                        'Par mesure de sécurité, merci de confirmer vos coordonnées de contact pour finaliser notre rendez-vous.<br>' +
                         'Un email vous a été envoyé, merci de le consulter et de suivre les instructions indiquées.</em></div>');
                 }
 

@@ -118,7 +118,7 @@ if (!empty($_POST['formType']) && valideAjaxToken()) {
         //Send infos or confirmation email
         if ($Client->getStatus()) {
 
-            if (appointment_sendInfosEmail($Rdv->getId(), urlAppointment())) {
+            if (appointment_sendInfosEmail($Rdv->getId(), urlAppointment(), isset($_POST['appointmentFromAdmin']))) {
                 echo json_encode(true);
             }
 
