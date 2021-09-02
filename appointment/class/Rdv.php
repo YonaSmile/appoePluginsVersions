@@ -18,6 +18,7 @@ class Rdv
     private $end;
     private $options = null;
     private $status = 1;
+    private $createdAt;
     private $updatedAt;
 
     /**
@@ -175,6 +176,22 @@ class Rdv
     /**
      * @return mixed
      */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param mixed $createdAt
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getUpdatedAt()
     {
         return $this->updatedAt;
@@ -210,6 +227,7 @@ class Rdv
                 `end` SMALLINT UNSIGNED NOT NULL,
                 `options` TEXT NULL DEFAULT NULL,
                 `status` BOOLEAN NOT NULL DEFAULT TRUE,
+                `createdAt` DATETIME NOT NULL,
                 `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 				) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;';
         return DB::exec($sql);
@@ -265,7 +283,7 @@ class Rdv
      */
     public function save()
     {
-        if ($return = DB::save($this, ['idAgenda', 'idClient', 'idTypeRdv', 'date', 'start', 'end', 'options', 'status'])) {
+        if ($return = DB::save($this, ['idAgenda', 'idClient', 'idTypeRdv', 'date', 'start', 'end', 'options', 'status', 'createdAt'])) {
             $this->id = $return->lastInsertId;
             appLog('Add Rdv -> idAgenda: ' . $this->idAgenda . ' idClient:' . $this->idClient . ' idTypeRdv:' . $this->idTypeRdv . ' date:' . $this->date);
             return true;

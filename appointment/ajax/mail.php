@@ -69,6 +69,7 @@ if (!empty($_POST['formType']) && valideAjaxToken()) {
         $Rdv->setDate($_POST['rdvDate']);
         $Rdv->setStart($_POST['rdvBegin']);
         $Rdv->setEnd($_POST['rdvEnd']);
+        $Rdv->setCreatedAt(date('Y-m-d H:i:s'));
         $Rdv->setOptions(serialize($options));
 
         //Save Client

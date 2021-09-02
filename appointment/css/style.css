@@ -304,3 +304,9 @@ section.appointmentAppoe #appointmentFormulaire button:hover {
         transform: rotate(360deg);
     }
 }
+
+@media screen and (max-width: 500px){
+    section.appointmentAppoe #defaultFields label {
+        flex-basis: 100%;
+    }
+}

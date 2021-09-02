@@ -26,18 +26,22 @@ const APPOINTMENT_TABLES = array(
 );
 
 const APPOINTMENT_TIMEOUT_VALIDATION = 24; // in hours
-const APPOINTMENT_AGENDA_CHOICE_TITLE = 'Choisir l\'agenda';
-const APPOINTMENT_RDVTYPE_CHOICE_TITLE = 'Choisir le type de rendez-vous';
-const APPOINTMENT_DATES_CHOICE_TITLE = 'Choisir votre rendez-vous';
-const APPOINTMENT_FORM_TITLE = 'Vos coordonnées de contact';
+const APPOINTMENT_AGENDA_CHOICE_TITLE = 'Choisissez votre boutique/agence...';
+const APPOINTMENT_RDVTYPE_CHOICE_TITLE = 'Choisissez une prestation';
+const APPOINTMENT_DATES_CHOICE_TITLE = 'Choisissez un créneau disponible';
+const APPOINTMENT_FORM_TITLE = 'Saisissez vos coordonnées';
 const APPOINTMENT_EMAIL_IMAGE = APPOINTMENT_URL . 'img/rappel-de-rdv-professionnel.png';
 
 Hook::add_action('cron', 'appointment_cron');
 
+/**
+ * @return string|null
+ */
 function urlAppointment()
 {
-    if (defined('APPOINTMENT_FILENAME') && function_exists('getPageByFilename')) {
-        $Cms = getPageByFilename(APPOINTMENT_FILENAME);
+
+    if ($filename = getOption('APPOINTMENT', 'agendaFilename')) {
+        $Cms = getPageByFilename($filename);
         return WEB_DIR_URL . $Cms->getSlug() . DIRECTORY_SEPARATOR;
     }
     return null;
@@ -49,20 +53,64 @@ function appointment_agenda_admin_getAll()
     $html = '';
     $Agenda = new Agenda();
     if ($agendas = $Agenda->showAll()):
-        ob_start();
-        foreach ($agendas as $agenda): ?>
-            <div class="agendaInfos py-3 border-top d-flex align-items-center" data-id-agenda="<?= $agenda->id; ?>">
-                <div class="nameInputContainer"><?= Form::input('agendaName-' . $agenda->id,
-                        ['val' => $agenda->name, 'class' => 'font-weight-normal']); ?></div>
-                <div><?= Form::switch('agendaStatus-' . $agenda->id,
-                        ['val' => $agenda->status ? 'true' : '', 'parentClass' => 'd-inline ml-3']); ?></div>
-                <div class="ml-auto">
-                    <a href="<?= WEB_PLUGIN_URL . 'appointment/page/agendaManager/' . $agenda->id . '/'; ?>"
-                       class="btn btn-sm btn-outline-info">Gérer cet agenda</a></div>
-                <button type="button" class="btn deleteAgenda"><i class="far fa-trash-alt"></i></button>
-            </div>
-        <?php endforeach;
+        ob_start(); ?>
+        <div class="py-3 d-flex align-items-center">
+            <div><strong>#</strong></div>
+            <div class="px-3" style="width: 200px;">Nom</div>
+            <div class="ml-auto px-2">Statut</div>
+            <div class="px-2">Options</div>
+        </div>
+        <?php foreach ($agendas as $agenda): ?>
+        <div class="agendaInfos py-3 border-top d-flex align-items-center" data-id-agenda="<?= $agenda->id; ?>">
+            <div><strong><?= $agenda->id; ?></strong></div>
+            <div class="nameInputContainer"><?= Form::input('agendaName-' . $agenda->id,
+                    ['val' => $agenda->name, 'class' => 'font-weight-normal']); ?></div>
+            <div class="ml-auto" title="Activer/Désactiver"><?= Form::switch('agendaStatus-' . $agenda->id,
+                    ['val' => $agenda->status ? 'true' : '', 'parentClass' => 'd-inline ml-3']); ?></div>
+            <div><a href="<?= WEB_PLUGIN_URL . 'appointment/page/agendaManager/' . $agenda->id . '/'; ?>"
+                    class="btn btn-sm text-secondary" title="Configurer l'agenda"><i class="fas fa-cog"></i></a></div>
+            <button type="button" class="btn btn-sm text-dark deleteAgenda" title="Supprimer l'agenda">
+                <i class="far fa-trash-alt"></i></button>
+        </div>
+    <?php endforeach;
         $html .= ob_get_clean();
+    endif;
+
+    $html .= appointment_agendas_settings_admin_getAll();
+    return $html;
+}
+
+/**
+ * @return string
+ */
+function appointment_agendas_settings_admin_getAll()
+{
+    $files = getFilesFromDir(WEB_PUBLIC_PATH . 'html/', ['onlyFiles' => true, 'onlyExtension' => 'php', 'noExtensionDisplaying' => true]);
+    $agendaTitle = getOption('APPOINTMENT', 'agendaTitle');
+    $rdvTypeTitle = getOption('APPOINTMENT', 'rdvTypeTitle');
+    $dateTitle = getOption('APPOINTMENT', 'dateTitle');
+    $formTitle = getOption('APPOINTMENT', 'formTitle');
+    $emailImage = getOption('APPOINTMENT', 'emailImage');
+    $filename = getOption('APPOINTMENT', 'agendaFilename');
+
+    $html = '<div class="mt-5 mb-3"><h5 class="agendaTitle">Paramètres généraux</h5><p class="text-muted">Personnaliser l\'apparence de vos agendas.</p></div>';
+
+    $html .= '<div class="row my-4"><div class="col-12 mb-2"><h6 class="agendaSubTitle">Titre de vos agendas</h6>
+    <p>Choisissez les intitulés des étapes du processus de prise de rdv</p></div>';
+    $html .= '<div class="col-12 col-lg-6 mb-2">' . Form::input('agendaTitle', ['title' => 'Intitulé du choix de l\'agenda', 'class' => 'agendaSettingInput', 'val' => $agendaTitle ?: '', 'placeholder' => APPOINTMENT_AGENDA_CHOICE_TITLE]) . '</div>';
+    $html .= '<div class="col-12 col-lg-6 mb-2">' . Form::input('rdvTypeTitle', ['title' => 'Intitulé du choix du type de RDV', 'class' => 'agendaSettingInput', 'val' => $rdvTypeTitle ?: '', 'placeholder' => APPOINTMENT_RDVTYPE_CHOICE_TITLE]) . '</div>';
+    $html .= '<div class="col-12 col-lg-6 mb-2">' . Form::input('dateTitle', ['title' => 'Intitulé du choix de la date', 'class' => 'agendaSettingInput', 'val' => $dateTitle ?: '', 'placeholder' => APPOINTMENT_DATES_CHOICE_TITLE]) . '</div>';
+    $html .= '<div class="col-12 col-lg-6 mb-2">' . Form::input('formTitle', ['title' => 'Intitulé du Formulaire de RDV', 'class' => 'agendaSettingInput', 'val' => $formTitle ?: '', 'placeholder' => APPOINTMENT_FORM_TITLE]) . '</div>';
+    $html .= '</div>';
+
+    $html .= '<div class="row my-4"><div class="col-12 mb-2"><h6 class="agendaSubTitle">Les médias</h6></div>';
+    $html .= '<div class="col-12 col-lg-6 mb-2">' . Form::input('emailImage', ['title' => 'Image du mail de RDV', 'class' => 'urlFile agendaSettingInput', 'val' => $emailImage ?: APPOINTMENT_EMAIL_IMAGE]) . '</div>';
+    $html .= '</div>';
+
+    if (isTechnicien(getUserRoleId())):
+        $html .= '<div class="row my-4"><div class="col-12 mb-2"><h6 class="agendaSubTitle">L\'agenda</h6></div>';
+        $html .= '<div class="col-12 col-lg-3 mb-2">' . Form::select('Fichier de l\'agenda', 'agendaFilename', array_combine($files, $files), $filename, false, '', '', '', 'agendaSettingInput') . '</div>';
+        $html .= '</div>';
     endif;
 
     return $html;
@@ -72,32 +120,64 @@ function appointment_agenda_admin_getAll()
  * @param $idAgenda
  * @return string
  */
-function appointment_settings_admin_getAll($idAgenda)
+function appointment_informations_admin_getAll($idAgenda)
 {
     $html = '';
     $Agenda = new Agenda();
     $Agenda->setId($idAgenda);
     if ($Agenda->show()):
 
-        $html .= '<h5 class="agendaTitle">Paramètres</h5><p class="text-muted">Gérer vos paramètres.</p>';
+        $postions = array_combine(range(1, 20), range(1, 20));
 
-        $agendaTitle = getOption('APPOINTMENT', 'agendaTitle');
-        $rdvTypeTitle = getOption('APPOINTMENT', 'rdvTypeTitle');
-        $dateTitle = getOption('APPOINTMENT', 'dateTitle');
-        $formTitle = getOption('APPOINTMENT', 'formTitle');
+        $html .= '<h5 class="agendaTitle">Informations complémentaires</h5>
+        <button class="btn btn-sm btn-outline-info float-right" style="padding-bottom: 5px;margin: 14px 0;"
+         data-toggle="modal" data-target="#addInfoModal" title="Ajouter une information complémentaire">
+         <i class="fas fa-plus"></i></button>';
 
-        $html .= '<div class="row my-3"><div class="col-12 mb-2"><h6>Les titres</h6></div>';
-        $html .= '<div class="col-12 col-lg-6 mb-2">' . Form::input('agendaTitle', ['title' => 'Choix de l\'agenda', 'class' => 'agendaSettingInput', 'val' => $agendaTitle ?: APPOINTMENT_AGENDA_CHOICE_TITLE]) . '</div>';
-        $html .= '<div class="col-12 col-lg-6 mb-2">' . Form::input('rdvTypeTitle', ['title' => 'Choix du type de RDV', 'class' => 'agendaSettingInput', 'val' => $rdvTypeTitle ?: APPOINTMENT_RDVTYPE_CHOICE_TITLE]) . '</div>';
-        $html .= '<div class="col-12 col-lg-6 mb-2">' . Form::input('dateTitle', ['title' => 'Choix de la date', 'class' => 'agendaSettingInput', 'val' => $dateTitle ?: APPOINTMENT_DATES_CHOICE_TITLE]) . '</div>';
-        $html .= '<div class="col-12 col-lg-6 mb-2">' . Form::input('formTitle', ['title' => 'Formulaire de RDV', 'class' => 'agendaSettingInput', 'val' => $formTitle ?: APPOINTMENT_FORM_TITLE]) . '</div>';
-        $html .= '</div>';
+        $AgendaMeta = new AgendaMeta();
+        $AgendaMeta->setIdAgenda($Agenda->getId());
+        if ($allMetas = $AgendaMeta->showAll()):
+            ob_start();
+        $c = 1;
+        foreach ($allMetas as $meta): ?>
+            <div class="agendaInfos <?= $c == 1 ? '' : 'border-top'; ?> py-2 ">
+                <strong class="colorPrimary"><?= $meta->metaKey; ?></strong>
+                <p class="mb-0"><?= $meta->metaValue; ?>
+                    <button type="button" data-id-meta="<?= $meta->id; ?>"
+                            class="btn px-1 py-0 deleteMeta"><i class="far fa-trash-alt"></i></button>
+                </p>
+            </div>
+        <?php $c++;
+        endforeach; ?>
 
-        $emailImage = getOption('APPOINTMENT', 'emailImage');
-        $html .= '<div class="row my-3"><div class="col-12 mb-2"><h6>Personnalisation des ressources</h6></div>';
-        $html .= '<div class="col-12 col-lg-6 mb-2">' . Form::input('emailImage', ['title' => 'Image du mail de RDV', 'class' => 'urlFile agendaSettingInput', 'val' => $emailImage ?: APPOINTMENT_EMAIL_IMAGE]) . '</div>';
+            <div class="modal fade" id="addInfoModal" tabindex="-1" aria-labelledby="addInfoTitle"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content rounded-0">
+                        <div class="modal-header py-0 border-0">
+                            <h5 class="modal-title agendaTitle" id="addInfoTitle">Ajouter une information
+                                complémentaire</h5>
+                            <button type="button" class="close m-0" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="addInfoForm" data-id-agenda="<?= $idAgenda; ?>">
+                                <div class="form-row">
+                                    <div class="col-12 col-lg-7 my-2"><?= Form::input('metaKey', ['title' => 'Intitulé']); ?></div>
+                                    <div class="col-12 col-lg-5 my-2"><?= Form::select('Position', 'position', $postions); ?></div>
+                                    <div class="col-12 col-lg-12 my-2"><?= Form::input('metaVal', ['title' => 'Contenu']); ?></div>
+                                    <div class="col-12 my-2"><?= Form::btn('Enregistrer', 'ADDINFOSUBMIT'); ?></div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <?php $html .= ob_get_clean();
+        endif;
     endif;
-
     return $html;
 }
 
@@ -113,13 +193,13 @@ function appointment_availabilities_admin_getAll($idAgenda)
     if ($Agenda->show()):
 
         $week = appointment_getWeekDays();
-        $html .= '<h5 class="agendaTitle">Disponibilités</h5><p class="text-muted">Gérer ses disponibilités en renseignant les jours et les horaires de prise de rendez-vous disponible.</p>';
-        $html .= '<form id="addAvailability" class="mt-4 mb-5" data-id-agenda="' . $idAgenda . '"><div class="form-row">';
-        $html .= '<div class="col-12 col-lg-4">' . Form::select('Jour', 'day', $week, 'no', true) . '</div>';
-        $html .= '<div class="col-12 col-lg-3">' . Form::selectTimeSlot('start', ['title' => 'Heure début', 'required' => true, 'stepMin' => 5, 'startMin' => 0, 'endMin' => 1440]) . '</div>';
-        $html .= '<div class="col-12 col-lg-3">' . Form::selectTimeSlot('end', ['title' => 'Heure fin', 'required' => true, 'stepMin' => 5, 'startMin' => 0, 'endMin' => 1440]) . '</div>';
-        $html .= '<div class="col-12 col-lg-2 d-flex align-items-end">' . Form::btn('OK', 'ADDAVAILIBILITYSUBMIT') . '</div>';
-        $html .= '</div></form>';
+        $html .= '<h5 class="agendaTitle">Disponibilités</h5> <button class="btn btn-sm float-right btn-outline-info" title="Ajouter une disponibilité à l\'agenda"
+                    data-toggle="modal" data-target="#addAvailabilityModal" style="padding-bottom: 5px;margin: 14px 0;"><i class="fas fa-plus"></i></button>
+                    <p class="text-muted mb-4">Gérer ses disponibilités en renseignant les jours et les horaires de prise de rendez-vous disponible.</p>';
+
+        $holidayWork = getOption('APPOINTMENT', 'holidayWorking-' . $Agenda->getId());
+        $html .= '<div class="row my-3"><div class="col-12 mb-2">Agenda disponible les jours fériés' . Form::switch('holidayWorking',
+                ['val' => ($holidayWork == 'yes' ? 'true' : ''), 'parentClass' => 'd-inline ml-3', 'attr' => 'data-id-agenda="' . $Agenda->getId() . '"']) . '</div></div>';
 
         $Availability = new App\Plugin\Appointment\Availabilities();
         $Availability->setIdAgenda($Agenda->getId());
@@ -142,8 +222,32 @@ function appointment_availabilities_admin_getAll($idAgenda)
                         <?php endforeach; ?>
                     </ul>
                 </div>
-            <?php endforeach;
-            $html .= ob_get_clean();
+            <?php endforeach; ?>
+            <div class="modal fade" id="addAvailabilityModal" tabindex="-1" aria-labelledby="addAvailabilityTitle"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content rounded-0">
+                        <div class="modal-header py-0 border-0">
+                            <h5 class="modal-title agendaTitle" id="addAvailabilityTitle">Ajouter une disponibilité à
+                                l'agenda</h5>
+                            <button type="button" class="close m-0" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="addAvailability" data-id-agenda="<?= $idAgenda; ?>">
+                                <div class="form-row">
+                                    <div class="col-12 mb-3"><?= Form::select('Jour', 'day', $week, 'no', true); ?></div>
+                                    <div class="col-12 col-md-6 mb-3"><?= Form::selectTimeSlot('start', ['title' => 'Heure début', 'required' => true, 'stepMin' => 5, 'startMin' => 0, 'endMin' => 1440]); ?></div>
+                                    <div class="col-12 col-md-6 mb-3"><?= Form::selectTimeSlot('end', ['title' => 'Heure fin', 'required' => true, 'stepMin' => 5, 'startMin' => 0, 'endMin' => 1440]); ?></div>
+                                    <div class="col-12 mb-3"><?= Form::btn('Enregistrer', 'ADDAVAILIBILITYSUBMIT'); ?></div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php $html .= ob_get_clean();
         endif;
     endif;
 
@@ -161,15 +265,9 @@ function appointment_typeRdv_admin_getAll($idAgenda)
     $Agenda->setId($idAgenda);
     if ($Agenda->show()):
 
-        $html .= '<h5 class="agendaTitle">Type de rendez-vous</h5><p class="text-muted">Nommez les différents types 
-        de rendez-vous que vous proposez et fixer une durée à chaque type de rendez-vous.</p>';
-        $html .= '<form id="addTypeRdv" class="mt-4 mb-5" data-id-agenda="' . $idAgenda . '"><div class="form-row">';
-        $html .= '<div class="col-12 col-lg-8 mb-2">' . Form::input('name', ['title' => 'Nom du rendez-vous', 'placeholder' => 'Nommez le type de rendez-vous']) . '</div>';
-        $html .= '<div class="col-12 col-lg-4 mb-2">' . Form::duration('duration', ['title' => 'Durée de rendez-vous', 'minTxt' => 'minutes', 'required' => true]) . '</div>';
-        $html .= '<div class="col-12 mb-2">' . Form::textarea('Informations supplémentaires', 'information', '', 3, false, '', '', 'Décrivez ou donnez des informations sur ce type de rendez-vous') . '</div>';
-        $html .= '<div class="col-12 col-lg-2 d-flex align-items-end">' . Form::btn('OK', 'ADDRDVTYPESUBMIT') . '</div>';
-        $html .= '</div></form>';
-
+        $html .= '<h5 class="agendaTitle">Type de rendez-vous</h5> <button class="btn btn-sm float-right btn-outline-info" 
+        style="padding-bottom: 5px;margin: 14px 0;" title="Ajouter un type de RDV" data-toggle="modal" data-target="#addRdvTypeModal">
+        <i class="fas fa-plus"></i></button><p class="text-muted mb-4">Nommez les différents types de rendez-vous que vous proposez et fixer une durée à chaque type de rendez-vous.</p>';
         $RdvType = new App\Plugin\Appointment\RdvType();
         $RdvType->setIdAgenda($Agenda->getId());
         if ($rdvTypes = $RdvType->showAll()):
@@ -211,6 +309,36 @@ function appointment_typeRdv_admin_getAll($idAgenda)
                                 <br>Ici, vous pouvez ajouter des champs qui vous seront nécessaires à ce type de
                                 rendez-vous</p>
                             <div id="rdvTypeFormContent"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="addRdvTypeModal" tabindex="-1" aria-labelledby="addRdvTypeTitle"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content rounded-0">
+                        <div class="modal-header py-0 border-0">
+                            <h5 class="modal-title agendaTitle" id="addRdvTypeTitle">Ajouter un type de RDV</h5>
+                            <button type="button" class="close m-0" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="addTypeRdv" data-id-agenda="<?= $idAgenda; ?>">
+                                <div class="form-row">
+                                    <div class="col-12 col-lg-8 mb-3">
+                                        <?= Form::input('name', ['title' => 'Nom du rendez-vous', 'placeholder' => 'Nommez le type de rendez-vous']); ?>
+                                    </div>
+                                    <div class="col-12 col-lg-4 mb-3">
+                                        <?= Form::duration('duration', ['title' => 'Durée de rendez-vous', 'minTxt' => 'minutes', 'required' => true]); ?></div>
+                                    <div class="col-12 mb-3">
+                                        <?= Form::textarea('Informations supplémentaires', 'information', '', 3, false, '', '', 'Décrivez ou donnez des informations sur ce type de rendez-vous'); ?></div>
+                                    <div class="col-12 mb-3">
+                                        <?= Form::btn('Enregistrer', 'ADDRDVTYPESUBMIT'); ?>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -329,7 +457,7 @@ function appointment_rdv_admin_getGrid($idRdvType, $year, $month)
             endfor; ?>
         </table>
         <div class="d-none d-md-flex justify-content-between my-3">
-            <div><span class="shapeCurrentDay mr-2"></span> Jour J</div>
+            <div><span class="shapeCurrentDay mr-2"></span> Ajourd'hui</div>
             <div><span class="shapeSelectedDay mr-2"></span> Jour sélectionné</div>
             <div><span class="shapeUnavailabaleDay mr-2"></span> Jour indisponible</div>
             <div><span class="shapeRdv mr-2"></span> Rendez-vous</div>
@@ -371,11 +499,11 @@ function appointment_rdv_admin_getAvailabilities($idRdvType, $date)
         $html .= '<h5 id="currentDateTitle" class="agendaTitle my-0">' . displayCompleteDate($Date->format('Y-m-d'), false, '%A %d %B') . '</h5>';
 
         if (appointment_isAvailableDay($Date->format('Y-m-d'), $availabilities, $allExceptions)) {
-            $html .= '<button type="button" class="btn btn-sm btn-secondary makeTheDayUnavailable">Rendre ce jour indisponible</button>';
+            $html .= '<div><button class="btn btn-sm btn-outline-primary addNewRdv mx-2" data-toggle="modal" data-target="#addNewRdvForm" data-start="" data-end="">Ajouter un rdv</button>';
+            $html .= '<button type="button" class="btn btn-sm btn-secondary makeTheDayUnavailable">Rendre ce jour indisponible</button></div>';
         } else {
-
             if (appointment_isAvailableDay($Date->format('Y-m-d'), $availabilities, [], true)) {
-                $html .= '<button type="button" class="btn btn-sm btn-secondary makeTheDayAvailable">Rendre ce jour disponible</button>';
+                $html .= '<div><button type="button" class="btn btn-sm btn-secondary makeTheDayAvailable">Rendre ce jour disponible</button></div>';
             }
             $availabilities = false;
         }
@@ -397,7 +525,7 @@ function appointment_rdv_admin_getAvailabilities($idRdvType, $date)
                 if ($nbTimeSlots === 1) {
                     $dayTimeSlotStart = $availability->start;
                 }
-                $html .= appointment_admin_availabilities_get($allRdv, $allExceptions, $availability->start, $availability->end, $RdvType->getDuration(), false);
+                $html .= appointment_admin_availabilities_get($allRdv, $allExceptions, $availability->start, $availability->end, $RdvType->getDuration(), true);
                 if ($nbTimeSlots == count($availabilities)) {
                     $dayTimeSlotEnd = $availability->end;
                 }
@@ -494,6 +622,10 @@ function appointment_rdv_admin_getAvailabilities($idRdvType, $date)
     return $html;
 }
 
+/**
+ * @param $idClient
+ * @return array
+ */
 function appointment_getFormClientById($idClient)
 {
     $clientData = array();
@@ -598,6 +730,23 @@ function appointment_addAvailability($idAgenda, $day, $start, $end)
 
 /**
  * @param $idAgenda
+ * @param $key
+ * @param $val
+ * @param $position
+ * @return bool
+ */
+function appointment_addAgendaMeta($idAgenda, $key, $val, $position)
+{
+    $AgendaMeta = new AgendaMeta();
+    $AgendaMeta->setIdAgenda($idAgenda);
+    $AgendaMeta->setMetaKey($key);
+    $AgendaMeta->setMetaValue($val);
+    $AgendaMeta->setPosition($position);
+    return $AgendaMeta->save();
+}
+
+/**
+ * @param $idAgenda
  * @param $name
  * @param $duration
  * @param string $information
@@ -694,6 +843,25 @@ function appointment_changeAgendaStatus($idAgenda)
 }
 
 /**
+ * @param $idAgenda
+ * @return bool
+ */
+function appointment_preferenceHolidayWorking($idAgenda)
+{
+    $Option = new Option();
+    $Option->setType('APPOINTMENT');
+    $Option->setKey('holidayWorking-' . $idAgenda);
+
+    if ($option = $Option->showByKey()) {
+        $Option->setVal($option->val == 'yes' ? 'no' : 'yes');
+        return $Option->update();
+    }
+
+    $Option->setVal('yes');
+    return $Option->save();
+}
+
+/**
  * @param $idRdvType
  * @param $rdvTypeName
  * @return bool
@@ -785,6 +953,17 @@ function appointment_deleteAgenda($idAgenda)
     $Agenda = new Agenda();
     $Agenda->setId($idAgenda);
     return $Agenda->delete();
+}
+
+/**
+ * @param $idMeta
+ * @return bool
+ */
+function appointment_deleteAgendaMeta($idMeta)
+{
+    $AgendaMeta = new AgendaMeta();
+    $AgendaMeta->setId($idMeta);
+    return $AgendaMeta->delete();
 }
 
 /**
@@ -894,6 +1073,13 @@ function appointment_confirmClient($idClient)
     return false;
 }
 
+/**
+ * @param $idAgenda
+ * @param $date
+ * @param $start
+ * @param $end
+ * @return bool
+ */
 function appointment_makeTheTimeSlotUnavailable($idAgenda, $date, $start, $end)
 {
     $Exception = new Exception();
@@ -914,11 +1100,21 @@ function appointment_makeTheTimeSlotUnavailable($idAgenda, $date, $start, $end)
     return false;
 }
 
-function appointment_makeTheTimeSlotAvailable($id, $date, $start, $end)
+/**
+ * @param $ids
+ * @return bool
+ */
+function appointment_makeTheTimeSlotAvailable($ids)
 {
     $Exception = new Exception();
-    $Exception->setId($id);
-    return $Exception->delete();
+    $ids = unserialize(base64_decode($ids));
+    if (is_array($ids)) {
+        foreach ($ids as $id) {
+            $Exception->setId($id);
+            $Exception->delete();
+        }
+    }
+    return true;
 
     /*if ($Exception->show()) {
 
@@ -943,6 +1139,11 @@ function appointment_makeTheTimeSlotAvailable($id, $date, $start, $end)
     }*/
 }
 
+/**
+ * @param $idAgenda
+ * @param $date
+ * @return bool
+ */
 function appointment_makeTheDayAvailable($idAgenda, $date)
 {
     $Exception = new Exception();
@@ -978,13 +1179,15 @@ function appointment_cron()
     $Rdv = new Rdv();
     $Rdv->setDate(date('Y-m-d'));
     if ($allRdv = $Rdv->showAllFromDate()) {
+
+        $Today = new DateTime();
+        $Tomorrow = new DateTime();
+        $Tomorrow->add(new DateInterval('P1D'));
+
         foreach ($allRdv as $rdv) {
 
             $DateRdv = new DateTime($rdv->date);
-            $Today = new DateTime();
-            $Tomorrow = new DateTime();
-            $Tomorrow->add(new DateInterval('P1D'));
-            list($dateUpdate, $hour) = explode(' ', $rdv->updated_at);
+            list($dateUpdate, $hour) = explode(' ', $rdv->createdAt);
 
             if ($DateRdv->format('Y-m-d') == $Tomorrow->format('Y-m-d') && $dateUpdate < $Today->format('Y-m-d') && $rdv->status > 0) {
 
@@ -1048,7 +1251,7 @@ function appointment_sendInfosEmail($idRdv, $url = null, $fromAdmin = false)
                 $removeRdv = $url . '&removeRdv=OK';
                 $editRdv = $url . '&editRdv=OK';
 
-                $message .= '<p><img src="' . APPOINTMENT_EMAIL_IMAGE . '"></p>';
+                $message .= '<p><img src="' . (getOption('APPOINTMENT', 'emailImage') ?: APPOINTMENT_EMAIL_IMAGE) . '"></p>';
                 $message .= '<p style="text-align:center;margin-bottom:15px;"><a class="btn" style="margin:10px;" href="' . $editRdv . '" title="Déplacer le rendez vous">Déplacer le rendez-vous</a>';
                 $message .= '<a class="btn" style="background-color:#ff394f;border-color:#ff394f;" href="' . $removeRdv . '" title="Annuler le rendez vous">Annuler le rendez-vous</a></p>';
                 $message .= '<p style="text-align:center;margin-top:30px;margin-bottom:30px;">Vous pouvez modifier ou annuler votre rendez-vous à tout moment à partir de cet email.<br>
@@ -1121,12 +1324,10 @@ function appointment_sendInfosEmail($idRdv, $url = null, $fromAdmin = false)
 }
 
 /**
- * @return string
- * @throws Exception
+ *
  */
-function appointment_agenda_getBtns($idAgenda = '')
+function removeUnconfirmedRdvAndClient()
 {
-    $html = '';
 
     //Remove unconfirmed RDV
     $Rdv = new Rdv();
@@ -1157,17 +1358,29 @@ function appointment_agenda_getBtns($idAgenda = '')
             }
         }
     }
+}
+
+/**
+ * @return string
+ * @throws Exception
+ */
+function appointment_agenda_getBtns($idAgenda = '')
+{
+    $html = '';
+
+    removeUnconfirmedRdvAndClient();
 
     if (empty($idAgenda)) {
 
         //See RDV history
         if (isset($_GET['historyRdv']) && !empty($_GET['idClient'])) {
 
+            $Client = new Client();
             $Client->setId(base64_decode($_GET['idClient']));
 
             if ($Client->show() && $Client->getStatus()) {
 
-
+                $Rdv = new Rdv();
                 $Rdv->setIdClient($Client->getId());
                 if ($allRdv = $Rdv->showAllByClient()) {
 
@@ -1212,6 +1425,7 @@ function appointment_agenda_getBtns($idAgenda = '')
             $idRdv = base64_decode($_GET['idRdv']);
             if (is_numeric($idRdv)) {
 
+                $Rdv = new Rdv();
                 $Rdv->setId($idRdv);
                 if ($Rdv->show() && $Rdv->getStatus()) {
 
@@ -1250,6 +1464,7 @@ function appointment_agenda_getBtns($idAgenda = '')
 
             if ($email = approveEmail($_GET, APPOINTMENT_TIMEOUT_VALIDATION)) {
 
+                $Client = new Client();
                 $Client->setId(base64_decode($_GET['idClient']));
                 if ($Client->show() && !$Client->getStatus()) {
 
@@ -1258,6 +1473,7 @@ function appointment_agenda_getBtns($idAgenda = '')
                         $html .= '<div id="appointment-appoe"><div class="appointmentAppoeReminder">';
                         $html .= '<img src="' . APPOINTMENT_URL . 'img/check.svg" width="30px">Votre adresse email <strong>' . $email . '</strong> a bien été confirmé.<br><br>';
 
+                        $Rdv = new Rdv();
                         $Rdv->setIdClient($Client->getId());
                         $Rdv->setStatus(0);
                         if ($Rdv->showByPendingClient()) {
@@ -1288,7 +1504,7 @@ function appointment_agenda_getBtns($idAgenda = '')
         if ($agendas = $Agenda->showByStatus()) {
 
             if (count($agendas) > 1) {
-                $html .= '<section id="agendas" class="appointmentAppoe"><h2>' .  (getOption('APPOINTMENT', 'agendaTitle') ?: APPOINTMENT_AGENDA_CHOICE_TITLE) . '</h2>';
+                $html .= '<section id="agendas" class="appointmentAppoe"><h2>' . (getOption('APPOINTMENT', 'agendaTitle') ?: APPOINTMENT_AGENDA_CHOICE_TITLE) . '</h2>';
                 foreach ($agendas as $agenda) {
                     $html .= '<button class="button btn-round grey agendaChoice ' . (count($agendas) == 1 ? 'activeAgendaBtn' : '') . '" data-id-agenda="' . $agenda->id . '">' . $agenda->name . '</button>';
                 }
@@ -1503,12 +1719,15 @@ function appointment_admin_availabilities_get($allRdv, $allExceptions, $start, $
 
         $html .= '<li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">';
 
-        if ($exception = appointment_admin_isUnvailableHour($time, $allExceptions, $rdvTypeDuration)) {
-            $html .= minutesToHours($time) . ' - ' . minutesToHours($time + $rdvTypeDuration);
-            $html .= '<div><button class="btn btn-sm btn-dark MakeTheTimeSlotAvailable" data-start="' . $time . '" 
-            data-end="' . ($time + $rdvTypeDuration) . '" data-id-exception="' . $exception->id . '">Rendre disponible</button></div>';
-            $time += $rdvTypeDuration;
+        if ($exceptions = appointment_admin_isUnvailableHour($time, $allExceptions, $rdvTypeDuration)) {
+            if (!empty($exceptions)) {
+                $html .= minutesToHours($time) . ' - ' . minutesToHours($time + $rdvTypeDuration);
+                $html .= '<div><button class="btn btn-sm btn-dark MakeTheTimeSlotAvailable"
+                 data-ids-exception="' . base64_encode(serialize($exceptions)) . '">Rendre disponible</button></div>';
+                $time += $rdvTypeDuration;
+            }
             continue;
+
         }
 
         if ($rdv = appointment_admin_isBooked($time, $allRdv, $rdvTypeDuration)) {
@@ -1549,11 +1768,13 @@ function appointment_admin_availabilities_get($allRdv, $allExceptions, $start, $
             }
 
             $html .= '<hr class="my-1 mx-0" style="width:50px;">';
-            $html .= '<strong>RDV pris le : </strong>' . displayCompleteDate($rdv->updated_at, true);
+            $html .= '<strong>RDV pris le : </strong>' . displayCompleteDate($rdv->createdAt, true);
             $html .= '</div>';
 
+            //TODO <button class="btn btn-sm btn-outline-warning updateRdv" data-id-rdv="' . $rdv->id . '">Modifier ce rdv</button>
             if ($rdv->status) {
-                $html .= '<div><button class="btn btn-sm btn-outline-danger deleteRdv" data-id-rdv="' . $rdv->id . '">Annuler ce rdv</button></div>';
+                $html .= '<div>';
+                $html .= '<button class="btn btn-sm btn-outline-danger deleteRdv" data-id-rdv="' . $rdv->id . '">Annuler ce rdv</button></div>';
             } else {
                 $html .= '<div><button class="btn btn-sm btn-warning confirmRdv" data-id-rdv="' . $rdv->id . '">Confirmer le rdv</button></div>';
             }
@@ -1702,6 +1923,7 @@ function appointment_client_check($email)
  * @param $day
  * @param array $availabilities
  * @param array $exceptions
+ * @param bool $onlyAvailability
  * @return bool
  */
 function appointment_isAvailableDay($day, array $availabilities, array $exceptions = [], $onlyAvailability = false)
@@ -1712,6 +1934,11 @@ function appointment_isAvailableDay($day, array $availabilities, array $exceptio
 
         foreach ($availabilities as $availability) {
             if ($availability->day == $dayInWeek) {
+
+                $holidayWorking = getOption('APPOINTMENT', 'holidayWorking-' . $availability->idAgenda);
+                if (isferie($day) && (!$holidayWorking || $holidayWorking == 'no')) {
+                    return false;
+                }
 
                 if (!$onlyAvailability) {
                     foreach ($exceptions as $exception) {
@@ -1807,17 +2034,17 @@ function appointment_isUnvailableHour(&$time, $allExceptions, $rdvDuration, $com
  * @param $time
  * @param $allExceptions
  * @param $rdvDuration
- * @return bool|object
+ * @return array
  */
 function appointment_admin_isUnvailableHour($time, $allExceptions, $rdvDuration)
 {
+    $exceptions = array();
     if (!empty($allExceptions)) {
         foreach ($allExceptions as $exception) {
-
             if (($exception->start >= $time && $exception->end < $time) ||
                 ($exception->start <= $time && $exception->end > $time) ||
                 ($exception->start > $time && $exception->start < ($time + $rdvDuration)) ||
-                ($exception->start < $time && ($exception->start + $rdvDuration) > $time)) {
+                ($exception->start < $time && (($exception->end - $exception->start) + $exception->start) > $time)) {
 
                 /*if ($item = isValInMultiArrObj($allExceptions, 'start', $time, 'obj')) {
                     if ($item->availability == 'AVAILABLE' && ($item->start == $time && ($time + $rdvDuration) == $item->end)) {
@@ -1825,12 +2052,11 @@ function appointment_admin_isUnvailableHour($time, $allExceptions, $rdvDuration)
                         return false;
                     }
                 }*/
-
-                return $exception;
+                $exceptions[] = $exception->id;
             }
         }
     }
-    return false;
+    return $exceptions;
 }
 
 /**

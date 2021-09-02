@@ -5,7 +5,10 @@ function getAdminAgendas() {
     appointment_getLoader();
     appointment_ajax({getAdminAgendas: 'OK'}).done(function (data) {
         if (data) {
-            $('div#agendas').html(data);
+            $('#addAgendaModal').modal('hide');
+            setTimeout(function () {
+                $('div#agendas').html(data);
+            }, 500);
         }
         appointment_removeLoader();
     });
@@ -106,6 +109,26 @@ jQuery(window).on('load', function () {
                 }
             });
         });
+
+        $(document.body).on('input', 'input.agendaSettingInput, select.agendaSettingInput', function (e) {
+            e.preventDefault();
+            let $input = $(this);
+            busyApp();
+            delay(function () {
+                appointment_ajax({
+                    adminAgendaSetting: 'OK',
+                    key: $input.attr('name'),
+                    val: $input.val()
+                }).done(function (data) {
+                    if (data === 'true') {
+                        notification('Paramètre enregistré');
+                    } else {
+                        notification('Erreur', 'danger');
+                    }
+                    availableApp();
+                });
+            }, 1000);
+        });
     }
 
     if ($('div#manageList').length) {
@@ -131,6 +154,39 @@ jQuery(window).on('load', function () {
             }
         });
 
+        $(document.body).on('change', 'input#holidayWorking', function () {
+            let $input = $(this);
+            let idAgenda = $input.data('id-agenda');
+
+            appointment_ajax({adminAgendaWorkingHoliday: 'OK', idAgenda: idAgenda}).done(function (data) {
+                if (data === 'true') {
+                    notification('Préférence enregistré');
+                } else {
+                    notification('Erreur', 'danger');
+                }
+            });
+        });
+
+        $(document.body).on('click', 'button.addInfo', function () {
+            let $btn = $(this);
+            let $parent = $btn.closest('div#infosup');
+            let idAgenda = $btn.closest('div#manageList').attr('data-id-agenda');
+
+            $parent.append('<div class="col-4 my-2"><div class="form-group"><input type="text" name="metaKey-4" value="" placeholder="Clé" class="form-control"></div></div>');
+
+            $('button.btnAgendaManager').removeClass('active');
+            $btn.addClass('active');
+
+            appointment_getLoader()
+            getAdminListManage(idAgenda, manageList).done(function (data) {
+                if (data) {
+                    $('#manageType').attr('data-current-type', manageList).html(data);
+                }
+                appointment_removeLoader();
+            });
+
+        });
+
         $(document.body).on('submit', 'form#addAvailability', function (e) {
             e.preventDefault();
 
@@ -153,7 +209,10 @@ jQuery(window).on('load', function () {
                     if (data === 'true') {
                         getAdminListManage(idAgenda, 'availabilities').done(function (data) {
                             if (data) {
-                                $('#manageType').html(data);
+                                $('#addAvailabilityModal').modal('hide');
+                                setTimeout(function () {
+                                    $('div#manageType').html(data);
+                                }, 500);
                             }
                         });
                     } else if (data === 'false') {
@@ -220,10 +279,50 @@ jQuery(window).on('load', function () {
                     if (data === 'true') {
                         getAdminListManage(idAgenda, 'typeRdv').done(function (data) {
                             if (data) {
-                                $('#manageType').html(data);
+                                $('#addRdvTypeModal').modal('hide');
+                                setTimeout(function () {
+                                    $('#manageType').html(data);
+                                }, 500);
+
                             }
                         });
                     }
+                    availableApp();
+                });
+            }
+        });
+
+        $(document.body).on('submit', 'form#addInfoForm', function (e) {
+            e.preventDefault();
+
+            let $form = $(this);
+            let idAgenda = $form.data('id-agenda');
+            let metaKey = $form.find('input#metaKey').val();
+            let metaVal = $form.find('input#metaVal').val();
+            let position = $form.find('select#position').val();
+
+            if (idAgenda && metaKey !== '' && metaVal !== '' && position !== '') {
+
+                busyApp(false);
+                appointment_getLoader();
+                appointment_ajax({
+                    adminAddAgendaMeta: 'OK',
+                    idAgenda: idAgenda,
+                    metaKey: metaKey,
+                    metaVal: metaVal,
+                    position: position
+                }).done(function (data) {
+                    if (data === 'true') {
+                        appointment_ajax({getManageList: 'preferences', idAgenda: idAgenda}).done(function (data) {
+                            if (data) {
+                                $('#addInfoModal').modal('hide');
+                                setTimeout(function () {
+                                    $('div#manageType').html(data);
+                                }, 500);
+                            }
+                        });
+                    }
+                    appointment_removeLoader();
                     availableApp();
                 });
             }
@@ -267,31 +366,6 @@ jQuery(window).on('load', function () {
             }
         });
 
-        $(document.body).on('input', 'input.agendaSettingInput', function (e) {
-            e.preventDefault();
-
-            let $input = $(this);
-
-            if ($input.val() !== '') {
-
-                busyApp();
-                delay(function () {
-                    appointment_ajax({
-                        adminAgendaSetting: 'OK',
-                        key: $input.attr('name'),
-                        val: $input.val()
-                    }).done(function (data) {
-                        if (data === 'true') {
-                            notification('Paramètre enregistré');
-                        } else {
-                            notification('Erreur', 'danger');
-                        }
-                        availableApp();
-                    });
-                }, 1000);
-            }
-        });
-
         $(document.body).on('input', 'input[id^=rdvTypeForm], select[id^=rdvTypeForm]', function (e) {
             e.preventDefault();
 
@@ -332,12 +406,28 @@ jQuery(window).on('load', function () {
             let idRdvType = $parent.attr('data-id-rdv-type');
 
             appointment_ajax({deleteAdminRdvType: 'OK', idRdvType: idRdvType}).done(function (data) {
-                if (data === 'true') {
+                if (data == 'true') {
                     $parent.fadeOut(500, function () {
                         $parent.remove();
                     });
                 }
             });
+        });
+
+        $(document.body).on('click', 'button.deleteMeta', function () {
+            let $btn = $(this);
+            let idMeta = $btn.attr('data-id-meta');
+            let $parent = $btn.closest('div.agendaInfos');
+
+            if (idMeta) {
+                appointment_ajax({deleteAdminAgendaMeta: 'OK', idMeta: idMeta}).done(function (data) {
+                    if (data == 'true') {
+                        $parent.fadeOut(500, function () {
+                            $parent.remove();
+                        });
+                    }
+                });
+            }
         });
 
         $(document.body).on('click', 'button.deleteRdv', function () {
@@ -536,19 +626,14 @@ jQuery(window).on('load', function () {
 
         $(document.body).on('click', 'button.MakeTheTimeSlotAvailable', function () {
             let $btn = $(this);
-            let start = $btn.attr('data-start');
-            let end = $btn.attr('data-end');
-            let idException = $btn.attr('data-id-exception');
+            let idsException = $btn.attr('data-ids-exception');
             let $parentContainer = $btn.closest('div#rdvList');
             let idRdvType = $parentContainer.attr('data-id-rdv-type');
             let date = $parentContainer.attr('data-date');
 
             appointment_ajax({
                 makeTheTimeSlotAvailable: 'OK',
-                idException: idException,
-                date: date,
-                start: start,
-                end: end
+                idsException: idsException
             }).done(function (data) {
                 if (data === 'true') {
                     $btn.fadeOut(500, function () {
@@ -649,6 +734,7 @@ jQuery(window).on('load', function () {
                         $('#rdvCalendar').html(data);
                     }
                     appointment_removeLoader();
+                    $('td.day.currentDay').trigger('click');
                 });
             }
         });

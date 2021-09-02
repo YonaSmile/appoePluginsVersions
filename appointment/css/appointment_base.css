@@ -19,6 +19,11 @@ div.btnGroupAgendaManager {
     border-bottom: 1px solid #333;
 }
 
+.agendaSubTitle {
+    display: inline-block;
+    font-weight: bold;
+}
+
 div.durationSelectContainer select {
     border: 0 none;
     border-bottom: 1px solid #FFF;
