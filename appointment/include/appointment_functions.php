@@ -138,17 +138,17 @@ function appointment_informations_admin_getAll($idAgenda)
         $AgendaMeta->setIdAgenda($Agenda->getId());
         if ($allMetas = $AgendaMeta->showAll()):
             ob_start();
-        $c = 1;
-        foreach ($allMetas as $meta): ?>
-            <div class="agendaInfos <?= $c == 1 ? '' : 'border-top'; ?> py-2 ">
-                <strong class="colorPrimary"><?= $meta->metaKey; ?></strong>
-                <p class="mb-0"><?= $meta->metaValue; ?>
-                    <button type="button" data-id-meta="<?= $meta->id; ?>"
-                            class="btn px-1 py-0 deleteMeta"><i class="far fa-trash-alt"></i></button>
-                </p>
-            </div>
-        <?php $c++;
-        endforeach; ?>
+            $c = 1;
+            foreach ($allMetas as $meta): ?>
+                <div class="agendaInfos <?= $c == 1 ? '' : 'border-top'; ?> py-2 ">
+                    <strong class="colorPrimary"><?= $meta->metaKey; ?></strong>
+                    <p class="mb-0"><?= $meta->metaValue; ?>
+                        <button type="button" data-id-meta="<?= $meta->id; ?>"
+                                class="btn px-1 py-0 deleteMeta"><i class="far fa-trash-alt"></i></button>
+                    </p>
+                </div>
+                <?php $c++;
+            endforeach; ?>
 
             <div class="modal fade" id="addInfoModal" tabindex="-1" aria-labelledby="addInfoTitle"
                  aria-hidden="true">
@@ -1179,7 +1179,6 @@ function appointment_cron()
     $Rdv = new Rdv();
     $Rdv->setDate(date('Y-m-d'));
     if ($allRdv = $Rdv->showAllFromDate()) {
-
         $Today = new DateTime();
         $Tomorrow = new DateTime();
         $Tomorrow->add(new DateInterval('P1D'));
@@ -1188,13 +1187,12 @@ function appointment_cron()
 
             $DateRdv = new DateTime($rdv->date);
             list($dateUpdate, $hour) = explode(' ', $rdv->createdAt);
-
             if ($DateRdv->format('Y-m-d') == $Tomorrow->format('Y-m-d') && $dateUpdate < $Today->format('Y-m-d') && $rdv->status > 0) {
 
                 $Client = new Client();
                 $Client->setId($rdv->idClient);
                 if ($Client->show() && $Client->getStatus()) {
-                    appointment_sendInfosEmail($rdv->id);
+                    appointment_sendInfosEmail($rdv->id, null, true);
                 }
             }
         }
