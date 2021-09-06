@@ -64,16 +64,18 @@ jQuery(window).on('load', function () {
             let $parent = $btn.closest('div.agendaInfos');
             let idAgenda = $parent.attr('data-id-agenda');
 
-            busyApp();
-            appointment_ajax({deleteAdminAgendas: 'OK', idAgenda: idAgenda}).done(function (data) {
-                if (data === 'true') {
-                    $parent.fadeOut(500, function () {
-                        $parent.remove()
-                    });
-                    //getAdminAgendas();
-                }
-                availableApp();
-            });
+            if (confirm('Voulez vous vraiment supprimer cet agenda ?')) {
+                busyApp();
+                appointment_ajax({deleteAdminAgendas: 'OK', idAgenda: idAgenda}).done(function (data) {
+                    if (data === 'true') {
+                        $parent.fadeOut(500, function () {
+                            $parent.remove()
+                        });
+                        //getAdminAgendas();
+                    }
+                    availableApp();
+                });
+            }
         });
 
         $(document.body).on('input', 'input[id^=agendaName-]', function () {
@@ -230,9 +232,9 @@ jQuery(window).on('load', function () {
             let $parent = $btn.closest('div.agendaInfos');
             let idAvailability = $btn.attr('data-id-availability');
 
-            busyApp();
-            appointment_ajax({deleteAdminAvailability: 'OK', idAvailability: idAvailability})
-                .done(function (data) {
+            if (confirm('Voulez vous vraiment supprimer cette disponibilité ?')) {
+                busyApp();
+                appointment_ajax({deleteAdminAvailability: 'OK', idAvailability: idAvailability}).done(function (data) {
                     if (data === 'true') {
                         $btn.parent('li').fadeOut(500, function () {
                             $btn.parent('li').remove()
@@ -240,6 +242,7 @@ jQuery(window).on('load', function () {
                     }
                     availableApp();
                 });
+            }
         });
 
         $(document.body).on('click', 'button.deleteRdvTypeForm', function () {
@@ -247,14 +250,15 @@ jQuery(window).on('load', function () {
             let $parent = $btn.closest('form.rdvTypForm');
             let idRdvTypeForm = $parent.attr('data-id-rdv-type-form');
 
-            appointment_ajax({deleteAdminARdvTypeForm: 'OK', idRdvTypeForm: idRdvTypeForm})
-                .done(function (data) {
+            if (confirm('Voulez vous vraiment supprimer ce champs ?')) {
+                appointment_ajax({deleteAdminARdvTypeForm: 'OK', idRdvTypeForm: idRdvTypeForm}).done(function (data) {
                     if (data === 'true') {
                         $parent.fadeOut(500, function () {
                             $parent.remove()
                         });
                     }
                 });
+            }
         });
 
 
@@ -405,13 +409,15 @@ jQuery(window).on('load', function () {
             let $parent = $btn.closest('div.agendaInfos');
             let idRdvType = $parent.attr('data-id-rdv-type');
 
-            appointment_ajax({deleteAdminRdvType: 'OK', idRdvType: idRdvType}).done(function (data) {
-                if (data == 'true') {
-                    $parent.fadeOut(500, function () {
-                        $parent.remove();
-                    });
-                }
-            });
+            if (confirm('Voulez vous vraiment supprimer ce type de rendez-vous ?')) {
+                appointment_ajax({deleteAdminRdvType: 'OK', idRdvType: idRdvType}).done(function (data) {
+                    if (data == 'true') {
+                        $parent.fadeOut(500, function () {
+                            $parent.remove();
+                        });
+                    }
+                });
+            }
         });
 
         $(document.body).on('click', 'button.deleteMeta', function () {
@@ -419,7 +425,7 @@ jQuery(window).on('load', function () {
             let idMeta = $btn.attr('data-id-meta');
             let $parent = $btn.closest('div.agendaInfos');
 
-            if (idMeta) {
+            if (idMeta && confirm('Voulez vous vraiment supprimer cette information ?')) {
                 appointment_ajax({deleteAdminAgendaMeta: 'OK', idMeta: idMeta}).done(function (data) {
                     if (data == 'true') {
                         $parent.fadeOut(500, function () {
