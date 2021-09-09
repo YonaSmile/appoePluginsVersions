@@ -65,11 +65,11 @@ function appointment_dashboard()
                         <hr class="mx-4">
                     </div>
                     <div class="card-body pt-0">
-                        <?php foreach ($agendas as $agenda): ?>
-                            <h6 class="agendaSubTitle mb-1 pb-1 colorSecondary border-bottom"><?= $agenda->name; ?></h6>
-                            <div class="mb-3">
-                                <?php if ($allRdvToday = appointment_getRdv($agenda->id, $today, $today)):
-                                    foreach ($allRdvToday[$today] as $rdv):
+                        <?php foreach ($agendas as $agenda):
+                            if ($allRdvToday = appointment_getRdv($agenda->id, $today, $today)): ?>
+                                <h6 class="agendaSubTitle mb-1 pb-1 colorSecondary border-bottom"><?= $agenda->name; ?></h6>
+                                <div class="mb-3">
+                                    <?php foreach ($allRdvToday[$today] as $rdv):
 
                                         $Client->setId($rdv->idClient);
                                         $Client->show();
@@ -83,10 +83,10 @@ function appointment_dashboard()
                                             <em><?= $RdvType->getName(); ?></em>
                                             <strong><?= $Client->getLastName() . ' ' . $Client->getFirstName(); ?></strong>
                                         </div>
-                                    <?php endforeach;
-                                endif; ?>
-                            </div>
-                        <?php endforeach; ?>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php endif;
+                        endforeach; ?>
                     </div>
                 </div>
             </div>
@@ -97,11 +97,11 @@ function appointment_dashboard()
                         <hr class="mx-4">
                     </div>
                     <div class="card-body pt-0">
-                        <?php foreach ($agendas as $agenda): ?>
-                            <h6 class="agendaSubTitle mb-1 pb-1 colorSecondary border-bottom"><?= $agenda->name; ?></h6>
-                            <div class="mb-3">
-                                <?php if ($allRdvMonth = appointment_getRdv($agenda->id, date('Y-m-d'), date('Y-m-t'))):
-                                    foreach ($allRdvMonth as $date => $allRdv): ?>
+                        <?php foreach ($agendas as $agenda):
+                            if ($allRdvMonth = appointment_getRdv($agenda->id, date('Y-m-d'), date('Y-m-t'))): ?>
+                                <h6 class="agendaSubTitle mb-1 pb-1 colorSecondary border-bottom"><?= $agenda->name; ?></h6>
+                                <div class="mb-3">
+                                    <?php foreach ($allRdvMonth as $date => $allRdv): ?>
                                         <div class="agendaInfos pt-1">
                                             <strong class="colorPrimary"><?= displayCompleteDate($date, false, '%A %d %B'); ?></strong>
                                             <ul class="mt-2 mb-0">
@@ -120,10 +120,10 @@ function appointment_dashboard()
                                                 <?php endforeach; ?>
                                             </ul>
                                         </div>
-                                    <?php endforeach;
-                                endif; ?>
-                            </div>
-                        <?php endforeach; ?>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php endif;
+                        endforeach; ?>
                     </div>
                 </div>
             </div>
