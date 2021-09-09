@@ -32,6 +32,7 @@ const APPOINTMENT_DATES_CHOICE_TITLE = 'Choisissez un créneau disponible';
 const APPOINTMENT_FORM_TITLE = 'Saisissez vos coordonnées';
 const APPOINTMENT_EMAIL_IMAGE = APPOINTMENT_URL . 'img/rappel-de-rdv-professionnel.png';
 
+Hook::add_action('core_admin_after_dashboard', 'appointment_dashboard', 9);
 Hook::add_action('cron', 'appointment_cron');
 
 /**
@@ -48,6 +49,89 @@ function urlAppointment()
 }
 
 /********************************** BACK **************************************/
+
+function appointment_dashboard()
+{
+    $Agenda = new Agenda();
+    if ($agendas = $Agenda->showAll()):
+        $today = date('Y-m-d');
+        $Client = new Client();
+        $RdvType = new RdvType(); ?>
+        <div id="instagramContainer" class="row mb-3">
+            <div class="d-flex col-12 col-lg-4">
+                <div class="card border-0 w-100">
+                    <div class="card-header bg-white pb-0 border-0 boardBlock1Title">
+                        <h5 class="m-0 pl-4 colorPrimary"><?= trans('Rendez-vous aujourd\'hui'); ?></h5>
+                        <hr class="mx-4">
+                    </div>
+                    <div class="card-body pt-0">
+                        <?php foreach ($agendas as $agenda): ?>
+                            <h6 class="agendaSubTitle mb-1 pb-1 colorSecondary border-bottom"><?= $agenda->name; ?></h6>
+                            <div class="mb-3">
+                                <?php if ($allRdvToday = appointment_getRdv($agenda->id, $today, $today)):
+                                    foreach ($allRdvToday[$today] as $rdv):
+
+                                        $Client->setId($rdv->idClient);
+                                        $Client->show();
+
+                                        $RdvType->setId($rdv->idTypeRdv);
+                                        $RdvType->show(); ?>
+                                        <div class="agendaInfos pt-1">
+                                            <strong class="colorPrimary">
+                                                <?= minutesToHours($rdv->start); ?>
+                                                - <?= minutesToHours($rdv->end); ?></strong>
+                                            <em><?= $RdvType->getName(); ?></em>
+                                            <strong><?= $Client->getLastName() . ' ' . $Client->getFirstName(); ?></strong>
+                                        </div>
+                                    <?php endforeach;
+                                endif; ?>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex col-12 col-lg-8">
+                <div class="card border-0 w-100">
+                    <div class="card-header bg-white pb-0 border-0 boardBlock1Title">
+                        <h5 class="m-0 pl-4 colorPrimary"><?= trans('Rendez-vous du mois'); ?></h5>
+                        <hr class="mx-4">
+                    </div>
+                    <div class="card-body pt-0">
+                        <?php foreach ($agendas as $agenda): ?>
+                            <h6 class="agendaSubTitle mb-1 pb-1 colorSecondary border-bottom"><?= $agenda->name; ?></h6>
+                            <div class="mb-3">
+                                <?php if ($allRdvMonth = appointment_getRdv($agenda->id, date('Y-m-d'), date('Y-m-t'))):
+                                    foreach ($allRdvMonth as $date => $allRdv): ?>
+                                        <div class="agendaInfos pt-1">
+                                            <strong class="colorPrimary"><?= displayCompleteDate($date, false, '%A %d %B'); ?></strong>
+                                            <ul class="mt-2 mb-0">
+                                                <?php foreach ($allRdv as $rdv):
+                                                    $Client->setId($rdv->idClient);
+                                                    $Client->show();
+
+                                                    $RdvType->setId($rdv->idTypeRdv);
+                                                    $RdvType->show(); ?>
+                                                    <li class="my-0">
+                                                        <strong><?= minutesToHours($rdv->start); ?>
+                                                            - <?= minutesToHours($rdv->end); ?></strong>
+                                                        <em><?= $RdvType->getName(); ?></em>
+                                                        <strong><?= $Client->getLastName() . ' ' . $Client->getFirstName(); ?></strong>
+                                                    </li>
+                                                <?php endforeach; ?>
+                                            </ul>
+                                        </div>
+                                    <?php endforeach;
+                                endif; ?>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php
+    endif;
+}
+
 function appointment_agenda_admin_getAll()
 {
     $html = '';
