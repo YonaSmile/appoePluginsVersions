@@ -81,7 +81,7 @@ function appointment_dashboard()
                                                 <?= minutesToHours($rdv->start); ?>
                                                 - <?= minutesToHours($rdv->end); ?></strong>
                                             <em><?= $RdvType->getName(); ?></em>
-                                            <strong><?= $Client->getLastName() . ' ' . $Client->getFirstName(); ?></strong>
+                                            <strong class="colorSecondary"><?= $Client->getLastName() . ' ' . $Client->getFirstName(); ?></strong>
                                         </div>
                                     <?php endforeach; ?>
                                 </div>
@@ -115,7 +115,7 @@ function appointment_dashboard()
                                                         <strong><?= minutesToHours($rdv->start); ?>
                                                             - <?= minutesToHours($rdv->end); ?></strong>
                                                         <em><?= $RdvType->getName(); ?></em>
-                                                        <strong><?= $Client->getLastName() . ' ' . $Client->getFirstName(); ?></strong>
+                                                        <strong class="colorSecondary"><?= $Client->getLastName() . ' ' . $Client->getFirstName(); ?></strong>
                                                     </li>
                                                 <?php endforeach; ?>
                                             </ul>
