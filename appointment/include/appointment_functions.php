@@ -55,6 +55,7 @@ function appointment_dashboard()
     $Agenda = new Agenda();
     if ($agendas = $Agenda->showAll()):
         $today = date('Y-m-d');
+        $todayRdvCount = $monthRdvCount = 0;
         $Client = new Client();
         $RdvType = new RdvType(); ?>
         <div id="instagramContainer" class="row mb-3">
@@ -67,8 +68,8 @@ function appointment_dashboard()
                     <div class="card-body pt-0">
                         <?php foreach ($agendas as $agenda):
                             if ($allRdvToday = appointment_getRdv($agenda->id, $today, $today)): ?>
-                                <h6 class="agendaSubTitle mb-1 pb-1 colorSecondary border-bottom"><?= $agenda->name; ?></h6>
-                                <div class="mb-3">
+                                <h6 class="agendaSubTitle mb-0 px-1 pb-1 bgColorSecondary border-bottom"><?= $agenda->name; ?></h6>
+                                <div class="mb-4">
                                     <?php foreach ($allRdvToday[$today] as $rdv):
 
                                         $Client->setId($rdv->idClient);
@@ -83,10 +84,14 @@ function appointment_dashboard()
                                             <em><?= $RdvType->getName(); ?></em>
                                             <strong class="colorSecondary"><?= $Client->getLastName() . ' ' . $Client->getFirstName(); ?></strong>
                                         </div>
-                                    <?php endforeach; ?>
+                                        <?php $todayRdvCount++;
+                                    endforeach; ?>
                                 </div>
                             <?php endif;
-                        endforeach; ?>
+                        endforeach;
+                        if($todayRdvCount === 0): ?>
+                            <p><?= trans('Pas de rendez-vous'); ?></p>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -99,8 +104,8 @@ function appointment_dashboard()
                     <div class="card-body pt-0">
                         <?php foreach ($agendas as $agenda):
                             if ($allRdvMonth = appointment_getRdv($agenda->id, date('Y-m-d'), date('Y-m-t'))): ?>
-                                <h6 class="agendaSubTitle mb-1 pb-1 colorSecondary border-bottom"><?= $agenda->name; ?></h6>
-                                <div class="mb-3">
+                                <h6 class="agendaSubTitle mb-0 px-1 pb-1 bgColorSecondary border-bottom"><?= $agenda->name; ?></h6>
+                                <div class="mb-4">
                                     <?php foreach ($allRdvMonth as $date => $allRdv): ?>
                                         <div class="agendaInfos pt-1">
                                             <strong class="colorPrimary"><?= displayCompleteDate($date, false, '%A %d %B'); ?></strong>
@@ -117,13 +122,17 @@ function appointment_dashboard()
                                                         <em><?= $RdvType->getName(); ?></em>
                                                         <strong class="colorSecondary"><?= $Client->getLastName() . ' ' . $Client->getFirstName(); ?></strong>
                                                     </li>
-                                                <?php endforeach; ?>
+                                                    <?php $monthRdvCount++;
+                                                endforeach; ?>
                                             </ul>
                                         </div>
                                     <?php endforeach; ?>
                                 </div>
                             <?php endif;
-                        endforeach; ?>
+                        endforeach;
+                        if($monthRdvCount === 0): ?>
+                            <p><?= trans('Pas de rendez-vous'); ?></p>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
