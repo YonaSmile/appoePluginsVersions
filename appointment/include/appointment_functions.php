@@ -58,7 +58,7 @@ function appointment_dashboard()
         $todayRdvCount = $monthRdvCount = 0;
         $Client = new Client();
         $RdvType = new RdvType(); ?>
-        <div id="instagramContainer" class="row mb-3">
+        <div class="row mb-3">
             <div class="d-flex col-12 col-lg-4">
                 <div class="card border-0 w-100">
                     <div class="card-header bg-white pb-0 border-0 boardBlock1Title">
