@@ -62,7 +62,9 @@ function appointment_dashboard()
             <div class="d-flex col-12 col-lg-4">
                 <div class="card border-0 w-100">
                     <div class="card-header bg-white pb-0 border-0 boardBlock1Title">
-                        <h5 class="m-0 pl-4 colorPrimary"><?= trans('Rendez-vous aujourd\'hui'); ?></h5>
+                        <h5 class="m-0 pl-4 colorPrimary"><?= trans('Rendez-vous aujourd\'hui'); ?>
+                            <a href="<?= APPOINTMENT_URL; ?>page/agendas/" class="btn btn-sm colorPrimary float-right">
+                                <i class="far fa-calendar-alt"></i></a></h5>
                         <hr class="mx-4">
                     </div>
                     <div class="card-body pt-0">
