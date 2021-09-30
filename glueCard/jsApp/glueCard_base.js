@@ -483,7 +483,7 @@ jQuery(document).ready(function ($) {
 
         $('.ajaxContentInput.successInput').removeClass('successInput');
 
-        if (contentHandleId && contentPlanId && contentItemId && contentText) {
+        if (contentHandleId && contentPlanId && contentItemId) {
 
             delay(function () {
                 $.post(WEB_GLUECARD_PROCESS_URL,

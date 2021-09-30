@@ -13,7 +13,7 @@ class Content
     private $idHandle;
     private $idPlan;
     private $idItem;
-    private $text;
+    private $text = null;
     private $lang = APP_LANG;
     private $createdAt;
     private $updatedAt;
@@ -167,7 +167,7 @@ class Content
                 `id_handle` INT(11) UNSIGNED NOT NULL,
                 `id_plan` INT(11) UNSIGNED NOT NULL,
                 `id_item` INT(11) UNSIGNED NOT NULL,
-                `text` TEXT NOT NULL,
+                `text` TEXT NULL DEFAULT NULL,
                 `lang` VARCHAR(50) NOT NULL,
                 UNIQUE (`id_handle`, `id_plan`, `id_item`, `lang`),
                 `created_at` DATE NOT NULL,

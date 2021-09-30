@@ -140,7 +140,7 @@ if (checkAjaxRequest()) {
         /** CONTENT */
         if (!empty($_POST['contentHandleId']) && !empty($_POST['contentPlanId']) && !empty($_POST['contentItemId'])
             && is_numeric($_POST['contentHandleId']) && is_numeric($_POST['contentPlanId']) && is_numeric($_POST['contentItemId'])
-            && !empty($_POST['contentText'])) {
+            && isset($_POST['contentText'])) {
             $Content = new Content();
             $Content->setIdHandle($_POST['contentHandleId']);
             $Content->setIdPlan($_POST['contentPlanId']);
