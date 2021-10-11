@@ -7,15 +7,10 @@ use App\Plugin\ItemGlue\ArticleMedia;
 use App\Plugin\ItemGlue\ArticleMeta;
 use App\Plugin\ItemGlue\ArticleRelation;
 
-$contentTabActive = true;
-
 if (checkPostAndTokenRequest()) {
 
     //Clean data
     $_POST = cleanRequest($_POST);
-
-    $mediaTabactive = false;
-    $relationActive = false;
 
     if (isset($_POST['ADDARTICLE'])) {
 
@@ -123,6 +118,39 @@ if (checkPostAndTokenRequest()) {
                     //Update Headers
                     if ($ArticleContent->updateHeaders($headers)) {
 
+                        //Update Categories
+                        $CategoryRelation = new CategoryRelations('ITEMGLUE', $_POST['id']);
+                        $allCategories = $CategoryRelation->getData();
+                        $allSimpleCategories = extractFromObjToSimpleArr($allCategories, 'id', 'categoryId');
+
+                        if (!empty($_POST['categories'])) {
+
+                            if (!is_null($allCategories)) {
+                                foreach ($allCategories as $category) {
+                                    if (!in_array($category->categoryId, $_POST['categories'])) {
+                                        $CategoryRelation->setId($category->id);
+                                        $CategoryRelation->delete();
+                                    }
+                                }
+                            }
+
+                            foreach ($_POST['categories'] as $chosenCategory) {
+                                if (!in_array($chosenCategory, $allSimpleCategories)) {
+                                    $CategoryRelation->setCategoryId($chosenCategory);
+                                    $CategoryRelation->save();
+                                }
+                            }
+
+                        } else {
+
+                            if (!is_null($allCategories)) {
+                                foreach ($allCategories as $category) {
+                                    $CategoryRelation->setId($category->id);
+                                    $CategoryRelation->delete();
+                                }
+                            }
+                        }
+
                         clearPageCache(APP_LANG, $_POST['slug'] . '.php');
 
                         //Delete post data
@@ -143,6 +171,7 @@ if (checkPostAndTokenRequest()) {
         } else {
             setPostResponse('Tous les champs sont obligatoires');
         }
+        $activeTabContent = 'title';
     }
 
     if (isset($_POST['SAVEARTICLECONTENT'])) {
@@ -158,40 +187,7 @@ if (checkPostAndTokenRequest()) {
                 }
             } else {
                 if ($ArticleContent->save()) {
-
                     setPostResponse('Le contenu de l\'article a été enregistré', 'success');
-                }
-            }
-
-            $CategoryRelation = new CategoryRelations('ITEMGLUE', $_POST['articleId']);
-            $allCategories = $CategoryRelation->getData();
-            $allSimpleCategories = extractFromObjToSimpleArr($allCategories, 'id', 'categoryId');
-
-            if (!empty($_POST['categories'])) {
-
-                if (!is_null($allCategories)) {
-                    foreach ($allCategories as $category) {
-                        if (!in_array($category->categoryId, $_POST['categories'])) {
-                            $CategoryRelation->setId($category->id);
-                            $CategoryRelation->delete();
-                        }
-                    }
-                }
-
-                foreach ($_POST['categories'] as $chosenCategory) {
-                    if (!in_array($chosenCategory, $allSimpleCategories)) {
-                        $CategoryRelation->setCategoryId($chosenCategory);
-                        $CategoryRelation->save();
-                    }
-                }
-
-            } else {
-
-                if (!is_null($allCategories)) {
-                    foreach ($allCategories as $category) {
-                        $CategoryRelation->setId($category->id);
-                        $CategoryRelation->delete();
-                    }
                 }
             }
 
@@ -199,9 +195,9 @@ if (checkPostAndTokenRequest()) {
             unset($_POST);
 
         } else {
-
             setPostResponse('Le contenu de l\'article est obligatoire');
         }
+        $activeTabContent = 'content';
     }
 
     if (isset($_POST['RELATIONUSERS'])) {
@@ -250,9 +246,7 @@ if (checkPostAndTokenRequest()) {
         } else {
             setPostResponse('Vous devez sélectionner un utilisateur à associer à l\'article !');
         }
-
-        $contentTabActive = false;
-        $relationActive = true;
+        $activeTabContent = 'relation';
     }
 
     if (isset($_POST['ADDIMAGESTOARTICLE']) && !empty($_POST['articleId'])) {
@@ -292,8 +286,6 @@ if (checkPostAndTokenRequest()) {
         }
 
         setPostResponse($html, 'info');
-
-        $contentTabActive = false;
-        $mediaTabactive = true;
+        $activeTabContent = 'media';
     }
 }
