@@ -216,4 +216,24 @@ jQuery(document).ready(function ($) {
             });
         }
     });
+
+    $(document.body).on('click', 'button.deleteCms', function () {
+        let idCms = $(this).data('idcms');
+        if (confirm('Vous allez archiver cette page')) {
+            busyApp();
+            $.post(
+                WEB_PLUGIN_URL + 'cms/process/ajaxProcess.php',
+                {
+                    idCmsArchive: idCms
+                },
+                function (data) {
+                    if (data === true || data == 'true') {
+                        $('div.tab[data-idcms="' + idCms + '"]').slideUp().remove();
+                        $('div#tab-content').html('').hide();
+                        availableApp();
+                    }
+                }
+            );
+        }
+    });
 });
