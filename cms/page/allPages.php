@@ -21,7 +21,7 @@ echo getTitle(getAppPageName(), getAppPageSlug()); ?>
                         <div class="tab" data-idcms="<?= $page->id ?>"
                              data-filter="<?= $page->type ?> <?= $page->filename ?> <?= $page->menuName ?> <?= $page->name ?> <?= $page->slug ?>">
                             <div class="tab-header">
-                                <h5><?= $page->menuName ?></h5>
+                                <h5><?= $page->name ?></h5>
                                 <small><?= $page->id ?></small>
                             </div>
                             <div class="tab-content">
