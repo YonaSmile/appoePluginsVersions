@@ -10,7 +10,12 @@ echo getTitle(getAppPageName(), getAppPageSlug()); ?>
     <div class="row">
         <div class="col-12 col-md-4 col-lg-3">
             <?php if ($allPages): ?>
-                <input type="search" class="form-control" id="tab-search" placeholder="Rechercher...">
+                <div class="input-group mb-1" id="tab-search">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text"><i class="fas fa-search"></i></div>
+                    </div>
+                    <input type="search" class="form-control" id="tab-search-input" placeholder="Rechercher...">
+                </div>
                 <div id="tabs">
                     <?php foreach ($allPages as $page): ?>
                         <div class="tab" data-idcms="<?= $page->id ?>"
@@ -23,23 +28,19 @@ echo getTitle(getAppPageName(), getAppPageSlug()); ?>
                                 <div class="d-none d-lg-block p-lg-4">
                                     <h2><?= $page->name ?></h2>
                                 </div>
-                                <div class="d-flex flex-row justify-content-between p-2 p-lg-4">
-                                    <p><strong><?= trans('ID'); ?></strong><br><?= $page->id ?></p>
-                                    <p><strong><?= trans('Type'); ?></strong><br><?= $page->type ?></p>
+                                <div class="p-0 px-lg-4">
+                                    <p><strong><?= trans('ID'); ?></strong><?= $page->id ?></p>
+                                    <p><strong><?= trans('Type'); ?></strong><?= $page->type ?></p>
                                     <p>
-                                        <strong><?= trans('Modifié le'); ?></strong><br><?= displayTimeStamp($page->updated_at) ?>
+                                        <strong><?= trans('Modifié le'); ?></strong><?= displayTimeStamp($page->updated_at) ?>
                                     </p>
-                                    <p><strong><?= trans('Fichier'); ?></strong><br><?= $page->filename ?></p>
+                                    <p><strong><?= trans('Fichier'); ?></strong><?= $page->filename ?></p>
+                                    <p><strong><?= trans('Nom du menu'); ?></strong><?= $page->menuName ?></p>
+                                    <p><strong><?= trans('Nom de la page'); ?></strong><?= $page->name ?></p>
+                                    <p><strong><?= trans('Slug'); ?></strong><?= $page->slug ?></p>
+                                    <p><strong><?= trans('Description'); ?></strong><?= $page->description ?></p>
                                 </div>
-                                <div class="d-flex flex-row justify-content-between p-2 p-lg-4">
-                                    <p><strong><?= trans('Nom du menu'); ?></strong><br><?= $page->menuName ?></p>
-                                    <p><strong><?= trans('Nom de la page'); ?></strong><br><?= $page->name ?></p>
-                                    <p><strong><?= trans('Slug'); ?></strong><br><?= $page->slug ?></p>
-                                </div>
-                                <p class="p-2 p-lg-4"><strong><?= trans('Description'); ?></strong>
-                                    <br><?= $page->description ?>
-                                </p>
-                                <div class="d-flex flex-row justify-content-between btn-group">
+                                <div class="d-flex flex-row justify-content-between btn-group p-0 p-lg-4">
                                     <a href="<?= getPluginUrl('cms/page/pageContent/', $page->id) ?>" class="btn">
                                         <i class="far fa-eye colorPrimary"></i> <span> <?= trans('Consulter'); ?></span>
                                     </a>
