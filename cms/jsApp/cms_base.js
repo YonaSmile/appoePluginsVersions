@@ -1,6 +1,6 @@
 const WEB_CMS_URL = WEB_APP_URL + 'plugin/cms/';
 const WEB_CMS_PROCESS_URL = WEB_CMS_URL + 'process/';
-const idCms = $('table td[data-cms="id"]').text();
+const idCms = $('div#cmsPageId').attr('data-cms-id');
 const $headerLinks = $('#headerLinks');
 
 function updateCms($input, metaValue) {
@@ -217,6 +217,28 @@ jQuery(document).ready(function ($) {
         }
     });
 
+    $('#updatePageModal').on('show.bs.modal', function (event) {
+        let $btn = $(event.relatedTarget);
+        let idCms = $btn.attr('data-idcms');
+        let $content = $('div[data-idcms="' + idCms + '"]').first();
+
+        let type = $content.find('[data-page="type"]').text();
+        let filename = $content.find('[data-page="filename"]').text();
+        let menuName = $content.find('[data-page="menuName"]').text();
+        let name = $content.find('[data-page="name"]').text();
+        let slug = $content.find('[data-page="slug"]').text();
+        let description = $content.find('[data-page="description"]').text();
+
+        let $form = $('#updatePageModal').find('form');
+        $form.find('input[name="id"]').val(idCms);
+        $form.find('input[name="name"]').val(name);
+        $form.find('textarea[name="description"]').val(description);
+        $form.find('input[name="menuName"]').val(menuName);
+        $form.find('input[name="slug"]').val(slug);
+        $form.find('select[name="filename"]').val(filename);
+        $form.find('select[name="type"]').val(type);
+    });
+
     $(document.body).on('click', 'button.deleteCms', function () {
         let idCms = $(this).data('idcms');
         if (confirm('Vous allez archiver cette page')) {
@@ -228,8 +250,8 @@ jQuery(document).ready(function ($) {
                 },
                 function (data) {
                     if (data === true || data == 'true') {
-                        $('div.tab[data-idcms="' + idCms + '"]').slideUp().remove();
-                        $('div#tab-content').html('').hide();
+                        $('div.admin-tab[data-idcms="' + idCms + '"]').slideUp().remove();
+                        $('div#admin-tab-content').html('').hide();
                         availableApp();
                     }
                 }
