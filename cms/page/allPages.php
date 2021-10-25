@@ -46,16 +46,16 @@ echo getTitle(getAppPageName(), getAppPageSlug()); ?>
                                     </div>
                                 </div>
                                 <div class="p-0 px-lg-3 pb-lg-3" data-idcms="<?= $page->id ?>">
-                                    <p><strong><?= trans('ID'); ?></strong><?= $page->id ?></p>
-                                    <p><strong><?= trans('Type'); ?></strong><span data-page="type"><?= $page->type ?></span></p>
-                                    <p>
+                                    <p><i class="fas fa-fingerprint"></i><strong><?= trans('ID'); ?></strong><?= $page->id ?></p>
+                                    <p><i class="fas fa-search"></i><strong><?= trans('Type'); ?></strong><span data-page="type"><?= $page->type ?></span></p>
+                                    <p><i class="far fa-clock"></i>
                                         <strong><?= trans('Modifié le'); ?></strong><?= displayTimeStamp($page->updated_at) ?>
                                     </p>
-                                    <p><strong><?= trans('Fichier'); ?></strong><span data-page="filename"><?= $page->filename ?></span></p>
-                                    <p><strong><?= trans('Nom du menu'); ?></strong><span data-page="menuName"><?= $page->menuName ?></span></p>
-                                    <p><strong><?= trans('Nom de la page'); ?></strong><span data-page="name"><?= $page->name ?></span></p>
-                                    <p><strong><?= trans('Slug'); ?></strong><span data-page="slug"><?= $page->slug ?></span></p>
-                                    <p><strong><?= trans('Description'); ?></strong><span data-page="description"><?= $page->description ?></span></p>
+                                    <p><i class="far fa-file-code"></i><strong><?= trans('Fichier'); ?></strong><span data-page="filename"><?= $page->filename ?></span></p>
+                                    <p><i class="fas fa-bars"></i><strong><?= trans('Nom du menu'); ?></strong><span data-page="menuName"><?= $page->menuName ?></span></p>
+                                    <p><i class="far fa-file-alt"></i><strong><?= trans('Nom de la page'); ?></strong><span data-page="name"><?= $page->name ?></span></p>
+                                    <p><i class="fas fa-link"></i><strong><?= trans('Slug'); ?></strong><span data-page="slug"><?= $page->slug ?></span></p>
+                                    <p><i class="fas fa-quote-right"></i><strong><?= trans('Description'); ?></strong><span data-page="description"><?= $page->description ?></span></p>
                                 </div>
                             </div>
                         </div>
