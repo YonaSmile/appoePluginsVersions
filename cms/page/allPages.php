@@ -28,7 +28,7 @@ echo getTitle(getAppPageName(), getAppPageSlug()); ?>
                              data-filter="<?= $page->type ?> <?= $page->filename ?> <?= $page->menuName ?> <?= $page->name ?> <?= $page->slug ?>">
                             <div class="admin-tab-header">
                                 <h5><?= $page->name ?></h5>
-                                <small><?= $page->id ?></small>
+                                <small><?= $page->type ?></small>
                             </div>
                             <div class="admin-tab-content">
                                 <div class="d-flex align-items-center justify-content-center justify-content-lg-start p-3 text-center text-lg-left">
