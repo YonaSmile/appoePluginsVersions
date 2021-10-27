@@ -1,61 +1,80 @@
 <?php require('header.php');
 $allArticles = getRecentArticles(false, APP_LANG);
-echo getTitle(getAppPageName(), getAppPageSlug(), '', '<div class="position-absolute" style="top:0;right:0;">
-<button type="button" id="displayArticleAsGrid" class="btn btn-sm bgColorPrimary noHandle my-2" title="' . trans('Mode grille') . '"><i class="fas fa-th"></i></button>
-    <button type="button" id="displayArticleAsTable" class="btn btn-sm bgColorPrimary noHandle my-2" disabled="disabled" title="' . trans('Mode tableau') . '"><i class="fas fa-table"></i></button></div>'); ?>
+echo getTitle(getAppPageName(), getAppPageSlug()); ?>
     <div class="row">
-        <div class="col-12">
+        <div class="col-12 col-md-4 col-lg-3">
             <?php if ($allArticles): ?>
-                <div class="table-responsive" id="articlesTable">
-                    <table class="sortableTable table table-striped">
-                        <thead>
-                        <tr>
-                            <th><?= trans('Nom'); ?></th>
-                            <th><?= trans('Slug'); ?></th>
-                            <th><?= trans('Catégories'); ?></th>
-                            <th><?= trans('Crée le'); ?></th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <?php foreach ($allArticles as $article): ?>
-                            <tr data-idarticle="<?= $article->id ?>" data-description="<?= $article->description ?>"
-                                data-img="<?= getArtFeaturedImg($article, ['tempPos' => 1, 'thumbSize' => 370, 'onlyUrl' => true, 'webp' => true]); ?>">
-                                <td data-col="name"><?= $article->name ?></td>
-                                <td data-col="slug"><?= $article->slug ?></td>
-                                <td data-col="categories"><?= implode(', ', extractFromObjToSimpleArr(getCategoriesByArticle($article->id), 'name')); ?></td>
-                                <td data-col="date"><?= displayCompleteDate($article->created_at, false) ?></td>
-                                <td data-col="buttons">
-                                    <button type="button" class="btn btn-sm featuredArticle"
-                                            title="<?= $article->statut == 2 ? trans('Article standard') : trans('Article vedette'); ?>"
-                                            data-idarticle="<?= $article->id ?>"
-                                            data-title-standard="<?= trans('Article vedette'); ?>"
-                                            data-title-vedette="<?= trans('Article standard'); ?>"
-                                            data-confirm-standard="<?= trans('Cet article ne sera plus vedette'); ?>"
-                                            data-confirm-vedette="<?= trans('Vous allez mettre cet article en vedette'); ?>"
-                                            data-statutarticle="<?= $article->statut; ?>">
+                <div class="input-group mb-1" id="admin-tab-search">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text"><i class="fas fa-search"></i></div>
+                    </div>
+                    <input type="search" class="form-control" id="admin-tab-search-input" placeholder="Rechercher...">
+                </div>
+                <div id="admin-tabs">
+                    <?php foreach ($allArticles as $article):
+                        $categories = extractFromObjToSimpleArr(getCategoriesByArticle($article->id), 'name'); ?>
+                        <div class="admin-tab" data-idarticle="<?= $article->id ?>"
+                             data-filter="<?= implode(' ', $categories) ?> <?= $article->name ?> <?= $article->slug ?>">
+                            <div class="admin-tab-header">
+                                <h5><?= $article->name ?></h5>
+                                <small><?= $article->statut == 2 ? '<i class="fas fa-star"></i>' : ''; ?></small>
+                            </div>
+                            <div class="admin-tab-content">
+                                <div class="d-flex align-items-center justify-content-center justify-content-lg-start p-3 text-center text-lg-left">
+                                    <div class="d-none d-lg-block display-3 mr-3"><i class="fas fa-thumbtack"></i></div>
+                                    <div>
+                                        <h2><?= $article->name ?></h2>
+                                        <button type="button" class="btn btn-sm featuredArticle"
+                                                title="<?= $article->statut == 2 ? trans('Article standard') : trans('Article vedette'); ?>"
+                                                data-idarticle="<?= $article->id ?>"
+                                                data-title-standard="<?= trans('Designer l\'article comme vedette'); ?>"
+                                                data-title-vedette="<?= trans('Designer l\'article comme standard'); ?>"
+                                                data-confirm-standard="<?= trans('Cet article ne sera plus en vedette'); ?>"
+                                                data-confirm-vedette="<?= trans('Vous allez positionner cet article en vedette'); ?>"
+                                                data-statutarticle="<?= $article->statut; ?>">
                                             <span class="text-warning">
                                             <?= $article->statut == 2 ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>'; ?>
                                                 </span>
-                                    </button>
-                                    <a href="<?= getPluginUrl('itemGlue/page/articleContent/', $article->id) ?>"
-                                       class="btn btn-sm" title="<?= trans('Consulter'); ?>">
-                                        <span class="btnUpdate"><i class="fas fa-cog"></i></span>
-                                    </a>
-                                    <button type="button" class="btn btn-sm archiveArticle"
-                                            title="<?= trans('Archiver'); ?>"
-                                            data-confirm-msg="<?= trans('Vous allez archiver cet article'); ?>"
-                                            data-idarticle="<?= $article->id ?>">
-                                        <span class="btnArchive"><i class="fas fa-archive"></i></span>
-                                    </button>
-                            </tr>
-                        <?php endforeach; ?>
-                        </tbody>
-                    </table>
+                                        </button>
+                                        |
+                                        <a href="<?= getPluginUrl('itemGlue/page/articleContent/', $article->id) ?>"
+                                           class="btnLink"><?= trans('Consulter'); ?></a>
+                                        |
+                                        <button type="button" class="btnLink archiveArticle"
+                                                data-confirm-msg="<?= trans('Vous allez archiver cet article'); ?>"
+                                                data-idarticle="<?= $article->id ?>">
+                                            <?= trans('Archiver'); ?></button>
+                                    </div>
+                                </div>
+                                <div class="p-0 px-lg-3 pb-lg-3" data-idarticle="<?= $article->id ?>">
+                                    <?= getArtFeaturedImg($article, ['tempPos' => 1, 'thumbSize' => 450, 'webp' => true]); ?>
+                                    <p>
+                                        <i class="fas fa-fingerprint"></i><strong><?= trans('ID'); ?></strong><?= $article->id ?>
+                                    </p>
+                                    <p><i class="far fa-clock"></i>
+                                        <strong><?= trans('Crée le'); ?></strong><span data-page="date">
+                                            <?= displayCompleteDate($article->created_at, false) ?></span>
+                                    </p>
+                                    <p>
+                                        <i class="fas fa-project-diagram"></i><strong><?= trans('Catégories'); ?></strong><span
+                                                data-page="categories"><?= implode(', ', $categories); ?></span></p>
+                                    <p>
+                                        <i class="far fa-file-alt"></i><strong><?= trans('Nom de l\'article'); ?></strong><span
+                                                data-page="name"><?= $article->name ?></span></p>
+                                    <p><i class="fas fa-link"></i><strong><?= trans('Slug'); ?></strong><span
+                                                data-page="slug"><?= $article->slug ?></span></p>
+                                    <p>
+                                        <i class="fas fa-quote-right"></i><strong><?= trans('Description'); ?></strong><span
+                                                data-page="description"><?= $article->description ?></span></p>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
-            <?php else: ?>
-                <p><?= trans('Aucun article n\'a été enregistré'); ?></p>
             <?php endif; ?>
+        </div>
+        <div class="col-12 col-md-8 col-lg-9">
+            <div id="admin-tab-content"></div>
         </div>
     </div>
 <?php require('footer.php'); ?>

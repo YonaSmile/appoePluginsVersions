@@ -241,8 +241,8 @@ $(document).ready(function () {
                 },
                 function (data) {
                     if (data === true || data == 'true') {
-                        $('tr[data-idarticle="' + idArticle + '"]').slideUp();
-                        $('div.card[data-idarticle="' + idArticle + '"]').fadeOut();
+                        $('div.admin-tab[data-idarticle="' + idArticle + '"]').slideUp().remove();
+                        $('div#admin-tab-content').html('').hide();
                         availableApp();
                     }
                 }
@@ -292,70 +292,6 @@ $(document).ready(function () {
             );
         }
     });
-
-    let artcileGridPreference = window.localStorage.getItem('articleGridPreferences');
-    if (artcileGridPreference === 'grid') {
-        createArticleGridView();
-        showArticlesGrid();
-    }
-
-    $('#displayArticleAsGrid').on('click', function () {
-        createArticleGridView();
-        showArticlesGrid();
-    });
-
-    $('#displayArticleAsTable').on('click', function () {
-        showArticlesTable();
-    });
-
-    function showArticlesTable() {
-
-        $('#displayArticleAsTable').prop('disabled', true);
-        window.localStorage.setItem('articleGridPreferences' , 'table');
-
-        $('#articlesGridContainer').fadeOut('fast', function () {
-            if (!$('#articlesTable').is(":visible")) {
-                $('#articlesTable').fadeIn('fast');
-                $('#displayArticleAsGrid').prop('disabled', false);
-            }
-        });
-    }
-
-    function showArticlesGrid() {
-
-        $('#displayArticleAsGrid').prop('disabled', true);
-        window.localStorage.setItem('articleGridPreferences' , 'grid');
-        $('#articlesTable').fadeOut('fast', function () {
-            if (!$('#articlesGridContainer').is(":visible")) {
-                $('#articlesGridContainer').fadeIn('slow');
-                $('#displayArticleAsTable').prop('disabled', false);
-            }
-        });
-    }
-
-    function createArticleGridView() {
-
-        if (!$('#articlesGridContainer').length) {
-            $('<div id="articlesGridContainer" class="card-columns"></div>').hide().insertAfter('#articlesTable');
-
-            $('#articlesTable table tr:has(td)').each(function (index, tr) {
-                let $tr = $(tr);
-                let html = '<div class="card my-3" data-idarticle="' + $tr.data('idarticle') + '">';
-
-                html += '<img src="' + $tr.data('img') + '">';
-                html += '<div class="card-body">';
-                html += '<p class="card-title"><b>Titre</b><br>' + $tr.find('td[data-col="name"]').text() + '</p>';
-                html += '<p class="card-text"><b>Description</b><br>' + $tr.data('description') + '</p>';
-                html += '<p class="card-text"><b>Slug</b><br>' + $tr.find('td[data-col="slug"]').text() + '</p>';
-                html += '<p class="card-text"><b>Catégories</b><br>' + $tr.find('td[data-col="categories"]').text() + '</p>';
-                html += '<p class="card-text"><small class="text-muted">' + $tr.find('td[data-col="date"]').text() + '</small></p>';
-                html += '<p class="card-text d-flex justify-content-between btn-group">' + $tr.find('td[data-col="buttons"]').html() + '</p>';
-                html += '</div></div></div>';
-
-                $('#articlesGridContainer').append(html);
-            });
-        }
-    }
 
     /**
      * Articles archives
