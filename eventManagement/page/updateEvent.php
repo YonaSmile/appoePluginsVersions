@@ -9,7 +9,7 @@
             <div class="row">
                 <div class="col-12">
                     <a href="<?= getPluginUrl('eventManagement/page/event/', $Event->getId()) ?>"
-                       class="btn btn-info btn-sm float-right"
+                       class="btn btn-info btn-sm float-end"
                        title="<?= trans('Consulter'); ?>">
                         <span class="fa fa-eye"></span> <?= trans('Consulter l\'évènement'); ?>
                     </a>

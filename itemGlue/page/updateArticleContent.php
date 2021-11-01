@@ -44,9 +44,8 @@ if (!empty($_GET['id'])):
 
         echo getTitle($Article->getName(), getAppPageSlug());
         showPostResponse(); ?>
-        <select class="custom-select custom-select-sm otherArticlesSelect otherProjetSelect notPrint float-sm-right"
-                title="<?= trans('Parcourir les autres articles'); ?>...">
-            <option selected="selected" disabled><?= trans('Parcourir les autres articles'); ?>...</option>
+        <select class="form-select form-select-sm otherArticlesSelect otherProjetSelect notPrint float-sm-end">
+            <option selected="selected" disabled><?= trans('Choisir un autre article'); ?></option>
             <?php if ($allArticles):
                 foreach ($allArticles as $article):
                     if ($Article->getId() != $article->id): ?>
@@ -58,23 +57,23 @@ if (!empty($_GET['id'])):
         <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
                 <a class="nav-item nav-link sidebarLink colorPrimary <?= $activeTabContent === 'title' ? 'active' : ''; ?>"
-                   id="nav-allTitles-tab" data-toggle="tab"
+                   id="nav-allTitles-tab" data-bs-toggle="tab"
                    href="#nav-allTitles"
                    role="tab" aria-controls="nav-allTitles"
                    aria-selected="true"><?= trans('En têtes'); ?></a>
                 <a class="nav-item nav-link sidebarLink colorPrimary <?= $activeTabContent === 'content' ? 'active' : ''; ?>"
-                   id="nav-allLibraries-tab" data-toggle="tab"
+                   id="nav-allLibraries-tab" data-bs-toggle="tab"
                    href="#nav-allLibraries"
                    role="tab" aria-controls="nav-allLibraries"
                    aria-selected="false"><?= trans('Contenu'); ?></a>
                 <a class="nav-item nav-link sidebarLink colorPrimary <?= $activeTabContent === 'media' ? 'active' : ''; ?>"
-                   id="nav-newFiles-tab" data-toggle="tab" href="#nav-newFiles" role="tab"
+                   id="nav-newFiles-tab" data-bs-toggle="tab" href="#nav-newFiles" role="tab"
                    aria-controls="nav-newFiles" aria-selected="false"><?= trans('Médias'); ?></a>
                 <a class="nav-item nav-link sidebarLink colorPrimary"
-                   id="nav-extra-tab" data-toggle="tab" href="#nav-extra" role="tab"
+                   id="nav-extra-tab" data-bs-toggle="tab" href="#nav-extra" role="tab"
                    aria-controls="nav-extra" aria-selected="false"><?= trans('Détails'); ?></a>
                 <a class="nav-item nav-link sidebarLink colorPrimary <?= $activeTabContent === 'relation' ? 'active' : ''; ?>"
-                   id="nav-relation-tab" data-toggle="tab" href="#nav-relation" role="tab"
+                   id="nav-relation-tab" data-bs-toggle="tab" href="#nav-relation" role="tab"
                    aria-controls="nav-relation" aria-selected="false"><?= trans('Relation'); ?></a>
             </div>
         </nav>
@@ -139,16 +138,16 @@ if (!empty($_GET['id'])):
                                         id="clearArticleCache"><i class="fas fa-eraser"></i> Vider le cache
                                 </button>
                                 <?php if (pluginExist('twitter')): ?>
-                                    <button type="button" class="btn btn-primary btn-sm notPrint float-right ml-1"
+                                    <button type="button" class="btn btn-primary btn-sm notPrint float-end ms-1"
                                             id="articleTwitterShareButton"
-                                            data-toggle="modal" data-target="#modalTwitterManager"
+                                            data-bs-toggle="modal" data-bs-target="#modalTwitterManager"
                                             data-share-link="<?= $Article->getSlug(); ?>">
                                         <i class="fab fa-twitter"></i>
                                     </button>
                                 <?php endif;
                                 if (pluginExist('facebook')): ?>
                                     <button type="button"
-                                            class="btn btn-primary btn-sm notPrint float-right ml-1 shareOnFb"
+                                            class="btn btn-primary btn-sm notPrint float-end ms-1 shareOnFb"
                                             data-fb-post-link="<?= articleUrl($Article->getSlug()); ?>">
                                         <i class="fab fa-facebook-f"></i>
                                     </button>
@@ -163,8 +162,7 @@ if (!empty($_GET['id'])):
                                 <?= getTokenField(); ?>
                                 <input type="hidden" name="articleId" value="<?= $Article->getId(); ?>">
                                 <div class="col-12">
-                                    <?= \App\Form::textarea('articleContent', 'articleContent', htmlSpeCharDecode($Article->getContent()), 5, true, '', 'appoeditor', 'Contenu de l\'article'); ?>
-
+                                    <textarea name="articleContent" id="articleContent" class="appoeditor" required><?= htmlSpeCharDecode($Article->getContent()); ?></textarea>
                                 </div>
                                 <div class="col-12">
                                     <?= \App\Form::target('SAVEARTICLECONTENT'); ?>
@@ -182,12 +180,12 @@ if (!empty($_GET['id'])):
                         <?= getTokenField(); ?>
                         <input type="hidden" name="articleId" value="<?= $Article->getId(); ?>">
                         <div class="col-12 col-lg-6 my-2">
-                            <?= \App\Form::file('Importer depuis votre appareil', 'inputFile[]', false, 'multiple', '', 'Choisissez...', false); ?>
+                            <?= \App\Form::file('Importer depuis votre appareil', 'inputFile[]', false, 'multiple'); ?>
                         </div>
                         <div class="col-12 col-lg-6 my-2">
                                 <textarea name="textareaSelectedFile" id="textareaSelectedFile"
                                           class="d-none"></textarea>
-                            <?= \App\Form::text('Choisissez dans la bibliothèque', 'inputSelectFiles', 'text', '0 fichiers', false, 300, 'readonly data-toggle="modal" data-target="#allMediasModal"'); ?>
+                            <?= \App\Form::text('Choisissez dans la bibliothèque', 'inputSelectFiles', 'text', '0 fichiers', false, 300, 'readonly data-bs-toggle="modal" data-bs-target="#allMediasModal"'); ?>
                         </div>
                         <div class="col-12">
                             <?= \App\Form::target('ADDIMAGESTOARTICLE'); ?>
@@ -250,13 +248,13 @@ if (!empty($_GET['id'])):
                                         <?= \App\Form::text('Titre', 'metaKey', 'text', '', true, 150); ?>
                                     </div>
                                     <div class="col-12 my-2">
-                                        <?= \App\Form::textarea('Contenu', 'metaValue', '', 5, true, '', 'appoeditor'); ?>
+                                        <textarea name="metaValue" id="metaValue" class="appoeditor" required></textarea>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-12 col-lg-3 my-2">
                                         <button type="reset" name="reset" id="resetmeta"
-                                                class="btn btn-outline-danger btn-block btn-lg">
+                                                class="btn btn-outline-danger w-100">
                                             <?= trans('Annuler'); ?>
                                         </button>
                                     </div>
@@ -293,15 +291,13 @@ if (!empty($_GET['id'])):
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="allMediasModalLabel"><?= trans('Tous les médias'); ?></h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body" id="allMediaModalContainer"></div>
                     <div class="modal-footer">
-                        <button type="button" id="closeAllMediaModalBtn" class="btn btn-secondary" data-dismiss="modal">
+                        <button type="button" id="closeAllMediaModalBtn" class="btn btn-secondary" data-bs-dismiss="modal">
                             <?= trans('Fermer et annuler la sélection'); ?></button>
-                        <button type="button" id="saveMediaModalBtn" class="btn btn-info" data-dismiss="modal">
+                        <button type="button" id="saveMediaModalBtn" class="btn btn-info" data-bs-dismiss="modal">
                             0 <?= trans('médias'); ?></button>
                     </div>
                 </div>

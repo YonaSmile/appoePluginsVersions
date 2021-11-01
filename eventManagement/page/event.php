@@ -18,11 +18,11 @@
                        class="btn btn-warning btn-sm">
                         <span class="fa fa-cog"></span> <?= trans('Modifier l\'évènement'); ?>
                     </a>
-                    <button id="newDateEventBtn" class="btn btn-info btn-sm" data-toggle="modal"
-                            data-target="#modalNewEventDate">
+                    <button id="newDateEventBtn" class="btn btn-info btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#modalNewEventDate">
                         <span class="fa fa-plus"></span> <?= trans('Nouvelle date'); ?>
                     </button>
-                    <select class="custom-select otherEventsSelect otherProjetSelect notPrint float-right"
+                    <select class="custom-select otherEventsSelect otherProjetSelect notPrint float-end"
                             title="<?= trans('Parcourir les évènements'); ?>...">
                         <option selected="selected" disabled><?= trans('Parcourir les évènements'); ?>...</option>
                         <?php foreach ($AllGeneralesEvents as $eventSelect): ?>
@@ -101,7 +101,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary"
-                                data-dismiss="modal"><?= trans('Fermer'); ?></button>
+                                data-bs-dismiss="modal"><?= trans('Fermer'); ?></button>
                         <button type="button" id="submitFormAddNewDateEvent"
                                 class="btn btn-primary"><?= trans('Ajouter'); ?></button>
                     </div>

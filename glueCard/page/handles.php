@@ -14,25 +14,25 @@ $idHandle = !empty($_GET['idHandle']) ? $_GET['idHandle'] : 0;
                 <div class="card-header <?= $handle->status > 0 ? 'bgColorPrimary' : 'bg-secondary'; ?>"
                      id="heading<?= slugify($handle->name); ?>">
                     <h2 class="mb-0 position-relative">
-                        <button class="btn btn-link handleBtn btn-block text-left" type="button"
-                                data-toggle="collapse" data-handle-id="<?= $handle->id; ?>"
+                        <button class="btn btn-link handleBtn w-100 text-start" type="button"
+                                data-bs-toggle="collapse" data-handle-id="<?= $handle->id; ?>"
                             <?php if ($handle->status > 0): ?>
                                 aria-controls="collapse<?= slugify($handle->name); ?>"
-                                data-target="#collapse<?= slugify($handle->name); ?>"
+                                data-bs-target="#collapse<?= slugify($handle->name); ?>"
                             <?php endif; ?>
                                 aria-expanded="<?= $idHandle == 0 ? ($idHandle == $c ? 'true' : 'false') : ($idHandle == $handle->id ? 'true' : 'false'); ?>">
                             <input name="handleNameInput" readonly type="text" value="<?= $handle->name; ?>">
                             <?php if ($handle->status > 0): ?>
-                                <span class="btn btn-sm float-right archiveHandle" title="Archiver la catégorie">
+                                <span class="btn btn-sm float-end archiveHandle" title="Archiver la catégorie">
                                 <i class="fas fa-archive"></i></span>
-                                <span class="btn btn-sm float-right updateHandle" title="Modifier la catégorie">
+                                <span class="btn btn-sm float-end updateHandle" title="Modifier la catégorie">
                                 <i class="fas fa-pencil-alt"></i></span>
                             <?php else:
                                 if (isTechnicien(getUserRoleId())): ?>
-                                    <span class="btn btn-sm float-right deleteHandle" title="Supprimer la catégorie">
+                                    <span class="btn btn-sm float-end deleteHandle" title="Supprimer la catégorie">
                                 <i class="fas fa-times"></i></span>
                                 <?php endif; ?>
-                                <span class="btn btn-sm float-right unpackHandle" title="désarchiver la catégorie">
+                                <span class="btn btn-sm float-end unpackHandle" title="désarchiver la catégorie">
                                 <i class="fas fa-check"></i></span>
                             <?php endif; ?>
                         </button>
@@ -41,7 +41,7 @@ $idHandle = !empty($_GET['idHandle']) ? $_GET['idHandle'] : 0;
                         <?php endif; ?>
                     </h2>
                 </div>
-                <div id="collapse<?= slugify($handle->name); ?>" data-parent="#handlesCollapses"
+                <div id="collapse<?= slugify($handle->name); ?>" data-bs-parent="#handlesCollapses"
                      aria-labelledby="heading<?= slugify($handle->name); ?>" data-handle-id="<?= $handle->id; ?>"
                      class="collapse <?= $idHandle == 0 ? ($idHandle == $c ? 'show' : '') : ($idHandle == $handle->id ? 'show' : ''); ?>">
                     <div class="card-body">

@@ -5,9 +5,7 @@ echo getTitle(getAppPageName(), getAppPageSlug()); ?>
         <div class="col-12 col-md-4 col-lg-3">
             <?php if ($allArticles): ?>
                 <div class="input-group mb-1" id="admin-tab-search">
-                    <div class="input-group-prepend">
-                        <div class="input-group-text"><i class="fas fa-search"></i></div>
-                    </div>
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
                     <input type="search" class="form-control" id="admin-tab-search-input" placeholder="Rechercher...">
                 </div>
                 <div id="admin-tabs">
@@ -20,8 +18,8 @@ echo getTitle(getAppPageName(), getAppPageSlug()); ?>
                                 <small><?= $article->statut == 2 ? '<i class="fas fa-star"></i>' : ''; ?></small>
                             </div>
                             <div class="admin-tab-content">
-                                <div class="d-flex align-items-center justify-content-center justify-content-lg-start p-3 text-center text-lg-left">
-                                    <div class="d-none d-lg-block display-3 mr-3"><i class="fas fa-thumbtack"></i></div>
+                                <div class="d-flex align-items-center justify-content-center justify-content-lg-start p-3 text-center text-lg-start">
+                                    <div class="d-none d-lg-block display-3 me-3"><i class="fas fa-thumbtack"></i></div>
                                     <div>
                                         <h2><?= $article->name ?></h2>
                                         <button type="button" class="btn btn-sm featuredArticle"
@@ -74,7 +72,7 @@ echo getTitle(getAppPageName(), getAppPageSlug()); ?>
             <?php endif; ?>
         </div>
         <div class="col-12 col-md-8 col-lg-9">
-            <div id="admin-tab-content"></div>
+            <div id="admin-tab-content" class="position-relative"></div>
         </div>
     </div>
 <?php require('footer.php'); ?>

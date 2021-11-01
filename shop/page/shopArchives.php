@@ -16,7 +16,7 @@ echo getTitle(getAppPageName(), getAppPageSlug()); ?>
                 <nav>
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
                         <?php if ($allProduct): ?>
-                            <a class="nav-item nav-link active" id="nav-Produits-tab" data-toggle="tab"
+                            <a class="nav-item nav-link active" id="nav-Produits-tab" data-bs-toggle="tab"
                                href="#nav-Produits"
                                role="tab" aria-controls="nav-Produits"
                                aria-selected="true">
@@ -25,7 +25,7 @@ echo getTitle(getAppPageName(), getAppPageSlug()); ?>
 
                         <?php endif;
                         if ($allCommandes): ?>
-                            <a class="nav-item nav-link" id="nav-Commandes-tab" data-toggle="tab"
+                            <a class="nav-item nav-link" id="nav-Commandes-tab" data-bs-toggle="tab"
                                href="#nav-Commandes"
                                role="tab" aria-controls="nav-Commandes"
                                aria-selected="true"><?= trans('Commandes'); ?></a>

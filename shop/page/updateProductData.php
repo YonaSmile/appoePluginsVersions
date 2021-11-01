@@ -27,12 +27,12 @@ if (!empty($_GET['id'])):
         <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
                 <a class="nav-item nav-link <?= !$mediaTabactive ? 'active' : ''; ?>"
-                   id="nav-allLibraries-tab" data-toggle="tab"
+                   id="nav-allLibraries-tab" data-bs-toggle="tab"
                    href="#nav-allLibraries"
                    role="tab" aria-controls="nav-allLibraries"
                    aria-selected="true"><?= trans('Contenu de l\'article'); ?></a>
                 <a class="nav-item nav-link <?= $mediaTabactive ? 'active' : ''; ?>"
-                   id="nav-newFiles-tab" data-toggle="tab" href="#nav-newFiles" role="tab"
+                   id="nav-newFiles-tab" data-bs-toggle="tab" href="#nav-newFiles" role="tab"
                    aria-controls="nav-newFiles" aria-selected="false"><?= trans('Les médias'); ?></a>
             </div>
         </nav>
@@ -50,11 +50,11 @@ if (!empty($_GET['id'])):
                                     <span class="fas fa-cog"></span> <?= trans('Modifier le produit'); ?>
                                 </a>
                             <?php endif; ?>
-                            <button type="button" data-toggle="modal" data-target="#modalInfoMetaProduct"
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#modalInfoMetaProduct"
                                     class="btn btn-info btn-sm">
                                 <?= trans('Détails du produit'); ?>
                             </button>
-                            <select class="custom-select otherProductsSelect otherProjetSelect notPrint float-right"
+                            <select class="custom-select otherProductsSelect otherProjetSelect notPrint float-end"
                                     title="<?= trans('Parcourir les produits'); ?>...">
                                 <option selected="selected" disabled><?= trans('Parcourir les produits'); ?>...
                                 </option>
@@ -99,12 +99,12 @@ if (!empty($_GET['id'])):
                         <?= getTokenField(); ?>
                         <input type="hidden" name="productId" value="<?= $Product->getId(); ?>">
                         <div class="col-12 col-lg-6 my-2">
-                            <?= \App\Form::file('Importer des médias', 'inputFile[]', false, 'multiple', '', 'Choisissez...', false); ?>
+                            <?= \App\Form::file('Importer des médias', 'inputFile[]', false, 'multiple', ''); ?>
                         </div>
                         <div class="col-12 col-lg-6 my-2">
                                 <textarea name="textareaSelectedFile" id="textareaSelectedFile"
                                           class="d-none"></textarea>
-                            <?= \App\Form::text('Choisissez des médias', 'inputSelectFiles', 'text', '0 fichiers', false, 300, 'readonly data-toggle="modal" data-target="#allMediasModal"'); ?>
+                            <?= \App\Form::text('Choisissez des médias', 'inputSelectFiles', 'text', '0 fichiers', false, 300, 'readonly data-bs-toggle="modal" data-bs-target="#allMediasModal"'); ?>
                         </div>
                         <div class="col-12">
                             <?= \App\Form::target('ADDIMAGESTOPRODUCT'); ?>
@@ -170,15 +170,13 @@ if (!empty($_GET['id'])):
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="allMediasModalLabel"><?= trans('Tous les médias'); ?></h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body" id="allMediaModalContainer"></div>
                     <div class="modal-footer">
-                        <button type="button" id="closeAllMediaModalBtn" class="btn btn-secondary" data-dismiss="modal">
+                        <button type="button" id="closeAllMediaModalBtn" class="btn btn-secondary" data-bs-dismiss="modal">
                             <?= trans('Fermer et annuler la sélection'); ?></button>
-                        <button type="button" id="saveMediaModalBtn" class="btn btn-info" data-dismiss="modal">
+                        <button type="button" id="saveMediaModalBtn" class="btn btn-info" data-bs-dismiss="modal">
                             0 <?= trans('médias'); ?></button>
                     </div>
                 </div>
@@ -190,9 +188,7 @@ if (!empty($_GET['id'])):
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="modalTitle"><?= trans('Détails du produit'); ?></h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body" id="modalBody">
                         <div class="row">
@@ -248,7 +244,7 @@ if (!empty($_GET['id'])):
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
                     </div>
                 </div>
             </div>
@@ -264,7 +260,7 @@ if (!empty($_GET['id'])):
 
                 $('input[name="categories[]"]').each(function () {
                     if ($(this).next('label').text().charAt(0) !== '-') {
-                        $(this).parent('.checkCategories').wrap('<div class="mr-5 my-4 pb-2 border-bottom">');
+                        $(this).parent('.checkCategories').wrap('<div class="me-5 my-4 pb-2 border-bottom">');
                     } else {
                         $(this).parent('.checkCategories').prev('div').append($(this).parent('.checkCategories'));
                     }

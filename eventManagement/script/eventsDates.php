@@ -27,7 +27,7 @@ if (checkAjaxRequest() && !empty($_REQUEST['id'])): ?>
                         <?php $Date = new DateTime($eventDate->dateDebut); ?>
                         <?php if ($Date->format('Y-m-d') == $event): ?>
                             <li>
-                        <span class="deleteDateEvent float-right" title="<?= trans('Supprimer'); ?>"
+                        <span class="deleteDateEvent float-end" title="<?= trans('Supprimer'); ?>"
                               data-iddateevent="<?= $eventDate->id ?>">
                               <i class="fas fa-times"></i>
                             </span>

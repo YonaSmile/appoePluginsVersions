@@ -4,7 +4,7 @@ echo getTitle(getAppPageName(), getAppPageSlug()); ?>
     <div class="row">
         <div class="col-12 mb-2"><h5 class="agendaTitle">Mes agendas</h5>
             <button class="btn btn-sm mx-3 btn-outline-info"
-                    data-toggle="modal" data-target="#addAgendaModal"><i class="fas fa-plus"></i></button>
+                    data-bs-toggle="modal" data-bs-target="#addAgendaModal"><i class="fas fa-plus"></i></button>
         </div>
         <div class="col-12" id="agendas"></div>
     </div>
@@ -14,9 +14,7 @@ echo getTitle(getAppPageName(), getAppPageSlug()); ?>
             <div class="modal-content rounded-0">
                 <div class="modal-header py-0 border-0">
                     <h5 class="modal-title agendaTitle" id="addAgendaTitle">Ajouter un agenda</h5>
-                    <button type="button" class="close m-0" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="addAgendaForm">

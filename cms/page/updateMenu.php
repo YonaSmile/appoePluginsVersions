@@ -27,8 +27,8 @@ showPostResponse(); ?>
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
-                <button id="addMenuPage" type="button" class="btn btn-primary mb-4" data-toggle="modal"
-                        data-target="#modalAddMenuPage">
+                <button id="addMenuPage" type="button" class="btn btn-primary mb-4" data-bs-toggle="modal"
+                        data-bs-target="#modalAddMenuPage">
                     <?= trans('Nouvelle page au menu'); ?>
                 </button>
             </div>
@@ -55,14 +55,16 @@ showPostResponse(); ?>
                                                    data-column="name" value="<?= $menu->name; ?>"
                                                 <?= is_numeric($menu->idCms) ? ' readonly ' : ''; ?>>
                                             <small class="inputInfo"></small>
-                                            <?php if (empty($MENUS[$key][$menu->id])): ?>
-                                                <button type="button" class="close deleteMenu">
-                                                    <span class="fas fa-times"></span>
+                                            <div style="position: absolute;top: 0;right: 0;">
+                                                <?php if (empty($MENUS[$key][$menu->id])): ?>
+                                                    <button type="button" class="btn deleteMenu">
+                                                        <span class="fas fa-times"></span>
+                                                    </button>
+                                                <?php endif; ?>
+                                                <button type="button" class="btn updateIdCmsMenuBtn">
+                                                    <span class="fas fa-link"></span>
                                                 </button>
-                                            <?php endif; ?>
-                                            <button type="button" class="close updateIdCmsMenuBtn mr-3">
-                                                <span class="fas fa-link"></span>
-                                            </button>
+                                            </div>
                                             <input type="text"
                                                    data-menuid="<?= $menu->id; ?>"
                                                    class="updateMenuData updateIdCmsMenu idCmsMenuInput"
@@ -71,7 +73,7 @@ showPostResponse(); ?>
                                         </div>
                                         <?php if (!empty($MENUS[$key][$menu->id])):
                                             foreach ($MENUS[$key][$menu->id] as $subMenu): ?>
-                                                <div class="px-3 py-0 m-0 ml-4 mt-1 jumbotron fileContent"
+                                                <div class="px-3 py-0 m-0 ms-4 mt-1 jumbotron fileContent"
                                                      data-menuid="<?= $subMenu->id; ?>">
                                                     <input type="tel" class="updateMenuData positionMenuSpan"
                                                            data-menuid="<?= $subMenu->id; ?>" data-column="position"
@@ -81,14 +83,16 @@ showPostResponse(); ?>
                                                            value="<?= $subMenu->name; ?>"
                                                         <?= is_numeric($subMenu->idCms) ? ' readonly ' : ''; ?>>
                                                     <small class="inputInfo"></small>
-                                                    <?php if (empty($MENUS[$key][$subMenu->id])): ?>
-                                                        <button type="button" class="close deleteMenu">
-                                                            <span class="fas fa-times"></span>
+                                                    <div style="position: absolute;top: 0;right: 0;">
+                                                        <?php if (empty($MENUS[$key][$subMenu->id])): ?>
+                                                            <button type="button" class="btn deleteMenu">
+                                                                <span class="fas fa-times"></span>
+                                                            </button>
+                                                        <?php endif; ?>
+                                                        <button type="button" class="btn updateIdCmsMenuBtn">
+                                                            <span class="fas fa-link"></span>
                                                         </button>
-                                                    <?php endif; ?>
-                                                    <button type="button" class="close updateIdCmsMenuBtn mr-3">
-                                                        <span class="fas fa-link"></span>
-                                                    </button>
+                                                    </div>
                                                     <input type="text"
                                                            data-menuid="<?= $subMenu->id; ?>"
                                                            class="updateMenuData updateIdCmsMenu idCmsMenuInput"
@@ -97,7 +101,7 @@ showPostResponse(); ?>
                                                 </div>
                                                 <?php if (!empty($MENUS[$key][$subMenu->id])):
                                                     foreach ($MENUS[$key][$subMenu->id] as $subSubMenu): ?>
-                                                        <div class="px-3 py-0 m-0 ml-5 mt-1 jumbotron fileContent"
+                                                        <div class="px-3 py-0 m-0 ms-5 mt-1 jumbotron fileContent"
                                                              data-menuid="<?= $subSubMenu->id; ?>">
                                                             <input type="tel" class="updateMenuData positionMenuSpan"
                                                                    data-menuid="<?= $subSubMenu->id; ?>"
@@ -108,14 +112,17 @@ showPostResponse(); ?>
                                                                    value="<?= $subSubMenu->name; ?>"
                                                                 <?= is_numeric($subSubMenu->idCms) ? ' readonly ' : ''; ?>>
                                                             <small class="inputInfo"></small>
-                                                            <?php if (empty($MENUS[$key][$subSubMenu->id])): ?>
-                                                                <button type="button" class="close deleteMenu">
-                                                                    <span class="fas fa-times"></span>
+                                                            <div style="position: absolute;top: 0;right: 0;">
+                                                                <?php if (empty($MENUS[$key][$subSubMenu->id])): ?>
+                                                                    <button type="button" class="deleteMenu">
+                                                                        <span class="fas fa-times"></span>
+                                                                    </button>
+                                                                <?php endif; ?>
+                                                                <button type="button"
+                                                                        class="btn updateIdCmsMenuBtn">
+                                                                    <span class="fas fa-link"></span>
                                                                 </button>
-                                                            <?php endif; ?>
-                                                            <button type="button" class="close updateIdCmsMenuBtn mr-3">
-                                                                <span class="fas fa-link"></span>
-                                                            </button>
+                                                            </div>
                                                             <input type="text"
                                                                    data-menuid="<?= $subSubMenu->id; ?>"
                                                                    class="updateMenuData updateIdCmsMenu idCmsMenuInput"
@@ -181,7 +188,7 @@ showPostResponse(); ?>
                         <button type="submit" name="ADDMENUPAGESUBMIT"
                                 class="btn btn-primary"><?= trans('Enregistrer'); ?></button>
                         <button type="button" class="btn btn-secondary"
-                                data-dismiss="modal"><?= trans('Fermer'); ?></button>
+                                data-bs-dismiss="modal"><?= trans('Fermer'); ?></button>
                     </div>
                 </form>
             </div>
@@ -251,7 +258,7 @@ showPostResponse(); ?>
             $('.updateIdCmsMenuBtn').on('click', function (event) {
                 event.preventDefault();
 
-                var inputIdCms = $(this).next('input.updateIdCmsMenu');
+                var inputIdCms = $(this).parent().next('input.updateIdCmsMenu');
                 if (inputIdCms.css('display') == 'none') {
                     inputIdCms.fadeIn();
                 } else {
@@ -261,7 +268,7 @@ showPostResponse(); ?>
             });
 
             $('.deleteMenu').on('click', function () {
-                var div = $(this).parent('div');
+                var div = $(this).parent('div').parent('div');
                 var menuId = div.data('menuid');
                 if (confirm('<?= trans('Vous allez supprimer ce menu'); ?>')) {
                     $.post(

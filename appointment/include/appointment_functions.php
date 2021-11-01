@@ -42,8 +42,9 @@ function urlAppointment()
 {
 
     if ($filename = getOption('APPOINTMENT', 'agendaFilename')) {
-        $Cms = getPageByFilename($filename);
-        return WEB_DIR_URL . $Cms->getSlug() . DIRECTORY_SEPARATOR;
+        if($Cms = getPageByFilename($filename)) {
+            return WEB_DIR_URL . $Cms->getSlug() . DIRECTORY_SEPARATOR;
+        }
     }
     return null;
 }
@@ -63,7 +64,7 @@ function appointment_dashboard()
                 <div class="card border-0 w-100">
                     <div class="card-header bg-white pb-0 border-0 boardBlock1Title">
                         <h5 class="m-0 pl-4 colorPrimary"><?= trans('Rendez-vous aujourd\'hui'); ?>
-                            <a href="<?= APPOINTMENT_URL; ?>page/agendas/" class="btn btn-sm colorPrimary float-right">
+                            <a href="<?= APPOINTMENT_URL; ?>page/agendas/" class="btn btn-sm colorPrimary float-end">
                                 <i class="far fa-calendar-alt"></i></a></h5>
                         <hr class="mx-4">
                     </div>
@@ -91,7 +92,7 @@ function appointment_dashboard()
                                 </div>
                             <?php endif;
                         endforeach;
-                        if($todayRdvCount === 0): ?>
+                        if ($todayRdvCount === 0): ?>
                             <p><?= trans('Pas de rendez-vous'); ?></p>
                         <?php endif; ?>
                     </div>
@@ -132,7 +133,7 @@ function appointment_dashboard()
                                 </div>
                             <?php endif;
                         endforeach;
-                        if($monthRdvCount === 0): ?>
+                        if ($monthRdvCount === 0): ?>
                             <p><?= trans('Pas de rendez-vous'); ?></p>
                         <?php endif; ?>
                     </div>
@@ -152,7 +153,7 @@ function appointment_agenda_admin_getAll()
         <div class="py-3 d-flex align-items-center">
             <div><strong>#</strong></div>
             <div class="px-3" style="width: 200px;">Nom</div>
-            <div class="ml-auto px-2">Statut</div>
+            <div class="ms-auto px-2">Statut</div>
             <div class="px-2">Options</div>
         </div>
         <?php foreach ($agendas as $agenda): ?>
@@ -160,8 +161,8 @@ function appointment_agenda_admin_getAll()
             <div><strong><?= $agenda->id; ?></strong></div>
             <div class="nameInputContainer"><?= Form::input('agendaName-' . $agenda->id,
                     ['val' => $agenda->name, 'class' => 'font-weight-normal']); ?></div>
-            <div class="ml-auto" title="Activer/Désactiver"><?= Form::switch('agendaStatus-' . $agenda->id,
-                    ['val' => $agenda->status ? 'true' : '', 'parentClass' => 'd-inline ml-3']); ?></div>
+            <div class="ms-auto px-2" title="Activer/Désactiver"><?= Form::switch('agendaStatus-' . $agenda->id,
+                    ['val' => $agenda->status ? 'true' : '']); ?></div>
             <div><a href="<?= WEB_PLUGIN_URL . 'appointment/page/agendaManager/' . $agenda->id . '/'; ?>"
                     class="btn btn-sm text-secondary" title="Configurer l'agenda"><i class="fas fa-cog"></i></a></div>
             <button type="button" class="btn btn-sm text-dark deleteAgenda" title="Supprimer l'agenda">
@@ -225,8 +226,8 @@ function appointment_informations_admin_getAll($idAgenda)
         $postions = array_combine(range(1, 20), range(1, 20));
 
         $html .= '<h5 class="agendaTitle">Informations complémentaires</h5>
-        <button class="btn btn-sm btn-outline-info float-right" style="padding-bottom: 5px;margin: 14px 0;"
-         data-toggle="modal" data-target="#addInfoModal" title="Ajouter une information complémentaire">
+        <button class="btn btn-sm btn-outline-info float-end" style="padding-bottom: 5px;margin: 14px 0;"
+         data-bs-toggle="modal" data-bs-target="#addInfoModal" title="Ajouter une information complémentaire">
          <i class="fas fa-plus"></i></button>';
 
         $AgendaMeta = new AgendaMeta();
@@ -252,13 +253,11 @@ function appointment_informations_admin_getAll($idAgenda)
                         <div class="modal-header py-0 border-0">
                             <h5 class="modal-title agendaTitle" id="addInfoTitle">Ajouter une information
                                 complémentaire</h5>
-                            <button type="button" class="close m-0" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <form id="addInfoForm" data-id-agenda="<?= $idAgenda; ?>">
-                                <div class="form-row">
+                                <div class="row">
                                     <div class="col-12 col-lg-7 my-2"><?= Form::input('metaKey', ['title' => 'Intitulé']); ?></div>
                                     <div class="col-12 col-lg-5 my-2"><?= Form::select('Position', 'position', $postions); ?></div>
                                     <div class="col-12 col-lg-12 my-2"><?= Form::input('metaVal', ['title' => 'Contenu']); ?></div>
@@ -288,13 +287,14 @@ function appointment_availabilities_admin_getAll($idAgenda)
     if ($Agenda->show()):
 
         $week = appointment_getWeekDays();
-        $html .= '<h5 class="agendaTitle">Disponibilités</h5> <button class="btn btn-sm float-right btn-outline-info" title="Ajouter une disponibilité à l\'agenda"
-                    data-toggle="modal" data-target="#addAvailabilityModal" style="padding-bottom: 5px;margin: 14px 0;"><i class="fas fa-plus"></i></button>
+        $html .= '<h5 class="agendaTitle">Disponibilités</h5> <button class="btn btn-sm float-end btn-outline-info" title="Ajouter une disponibilité à l\'agenda"
+                    data-bs-toggle="modal" data-bs-target="#addAvailabilityModal" style="padding-bottom: 5px;margin: 14px 0;"><i class="fas fa-plus"></i></button>
                     <p class="text-muted mb-4">Gérer ses disponibilités en renseignant les jours et les horaires de prise de rendez-vous disponible.</p>';
 
         $holidayWork = getOption('APPOINTMENT', 'holidayWorking-' . $Agenda->getId());
-        $html .= '<div class="row my-3"><div class="col-12 mb-2">Agenda disponible les jours fériés' . Form::switch('holidayWorking',
-                ['val' => ($holidayWork == 'yes' ? 'true' : ''), 'parentClass' => 'd-inline ml-3', 'attr' => 'data-id-agenda="' . $Agenda->getId() . '"']) . '</div></div>';
+        $html .= '<div class="row my-3"><div class="col-12 mb-2">' . Form::switch('holidayWorking',
+                ['val' => ($holidayWork == 'yes' ? 'true' : ''), 'attr' => 'data-id-agenda="' . $Agenda->getId() . '"',
+                    'description' => 'Agenda disponible les jours fériés']) . '</div></div>';
 
         $Availability = new App\Plugin\Appointment\Availabilities();
         $Availability->setIdAgenda($Agenda->getId());
@@ -325,13 +325,11 @@ function appointment_availabilities_admin_getAll($idAgenda)
                         <div class="modal-header py-0 border-0">
                             <h5 class="modal-title agendaTitle" id="addAvailabilityTitle">Ajouter une disponibilité à
                                 l'agenda</h5>
-                            <button type="button" class="close m-0" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <form id="addAvailability" data-id-agenda="<?= $idAgenda; ?>">
-                                <div class="form-row">
+                                <div class="row">
                                     <div class="col-12 mb-3"><?= Form::select('Jour', 'day', $week, 'no', true); ?></div>
                                     <div class="col-12 col-md-6 mb-3"><?= Form::selectTimeSlot('start', ['title' => 'Heure début', 'required' => true, 'stepMin' => 5, 'startMin' => 0, 'endMin' => 1440]); ?></div>
                                     <div class="col-12 col-md-6 mb-3"><?= Form::selectTimeSlot('end', ['title' => 'Heure fin', 'required' => true, 'stepMin' => 5, 'startMin' => 0, 'endMin' => 1440]); ?></div>
@@ -360,8 +358,8 @@ function appointment_typeRdv_admin_getAll($idAgenda)
     $Agenda->setId($idAgenda);
     if ($Agenda->show()):
 
-        $html .= '<h5 class="agendaTitle">Type de rendez-vous</h5> <button class="btn btn-sm float-right btn-outline-info" 
-        style="padding-bottom: 5px;margin: 14px 0;" title="Ajouter un type de RDV" data-toggle="modal" data-target="#addRdvTypeModal">
+        $html .= '<h5 class="agendaTitle">Type de rendez-vous</h5> <button class="btn btn-sm float-end btn-outline-info" 
+        style="padding-bottom: 5px;margin: 14px 0;" title="Ajouter un type de RDV" data-bs-toggle="modal" data-bs-target="#addRdvTypeModal">
         <i class="fas fa-plus"></i></button><p class="text-muted mb-4">Nommez les différents types de rendez-vous que vous proposez et fixer une durée à chaque type de rendez-vous.</p>';
         $RdvType = new App\Plugin\Appointment\RdvType();
         $RdvType->setIdAgenda($Agenda->getId());
@@ -372,20 +370,22 @@ function appointment_typeRdv_admin_getAll($idAgenda)
                 <div class="agendaInfos py-3 border-top d-flex flex-wrap align-items-center"
                      data-id-rdv-type="<?= $rdvType->id; ?>" data-id-agenda="<?= $Agenda->getId(); ?>">
                     <div class="nameInputContainer mb-2 mb-lg-0"><?= Form::input('rdvTypeName-' . $rdvType->id,
-                            ['val' => $rdvType->name, 'class' => 'border-0']); ?></div>
-                    <div class="mx-2 durationSelectContainer mb-2 mb-lg-0"><?= Form::duration('rdvTypeDuration-' . $rdvType->id,
-                            ['val' => $rdvType->duration, 'parentClass' => 'd-inline ml-3']); ?>minutes
+                            ['val' => $rdvType->name, 'class' => 'border-0', 'title' => 'Titre']); ?></div>
+                    <div class="mx-2 mb-2 mb-lg-0 d-inline-block"><?= Form::duration('rdvTypeDuration-' . $rdvType->id,
+                            ['val' => $rdvType->duration, 'class' => 'form-select-sm', 'minTxt' => 'minutes', 'title' => 'Durée']); ?>
                     </div>
-                    <div class="mx-2"><?= Form::switch('rdvTypeStatus-' . $rdvType->id,
-                            ['val' => $rdvType->status ? 'true' : '', 'parentClass' => 'd-inline ml-3']); ?></div>
-                    <div class="ml-auto mb-2 mb-lg-0">
-                        <button data-toggle="modal" data-target="#dedicatedForm"
+                    <div class="ms-auto mx-2"><?= Form::switch('rdvTypeStatus-' . $rdvType->id,
+                            ['val' => $rdvType->status ? 'true' : '']); ?></div>
+                    <div class="mb-2 mb-lg-0">
+                        <button data-bs-toggle="modal" data-bs-target="#dedicatedForm"
                                 class="btn btn-sm btn-outline-info">Gérer le formulaire dédié
                         </button>
                     </div>
                     <button type="button" class="btn deleteRdvType mb-2 mb-lg-0"><i class="far fa-trash-alt"></i>
                     </button>
-                    <div class="d-block w-100 mb-3 mt-2 informationTextareaContainer"><?= Form::textarea('', 'information-' . $rdvType->id, $rdvType->information, 3, false, '', '', 'Décrivez ou donnez des informations sur ce type de rendez-vous'); ?></div>
+                    <div class="d-block w-100 mb-3 mt-2 informationTextareaContainer">
+                        <?= Form::textarea('Informations supplémentaires', 'information-' . $rdvType->id, $rdvType->information, 3, false, '', '', 'Décrivez ou donnez des informations sur ce type de rendez-vous'); ?>
+                    </div>
                 </div>
             <?php endforeach; ?>
             <div class="modal fade" id="dedicatedForm" tabindex="-1" aria-labelledby="dedicatedFormLabel"
@@ -394,9 +394,7 @@ function appointment_typeRdv_admin_getAll($idAgenda)
                     <div class="modal-content rounded-0">
                         <div class="modal-header py-0 border-0">
                             <h5 class="modal-title agendaTitle" id="dedicatedFormLabel">Formulaire de RDV</h5>
-                            <button type="button" class="close m-0" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <p class="text-muted">Chaque formulaire comporte des champs obligatoires comme le nom, le
@@ -415,18 +413,16 @@ function appointment_typeRdv_admin_getAll($idAgenda)
                     <div class="modal-content rounded-0">
                         <div class="modal-header py-0 border-0">
                             <h5 class="modal-title agendaTitle" id="addRdvTypeTitle">Ajouter un type de RDV</h5>
-                            <button type="button" class="close m-0" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <form id="addTypeRdv" data-id-agenda="<?= $idAgenda; ?>">
-                                <div class="form-row">
+                                <div class="row">
                                     <div class="col-12 col-lg-8 mb-3">
-                                        <?= Form::input('name', ['title' => 'Nom du rendez-vous', 'placeholder' => 'Nommez le type de rendez-vous']); ?>
+                                        <?= Form::input('name', ['title' => 'Nom du type de rdv', 'placeholder' => 'Nommez le type de rendez-vous']); ?>
                                     </div>
                                     <div class="col-12 col-lg-4 mb-3">
-                                        <?= Form::duration('duration', ['title' => 'Durée de rendez-vous', 'minTxt' => 'minutes', 'required' => true]); ?></div>
+                                        <?= Form::duration('duration', ['title' => 'Durée de rdv', 'minTxt' => 'minutes', 'required' => true]); ?></div>
                                     <div class="col-12 mb-3">
                                         <?= Form::textarea('Informations supplémentaires', 'information', '', 3, false, '', '', 'Décrivez ou donnez des informations sur ce type de rendez-vous'); ?></div>
                                     <div class="col-12 mb-3">
@@ -552,10 +548,10 @@ function appointment_rdv_admin_getGrid($idRdvType, $year, $month)
             endfor; ?>
         </table>
         <div class="d-none d-md-flex justify-content-between my-3">
-            <div><span class="shapeCurrentDay mr-2"></span> Ajourd'hui</div>
-            <div><span class="shapeSelectedDay mr-2"></span> Jour sélectionné</div>
-            <div><span class="shapeUnavailabaleDay mr-2"></span> Jour indisponible</div>
-            <div><span class="shapeRdv mr-2"></span> Rendez-vous</div>
+            <div><span class="shapeCurrentDay me-2"></span> Ajourd'hui</div>
+            <div><span class="shapeSelectedDay me-2"></span> Jour sélectionné</div>
+            <div><span class="shapeUnavailabaleDay me-2"></span> Jour indisponible</div>
+            <div><span class="shapeRdv me-2"></span> Rendez-vous</div>
         </div>
         <div id="rdvAvailabilities" class="mt-3"></div>
         <?php $html .= ob_get_clean();
@@ -594,7 +590,7 @@ function appointment_rdv_admin_getAvailabilities($idRdvType, $date)
         $html .= '<h5 id="currentDateTitle" class="agendaTitle my-0">' . displayCompleteDate($Date->format('Y-m-d'), false, '%A %d %B') . '</h5>';
 
         if (appointment_isAvailableDay($Date->format('Y-m-d'), $availabilities, $allExceptions)) {
-            $html .= '<div><button class="btn btn-sm btn-outline-primary addNewRdv mx-2" data-toggle="modal" data-target="#addNewRdvForm" data-start="" data-end="">Ajouter un rdv</button>';
+            $html .= '<div><button class="btn btn-sm btn-outline-primary addNewRdv mx-2" data-bs-toggle="modal" data-bs-target="#addNewRdvForm" data-start="" data-end="">Ajouter un rdv</button>';
             $html .= '<button type="button" class="btn btn-sm btn-secondary makeTheDayUnavailable">Rendre ce jour indisponible</button></div>';
         } else {
             if (appointment_isAvailableDay($Date->format('Y-m-d'), $availabilities, [], true)) {
@@ -644,9 +640,7 @@ function appointment_rdv_admin_getAvailabilities($idRdvType, $date)
                     <div class="modal-content rounded-0">
                         <div class="modal-header py-0 border-0">
                             <h5 class="modal-title agendaTitle" id="addNewRdvFormLabel">Nouveau rendez-vous</h5>
-                            <button type="button" class="close m-0" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <form id="addNewRdvClientForm" method="post" data-ftype="appointment"
@@ -680,23 +674,16 @@ function appointment_rdv_admin_getAvailabilities($idRdvType, $date)
                                 </div>
                                 <div class="row my-2">
                                     <?php foreach ($forms as $form): ?>
-                                        <div class="col-12 col-lg-6 mb-3">
-                                            <div class="form-group">
-                                                <label for="appointment_<?= $form->slug; ?>"><?= $form->name . ($form->required ? ' *' : ''); ?></label>
-                                                <?php if ($form->type === 'textarea'): ?>
-                                                    <textarea rows="4" id="appointment_<?= $form->slug; ?>"
-                                                              name="appointment_<?= $form->slug; ?>"
-                                                              class="form-control"
-                                                              placeholder="<?= $form->placeholder; ?>"<?= ($form->required ? 'required="true"' : ''); ?>></textarea>
-                                                <?php else: ?>
-                                                    <input type="<?= $form->type; ?>"
-                                                           id="appointment_<?= $form->slug; ?>"
-                                                           name="appointment_<?= $form->slug; ?>" value=""
-                                                           class="form-control"
-                                                           placeholder="<?= $form->placeholder; ?>" <?= ($form->required ? 'required="true"' : ''); ?>>
-                                                <?php endif; ?>
+                                        <?php if ($form->type === 'textarea'): ?>
+                                            <div class="col-12 mb-3">
+                                                <?= Form::textarea($form->name . ($form->required ? ' *' : ''), 'appointment_' . $form->slug, '', 4, $form->required); ?>
                                             </div>
-                                        </div>
+                                        <?php else: ?>
+                                            <div class="col-12 col-lg-6 mb-3">
+                                                <?= Form::input('appointment_' . $form->slug,
+                                                    ['title' => $form->name . ($form->required ? ' *' : ''), 'placeholder' => $form->placeholder, 'type' => $form->type, 'required' => $form->required]); ?>
+                                            </div>
+                                        <?php endif; ?>
                                     <?php endforeach; ?>
                                 </div>
                                 <?= getTokenField(); ?>
@@ -757,7 +744,7 @@ function appointment_rdvTypeForm_admin_getAll($idAgenda, $idRdvType)
         $types = ['text' => 'Texte', 'email' => 'E-mail', 'tel' => 'Téléphone', 'number' => 'Nombre réel', 'textarea' => 'Zone de texte'];
         $positions = array_combine(range(1, 10), range(1, 10));
 
-        $html .= '<form id="addTypeRdvForm" class="mt-4 mb-5" data-id-agenda="' . $idAgenda . '" data-id-rdv-type="' . $idRdvType . '"><div class="form-row">';
+        $html .= '<form id="addTypeRdvForm" class="mt-4 mb-5" data-id-agenda="' . $idAgenda . '" data-id-rdv-type="' . $idRdvType . '"><div class="row">';
         $html .= '<div class="col-12 col-lg-4">' . Form::input('name', ['title' => 'Nom du champs']) . '</div>';
         $html .= '<div class="col-12 col-lg-2">' . Form::select('Type', 'type', $types, 'text', true) . '</div>';
         $html .= '<div class="col-12 col-lg-3">' . Form::input('placeholder', ['title' => 'Placeholder']) . '</div>';
@@ -771,7 +758,7 @@ function appointment_rdvTypeForm_admin_getAll($idAgenda, $idRdvType)
         if ($rdvTypeForms = $RdvTypeForm->showAll()):
 
             foreach ($rdvTypeForms as $rdvTypeForm):
-                $html .= '<form class="py-4 mb-2 border-top rdvTypForm" data-id-rdv-type-form="' . $rdvTypeForm->id . '"><div class="form-row">';
+                $html .= '<form class="py-4 mb-2 border-top rdvTypForm" data-id-rdv-type-form="' . $rdvTypeForm->id . '"><div class="row">';
                 $html .= '<div class="col-12 col-lg-4">' . Form::input('rdvTypeFormName-' . $rdvTypeForm->id, ['title' => 'Nom du champs', 'val' => $rdvTypeForm->name]) . '</div>';
                 $html .= '<div class="col-12 col-lg-2">' . Form::select('Type', 'rdvTypeFormType-' . $rdvTypeForm->id, $types, $rdvTypeForm->type, true) . '</div>';
                 $html .= '<div class="col-12 col-lg-3">' . Form::input('rdvTypeFormPlaceholder-' . $rdvTypeForm->id, ['title' => 'Placeholder', 'val' => $rdvTypeForm->placeholder]) . '</div>';
@@ -1837,7 +1824,7 @@ function appointment_admin_availabilities_get($allRdv, $allExceptions, $start, $
             $html .= $Client->getLastName() . ' ' . $Client->getFirstName();
 
             if (!$Client->getStatus()) {
-                $html .= '<button class="btn btn-sm btn-link p-0 ml-2 confirmClient" data-id-client="' . $Client->getId() . '">Confirmer le client</button>';
+                $html .= '<button class="btn btn-sm btn-link p-0 ms-2 confirmClient" data-id-client="' . $Client->getId() . '">Confirmer le client</button>';
             }
 
             $html .= '<hr class="my-1 mx-0" style="width:50px;">';
@@ -1888,8 +1875,8 @@ function appointment_admin_availabilities_get($allRdv, $allExceptions, $start, $
         }
 
         $html .= minutesToHours($time) . ' - ' . minutesToHours($time + $rdvTypeDuration);
-        $html .= '<div><button class="btn btn-sm btn-outline-primary addNewRdv" data-toggle="modal" 
-        data-target="#addNewRdvForm" data-start="' . $time . '" data-end="' . ($time + $rdvTypeDuration) . '">Ajouter un rdv</button> ';
+        $html .= '<div><button class="btn btn-sm btn-outline-primary addNewRdv" data-bs-toggle="modal" 
+        data-bs-target="#addNewRdvForm" data-start="' . $time . '" data-end="' . ($time + $rdvTypeDuration) . '">Ajouter un rdv</button> ';
         $html .= '<button class="btn btn-sm btn-secondary MakeTheTimeSlotUnavailable " data-start="' . $time . '" 
         data-end="' . ($time + $rdvTypeDuration) . '">Rendre indisponible</button></div>';
         $time += $rdvTypeDuration;

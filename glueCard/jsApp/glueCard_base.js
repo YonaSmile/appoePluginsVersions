@@ -10,21 +10,22 @@ function loadHandles(idHandle = 0, loadCardsToo = false) {
 }
 
 function loadCards(idHandle) {
-    $('.cardsContainer[data-handle-id="'+idHandle+'"]').html(loaderHtml()).load(WEB_GLUECARD_URL + 'page/cards.php?idHandle=' + idHandle, function () {
+    $('.cardsContainer[data-handle-id="' + idHandle + '"]').html(loaderHtml()).load(WEB_GLUECARD_URL + 'page/cards.php?idHandle=' + idHandle, function () {
         appoEditor();
         getMediaLibrairy();
     }).fadeIn();
 }
 
-function closeCards(idHandle){
-    $('.cardsContainer[data-handle-id="'+idHandle+'"]').fadeOut();
+function closeCards(idHandle) {
+    $('.cardsContainer[data-handle-id="' + idHandle + '"]').fadeOut();
 }
+
 function getActiveHandle() {
     return $('.collapse.show').data('handle-id');
 }
 
 function removeHandleAction(planToo = false) {
-    $('button.handleBtn').attr('data-toggle', false);
+    $('button.handleBtn').attr('data-bs-toggle', false);
     $('button#newHandle').remove();
     if (planToo) {
         $('span.updatePlan, span.removePlan, li.newPlan, span.archiveHandle, span.updateHandle, span.unpackHandle').remove();
@@ -72,7 +73,7 @@ jQuery(document).ready(function ($) {
         $btn.find('span').fadeOut().remove();
         let $input = $btn.find('input[name="handleNameInput"]');
         $input.addClass('border-bottom border-white').removeAttr('readonly').css('cursor', 'text').focus();
-        $btn.append('<span class="btn btn-sm float-right saveNameHandle" title="Enregistrer la catégorie"><i class="fas fa-check"></i></span>');
+        $btn.append('<span class="btn btn-sm float-end saveNameHandle" title="Enregistrer la catégorie"><i class="fas fa-check"></i></span>');
         removeHandleAction();
     });
 
@@ -203,16 +204,16 @@ jQuery(document).ready(function ($) {
         let idHandle = $btn.data('handle-id');
         $btn.fadeOut().remove();
 
-        let $form = $('form.newPlanForm[data-handle-id="'+idHandle+'"]');
+        let $form = $('form.newPlanForm[data-handle-id="' + idHandle + '"]');
         $form.fadeIn();
         $form.find('input[name="newPlanInputName"]').focus();
     });
 
-    $(document.body).on('change', '.selectPlan', function (e){
+    $(document.body).on('change', '.selectPlan', function (e) {
         let $select = $(this);
         let smallInfo = $select.next('small');
         let option = $select.find(':selected');
-        if(option.is('option')){
+        if (option.is('option')) {
             smallInfo.html(option.data('description'));
         }
     });
@@ -495,6 +496,11 @@ jQuery(document).ready(function ($) {
                     }).done(function (data) {
                     if (data === 'true' || data === true) {
                         $input.addClass('successInput');
+
+                        if ($input.hasClass('urlFile')) {
+                            popoverUrlFile();
+                        }
+
                     } else {
                         notification('Un problème est survenu lors de l\'enregistrement', 'danger');
                     }
@@ -507,20 +513,7 @@ jQuery(document).ready(function ($) {
     /** AJAX COMPLETE */
 
     $(document).ajaxComplete(function () {
-
-        //image popover on input
-        $('input.urlFile').filter(function () {
-            return this.value.length !== 0;
-        }).popover({
-            container: 'body',
-            html: true,
-            trigger: 'hover',
-            delay: 200,
-            placement: 'top',
-            content: function () {
-                return '<img src="' + $(this).val() + '" />';
-            }
-        });
+        popoverUrlFile();
     });
 });
 

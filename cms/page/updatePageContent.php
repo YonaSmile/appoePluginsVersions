@@ -42,16 +42,15 @@ if (!empty($_GET['id'])):
                             <?php endif;
                         endif; ?>
                     </div>
-                    <div class="col-12 col-lg-4 my-2 text-right">
-                        <select class="custom-select custom-select-sm otherPagesSelect"
-                                title="<?= trans('Parcourir les pages'); ?>...">
-                            <option selected="selected" disabled><?= trans('Parcourir les pages'); ?>...</option>
-                            <?php foreach ($allCmsPages as $pageSelect):
-                                if ($Cms->getId() != $pageSelect->id): ?>
-                                    <option data-href="<?= getPluginUrl('cms/page/pageContent/', $pageSelect->id); ?>"><?= $pageSelect->menuName; ?></option>
-                                <?php endif;
-                            endforeach; ?>
-                        </select>
+                    <div class="col-12 col-lg-4 my-2 text-end">
+                            <select class="form-select form-select-sm otherPagesSelect" id="otherPagesSelect">
+                                <option selected="selected" disabled><?= trans('Choisir une autre page'); ?></option>
+                                <?php foreach ($allCmsPages as $pageSelect):
+                                    if ($Cms->getId() != $pageSelect->id): ?>
+                                        <option data-href="<?= getPluginUrl('cms/page/pageContent/', $pageSelect->id); ?>"><?= $pageSelect->menuName; ?></option>
+                                    <?php endif;
+                                endforeach; ?>
+                            </select>
                     </div>
                 </div>
             </div>

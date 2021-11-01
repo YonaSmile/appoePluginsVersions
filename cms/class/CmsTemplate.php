@@ -130,9 +130,9 @@ class CmsTemplate
 
                 $zoneAddedOptions = $this->getParams($match[1][0]);
 
-                $added .= array_key_exists('size', $zoneAddedOptions) ? '<span class="badge badge-info">' . $zoneAddedOptions['size'] . 'px</span>&nbsp' : '';
-                $added .= $zoneAddedOptions['webp'] ? '<span class="badge badge-info">webp</span>' : '';
-                $added = '<span class="float-right">' . $added . '</span>';
+                $added .= array_key_exists('size', $zoneAddedOptions) ? '<span class="badge bg-info p-1">' . $zoneAddedOptions['size'] . 'px</span>&nbsp' : '';
+                $added .= $zoneAddedOptions['webp'] ? '<span class="badge bg-info p-1">webp</span>' : '';
+                $added = '<div class="inputZoneMeta">' . $added . '</div>';
 
                 if (array_key_exists('col', $zoneAddedOptions)) {
                     $col = $zoneAddedOptions['col'];
@@ -165,7 +165,7 @@ class CmsTemplate
                     if ($formType == 'textBig') {
                         $html .= Form::textarea($metaKeyDisplay, $metaKey, $valueCmsContent, 8, false, 'data-idcmscontent="' . $idCmsContent . '"', '');
                     } elseif ($formType == 'textarea') {
-                        $html .= Form::textarea($metaKeyDisplay, $metaKey, htmlSpeCharDecode($valueCmsContent), 8, false, 'data-idcmscontent="' . $idCmsContent . '"', 'appoeditor');
+                        $html .= '<textarea name="'.$metaKey.'" id="'.$metaKey.'" class="appoeditor" data-idcmscontent="' . $idCmsContent . '" required>'.htmlSpeCharDecode($valueCmsContent).'</textarea>';
                     } elseif ($formType == 'urlFile') {
                         $html .= Form::text($metaKeyDisplay, $metaKey, 'url', $valueCmsContent, false, 250, 'data-idcmscontent="' . $idCmsContent . '" rel="cms-img-popover"', '', 'urlFile');
                     } else {

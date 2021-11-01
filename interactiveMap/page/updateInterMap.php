@@ -13,10 +13,10 @@ if (!empty($_GET['id'])):
             <div class="row">
                 <div class="col-12">
                     <a href="<?= getPluginUrl('interactiveMap/page/updateInterMapContent/', $InteractiveMap->getId()) ?>"
-                       class="btn btn-info btn-sm float-right">
+                       class="btn btn-info btn-sm float-end">
                         <i class="fas fa-eye"></i> <?= trans('Consulter la carte'); ?>
                     </a>
-                    <button class="btn btn-warning btn-sm float-right" id="rebootInterMap">
+                    <button class="btn btn-warning btn-sm float-end" id="rebootInterMap">
                         <i class="fas fa-redo"></i> <?= trans('Réinitialiser la carte'); ?>
                     </button>
                 </div>
@@ -58,15 +58,15 @@ if (!empty($_GET['id'])):
                     <div class="card">
                         <div class="card-header" id="headingCat">
                             <h5 class="mb-0">
-                                <button class="btn btn-link" type="button" data-toggle="collapse"
-                                        data-target="#interMapCategories" aria-expanded="true"
+                                <button class="btn btn-link" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#interMapCategories" aria-expanded="true"
                                         aria-controls="collapseOne">
                                     <?= trans('Catégories'); ?>
                                 </button>
                             </h5>
                         </div>
                         <div id="interMapCategories" class="collapse" aria-labelledby="headingCat"
-                             data-parent="#accordion">
+                             data-bs-parent="#accordion">
                             <div class="card-body">
 
                                 <?php if (!empty($mapContent['categories'])):
@@ -76,13 +76,13 @@ if (!empty($_GET['id'])):
                                                 <div class="card-header" id="headingCat<?= $key; ?>">
                                                     <h5 class="mb-0">
                                                         <button class="btn btn-link" type="button"
-                                                                data-toggle="collapse"
-                                                                data-target="#interMapCategories<?= $key; ?>"
+                                                                data-bs-toggle="collapse"
+                                                                data-bs-target="#interMapCategories<?= $key; ?>"
                                                                 aria-expanded="true"
                                                                 aria-controls="collapseOne">
                                                             <?= $content['title']; ?>
                                                         </button>
-                                                        <button class="button close float-right deleteInterMapArr"
+                                                        <button class="button close float-end deleteInterMapArr"
                                                                 data-parentjson="categories"
                                                                 data-id="<?= $content['id']; ?>">
                                                             &times;
@@ -91,7 +91,7 @@ if (!empty($_GET['id'])):
                                                 </div>
                                                 <div id="interMapCategories<?= $key; ?>" class="collapse"
                                                      aria-labelledby="headingCat<?= $key; ?>"
-                                                     data-parent="#interMapCategories">
+                                                     data-bs-parent="#interMapCategories">
                                                     <div class="card-body row" data-parentjson="categories"
                                                          data-id="<?= $content['id']; ?>">
                                                         <div class="col-12 col-lg-3">
@@ -113,8 +113,8 @@ if (!empty($_GET['id'])):
                                     <?php endforeach;
                                 endif; ?>
                                 <button class="btn btn-block btn-primary"
-                                        data-toggle="modal" type="button"
-                                        data-target="#modalAddInterMapCategorie">
+                                        data-bs-toggle="modal" type="button"
+                                        data-bs-target="#modalAddInterMapCategorie">
                                     <?= trans('Nouvelle catégorie'); ?>
                                 </button>
                             </div>
@@ -123,15 +123,15 @@ if (!empty($_GET['id'])):
                     <div class="card">
                         <div class="card-header" id="headingLev">
                             <h5 class="mb-0">
-                                <button class="btn btn-link" type="button" data-toggle="collapse"
-                                        data-target="#interMapLevels" aria-expanded="true"
+                                <button class="btn btn-link" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#interMapLevels" aria-expanded="true"
                                         aria-controls="collapseOne">
                                     <?= trans('Niveaux'); ?>
                                 </button>
                             </h5>
                         </div>
                         <div id="interMapLevels" class="collapse" aria-labelledby="headingLev"
-                             data-parent="#accordion">
+                             data-bs-parent="#accordion">
                             <div class="card-body">
                                 <?php if (!empty($mapContent['levels'])):
                                     foreach ($mapContent['levels'] as $key => $content): ?>
@@ -140,13 +140,13 @@ if (!empty($_GET['id'])):
                                                 <div class="card-header" id="headingLev<?= $key ?>">
                                                     <h5 class="mb-0">
                                                         <button class="btn btn-link" type="button"
-                                                                data-toggle="collapse"
-                                                                data-target="#interMapLevel<?= $key ?>"
+                                                                data-bs-toggle="collapse"
+                                                                data-bs-target="#interMapLevel<?= $key ?>"
                                                                 aria-expanded="true"
                                                                 aria-controls="collapseOne">
                                                             <?= $content['title']; ?>
                                                         </button>
-                                                        <button class="button close float-right deleteInterMapArr"
+                                                        <button class="button close float-end deleteInterMapArr"
                                                                 data-parentjson="levels"
                                                                 data-id="<?= $content['id']; ?>">
                                                             &times;
@@ -155,7 +155,7 @@ if (!empty($_GET['id'])):
                                                 </div>
                                                 <div id="interMapLevel<?= $key ?>" class="collapse"
                                                      aria-labelledby="headingLev<?= $key ?>"
-                                                     data-parent="#interMapLevels">
+                                                     data-bs-parent="#interMapLevels">
                                                     <div class="card-body row" data-parentjson="levels"
                                                          data-id="<?= $content['id']; ?>">
                                                         <div class="col-12 col-lg-3">
@@ -181,8 +181,8 @@ if (!empty($_GET['id'])):
                                     <?php endforeach;
                                 endif; ?>
                                 <button class="btn btn-block btn-primary"
-                                        data-toggle="modal" type="button"
-                                        data-target="#modalAddInterMapLevel">
+                                        data-bs-toggle="modal" type="button"
+                                        data-bs-target="#modalAddInterMapLevel">
                                     <?= trans('Nouveau niveau'); ?></button>
                             </div>
                         </div>
@@ -191,15 +191,15 @@ if (!empty($_GET['id'])):
                     <div class="card">
                         <div class="card-header" id="headingOptions">
                             <h5 class="mb-0">
-                                <button class="btn btn-link" type="button" data-toggle="collapse"
-                                        data-target="#interMapOptions" aria-expanded="true"
+                                <button class="btn btn-link" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#interMapOptions" aria-expanded="true"
                                         aria-controls="collapseOne">
                                     <?= trans('Options'); ?>
                                 </button>
                             </h5>
                         </div>
                         <div id="interMapOptions" class="collapse" aria-labelledby="headingOptions"
-                             data-parent="#accordion">
+                             data-bs-parent="#accordion">
                             <div class="card-body">
                                 <?php
                                 $mapOptions = json_decode($InteractiveMap->getOptions(), true);
@@ -279,7 +279,7 @@ if (!empty($_GET['id'])):
                             <button type="submit" id="addInterMapCatBtn" name="ADDINTERMAPCATEGORYSUBMIT"
                                     class="btn btn-primary"><?= trans('Enregistrer'); ?></button>
                             <button type="button" class="btn btn-secondary"
-                                    data-dismiss="modal"><?= trans('Fermer'); ?></button>
+                                    data-bs-dismiss="modal"><?= trans('Fermer'); ?></button>
                         </div>
                     </form>
                 </div>
@@ -319,7 +319,7 @@ if (!empty($_GET['id'])):
                             <button type="submit" name="ADDINTERMAPLEVELSUBMIT"
                                     class="btn btn-primary"><?= trans('Enregistrer'); ?></button>
                             <button type="button" class="btn btn-secondary"
-                                    data-dismiss="modal"><?= trans('Fermer'); ?></button>
+                                    data-bs-dismiss="modal"><?= trans('Fermer'); ?></button>
                         </div>
                     </form>
                 </div>

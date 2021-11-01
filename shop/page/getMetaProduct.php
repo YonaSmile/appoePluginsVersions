@@ -10,12 +10,12 @@ if ($MetaProduct && !empty($MetaProduct->getData())): ?>
             <div class="card" data-idmetaproduct="<?= $id; ?>">
                 <div class="card-header" id="headingMetaProduct<?= $id; ?>">
                     <h5 class="mb-0">
-                        <button class="btn btn-link metaProductTitle-<?= $id; ?>" type="button" data-toggle="collapse"
-                                data-target="#collapseMetaProduct<?= $id; ?>" aria-expanded="false"
+                        <button class="btn btn-link metaProductTitle-<?= $id; ?>" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseMetaProduct<?= $id; ?>" aria-expanded="false"
                                 aria-controls="collapseMetaProduct<?= $id; ?>">
                             <?= $meta->meta_key; ?>
                         </button>
-                        <span class="float-right">
+                        <span class="float-end">
                         <button type="button"
                                 class="btn btn-sm btn-link text-warning metaProductUpdateBtn"
                                 data-idmetaproduct="<?= $id; ?>"
@@ -33,7 +33,7 @@ if ($MetaProduct && !empty($MetaProduct->getData())): ?>
                 </div>
 
                 <div id="collapseMetaProduct<?= $id; ?>" class="collapse"
-                     aria-labelledby="headingMetaProduct<?= $id; ?>" data-parent="#accordionMetaProduct">
+                     aria-labelledby="headingMetaProduct<?= $id; ?>" data-bs-parent="#accordionMetaProduct">
                     <div class="card-body metaProductContent-<?= $id; ?>"><?= htmlSpeCharDecode($meta->meta_value); ?></div>
                 </div>
             </div>

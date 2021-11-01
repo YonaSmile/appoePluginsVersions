@@ -14,7 +14,7 @@ echo getTitle(getAppPageName(), getAppPageSlug()); ?>
                     <?php foreach ( $ALLUSERS as $userId => $user ):
                         if ( $userId != getUserIdSession() ): ?>
                             <a class="nav-link userMessages sidebarLink" id="v-pills-user-<?= $userId; ?>-tab"
-                               data-toggle="pill"
+                               data-bs-toggle="pill"
                                href="#v-pills-user-<?= $userId; ?>"
                                role="tab" aria-controls="v-pills-user-<?= $userId; ?>"
                                aria-expanded="true"

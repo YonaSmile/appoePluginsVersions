@@ -16,7 +16,7 @@ showPostResponse(getDataPostResponse()); ?>
                 <?= \App\Form::text('Nom du lien URL (slug)', 'slug', 'text', !empty($_POST['slug']) ? $_POST['slug'] : '', true, 70, 'data-seo="slug"'); ?>
             </div>
             <div class="col-12 col-lg-6 my-2">
-                <?= \App\Form::textarea('Description', 'description', !empty($_POST['description']) ? $_POST['description'] : '', 4, true, 'maxlength="158" data-seo="description"'); ?>
+                <?= \App\Form::textarea('Description', 'description', !empty($_POST['description']) ? $_POST['description'] : '', 2.6, true, 'maxlength="158" data-seo="description"'); ?>
             </div>
             <div class="col-12 col-lg-6 my-2">
                 <?= \App\Form::text('Nom du menu', 'menuName', 'text', !empty($_POST['menuName']) ? $_POST['menuName'] : '', true, 40); ?>

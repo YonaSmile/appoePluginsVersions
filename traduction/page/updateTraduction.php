@@ -10,7 +10,7 @@ showPostResponse(); ?>
     <div class="container-fluid">
         <div class="row">
             <div class="col-12 col-lg-6 form-inline">
-                <div class="input-group mb-2 mr-sm-2">
+                <div class="input-group mb-2 me-sm-2">
                     <div class="input-group-prepend">
                         <span class="input-group-text"><i class="fas fa-search"></i></span>
                     </div>
@@ -19,7 +19,7 @@ showPostResponse(); ?>
                 </div>
             </div>
             <div class="col-12 col-lg-6">
-                <form action="" method="post" class="form-inline float-right">
+                <form action="" method="post" class="form-inline float-end">
                     <div class="input-group mb-3">
                         <input type="text" class="form-control" name="metaKeySingle" id="metaKeySingle"
                                placeholder="<?= trans('Mot'); ?>" required="true">
@@ -30,7 +30,7 @@ showPostResponse(); ?>
                                 <?= trans('Ajouter une traduction'); ?>
                             </button>
                             <button type="button" id="addMultipleTrads" class="btn btn-outline-success"
-                                    data-toggle="modal" data-target="#modalAddMultipleTrads">
+                                    data-bs-toggle="modal" data-bs-target="#modalAddMultipleTrads">
                                 <i class="fas fa-ellipsis-h"></i>
                             </button>
                         </div>
@@ -91,7 +91,7 @@ showPostResponse(); ?>
                         <button type="submit" name="ADDMULTIPLETRADSSUBMIT"
                                 class="btn btn-primary"><?= trans('Enregistrer'); ?></button>
                         <button type="button" class="btn btn-secondary"
-                                data-dismiss="modal"><?= trans('Fermer'); ?></button>
+                                data-bs-dismiss="modal"><?= trans('Fermer'); ?></button>
                     </div>
                 </form>
             </div>

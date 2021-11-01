@@ -17,9 +17,7 @@ echo getTitle(getAppPageName(), getAppPageSlug()); ?>
         <div class="col-12 col-md-4 col-lg-3">
             <?php if ($allPages): ?>
                 <div class="input-group mb-1" id="admin-tab-search">
-                    <div class="input-group-prepend">
-                        <div class="input-group-text"><i class="fas fa-search"></i></div>
-                    </div>
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
                     <input type="search" class="form-control" id="admin-tab-search-input" placeholder="Rechercher...">
                 </div>
                 <div id="admin-tabs">
@@ -31,15 +29,15 @@ echo getTitle(getAppPageName(), getAppPageSlug()); ?>
                                 <small><?= $page->type ?></small>
                             </div>
                             <div class="admin-tab-content">
-                                <div class="d-flex align-items-center justify-content-center justify-content-lg-start p-3 text-center text-lg-left">
-                                    <div class="d-none d-lg-block display-3 mr-3"><i class="fas fa-file-alt"></i></div>
+                                <div class="d-flex align-items-center justify-content-center justify-content-lg-start p-3 text-center text-lg-start">
+                                    <div class="d-none d-lg-block display-3 me-3"><i class="fas fa-file-alt"></i></div>
                                     <div>
                                         <h2><?= $page->name ?></h2>
                                         <a href="<?= getPluginUrl('cms/page/pageContent/', $page->id) ?>"
                                            class="btnLink"><?= trans('Consulter'); ?></a>
                                         |
-                                        <button type="button" class="btnLink updateCms" data-toggle="modal" data-idcms="<?= $page->id ?>"
-                                                data-target="#updatePageModal"><?= trans('Modifier'); ?></button>
+                                        <button type="button" class="btnLink updateCms" data-bs-toggle="modal" data-idcms="<?= $page->id ?>"
+                                                data-bs-target="#updatePageModal"><?= trans('Modifier'); ?></button>
                                         |
                                         <button type="button" class="btnLink deleteCms" data-idcms="<?= $page->id ?>">
                                             <?= trans('Archiver'); ?></button>
@@ -74,9 +72,7 @@ echo getTitle(getAppPageName(), getAppPageSlug()); ?>
                 <form action="" method="post" id="updatePageForm">
                     <div class="modal-header">
                         <h5 class="modal-title" id="updatePageModalLabel">Modifier les en têtes</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="custom-control custom-checkbox my-3">

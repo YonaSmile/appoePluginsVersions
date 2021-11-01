@@ -7,7 +7,7 @@ $allPersons = $People->showAll();
 echo getTitle( getAppPageName(), getAppPageSlug() ); ?>
     <div class="row">
         <div class="col-12 mb-2" style="height: 50px;">
-            <button class="btn btn-sm btn-outline-dark float-right" id="exportCSV">
+            <button class="btn btn-sm btn-outline-dark float-end" id="exportCSV">
                 <i class="fas fa-download"></i> <?= trans('Exporter en CSV'); ?></button>
         </div>
         <div class="col-12">

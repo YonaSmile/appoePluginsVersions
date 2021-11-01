@@ -17,7 +17,7 @@ if ($mehoubarim && is_array($mehoubarim)): ?>
         if (getUserIdSession() != $connectedUserId && getUserRoleId() >= getUserRoleId($connectedUserId)
             && $connectedUserData['status'] < 4 && isUserExist($connectedUserId)): ?>
 
-            <li class="list-inline-item p-0 pr-2 mr-0" style="font-size: 0.7em;">
+            <li class="list-inline-item p-0 pr-2 me-0" style="font-size: 0.7em;">
                 <span class="activeUser pb-1 border-bottom border-<?= STATUS_CONNECTED_USER[$connectedUserData['status']]; ?>"
                       style="position: relative;cursor: pointer;"
                       data-page-consulting="<?= $connectedUserData['pageConsulting']; ?>"

@@ -27,7 +27,7 @@ if (!empty($_GET['idHandle']) && is_numeric($_GET['idHandle'])):
                                 <?php if ($item->status > 0): ?>
                                     <span>
                                     Position :
-                                    <span class="ml-3 itemPositionContainer">
+                                    <span class="ms-3 itemPositionContainer">
                                         <i class="fas fa-minus lowerOrder"></i>
                                         <strong class="px-2 text-dark itemOrder"
                                                 data-count-items="<?= count($items); ?>"><?= $item->order; ?></strong>

@@ -8,6 +8,7 @@ function getAdminAgendas() {
             $('#addAgendaModal').modal('hide');
             setTimeout(function () {
                 $('div#agendas').html(data);
+                popoverUrlFile();
             }, 500);
         }
         appointment_removeLoader();
@@ -124,6 +125,9 @@ jQuery(window).on('load', function () {
                 }).done(function (data) {
                     if (data === 'true') {
                         notification('Paramètre enregistré');
+                        if($input.hasClass('urlFile')){
+                            popoverUrlFile();
+                        }
                     } else {
                         notification('Erreur', 'danger');
                     }

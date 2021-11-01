@@ -24,21 +24,6 @@ div.btnGroupAgendaManager {
     font-weight: bold;
 }
 
-div.durationSelectContainer select {
-    border: 0 none;
-    border-bottom: 1px solid #FFF;
-    background: transparent;
-    width: 40px;
-    padding: 0;
-}
-
-div.durationSelectContainer select:active,
-div.durationSelectContainer select:focus,
-div.durationSelectContainer select:hover {
-    box-shadow: none !important;
-    border-bottom: 1px solid #333;
-}
-
 div.nameInputContainer input {
     border: 0 none;
     border-bottom: 1px solid #FFF;

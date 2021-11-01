@@ -46,7 +46,7 @@ $(document).ready(function () {
 
         $('input[name="categories[]"]').each(function () {
             if ($(this).next('label').text().charAt(0) !== '-') {
-                $(this).parent('.checkCategories').wrap('<div class="mr-5 my-4 pb-2 border-bottom">');
+                $(this).parent('.checkCategories').wrap('<div class="me-5 my-4 pb-2 border-bottom">');
             } else {
                 $(this).parent('.checkCategories').prev('div').append($(this).parent('.checkCategories'));
             }
@@ -112,7 +112,7 @@ $(document).ready(function () {
                     resetMetas();
 
                     $articleMetaContainer.html(loaderHtml())
-                        .load(WEB_ITEMGLUE_URL + 'page/getMetaArticle.php?idArticle=' + $articleMetaContainer.data('article-id'), function (){
+                        .load(WEB_ITEMGLUE_URL + 'page/getMetaArticle.php?idArticle=' + $articleMetaContainer.data('article-id'), function () {
                             $('button.metaProductTitle-' + idMeta).trigger('click');
                         });
                 } else {
@@ -262,14 +262,14 @@ $(document).ready(function () {
         let confirmStandard = $btn.attr('data-confirm-standard');
         let confirmFeatured = $btn.attr('data-confirm-vedette');
 
-        let nowStatut = $btn.attr('data-statutarticle') == 2 ? 1 : 2;
+        let nowStatut = parseInt($btn.attr('data-statutarticle')) === 2 ? 1 : 2;
 
         let $iconContainer = $btns.children('span');
 
-        let iconFeatured = nowStatut == 2 ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
+        let iconFeatured = nowStatut === 2 ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
 
-        let textConfirmFeatured = nowStatut == 2 ? confirmFeatured : confirmStandard;
-        let textTitleFeatured = nowStatut == 2 ? titleFeatured : titleStandard;
+        let textConfirmFeatured = nowStatut === 2 ? confirmFeatured : confirmStandard;
+        let textTitleFeatured = nowStatut === 2 ? titleFeatured : titleStandard;
 
         if (confirm(textConfirmFeatured)) {
             busyApp();
@@ -286,6 +286,9 @@ $(document).ready(function () {
                         $btns.attr('data-statutarticle', nowStatut);
                         $btns.attr('title', textTitleFeatured);
                         $iconContainer.html(iconFeatured);
+
+                        $('div.admin-tab[data-idarticle="' + idArticle + '"]').find('div.admin-tab-header small').html(nowStatut === 2 ? iconFeatured : '');
+
                         availableApp();
                     }
                 }

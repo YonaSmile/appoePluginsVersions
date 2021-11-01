@@ -23,6 +23,10 @@ function updateCms($input, metaValue) {
                     $input.attr('data-idcmscontent', data);
                 }
 
+                if($input.hasClass('urlFile')){
+                    popoverUrlFile();
+                }
+
                 $('small.categoryIdFloatContenaire').stop().fadeOut(function () {
                     $('small.' + metaKey).html('Enregistré').stop().fadeIn();
                 });
@@ -59,7 +63,7 @@ jQuery(document).ready(function ($) {
         if (zoning) {
 
             $(this).removeAttr('id');
-            $('#headerLinks').append('<a class="list-group-item list-group-item-action" data-id="' + id + '" type="button" data-toggle="collapse" data-target="#collapse' + id + '">' + $(this).text() + '</a>');
+            $('#headerLinks').append('<a class="list-group-item list-group-item-action" data-id="' + id + '" type="button" data-bs-toggle="collapse" data-bs-target="#collapse' + id + '">' + $(this).text() + '</a>');
 
             //Add zone
             $(this).nextUntil('.templateZoneTitle').addBack().wrapAll('<div id="' + id + '" class="templateZone row my-2"></div>');
@@ -78,8 +82,8 @@ jQuery(document).ready(function ($) {
             $(el).find('h5.templateZoneTitle').remove();
 
             //Card
-            html += '<div class="card"><div class="card-header bgColorPrimary" id="heading' + id + '"><h2 class="mb-0"><button class="btn btn-link collapsed zoneTitleBtn" type="button" data-id="' + id + '" data-toggle="collapse" data-target="#collapse' + id + '" aria-expanded="false" aria-controls="collapse' + id + '">' + title + ' </button> </h2></div>';
-            html += '<div id="collapse' + id + '" class="collapse collapseZone" aria-labelledby="heading' + id + '" data-parent="#pageContentManageFormAccordion"><div class="card-body">';
+            html += '<div class="card"><div class="card-header bgColorPrimary" id="heading' + id + '"><h2 class="mb-0"><button class="btn btn-link collapsed zoneTitleBtn" type="button" data-id="' + id + '" data-bs-toggle="collapse" data-bs-target="#collapse' + id + '" aria-expanded="false" aria-controls="collapse' + id + '">' + title + ' </button> </h2></div>';
+            html += '<div id="collapse' + id + '" class="collapse collapseZone" aria-labelledby="heading' + id + '" data-bs-parent="#pageContentManageFormAccordion"><div class="card-body">';
             html += $(el).get(0).outerHTML;
             html += '</div></div></div>';
         });
@@ -96,16 +100,8 @@ jQuery(document).ready(function ($) {
         })
 
     }
-    $('input[rel=cms-img-popover]').popover({
-        container: 'body',
-        html: true,
-        trigger: 'hover',
-        delay: 200,
-        placement: 'top',
-        content: function () {
-            return '<img src="' + $(this).val() + '" />';
-        }
-    });
+
+    popoverUrlFile();
 
     $.each($('#pageContentManageForm input, #pageContentManageForm textarea, #pageContentManageForm select'), function () {
         $('<small class="' + $(this).attr('name') + ' categoryIdFloatContenaire">').insertAfter($(this));
