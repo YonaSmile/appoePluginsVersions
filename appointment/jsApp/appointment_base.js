@@ -50,6 +50,7 @@ jQuery(window).on('load', function () {
                 busyApp();
                 appointment_ajax({setAdminAgendas: 'OK', agendaName: agendaName}).done(function (data) {
                     if (data === 'true') {
+                        notification('Agenda ajouté');
                         $form.trigger('reset');
                         getAdminAgendas();
                     }
@@ -70,7 +71,8 @@ jQuery(window).on('load', function () {
                 appointment_ajax({deleteAdminAgendas: 'OK', idAgenda: idAgenda}).done(function (data) {
                     if (data === 'true') {
                         $parent.fadeOut(500, function () {
-                            $parent.remove()
+                            $parent.remove();
+                            notification('Agenda supprimé');
                         });
                         //getAdminAgendas();
                     }
@@ -125,7 +127,7 @@ jQuery(window).on('load', function () {
                 }).done(function (data) {
                     if (data === 'true') {
                         notification('Paramètre enregistré');
-                        if($input.hasClass('urlFile')){
+                        if ($input.hasClass('urlFile')) {
                             popoverUrlFile();
                         }
                     } else {
@@ -171,26 +173,6 @@ jQuery(window).on('load', function () {
                     notification('Erreur', 'danger');
                 }
             });
-        });
-
-        $(document.body).on('click', 'button.addInfo', function () {
-            let $btn = $(this);
-            let $parent = $btn.closest('div#infosup');
-            let idAgenda = $btn.closest('div#manageList').attr('data-id-agenda');
-
-            $parent.append('<div class="col-4 my-2"><div class="form-group"><input type="text" name="metaKey-4" value="" placeholder="Clé" class="form-control"></div></div>');
-
-            $('button.btnAgendaManager').removeClass('active');
-            $btn.addClass('active');
-
-            appointment_getLoader()
-            getAdminListManage(idAgenda, manageList).done(function (data) {
-                if (data) {
-                    $('#manageType').attr('data-current-type', manageList).html(data);
-                }
-                appointment_removeLoader();
-            });
-
         });
 
         $(document.body).on('submit', 'form#addAvailability', function (e) {
@@ -241,7 +223,8 @@ jQuery(window).on('load', function () {
                 appointment_ajax({deleteAdminAvailability: 'OK', idAvailability: idAvailability}).done(function (data) {
                     if (data === 'true') {
                         $btn.parent('li').fadeOut(500, function () {
-                            $btn.parent('li').remove()
+                            $btn.parent('li').remove();
+                            notification('Disponibilité supprimée');
                         });
                     }
                     availableApp();
@@ -258,7 +241,8 @@ jQuery(window).on('load', function () {
                 appointment_ajax({deleteAdminARdvTypeForm: 'OK', idRdvTypeForm: idRdvTypeForm}).done(function (data) {
                     if (data === 'true') {
                         $parent.fadeOut(500, function () {
-                            $parent.remove()
+                            $parent.remove();
+                            notification('Formulaire de type de rdv supprimé');
                         });
                     }
                 });
@@ -290,6 +274,7 @@ jQuery(window).on('load', function () {
                                 $('#addRdvTypeModal').modal('hide');
                                 setTimeout(function () {
                                     $('#manageType').html(data);
+                                    notification('Type de rdv ajouté');
                                 }, 500);
 
                             }
@@ -321,7 +306,7 @@ jQuery(window).on('load', function () {
                     position: position
                 }).done(function (data) {
                     if (data === 'true') {
-                        appointment_ajax({getManageList: 'preferences', idAgenda: idAgenda}).done(function (data) {
+                        appointment_ajax({getManageList: 'informations', idAgenda: idAgenda}).done(function (data) {
                             if (data) {
                                 $('#addInfoModal').modal('hide');
                                 setTimeout(function () {
@@ -329,6 +314,7 @@ jQuery(window).on('load', function () {
                                 }, 500);
                             }
                         });
+                        notification('Information complémentaire ajouté');
                     }
                     appointment_removeLoader();
                     availableApp();
@@ -366,6 +352,7 @@ jQuery(window).on('load', function () {
                             .done(function (data) {
                                 if (data) {
                                     $('#rdvTypeFormContent').html(data);
+                                    notification('Formulaire de type de rdv ajouté');
                                 }
                             });
                     }
@@ -398,7 +385,7 @@ jQuery(window).on('load', function () {
                         position: position
                     }).done(function (data) {
                         if (data === 'true') {
-                            notification('Champs personalisé enregistré');
+                            notification('Champs personnalisé enregistré');
                         } else {
                             notification('Erreur', 'danger');
                         }
@@ -418,6 +405,7 @@ jQuery(window).on('load', function () {
                     if (data == 'true') {
                         $parent.fadeOut(500, function () {
                             $parent.remove();
+                            notification('Type de rdv supprimé', 'danger');
                         });
                     }
                 });
@@ -434,6 +422,7 @@ jQuery(window).on('load', function () {
                     if (data == 'true') {
                         $parent.fadeOut(500, function () {
                             $parent.remove();
+                            notification('Information supprimée', 'danger');
                         });
                     }
                 });
