@@ -556,6 +556,7 @@ jQuery(window).on('load', function () {
                     if (!$box.find('span.shapeRdv').length) {
                         $box.append('<span class="shapeRdv"></span>');
                     }
+                    notification('Le rdv a été enregistré');
                     getAdminRdvAvailabilities($form.find('input[name="rdvDate"]').val(), $form.find('input[name="idRdvType"]').val());
                 }, 300);
             });
