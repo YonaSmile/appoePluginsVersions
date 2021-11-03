@@ -73,7 +73,7 @@ echo getTitle(getAppPageName(), getAppPageSlug()); ?>
             <?php endif; ?>
         </div>
         <div class="col-12 col-md-8 col-lg-9">
-            <div id="admin-tab-content" class="position-relative"></div>
+            <div id="admin-tab-content"></div>
         </div>
     </div>
 <?php require('footer.php'); ?>

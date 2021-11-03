@@ -51,8 +51,7 @@ $(document).ready(function () {
                 $(this).parent('.checkCategories').prev('div').append($(this).parent('.checkCategories'));
             }
         }).eq(0).parent('.checkCategories').parent('div').parent('div')
-            .addClass('d-flex flex-row justify-content-start flex-wrap my-3')
-            .children('strong.inputLabel').addClass('w-100');
+            .addClass('d-flex flex-row justify-content-start flex-wrap').children('strong.inputLabel').addClass('w-100');
 
         $('#metaDataAvailable').change(function () {
             if ($('#metaDataAvailable').is(':checked')) {

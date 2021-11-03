@@ -83,7 +83,7 @@ if (!empty($_GET['id'])):
                  aria-labelledby="nav-allTitles-tab">
                 <div class="container-fluid">
                     <form action="" class="row" method="post" id="updateArticleHeadersForm">
-                        <div class="col-12 col-lg-10">
+                        <div class="col-12">
                             <input type="hidden" name="id" value="<?= $Article->getId(); ?>">
                             <?= getTokenField(); ?>
                             <?= \App\Form::target('UPDATEARTICLEHEADERS'); ?>
@@ -98,24 +98,23 @@ if (!empty($_GET['id'])):
                                     <div class="mt-3">
                                         <?= \App\Form::text('Nom du lien URL' . ' (slug)', 'slug', 'text', $Article->getSlug(), true, 100, 'data-seo="slug"'); ?>
                                     </div>
+                                    <div class="mt-3">
+                                        <?= \App\Form::text('Date de création', 'createdAt', 'date', $Article->getCreatedAt(), true, 10); ?>
+                                    </div>
                                 </div>
                                 <div class="col-12 col-lg-6 my-2">
                                     <?= \App\Form::textarea('Description', 'description', $Article->getDescription(), 4, true, 'maxlength="158" data-seo="description"'); ?>
                                 </div>
-                                <div class="col-12 my-2">
-                                    <?= \App\Form::checkbox('Catégories', 'categories', $listCatgories, $allCategoryRelations, 'checkCategories'); ?>
+                                <div class="row">
+                                    <div class="col-12 col-lg-3 my-3">
+                                        <?= \App\Form::radio('Statut de l\'article', 'statut', array_map('trans', ITEMGLUE_ARTICLES_STATUS), $Article->getStatut(), true); ?>
+                                    </div>
+                                    <div class="col-12 col-lg-9 my-3">
+                                        <?= \App\Form::checkbox('Catégories', 'categories', $listCatgories, $allCategoryRelations, 'checkCategories'); ?>
+                                    </div>
                                 </div>
                             </div>
-
-                        </div>
-                        <div class="col-12 col-lg-2">
-                            <div class="mt-2 mb-5">
-                                <?= \App\Form::text('Date de création', 'createdAt', 'date', $Article->getCreatedAt(), true, 10); ?>
-                            </div>
-                            <div class="mt-2 mb-5">
-                                <?= \App\Form::radio('Statut de l\'article', 'statut', array_map('trans', ITEMGLUE_ARTICLES_STATUS), $Article->getStatut(), true); ?>
-                            </div>
-                            <div class="my-2">
+                            <div class="col-12 my-2">
                                 <?= \App\Form::submit('Enregistrer', 'UPDATEARTICLEHEADERSSUBMIT'); ?>
                             </div>
                         </div>
@@ -223,7 +222,7 @@ if (!empty($_GET['id'])):
             <div class="tab-pane fade" id="nav-extra" role="tabpanel" aria-labelledby="nav-extra-tab">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-12 col-lg-6">
+                        <div class="col-12 col-lg-6 mb-3">
                             <div id="metaArticleContenair" data-article-id="<?= $Article->getId(); ?>"></div>
                         </div>
                         <div class="col-12 col-lg-6" style="box-shadow: -100px 0 70px -100px #ccc;">
