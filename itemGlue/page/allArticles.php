@@ -36,7 +36,7 @@ echo getTitle(getAppPageName(), getAppPageSlug()); ?>
                                         </button>
                                         |
                                         <a href="<?= getPluginUrl('itemGlue/page/articleContent/', $article->id) ?>"
-                                           class="btnLink"><?= trans('Consulter'); ?></a>
+                                           class="btnLink"><?= trans('Modifier'); ?></a>
                                         |
                                         <button type="button" class="btnLink archiveArticle"
                                                 data-confirm-msg="<?= trans('Vous allez archiver cet article'); ?>"
@@ -45,7 +45,8 @@ echo getTitle(getAppPageName(), getAppPageSlug()); ?>
                                     </div>
                                 </div>
                                 <div class="p-0 px-lg-3 pb-lg-3" data-idarticle="<?= $article->id ?>">
-                                    <?= getArtFeaturedImg($article, ['tempPos' => 1, 'thumbSize' => 450, 'webp' => true]); ?>
+                                    <div id="admin-tab-img"
+                                         style="background-image: url('<?= getArtFeaturedImg($article, ['tempPos' => 1, 'onlyUrl' => true]); ?>')"></div>
                                     <p>
                                         <i class="fas fa-fingerprint"></i><strong><?= trans('ID'); ?></strong><?= $article->id ?>
                                     </p>
