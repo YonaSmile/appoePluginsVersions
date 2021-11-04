@@ -36,7 +36,7 @@ function instagram_dashboard()
                     <div class="card-header bg-white pb-0 border-0 boardBlock1Title">
                         <h5 class="m-0 pl-4 colorPrimary"><?= trans('Dernière mise à jour'); ?>
                             <button type="button" id="updateTimeline"
-                                    class="btn btn-sm colorPrimary bgColorPrimary float-right">
+                                    class="btn btn-sm colorPrimary bgColorPrimary float-end">
                                 Mettre à jour
                             </button>
                         </h5>
