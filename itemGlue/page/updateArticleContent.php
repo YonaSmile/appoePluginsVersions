@@ -107,7 +107,7 @@ if (!empty($_GET['id'])):
                                 </div>
                                 <div class="row">
                                     <div class="col-12 col-lg-3 my-3">
-                                        <?= \App\Form::radio('Statut de l\'article', 'statut', array_map('trans', ITEMGLUE_ARTICLES_STATUS), $Article->getStatut(), true); ?>
+                                        <?= \App\Form::radio('Statut de l\'article', 'statut', array_map('trans', ITEMGLUE_STATUS), $Article->getStatut(), true); ?>
                                     </div>
                                     <div class="col-12 col-lg-9 my-3">
                                         <?= \App\Form::checkbox('Catégories', 'categories', $listCatgories, $allCategoryRelations, 'checkCategories'); ?>

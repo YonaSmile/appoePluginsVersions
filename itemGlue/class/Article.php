@@ -322,10 +322,10 @@ class Article
         ' . ($showParent ? ' LEFT JOIN ' . TABLEPREFIX . 'appoe_categories C2 ON(C2.id = C.parentId) ' : '') . '
         INNER JOIN ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles_content AS AC
         ON(AC.idArticle = ART.id)
-        WHERE CR.type = "ITEMGLUE" AND ART.statut > 0 AND C.status > 0 AND AC.lang = :lang ' . $categorySQL . '
+        WHERE CR.type = "ITEMGLUE" AND ART.statut >= :statut AND C.status > 0 AND AC.lang = :lang ' . $categorySQL . '
         GROUP BY ART.id ORDER BY ART.statut DESC, ART.created_at DESC';
 
-        $params = array(':idCategory' => $idCategory, ':lang' => $lang);
+        $params = array(':idCategory' => $idCategory, ':lang' => $lang, ':statut' => $this->statut);
 
         $return = DB::exec($sql, $params);
         if ($return) {
@@ -370,7 +370,6 @@ class Article
     public function showAllByLang($length = false, $lang = LANG)
     {
         $limit = $length ? ' LIMIT ' . $length . ' OFFSET 0' : '';
-        $featured = $this->statut == 1 ? ' ART.statut >= 1' : ' ART.statut = ' . $this->statut . ' ';
 
         $sql = 'SELECT ART.*,
         (SELECT cc1.content FROM ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = ART.id AND cc1.lang = :lang) AS name,
@@ -378,10 +377,10 @@ class Article
         (SELECT cc3.content FROM ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles_content AS cc3 WHERE cc3.type = "SLUG" AND cc3.idArticle = ART.id AND cc3.lang = :lang) AS slug,
         (SELECT cc4.content FROM ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles_content AS cc4 WHERE cc4.type = "BODY" AND cc4.idArticle = ART.id AND cc4.lang = :lang) AS content
         FROM ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles AS ART 
-        WHERE ' . $featured . '
+        WHERE ART.statut >= :statut
         ORDER BY ART.statut DESC, ART.created_at DESC ' . $limit;
 
-        $params = array(':lang' => $lang);
+        $params = array(':lang' => $lang, ':statut' => $this->statut);
         $return = DB::exec($sql, $params);
 
         if ($return) {
@@ -421,7 +420,6 @@ class Article
         }
 
         $limit = $length ? ' LIMIT ' . $length . ' OFFSET 0' : '';
-        $featured = $this->statut == 1 ? ' ART.statut >= 1' : ' ART.statut = ' . $this->statut . ' ';
 
         $sql = 'SELECT DISTINCT ART.id, 
          (SELECT cc1.content FROM ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles_content AS cc1 WHERE cc1.type = "NAME" AND cc1.idArticle = ART.id AND cc1.lang = :lang) AS name,
@@ -437,10 +435,10 @@ class Article
         ON(C.id = CR.categoryId)
         INNER JOIN ' . TABLEPREFIX . 'appoe_plugin_itemGlue_articles_content AS AC
         ON(AC.idArticle = ART.id)
-        WHERE ' . $featured . ' AND CR.type = "ITEMGLUE" ' . $sqlArchives . ' AND ART.statut > 0 AND C.status > 0 AND AC.lang = :lang' . $categorySQL . '
+        WHERE ART.statut >= :statut AND CR.type = "ITEMGLUE" ' . $sqlArchives . ' AND C.status > 0 AND AC.lang = :lang' . $categorySQL . '
         GROUP BY ART.id ORDER BY ART.statut DESC, name DESC ' . $limit;
 
-        $params = array(':lang' => $lang, ':year' => $year);
+        $params = array(':lang' => $lang, ':year' => $year, ':statut' => $this->statut);
 
         if ($month) {
             $params[':month'] = $month;

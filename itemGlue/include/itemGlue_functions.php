@@ -73,6 +73,7 @@ function getArticleData(stdClass $article)
 function getArticlesByCategory($categoryId, $parent = false, $length = false, $lang = LANG)
 {
     $Article = new Article();
+    $Article->setStatut(2);
     $allArticles = $Article->showByCategory($categoryId, $parent, $lang);
 
     if (!$allArticles) return false;

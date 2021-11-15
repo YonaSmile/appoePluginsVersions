@@ -19,7 +19,7 @@ showPostResponse( getDataPostResponse() ); ?>
 				<?= Form::textarea( 'Description', 'description', ! empty( $_POST['description'] ) ? $_POST['description'] : '', 4, true, 'maxlength="158" data-seo="description"' ); ?>
             </div>
             <div class="col-12 p-3">
-				<?= Form::radio( 'Statut de l\'article', 'statut', array_map( 'trans', ITEMGLUE_ARTICLES_STATUS ), ! empty( $_POST['statut'] ) ? $_POST['statut'] : 1, true ); ?>
+				<?= Form::radio( 'Statut de l\'article', 'statut', array_map( 'trans', ITEMGLUE_STATUS ), ! empty( $_POST['statut'] ) ? $_POST['statut'] : 1, true ); ?>
             </div>
             <div class="col-12 mb-3">
 				<?= Form::target( 'ADDARTICLE' ); ?>

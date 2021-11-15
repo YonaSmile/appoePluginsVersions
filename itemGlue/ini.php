@@ -9,8 +9,9 @@ const PLUGIN_TABLES = array(
 	TABLEPREFIX.'appoe_plugin_itemGlue_articles_relations'
 );
 
-const ITEMGLUE_ARTICLES_STATUS = array(
-    2 => 'En vedette',
-    1 => 'Publié',
-    0 => 'Archive'
+const ITEMGLUE_STATUS = array(
+    0 => 'Archivé',
+    1 => 'Brouillon',
+    2 => 'Publié',
+    3 => 'En vedette'
 );

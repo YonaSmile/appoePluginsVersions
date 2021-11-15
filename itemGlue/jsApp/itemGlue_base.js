@@ -250,50 +250,115 @@ $(document).ready(function () {
         }
     });
 
-    //Highlight an article
-    $(document).on('click', '.featuredArticle', function () {
+    //Publish an article
+    $(document).on('click', 'button.publishArticle', function (e) {
+        e.preventDefault();
 
-        let $btn = $(this);
+        let $btn = $(e.target);
         let idArticle = $btn.data('idarticle');
-        let $btns = $('.featuredArticle[data-idarticle="' + idArticle + '"');
+        let $btns = $('button.publishArticle[data-idarticle="' + idArticle + '"');
 
-        let titleStandard = $btn.attr('data-title-standard');
-        let titleFeatured = $btn.attr('data-title-vedette');
-        let confirmStandard = $btn.attr('data-confirm-standard');
-        let confirmFeatured = $btn.attr('data-confirm-vedette');
-
-        let nowStatut = parseInt($btn.attr('data-statutarticle')) === 2 ? 1 : 2;
-
-        let $iconContainer = $btns.children('span');
-
-        let iconFeatured = nowStatut === 2 ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
-
-        let textConfirmFeatured = nowStatut === 2 ? confirmFeatured : confirmStandard;
-        let textTitleFeatured = nowStatut === 2 ? titleFeatured : titleStandard;
-
-        if (confirm(textConfirmFeatured)) {
+        if (confirm('Vous allez publier cet article')) {
             busyApp();
             $.post(
                 WEB_ITEMGLUE_PROCESS_URL + 'ajaxProcess.php',
                 {
                     featuredArticle: 'OK',
                     idArticleFeatured: idArticle,
-                    newStatut: nowStatut
+                    newStatut: 2
                 },
                 function (data) {
                     if (data === true || data == 'true') {
 
-                        $btns.attr('data-statutarticle', nowStatut);
-                        $btns.attr('title', textTitleFeatured);
-                        $iconContainer.html(iconFeatured);
-
-                        $('div.admin-tab[data-idarticle="' + idArticle + '"]').find('div.admin-tab-header small').html(nowStatut === 2 ? iconFeatured : '');
-
+                        $('div.admin-tab[data-idarticle="' + idArticle + '"]').find('div.admin-tab-header small').html('Publié');
+                        $btns.removeClass('publishArticle').addClass('draftArticle').html('Dépublier l\'article');
+                        $btns.closest('div').find('button.featuredArticle').removeAttr('disabled').attr('data-statutarticle', 2)
+                            .children('span').removeClass('text-secondary').addClass('text-warning').html('<i class="far fa-star"></i>');
                         availableApp();
-                        notification(nowStatut === 2 ? 'L\'article a été mis en vedette' : 'L\'article n\'est plus en vedette');
+                        notification('L\'article a été publié');
                     }
                 }
             );
+        }
+    });
+
+    //Draft an article
+    $(document).on('click', 'button.draftArticle', function (e) {
+        e.preventDefault();
+
+        let $btn = $(e.target);
+        let idArticle = $btn.data('idarticle');
+        let $btns = $('button.draftArticle[data-idarticle="' + idArticle + '"');
+
+        if (confirm('Vous allez rendre brouillon cet article')) {
+            busyApp();
+            $.post(
+                WEB_ITEMGLUE_PROCESS_URL + 'ajaxProcess.php',
+                {
+                    featuredArticle: 'OK',
+                    idArticleFeatured: idArticle,
+                    newStatut: 1
+                },
+                function (data) {
+                    if (data === true || data == 'true') {
+
+                        $('div.admin-tab[data-idarticle="' + idArticle + '"]').find('div.admin-tab-header small').html('Brouillon');
+                        $btns.removeClass('draftArticle').addClass('publishArticle').html('Publier l\'article');
+                        $btns.closest('div').find('button.featuredArticle').attr('disabled', true).attr('data-statutarticle', 1)
+                            .children('span').removeClass('text-warning').addClass('text-secondary').html('<i class="far fa-star"></i>');
+                        availableApp();
+                        notification('L\'article a été brouilloné');
+                    }
+                }
+            );
+        }
+    });
+
+    //Highlight an article
+    $(document).on('click', 'button.featuredArticle', function (e) {
+        e.preventDefault();
+
+        let $btn = $(this);
+        let idArticle = $btn.data('idarticle');
+        let $btns = $('button.featuredArticle[data-idarticle="' + idArticle + '"');
+        let statut = parseInt($btn.attr('data-statutarticle'));
+
+        if(statut > 1) {
+            let titleStandard = $btn.attr('data-title-standard');
+            let titleFeatured = $btn.attr('data-title-vedette');
+            let confirmStandard = $btn.attr('data-confirm-standard');
+            let confirmFeatured = $btn.attr('data-confirm-vedette');
+            let nowStatut = statut === 3 ? 2 : 3;
+            let $iconContainer = $btns.children('span');
+            let iconFeatured = nowStatut === 3 ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
+            let textFeatured = nowStatut === 3 ? 'En vedette' : 'Publié';
+            let textConfirmFeatured = nowStatut === 3 ? confirmFeatured : confirmStandard;
+            let textTitleFeatured = nowStatut === 3 ? titleFeatured : titleStandard;
+
+            if (confirm(textConfirmFeatured)) {
+                busyApp();
+                $.post(
+                    WEB_ITEMGLUE_PROCESS_URL + 'ajaxProcess.php',
+                    {
+                        featuredArticle: 'OK',
+                        idArticleFeatured: idArticle,
+                        newStatut: nowStatut
+                    },
+                    function (data) {
+                        if (data === true || data == 'true') {
+
+                            $btns.attr('data-statutarticle', nowStatut);
+                            $btns.attr('title', textTitleFeatured);
+                            $iconContainer.html(iconFeatured);
+
+                            $('div.admin-tab[data-idarticle="' + idArticle + '"]').find('div.admin-tab-header small').html(textFeatured);
+
+                            availableApp();
+                            notification(nowStatut === 3 ? 'L\'article a été mis en vedette' : 'L\'article n\'est plus en vedette');
+                        }
+                    }
+                );
+            }
         }
     });
 

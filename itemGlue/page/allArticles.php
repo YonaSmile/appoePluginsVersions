@@ -15,25 +15,36 @@ echo getTitle(getAppPageName(), getAppPageSlug()); ?>
                              data-filter="<?= implode(' ', $categories) ?> <?= $article->name ?> <?= $article->slug ?>">
                             <div class="admin-tab-header">
                                 <h5><?= $article->name ?></h5>
-                                <small><?= $article->statut == 2 ? '<i class="fas fa-star"></i>' : ''; ?></small>
+                                <small><?= ITEMGLUE_STATUS[$article->statut]; ?></small>
                             </div>
                             <div class="admin-tab-content">
                                 <div class="d-flex align-items-center justify-content-center justify-content-lg-start p-3 text-center text-lg-start">
                                     <div class="d-none d-lg-block display-3 me-3"><i class="fas fa-thumbtack"></i></div>
-                                    <div>
+                                    <div class="admin-tab-content-header">
                                         <h2><?= $article->name ?></h2>
-                                        <button type="button" class="btn btn-sm featuredArticle"
-                                                title="<?= $article->statut == 2 ? trans('Article standard') : trans('Article vedette'); ?>"
+                                        <button type="button"
+                                                class="btn btn-sm featuredArticle" <?= $article->statut < 2 ? ' disabled="disabled" ' : ''; ?>
+                                                title="<?= $article->statut == 3 ? trans('Article standard') : trans('Article vedette'); ?>"
                                                 data-idarticle="<?= $article->id ?>"
                                                 data-title-standard="<?= trans('Designer l\'article comme vedette'); ?>"
                                                 data-title-vedette="<?= trans('Designer l\'article comme standard'); ?>"
                                                 data-confirm-standard="<?= trans('Cet article ne sera plus en vedette'); ?>"
                                                 data-confirm-vedette="<?= trans('Vous allez positionner cet article en vedette'); ?>"
                                                 data-statutarticle="<?= $article->statut; ?>">
-                                            <span class="text-warning">
-                                            <?= $article->statut == 2 ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>'; ?>
+                                                <span class="text-<?= $article->statut < 2 ? 'secondary' : 'warning'; ?>">
+                                                    <?= $article->statut == 3 ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>'; ?>
                                                 </span>
                                         </button>
+                                        |
+                                        <?php if ($article->statut == 1): ?>
+                                            <button type="button" data-idarticle="<?= $article->id ?>"
+                                                    class="btn btn-sm publishArticle btnLink">Publier l'article
+                                            </button>
+                                        <?php else: ?>
+                                            <button type="button" data-idarticle="<?= $article->id ?>"
+                                                    class="btn btn-sm draftArticle btnLink">Dépublier l'article
+                                            </button>
+                                        <?php endif; ?>
                                         |
                                         <a href="<?= getPluginUrl('itemGlue/page/articleContent/', $article->id) ?>"
                                            class="btnLink"><?= trans('Modifier'); ?></a>
