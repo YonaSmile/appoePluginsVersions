@@ -55,7 +55,7 @@ echo getTitle(getAppPageName(), getAppPageSlug()); ?>
                                             <?= trans('Archiver'); ?></button>
                                     </div>
                                 </div>
-                                <div class="p-0 px-lg-3 pb-lg-3" data-idarticle="<?= $article->id ?>">
+                                <div class="p-0 px-md-3 pb-lg-3" data-idarticle="<?= $article->id ?>">
                                     <div id="admin-tab-img"><?= getArtFeaturedImg($article, ['tempPos' => 1, 'thumbSize' => 400, 'webp' => true]); ?></div>
                                     <p>
                                         <i class="fas fa-fingerprint"></i><strong><?= trans('ID'); ?></strong><?= $article->id ?>
