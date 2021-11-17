@@ -2,12 +2,12 @@
 $allArticles = getRecentArticles(false, APP_LANG);
 echo getTitle(getAppPageName(), getAppPageSlug()); ?>
     <div class="row">
-        <div class="col-12 col-md-4 col-lg-3">
+        <div class="col-12 col-md-5 col-xl-4 col-xxl-3">
+            <div class="input-group mb-1" id="admin-tab-search">
+                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                <input type="search" class="form-control" id="admin-tab-search-input" placeholder="Rechercher...">
+            </div>
             <?php if ($allArticles): ?>
-                <div class="input-group mb-1" id="admin-tab-search">
-                    <span class="input-group-text"><i class="fas fa-search"></i></span>
-                    <input type="search" class="form-control" id="admin-tab-search-input" placeholder="Rechercher...">
-                </div>
                 <div id="admin-tabs">
                     <?php foreach ($allArticles as $article):
                         $categories = extractFromObjToSimpleArr(getCategoriesByArticle($article->id), 'name'); ?>
@@ -19,7 +19,6 @@ echo getTitle(getAppPageName(), getAppPageSlug()); ?>
                             </div>
                             <div class="admin-tab-content">
                                 <div class="d-flex align-items-center justify-content-center justify-content-lg-start p-3 text-center text-lg-start">
-                                    <div class="d-none d-lg-block display-3 me-3"><i class="fas fa-thumbtack"></i></div>
                                     <div class="admin-tab-content-header">
                                         <h2><?= $article->name ?></h2>
                                         <button type="button"
@@ -82,7 +81,7 @@ echo getTitle(getAppPageName(), getAppPageSlug()); ?>
                 </div>
             <?php endif; ?>
         </div>
-        <div class="col-12 col-md-8 col-lg-9">
+        <div class="col-12 col-md-7 col-xl-8 col-xxl-9">
             <div id="admin-tab-content"></div>
         </div>
     </div>
