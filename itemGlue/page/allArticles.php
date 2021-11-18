@@ -16,6 +16,7 @@ $allArticles = getRecentArticles(false, APP_LANG); ?>
                         </div>
                         <div class="admin-tab-content">
                             <div class="d-flex align-items-center justify-content-center justify-content-lg-start p-3 text-center text-lg-start">
+                                <div class="d-none d-lg-block display-3 me-3"><i class="fas fa-thumbtack"></i></div>
                                 <div class="admin-tab-content-header">
                                     <h2><?= $article->name ?></h2>
                                     <button type="button"
