@@ -10,57 +10,62 @@ $Cms->setLang(APP_LANG);
 $allPages = $Cms->showAll();
 
 //get all html files
-$files = getFilesFromDir(WEB_PUBLIC_PATH . 'html/', ['onlyFiles' => true, 'onlyExtension' => 'php', 'noExtensionDisplaying' => true]);
-
-echo getTitle(getAppPageName(), getAppPageSlug()); ?>
+$files = getFilesFromDir(WEB_PUBLIC_PATH . 'html/', ['onlyFiles' => true, 'onlyExtension' => 'php', 'noExtensionDisplaying' => true]); ?>
     <div class="row">
-        <div class="col-12 col-md-4 col-lg-3">
-            <?php if ($allPages): ?>
-                <div class="input-group mb-1" id="admin-tab-search">
-                    <span class="input-group-text"><i class="fas fa-search"></i></span>
-                    <input type="search" class="form-control" id="admin-tab-search-input" placeholder="Rechercher...">
-                </div>
-                <div id="admin-tabs">
-                    <?php foreach ($allPages as $page): ?>
-                        <div class="admin-tab" data-idcms="<?= $page->id ?>"
-                             data-filter="<?= $page->type ?> <?= $page->filename ?> <?= $page->menuName ?> <?= $page->name ?> <?= $page->slug ?>">
-                            <div class="admin-tab-header">
-                                <h5><?= $page->name ?></h5>
-                                <small><?= $page->type ?></small>
+        <div id="admin-tab-search">
+            <input type="search" class="form-control" id="admin-tab-search-input" placeholder="Rechercher...">
+        </div>
+        <?php if ($allPages): $c = 0; ?>
+            <div id="admin-tabs" class="col-12 col-md-5 col-xl-4 col-xxl-3">
+                <?php foreach ($allPages as $page): ?>
+                    <div class="admin-tab" data-idcms="<?= $page->id ?>"
+                         data-filter="<?= $page->type ?> <?= $page->filename ?> <?= $page->menuName ?> <?= $page->name ?> <?= $page->slug ?>">
+                        <div class="admin-tab-header <?= ++$c === 1 ? 'admin-tab-first' : ''; ?>">
+                            <h5><?= $page->name ?></h5>
+                            <small><?= $page->type ?></small>
+                        </div>
+                        <div class="admin-tab-content">
+                            <div class="d-flex align-items-center justify-content-center justify-content-lg-start p-3 text-center text-lg-start">
+                                <div class="d-none d-lg-block display-3 me-3"><i class="fas fa-file-alt"></i></div>
+                                <div>
+                                    <h2><?= $page->name ?></h2>
+                                    <a href="<?= getPluginUrl('cms/page/pageContent/', $page->id) ?>"
+                                       class="btnLink"><?= trans('Consulter'); ?></a>
+                                    |
+                                    <button type="button" class="btnLink updateCms" data-bs-toggle="modal"
+                                            data-idcms="<?= $page->id ?>"
+                                            data-bs-target="#updatePageModal"><?= trans('Modifier'); ?></button>
+                                    |
+                                    <button type="button" class="btnLink deleteCms" data-idcms="<?= $page->id ?>">
+                                        <?= trans('Archiver'); ?></button>
+                                </div>
                             </div>
-                            <div class="admin-tab-content">
-                                <div class="d-flex align-items-center justify-content-center justify-content-lg-start p-3 text-center text-lg-start">
-                                    <div class="d-none d-lg-block display-3 me-3"><i class="fas fa-file-alt"></i></div>
-                                    <div>
-                                        <h2><?= $page->name ?></h2>
-                                        <a href="<?= getPluginUrl('cms/page/pageContent/', $page->id) ?>"
-                                           class="btnLink"><?= trans('Consulter'); ?></a>
-                                        |
-                                        <button type="button" class="btnLink updateCms" data-bs-toggle="modal" data-idcms="<?= $page->id ?>"
-                                                data-bs-target="#updatePageModal"><?= trans('Modifier'); ?></button>
-                                        |
-                                        <button type="button" class="btnLink deleteCms" data-idcms="<?= $page->id ?>">
-                                            <?= trans('Archiver'); ?></button>
-                                    </div>
-                                </div>
-                                <div class="p-0 px-lg-3 pb-lg-3" data-idcms="<?= $page->id ?>">
-                                    <p><i class="fas fa-fingerprint"></i><strong><?= trans('ID'); ?></strong><?= $page->id ?></p>
-                                    <p><i class="fas fa-layer-group"></i><strong><?= trans('Type'); ?></strong><span data-page="type"><?= $page->type ?></span></p>
-                                    <p><i class="far fa-clock"></i>
-                                        <strong><?= trans('Modifié le'); ?></strong><?= displayTimeStamp($page->updated_at) ?>
-                                    </p>
-                                    <p><i class="far fa-file-code"></i><strong><?= trans('Fichier'); ?></strong><span data-page="filename"><?= $page->filename ?></span></p>
-                                    <p><i class="fas fa-project-diagram"></i><strong><?= trans('Nom du menu'); ?></strong><span data-page="menuName"><?= $page->menuName ?></span></p>
-                                    <p><i class="far fa-file-alt"></i><strong><?= trans('Nom de la page'); ?></strong><span data-page="name"><?= $page->name ?></span></p>
-                                    <p><i class="fas fa-link"></i><strong><?= trans('Slug'); ?></strong><span data-page="slug"><?= $page->slug ?></span></p>
-                                    <p><i class="fas fa-quote-right"></i><strong><?= trans('Description'); ?></strong><span data-page="description"><?= $page->description ?></span></p>
-                                </div>
+                            <div class="p-0 px-lg-3 pb-lg-3" data-idcms="<?= $page->id ?>">
+                                <p>
+                                    <i class="fas fa-fingerprint"></i><strong><?= trans('ID'); ?></strong><?= $page->id ?>
+                                </p>
+                                <p><i class="fas fa-layer-group"></i><strong><?= trans('Type'); ?></strong><span
+                                            data-page="type"><?= $page->type ?></span></p>
+                                <p><i class="far fa-clock"></i>
+                                    <strong><?= trans('Modifié le'); ?></strong><?= displayTimeStamp($page->updated_at) ?>
+                                </p>
+                                <p><i class="far fa-file-code"></i><strong><?= trans('Fichier'); ?></strong><span
+                                            data-page="filename"><?= $page->filename ?></span></p>
+                                <p>
+                                    <i class="fas fa-project-diagram"></i><strong><?= trans('Nom du menu'); ?></strong><span
+                                            data-page="menuName"><?= $page->menuName ?></span></p>
+                                <p><i class="far fa-file-alt"></i><strong><?= trans('Nom de la page'); ?></strong><span
+                                            data-page="name"><?= $page->name ?></span></p>
+                                <p><i class="fas fa-link"></i><strong><?= trans('Slug'); ?></strong><span
+                                            data-page="slug"><?= $page->slug ?></span></p>
+                                <p><i class="fas fa-quote-right"></i><strong><?= trans('Description'); ?></strong><span
+                                            data-page="description"><?= $page->description ?></span></p>
                             </div>
                         </div>
-                    <?php endforeach; ?>
-                </div>
-            <?php endif; ?>
-        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
         <div class="col-12 col-md-8 col-lg-9">
             <div id="admin-tab-content"></div>
         </div>
