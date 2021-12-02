@@ -62,16 +62,19 @@ $allArticles = getRecentArticles(false, APP_LANG); ?>
                                             <?= displayCompleteDate($article->created_at, false) ?></span>
                                 </p>
                                 <p>
-                                    <i class="fas fa-project-diagram"></i><strong><?= trans('Catégories'); ?></strong><span
-                                            data-page="categories"><?= implode(', ', $categories); ?></span></p>
-                                <p>
-                                    <i class="far fa-file-alt"></i><strong><?= trans('Nom de l\'article'); ?></strong><span
-                                            data-page="name"><?= $article->name ?></span></p>
-                                <p><i class="fas fa-link"></i><strong><?= trans('Slug'); ?></strong><span
-                                            data-page="slug"><?= $article->slug ?></span></p>
-                                <p>
-                                    <i class="fas fa-quote-right"></i><strong><?= trans('Description'); ?></strong><span
-                                            data-page="description"><?= $article->description ?></span></p>
+                                    <i class="fas fa-project-diagram"></i><strong><?= trans('Catégories'); ?></strong>
+                                    <span data-page="categories">
+                                            <span class="badge bgColorPrimary p-1 mx-1">
+                                                <?= implode('</span><span class="badge bgColorPrimary p-1 mx-1">', $categories); ?>
+                                            </span>
+                                        </span>
+                                </p>
+                                <p><i class="far fa-file-alt"></i><strong><?= trans('Nom de l\'article'); ?></strong>
+                                    <span data-page="name"><?= $article->name ?></span></p>
+                                <p><i class="fas fa-link"></i><strong><?= trans('Slug'); ?></strong>
+                                    <span data-page="slug"><?= $article->slug ?></span></p>
+                                <p><i class="fas fa-quote-right"></i><strong><?= trans('Description'); ?></strong>
+                                    <span data-page="description"><?= $article->description ?></span></p>
                             </div>
                         </div>
                     </div>
