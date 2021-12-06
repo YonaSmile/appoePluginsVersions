@@ -34,13 +34,17 @@ if ($mehoubarim && is_array($mehoubarim)): ?>
     endforeach;
 endif; ?>
 <script>
+    var userStatus = $('#actifUsers').data('user-status');
+
     jQuery(document).ajaxSend(function (e, xhr, options) {
 
-        var userStatus = $('#actifUsers').data('user-status');
-
-        if (!userStatus || userStatus == "Déconnecté") {
+        if (!userStatus || userStatus == "4") {
             xhr.abort();
             return false;
         }
     });
+
+    if(userStatus == '4') {
+        window.location.replace('/app/logout.php');
+    }
 </script>

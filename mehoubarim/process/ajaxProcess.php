@@ -20,7 +20,7 @@ if (checkAjaxRequest()) {
 
         if (!empty($_POST['checkUserStatus'])) {
             $userStatus = mehoubarim_getConnectedStatut();
-            if ($userStatus && $userStatus != 'Déconnecté') {
+            if ($userStatus && $userStatus < 4) {
                 echo 'true';
             }
             exit();

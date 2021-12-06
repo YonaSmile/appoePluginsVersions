@@ -276,8 +276,8 @@ function mehoubarim_connectedUserStatus()
     $currentTime = time();
     $statutArray = array(
         $currentTime - (60 * 30) => 1,
-        $currentTime - (60 * 60 * 4) => 2,
-        $currentTime - (60 * 60 * 12) => 3
+        $currentTime - (60 * 60) => 2,
+        $currentTime - (60 * 60 * 2) => 3
     );
 
     //Get
@@ -298,6 +298,7 @@ function mehoubarim_connectedUserStatus()
                         break;
                     }
                     $statut = 4;
+                    mehoubarim_logoutUser($user);
                 }
 
                 //Edit
