@@ -15,7 +15,7 @@ function showInstagramTimeline(preferences = {}) {
     let $timelineContainer = $(options.container);
 
     getInstagramTimelineFile().done(function (timeline) {
-        if (timeline) {
+        if (timeline && timeline.data) {
             let realC = 0;
             let item, img, imgUrl, video;
             for (let c = 0; c < timeline.data.length; c++) {
