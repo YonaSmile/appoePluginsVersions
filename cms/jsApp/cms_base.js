@@ -23,7 +23,7 @@ function updateCms($input, metaValue) {
                     $input.attr('data-idcmscontent', data);
                 }
 
-                if($input.hasClass('urlFile')){
+                if ($input.hasClass('urlFile')) {
                     popoverUrlFile();
                 }
 
@@ -220,6 +220,7 @@ jQuery(document).ready(function ($) {
 
         let type = $content.find('[data-page="type"]').text();
         let filename = $content.find('[data-page="filename"]').text();
+        let parent = $content.find('[data-page="parent"]').attr('data-page-param');
         let menuName = $content.find('[data-page="menuName"]').text();
         let name = $content.find('[data-page="name"]').text();
         let slug = $content.find('[data-page="slug"]').text();
@@ -231,11 +232,12 @@ jQuery(document).ready(function ($) {
         $form.find('textarea[name="description"]').val(description);
         $form.find('input[name="menuName"]').val(menuName);
         $form.find('input[name="slug"]').val(slug);
+        $form.find('select[name="parent"]').val(parent);
         $form.find('select[name="filename"]').val(filename);
         $form.find('select[name="type"]').val(type);
     });
 
-    $(document.body).on('click', 'button.deleteCms', function () {
+    $(document.body).on('click', 'button.archiveCms', function () {
         let idCms = $(this).data('idcms');
         if (confirm('Vous allez archiver cette page')) {
             busyApp();
@@ -248,6 +250,45 @@ jQuery(document).ready(function ($) {
                     if (data === true || data == 'true') {
                         $('div.admin-tab[data-idcms="' + idCms + '"]').slideUp().remove();
                         $('div#admin-tab-content').html('').hide();
+                        availableApp();
+                    }
+                }
+            );
+        }
+    });
+
+    $(document.body).on('click', '.unpackPage', function () {
+        var idPage = $(this).data('idpage');
+        if (confirm('Vous allez désarchiver cette page')) {
+            busyApp();
+            $.post(
+                WEB_PLUGIN_URL + 'cms/process/ajaxProcess.php',
+                {
+                    unpackPage: 'OK',
+                    idUnpackPage: idPage
+                },
+                function (data) {
+                    if (data === true || data == 'true') {
+                        $('tr[data-idcms="' + idPage + '"]').slideUp();
+                        availableApp();
+                    }
+                }
+            );
+        }
+    });
+
+    $(document.body).on('click', '.deleteCms', function () {
+        var idCms = $(this).data('deletecmsid');
+        if (confirm('Vous allez supprimer définitivement cette page')) {
+            busyApp();
+            $.post(
+                WEB_PLUGIN_URL + 'cms/process/ajaxProcess.php',
+                {
+                    idCmsDelete: idCms
+                },
+                function (data) {
+                    if (data === true || data == 'true') {
+                        $('tr[data-idcms="' + idCms + '"]').slideUp();
                         availableApp();
                     }
                 }

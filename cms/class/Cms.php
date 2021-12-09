@@ -10,6 +10,7 @@ class Cms
     private $id;
     private $type = 'PAGE';
     private $filename;
+    private $parent = 0;
     private $statut = 1;
 
     private $name;
@@ -78,6 +79,22 @@ class Cms
     public function setFilename($filename)
     {
         $this->filename = $filename;
+    }
+
+    /**
+     * @return null
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
+     * @param null $parent
+     */
+    public function setParent($parent)
+    {
+        $this->parent = $parent;
     }
 
     /**
@@ -184,6 +201,7 @@ class Cms
                 	`type` VARCHAR(100) NOT NULL DEFAULT "PAGE",
   					`filename` VARCHAR(255) NOT NULL,
   					UNIQUE (`type`, `filename`),
+  					`parent` TINYINT UNSIGNED NOT NULL DEFAULT "0",
   					`statut` BOOLEAN NOT NULL DEFAULT TRUE,
                 	`created_at` DATE NOT NULL,
                 	`updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -425,12 +443,13 @@ class Cms
     public function save()
     {
 
-        $sql = 'INSERT INTO ' . TABLEPREFIX . 'appoe_plugin_cms (type, filename, created_at) 
-                VALUES (:type, :filename, CURDATE())';
+        $sql = 'INSERT INTO ' . TABLEPREFIX . 'appoe_plugin_cms (type, filename, parent, created_at) 
+                VALUES (:type, :filename, :parent, CURDATE())';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':type', $this->type);
         $stmt->bindParam(':filename', $this->filename);
+        $stmt->bindParam(':parent', $this->parent);
         $stmt->execute();
 
         $this->id = $this->dbh->lastInsertId();
@@ -439,7 +458,7 @@ class Cms
         if ($error[0] != '00000') {
             return false;
         } else {
-            appLog('Creating page -> type: ' . $this->type . ' filename: ' . $this->filename);
+            appLog('Creating page -> type: ' . $this->type . ' filename: ' . $this->filename . ' parent: ' . $this->parent);
             return true;
         }
     }
@@ -450,11 +469,12 @@ class Cms
     public function update()
     {
 
-        $sql = 'UPDATE ' . TABLEPREFIX . 'appoe_plugin_cms SET type = :type, filename = :filename, statut = :statut WHERE id = :id';
+        $sql = 'UPDATE ' . TABLEPREFIX . 'appoe_plugin_cms SET type = :type, filename = :filename, parent = :parent, statut = :statut WHERE id = :id';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':type', $this->type);
         $stmt->bindParam(':filename', $this->filename);
+        $stmt->bindParam(':parent', $this->parent);
         $stmt->bindParam(':statut', $this->statut);
         $stmt->bindParam(':id', $this->id);
 
@@ -464,7 +484,7 @@ class Cms
         if ($error[0] != '00000') {
             return false;
         } else {
-            appLog('Updating page -> id: ' . $this->id . ' type: ' . $this->type . ' filename: ' . $this->filename . ' statut: ' . $this->statut);
+            appLog('Updating page -> id: ' . $this->id . ' type: ' . $this->type . ' filename: ' . $this->filename . ' parent: ' . $this->parent . ' statut: ' . $this->statut);
             return true;
         }
     }

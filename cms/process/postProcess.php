@@ -18,6 +18,7 @@ if (checkPostAndTokenRequest()) {
             && !empty($_POST['description'])
             && !empty($_POST['menuName'])
             && !empty($_POST['filename'])
+            && isset($_POST['parent'])
             && !empty($_POST['type'])
         ) {
 
@@ -26,6 +27,7 @@ if (checkPostAndTokenRequest()) {
             //Add Page
             $Cms->setFilename($_POST['filename']);
             $Cms->setType($_POST['type']);
+            $Cms->setParent($_POST['parent']);
 
             if ($Cms->notExist()) {
                 if ($Cms->save()) {
@@ -60,15 +62,18 @@ if (checkPostAndTokenRequest()) {
         ) {
 
             $cmsUpdate = true;
-            if (!empty($_POST['filename']) && !empty($_POST['type'])) {
+            if (!empty($_POST['filename']) && !empty($_POST['type']) && isset($_POST['parent'])) {
 
                 $cmsUpdate = false;
 
                 $Cms = new Cms($_POST['id']);
-                if ($Cms->getFilename() != $_POST['filename'] || $Cms->getType() != $_POST['type']) {
+                if ($Cms->getFilename() != $_POST['filename']
+                    || $Cms->getType() != $_POST['type']
+                    || $Cms->getParent() != $_POST['parent']) {
 
                     $Cms->setFilename($_POST['filename']);
                     $Cms->setType($_POST['type']);
+                    $Cms->setParent($_POST['parent']);
 
                     if ($Cms->notExist(true)) {
                         if (!$Cms->update()) {

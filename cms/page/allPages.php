@@ -8,6 +8,8 @@ require(CMS_PATH . 'process/postProcess.php');
 $Cms = new Cms();
 $Cms->setLang(APP_LANG);
 $allPages = $Cms->showAll();
+$allCmsPages = extractFromObjToSimpleArr($Cms->showAllPages(), 'id', 'menuName');
+$allCmsPages[0] = 'Aucune';
 
 //get all html files
 $files = getFilesFromDir(WEB_PUBLIC_PATH . 'html/', ['onlyFiles' => true, 'onlyExtension' => 'php', 'noExtensionDisplaying' => true]); ?>
@@ -36,7 +38,7 @@ $files = getFilesFromDir(WEB_PUBLIC_PATH . 'html/', ['onlyFiles' => true, 'onlyE
                                             data-idcms="<?= $page->id ?>"
                                             data-bs-target="#updatePageModal"><?= trans('Modifier'); ?></button>
                                     |
-                                    <button type="button" class="btnLink deleteCms" data-idcms="<?= $page->id ?>">
+                                    <button type="button" class="btnLink archiveCms" data-idcms="<?= $page->id ?>">
                                         <?= trans('Archiver'); ?></button>
                                 </div>
                             </div>
@@ -44,22 +46,24 @@ $files = getFilesFromDir(WEB_PUBLIC_PATH . 'html/', ['onlyFiles' => true, 'onlyE
                                 <p>
                                     <i class="fas fa-fingerprint"></i><strong><?= trans('ID'); ?></strong><?= $page->id ?>
                                 </p>
-                                <p><i class="fas fa-layer-group"></i><strong><?= trans('Type'); ?></strong><span
-                                            data-page="type"><?= $page->type ?></span></p>
+                                <p><i class="fas fa-layer-group"></i><strong><?= trans('Type'); ?></strong>
+                                    <span data-page="type"><?= $page->type ?></span></p>
                                 <p><i class="far fa-clock"></i>
                                     <strong><?= trans('Modifié le'); ?></strong><?= displayTimeStamp($page->updated_at) ?>
                                 </p>
-                                <p><i class="far fa-file-code"></i><strong><?= trans('Fichier'); ?></strong><span
-                                            data-page="filename"><?= $page->filename ?></span></p>
-                                <p>
-                                    <i class="fas fa-project-diagram"></i><strong><?= trans('Nom du menu'); ?></strong><span
-                                            data-page="menuName"><?= $page->menuName ?></span></p>
-                                <p><i class="far fa-file-alt"></i><strong><?= trans('Nom de la page'); ?></strong><span
-                                            data-page="name"><?= $page->name ?></span></p>
-                                <p><i class="fas fa-link"></i><strong><?= trans('Slug'); ?></strong><span
-                                            data-page="slug"><?= $page->slug ?></span></p>
-                                <p><i class="fas fa-quote-right"></i><strong><?= trans('Description'); ?></strong><span
-                                            data-page="description"><?= $page->description ?></span></p>
+                                <p><i class="far fa-file-code"></i><strong><?= trans('Fichier'); ?></strong>
+                                    <span data-page="filename"><?= $page->filename ?></span></p>
+                                <p><i class="fas fa-project-diagram"></i><strong><?= trans('Page parent'); ?></strong>
+                                    <span data-page="parent" data-page-param="<?= $page->parent; ?>">
+                                        <?= $allCmsPages[$page->parent] ?></span></p>
+                                <p><i class="fas fa-bars"></i><strong><?= trans('Nom du menu'); ?></strong>
+                                    <span data-page="menuName"><?= $page->menuName ?></span></p>
+                                <p><i class="far fa-file-alt"></i><strong><?= trans('Nom de la page'); ?></strong>
+                                    <span data-page="name"><?= $page->name ?></span></p>
+                                <p><i class="fas fa-link"></i><strong><?= trans('Slug'); ?></strong>
+                                    <span data-page="slug"><?= $page->slug ?></span></p>
+                                <p><i class="fas fa-quote-right"></i><strong><?= trans('Description'); ?></strong>
+                                    <span data-page="description"><?= $page->description ?></span></p>
                             </div>
                         </div>
                     </div>
@@ -96,13 +100,16 @@ $files = getFilesFromDir(WEB_PUBLIC_PATH . 'html/', ['onlyFiles' => true, 'onlyE
                                 <?= Form::textarea('Description', 'description', '', 2, true, 'maxlength="158" data-seo="description"'); ?>
                             </div>
                             <div class="col-12 my-2">
-                                <?= Form::text('Nom du menu', 'menuName', 'text', '', true, 70); ?>
+                                <?= Form::text('Nom du lien URL' . ' (slug)', 'slug', 'text', '', true, 70, 'data-seo="slug"'); ?>
                             </div>
                             <div class="col-12 my-2">
-                                <?= Form::text('Nom du lien URL' . ' (slug)', 'slug', 'text', '', true, 70, 'data-seo="slug"'); ?>
+                                <?= Form::text('Nom du menu', 'menuName', 'text', '', true, 70); ?>
                             </div>
                             <?php if (isTechnicien(getUserRoleId())): ?>
                                 <hr class="hrStyle">
+                                <div class="col-12 my-2">
+                                    <?= Form::select('Page parente', 'parent', $allCmsPages, '0', true); ?>
+                                </div>
                                 <div class="col-12 my-2">
                                     <?= Form::select('Fichier', 'filename', array_combine($files, $files), '', true); ?>
                                 </div>

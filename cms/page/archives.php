@@ -62,47 +62,4 @@ echo getTitle(getAppPageName(), getAppPageSlug()); ?>
             </div>
         </div>
     </div>
-    <script>
-        $(document).ready(function () {
-
-            $('.unpackPage').on('click', function () {
-                var idPage = $(this).data('idpage');
-                if (confirm('<?= trans('Vous allez désarchiver cette page'); ?>')) {
-                    busyApp();
-                    $.post(
-                        '<?= CMS_URL . 'process/ajaxProcess.php'; ?>',
-                        {
-                            unpackPage: 'OK',
-                            idUnpackPage: idPage
-                        },
-                        function (data) {
-                            if (data === true || data == 'true') {
-                                $('tr[data-idcms="' + idPage + '"]').slideUp();
-                                availableApp();
-                            }
-                        }
-                    );
-                }
-            });
-
-            $('.deleteCms').on('click', function () {
-                var idCms = $(this).data('deletecmsid');
-                if (confirm('<?= trans('Vous allez supprimer définitivement cette page'); ?>')) {
-                    busyApp();
-                    $.post(
-                        '<?= CMS_URL . 'process/ajaxProcess.php'; ?>',
-                        {
-                            idCmsDelete: idCms
-                        },
-                        function (data) {
-                            if (data === true || data == 'true') {
-                                $('tr[data-idcms="' + idCms + '"]').slideUp();
-                                availableApp();
-                            }
-                        }
-                    );
-                }
-            });
-        });
-    </script>
 <?php require('footer.php'); ?>
