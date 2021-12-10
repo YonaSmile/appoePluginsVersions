@@ -12,37 +12,46 @@ $allCmsPages = extractFromObjToSimpleArr($Cms->showAllPages(), 'id', 'menuName')
 $allCmsPages[0] = 'Aucune';
 
 //get all html files
-$files = getFilesFromDir(WEB_PUBLIC_PATH . 'html/', ['onlyFiles' => true, 'onlyExtension' => 'php', 'noExtensionDisplaying' => true]); ?>
+$files = getFilesFromDir(WEB_PUBLIC_PATH . 'html/', ['onlyFiles' => true, 'onlyExtension' => 'php', 'noExtensionDisplaying' => true]);
+echo getTitle(getAppPageName(), getAppPageSlug()); ?>
+    <div id="admin-tab-search">
+        <input type="search" class="form-control" id="admin-tab-search-input" placeholder="Rechercher...">
+    </div>
+<?php if ($allPages): ?>
+    <div id="admin-tabs-menu" class="row">
+        <div class="col-sm-12 col-lg-3">Nom</div>
+        <div class="d-none d-lg-block col-lg-3">Lien</div>
+        <div class="d-none d-lg-block col-lg-3">Fichier</div>
+        <div class="d-none d-lg-block col-lg-3">Page parent</div>
+    </div>
     <div class="row">
-        <div id="admin-tab-search">
-            <input type="search" class="form-control" id="admin-tab-search-input" placeholder="Rechercher...">
-        </div>
-        <?php if ($allPages): $c = 0; ?>
-            <div id="admin-tabs" class="col-12 col-md-5 col-xl-4 col-xxl-3">
-                <?php foreach ($allPages as $page): ?>
-                    <div class="admin-tab" data-idcms="<?= $page->id ?>"
-                         data-filter="<?= $page->type ?> <?= $page->filename ?> <?= $page->menuName ?> <?= $page->name ?> <?= $page->slug ?>">
-                        <div class="admin-tab-header <?= ++$c === 1 ? 'admin-tab-first' : ''; ?>">
-                            <h5><?= $page->name ?></h5>
-                            <small><?= $page->type ?></small>
-                        </div>
-                        <div class="admin-tab-content">
-                            <div class="d-flex align-items-center justify-content-center justify-content-lg-start p-3 text-center text-lg-start">
-                                <div class="d-none d-lg-block display-3 me-3"><i class="fas fa-file-alt"></i></div>
-                                <div>
-                                    <h2><?= $page->name ?></h2>
-                                    <a href="<?= getPluginUrl('cms/page/pageContent/', $page->id) ?>"
-                                       class="btnLink"><?= trans('Consulter'); ?></a>
-                                    |
-                                    <button type="button" class="btnLink updateCms" data-bs-toggle="modal"
-                                            data-idcms="<?= $page->id ?>"
-                                            data-bs-target="#updatePageModal"><?= trans('Modifier'); ?></button>
-                                    |
-                                    <button type="button" class="btnLink archiveCms" data-idcms="<?= $page->id ?>">
-                                        <?= trans('Archiver'); ?></button>
-                                </div>
+        <div id="admin-tabs" class="col-12">
+            <?php foreach ($allPages as $page): ?>
+                <div class="admin-tab" data-idcms="<?= $page->id ?>"
+                     data-filter="<?= $page->type ?> <?= $page->filename ?> <?= $page->menuName ?> <?= $page->name ?> <?= $page->slug ?>">
+                    <div class="admin-tab-header">
+                        <div class="col-sm-12 col-lg-3"><?= $page->name ?></div>
+                        <div class="d-none d-lg-block col-lg-3"><?= $page->slug ?></div>
+                        <div class="d-none d-lg-block col-lg-3"><?= $page->filename ?></div>
+                        <div class="d-none d-lg-block col-lg-3"><?= $allCmsPages[$page->parent] ?></div>
+                    </div>
+                    <div class="admin-tab-content">
+                        <div class="admin-tab-content-header">
+                            <div>
+                                <h2><?= $page->name ?></h2>
+                                <a href="<?= getPluginUrl('cms/page/pageContent/', $page->id) ?>"
+                                   class="btnLink"><?= trans('Consulter'); ?></a>
+                                |
+                                <button type="button" class="btnLink updateCms" data-bs-toggle="modal"
+                                        data-idcms="<?= $page->id ?>"
+                                        data-bs-target="#updatePageModal"><?= trans('Modifier'); ?></button>
+                                |
+                                <button type="button" class="btnLink archiveCms" data-idcms="<?= $page->id ?>">
+                                    <?= trans('Archiver'); ?></button>
                             </div>
-                            <div class="p-0 px-lg-3 pb-lg-3" data-idcms="<?= $page->id ?>">
+                        </div>
+                        <div class="px-2" data-idcms="<?= $page->id ?>">
+                            <?php if (isTechnicien(getUserRoleId())): ?>
                                 <p>
                                     <i class="fas fa-fingerprint"></i><strong><?= trans('ID'); ?></strong><?= $page->id ?>
                                 </p>
@@ -53,27 +62,25 @@ $files = getFilesFromDir(WEB_PUBLIC_PATH . 'html/', ['onlyFiles' => true, 'onlyE
                                 </p>
                                 <p><i class="far fa-file-code"></i><strong><?= trans('Fichier'); ?></strong>
                                     <span data-page="filename"><?= $page->filename ?></span></p>
-                                <p><i class="fas fa-project-diagram"></i><strong><?= trans('Page parent'); ?></strong>
-                                    <span data-page="parent" data-page-param="<?= $page->parent; ?>">
+                            <?php endif; ?>
+                            <p><i class="far fa-file-alt"></i><strong><?= trans('Nom de la page'); ?></strong>
+                                <span data-page="name"><?= $page->name ?></span></p>
+                            <p><i class="fas fa-bars"></i><strong><?= trans('Nom du menu'); ?></strong>
+                                <span data-page="menuName"><?= $page->menuName ?></span></p>
+                            <p><i class="fas fa-link"></i><strong><?= trans('Slug'); ?></strong>
+                                <span data-page="slug"><?= $page->slug ?></span></p>
+                            <p><i class="fas fa-quote-right"></i><strong><?= trans('Description'); ?></strong>
+                                <span data-page="description"><?= $page->description ?></span></p>
+                            <p><i class="fas fa-project-diagram"></i><strong><?= trans('Page parent'); ?></strong>
+                                <span data-page="parent" data-page-param="<?= $page->parent; ?>">
                                         <?= $allCmsPages[$page->parent] ?></span></p>
-                                <p><i class="fas fa-bars"></i><strong><?= trans('Nom du menu'); ?></strong>
-                                    <span data-page="menuName"><?= $page->menuName ?></span></p>
-                                <p><i class="far fa-file-alt"></i><strong><?= trans('Nom de la page'); ?></strong>
-                                    <span data-page="name"><?= $page->name ?></span></p>
-                                <p><i class="fas fa-link"></i><strong><?= trans('Slug'); ?></strong>
-                                    <span data-page="slug"><?= $page->slug ?></span></p>
-                                <p><i class="fas fa-quote-right"></i><strong><?= trans('Description'); ?></strong>
-                                    <span data-page="description"><?= $page->description ?></span></p>
-                            </div>
                         </div>
                     </div>
-                <?php endforeach; ?>
-            </div>
-        <?php endif; ?>
-        <div class="col-12 col-md-8 col-lg-9">
-            <div id="admin-tab-content"></div>
+                </div>
+            <?php endforeach; ?>
         </div>
     </div>
+<?php endif; ?>
     <div class="modal fade" id="updatePageModal" tabindex="-1" role="dialog"
          aria-labelledby="updatePageModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">

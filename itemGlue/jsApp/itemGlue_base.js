@@ -242,6 +242,7 @@ $(document).ready(function () {
                     if (data === true || data == 'true') {
                         $('div.admin-tab[data-idarticle="' + idArticle + '"]').slideUp().remove();
                         $('div#admin-tab-content').html('').hide();
+                        closeOffCanvas();
                         availableApp();
                         notification('Article archivé');
                     }
@@ -270,7 +271,7 @@ $(document).ready(function () {
                 function (data) {
                     if (data === true || data == 'true') {
 
-                        $('div.admin-tab[data-idarticle="' + idArticle + '"]').find('div.admin-tab-header small').html('Publié');
+                        $('div.admin-tab[data-idarticle="' + idArticle + '"]').find('[data-article="status"]').html('Publié');
                         $btns.removeClass('publishArticle').addClass('draftArticle').html('Dépublier l\'article');
                         $btns.closest('div').find('button.featuredArticle').removeAttr('disabled').attr('data-statutarticle', 2)
                             .children('span').removeClass('text-secondary').addClass('text-warning').html('<i class="far fa-star"></i>');
@@ -302,7 +303,7 @@ $(document).ready(function () {
                 function (data) {
                     if (data === true || data == 'true') {
 
-                        $('div.admin-tab[data-idarticle="' + idArticle + '"]').find('div.admin-tab-header small').html('Brouillon');
+                        $('div.admin-tab[data-idarticle="' + idArticle + '"]').find('[data-article="status"]').html('Brouillon');
                         $btns.removeClass('draftArticle').addClass('publishArticle').html('Publier l\'article');
                         $btns.closest('div').find('button.featuredArticle').attr('disabled', true).attr('data-statutarticle', 1)
                             .children('span').removeClass('text-warning').addClass('text-secondary').html('<i class="far fa-star"></i>');
@@ -351,7 +352,7 @@ $(document).ready(function () {
                             $btns.attr('title', textTitleFeatured);
                             $iconContainer.html(iconFeatured);
 
-                            $('div.admin-tab[data-idarticle="' + idArticle + '"]').find('div.admin-tab-header small').html(textFeatured);
+                            $('div.admin-tab[data-idarticle="' + idArticle + '"]').find('[data-article="status"]').html(textFeatured);
 
                             availableApp();
                             notification(nowStatut === 3 ? 'L\'article a été mis en vedette' : 'L\'article n\'est plus en vedette');
