@@ -18,10 +18,10 @@ echo getTitle(getAppPageName(), getAppPageSlug()); ?>
         <input type="search" class="form-control" id="admin-tab-search-input" placeholder="Rechercher...">
     </div>
 <?php if ($allPages): ?>
-    <div id="admin-tabs-menu" class="row">
-        <div class="col-sm-12 col-lg-3">Nom</div>
-        <div class="d-none d-lg-block col-lg-3">Lien</div>
-        <div class="d-none d-lg-block col-lg-3">Fichier</div>
+    <div id="admin-tabs-menu" class="row d-none d-sm-flex">
+        <div class="d-none d-sm-block col-sm-6 col-md-4 col-lg-3">Nom</div>
+        <div class="d-none d-sm-block col-sm-6 col-md-4 col-lg-3">Lien</div>
+        <div class="d-none d-md-block col-md-4 col-lg-3">Fichier</div>
         <div class="d-none d-lg-block col-lg-3">Page parent</div>
     </div>
     <div class="row">
@@ -30,9 +30,9 @@ echo getTitle(getAppPageName(), getAppPageSlug()); ?>
                 <div class="admin-tab" data-idcms="<?= $page->id ?>"
                      data-filter="<?= $page->type ?> <?= $page->filename ?> <?= $page->menuName ?> <?= $page->name ?> <?= $page->slug ?>">
                     <div class="admin-tab-header">
-                        <div class="col-sm-12 col-lg-3"><?= $page->name ?></div>
-                        <div class="d-none d-lg-block col-lg-3"><?= $page->slug ?></div>
-                        <div class="d-none d-lg-block col-lg-3"><?= $page->filename ?></div>
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3"><?= $page->name ?></div>
+                        <div class="d-none d-sm-block col-sm-6 col-md-4 col-lg-3"><?= $page->slug ?></div>
+                        <div class="d-none d-md-block col-md-4 col-lg-3"><?= $page->filename ?></div>
                         <div class="d-none d-lg-block col-lg-3"><?= $allCmsPages[$page->parent] ?></div>
                     </div>
                     <div class="admin-tab-content">
