@@ -249,7 +249,6 @@ jQuery(document).ready(function ($) {
                 function (data) {
                     if (data === true || data == 'true') {
                         $('div.admin-tab[data-idcms="' + idCms + '"]').slideUp().remove();
-                        $('div#admin-tab-content').html('').hide();
                         availableApp();
                     }
                 }
