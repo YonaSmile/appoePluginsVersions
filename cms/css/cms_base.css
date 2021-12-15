@@ -31,19 +31,6 @@
     font-size: inherit;
 }
 
-.positionMenuSpan {
-    position: relative;
-    left: -16px;
-    background: #444;
-    color: #FFF;
-    padding: 11px 10px;
-    border-radius: 4px 0 0 0;
-    width: 45px;
-    border: 0;
-    text-align: center;
-    font-weight: bold;
-}
-
 .idCmsMenuInput {
     color: rgb(255, 255, 255);
     background-color: rgb(68, 68, 68) !important;
