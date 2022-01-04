@@ -14,7 +14,7 @@ $Cms->setLang(APP_LANG);
 $CmsMenu = new CmsMenu();
 $Articles = new Article();
 
-$allCmsPages = $Cms->showAllPages();
+$allCmsPages = $Cms->showAll();
 $allCmsMenu = $CmsMenu->showAll(false, APP_LANG);
 
 $MENUS = constructMenu($allCmsMenu);
